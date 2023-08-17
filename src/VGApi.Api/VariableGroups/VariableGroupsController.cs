@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using VGService.Repositories.Interface;
-using VGService.Repositories;
-using VGService.Model;
-using System.Net.Mime;
-using VGService.Interfaces;
 using System.Web.Http.Cors;
 using VGApi.Api.VariableGroups.Request;
+using VGService.Interfaces;
+using VGService.Model;
+using VGService.Repositories.Interface;
 
 namespace VGApi.Api.Controllers;
 
@@ -15,16 +13,11 @@ namespace VGApi.Api.Controllers;
 [EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
 public class VariableGroupsController : ControllerBase
 {
-
-    private readonly ILogger<VariableGroupsController> _logger;
-
-    private IVariableGroupConnectionRepository _variableGroupConnectionRepository;
-
+    private readonly IVariableGroupConnectionRepository _variableGroupConnectionRepository;
     private readonly IVariableGroupService _vgService;
 
-    public VariableGroupsController(ILogger<VariableGroupsController> logger, IVariableGroupService vgService, IVariableGroupConnectionRepository variableGroupConnectionRepository)
+    public VariableGroupsController(IVariableGroupService vgService, IVariableGroupConnectionRepository variableGroupConnectionRepository)
     {
-        _logger = logger;
         _vgService = vgService;
         _variableGroupConnectionRepository = variableGroupConnectionRepository;
     }
@@ -37,16 +30,22 @@ public class VariableGroupsController : ControllerBase
         string organization,
         string project,
         string pat,
-        string variableGroupFilter, 
-        string keyFilter, 
+        string variableGroupFilter,
+        string keyFilter,
         string? valueFilter,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         _variableGroupConnectionRepository.Setup(organization, project, pat);
-        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(_variableGroupConnectionRepository, 
-            variableGroupFilter, keyFilter, valueFilter);
-        return Ok(matchedVariableGroups);
 
+        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
+                _variableGroupConnectionRepository,
+                variableGroupFilter,
+                keyFilter,
+                valueFilter
+            );
+
+        return Ok(matchedVariableGroups);
     }
 
     [HttpPost("updatevariablegroups", Name = "updatevariablegroups")]
@@ -55,15 +54,25 @@ public class VariableGroupsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<MatchedVariableGroup>>> UpdateAsync(
         [FromBody] VariableGroupUpdateRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         _variableGroupConnectionRepository.Setup(request.Organization, request.Project, request.Pat);
-        await _vgService.UpdateVariableGroupsAsync(_variableGroupConnectionRepository, 
-            request.VariableGroupFilter, request.KeyFilter, request.NewValue, request.ValueFilter);
-        var matchedVariableGroups = await _vgService
-            .GetVariableGroupsAsync(_variableGroupConnectionRepository, request.VariableGroupFilter, request.KeyFilter, request.ValueFilter);
-        return Ok(matchedVariableGroups);
 
+        await _vgService.UpdateVariableGroupsAsync(
+                _variableGroupConnectionRepository,
+                request.VariableGroupFilter, request.KeyFilter,
+                request.NewValue, request.ValueFilter
+            );
+
+        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
+                _variableGroupConnectionRepository,
+                request.VariableGroupFilter,
+                request.KeyFilter,
+                request.ValueFilter
+            );
+
+        return Ok(matchedVariableGroups);
     }
 
     [HttpPost("addvariable", Name = "addvariable")]
@@ -72,15 +81,25 @@ public class VariableGroupsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<MatchedVariableGroup>>> AddAsync(
         [FromBody] VariableGroupAddRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         _variableGroupConnectionRepository.Setup(request.Organization, request.Project, request.Pat);
-        await _vgService.AddVariableAsync(_variableGroupConnectionRepository, 
-            request.VariableGroupFilter, request.KeyFilter, request.Key, request.Value);
-        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(_variableGroupConnectionRepository, 
-            request.VariableGroupFilter, request.Key, null!);
-        return Ok(matchedVariableGroups);
 
+        await _vgService.AddVariableAsync(
+                _variableGroupConnectionRepository,
+                request.VariableGroupFilter, request.KeyFilter,
+                request.Key,
+                request.Value
+            );
+
+        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
+                _variableGroupConnectionRepository,
+                request.VariableGroupFilter,
+                request.Key, null!
+            );
+
+        return Ok(matchedVariableGroups);
     }
 
     [HttpPost("deletevariable", Name = "deletevariable")]
@@ -89,14 +108,25 @@ public class VariableGroupsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<MatchedVariableGroup>>> DeleteAsync(
         [FromBody] VariableGroupDeleteRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         _variableGroupConnectionRepository.Setup(request.Organization, request.Project, request.Pat);
-        await _vgService.DeleteVariableAsync(_variableGroupConnectionRepository, request.VariableGroupFilter, request.KeyFilter, request.ValueFilter);
-        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(_variableGroupConnectionRepository,
-            request.VariableGroupFilter, request.KeyFilter, request.ValueFilter);
+
+        await _vgService.DeleteVariableAsync(
+            _variableGroupConnectionRepository,
+                request.VariableGroupFilter,
+                request.KeyFilter,
+                request.ValueFilter
+            );
+
+        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
+                _variableGroupConnectionRepository,
+                request.VariableGroupFilter,
+                request.KeyFilter,
+                request.ValueFilter
+            );
+
         return Ok(matchedVariableGroups);
-
     }
-
 }

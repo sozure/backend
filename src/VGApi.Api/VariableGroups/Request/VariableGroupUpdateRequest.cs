@@ -9,5 +9,4 @@ public class VariableGroupUpdateRequest
     public string KeyFilter { get; set; } = null!;
     public string NewValue { get; set; } = null!;
     public string? ValueFilter { get; set; }
-
 }

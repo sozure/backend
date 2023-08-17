@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VGService.Model;
+﻿using VGService.Model;
 using VGService.Repositories.Interface;
 
 namespace VGService.Interfaces;

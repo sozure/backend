@@ -11,6 +11,5 @@ public interface IKeyVaultConnectionRepository
     Task<List<KeyVaultSecret?>> GetKeyVaultSecrets();
     Task RecoverSecret(string name);
     Task<IEnumerable<DeletedSecret>> GetDeletedSecretsAsync();
-
     public void Setup(string keyVaultName);
 }

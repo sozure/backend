@@ -6,9 +6,8 @@ namespace VGService.Repositories;
 
 public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
 {
-
-    private SecretClient _secretClient;
-    public string KeyVaultName { get; set; }
+    private SecretClient _secretClient = null!;
+    public string KeyVaultName { get; set; } = null!;
 
     public async Task<KeyVaultSecret?> GetKeyVaultSecret(string name)
     {
@@ -31,22 +30,20 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
 
     public async Task<List<KeyVaultSecret?>> GetKeyVaultSecrets()
     {
-        List<KeyVaultSecret> keyVaultSecrets = new();
-        List<SecretProperties> secretProperties = _secretClient.GetPropertiesOfSecrets().ToList();
-
+        var secretProperties = _secretClient.GetPropertiesOfSecrets().ToList();
         var results = await Task.WhenAll(secretProperties.Select(p => GetKeyVaultSecret(p.Name)));
-
         return results.ToList();
     }
 
     public async Task AddKeyVaultSecret(Dictionary<string, string> parameters)
     {
-        bool didWeRecover = false;
-        string secretName = parameters["secretName"];
-        string secretValue = parameters["secretValue"];
+        var didWeRecover = false;
+        var secretName = parameters["secretName"];
+        var secretValue = parameters["secretValue"];
         var newSecret = new KeyVaultSecret(secretName, secretValue);
-        List<DeletedSecret> deletedSecrets = _secretClient.GetDeletedSecrets().ToList();
-        foreach (DeletedSecret deletedSecret in deletedSecrets)
+        var deletedSecrets = _secretClient.GetDeletedSecrets().ToList();
+
+        foreach (var deletedSecret in deletedSecrets)
         {
             if (deletedSecret.Name.Equals(secretName))
             {
@@ -54,6 +51,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
                 didWeRecover = true;
             }
         }
+
         if (!didWeRecover)
         {
             await _secretClient.SetSecretAsync(newSecret);
@@ -65,10 +63,9 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
         await _secretClient.StartRecoverDeletedSecretAsync(name);
     }
 
-    public async Task<IEnumerable<DeletedSecret>> GetDeletedSecretsAsync()
+    public IEnumerable<DeletedSecret> GetDeletedSecrets()
     {
-        IEnumerable<DeletedSecret> deletedSecrets = _secretClient.GetDeletedSecrets().ToList();
-        return deletedSecrets;
+        return _secretClient.GetDeletedSecrets().ToList();
     }
 
     public void Setup(string keyVaultName)

@@ -2,6 +2,5 @@
 
 public class DeletedSecretGetResponse
 {
-    public string SecretName { get; set; }
-
+    public string SecretName { get; set; } = null!;
 }

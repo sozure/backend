@@ -8,10 +8,9 @@ namespace VGService.Services.Abstract_classes;
 public abstract class KVCommand : IExecCommand
 {
     protected readonly IKeyVaultConnectionRepository _connectionService;
-
     protected readonly string _secretFilter;
 
-    public KVCommand(IKeyVaultConnectionRepository connectionService, string secretFilter)
+    protected KVCommand(IKeyVaultConnectionRepository connectionService, string secretFilter)
     {
         _connectionService = connectionService;
         _secretFilter = secretFilter;

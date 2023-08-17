@@ -20,16 +20,15 @@ public class CopyKVCommand : KVCommand
 
     public override async Task Execute()
     {
-
-        List<KeyVaultSecret?> fromKeyVaultSecrets = await _connectionService.GetKeyVaultSecrets();
+        var fromKeyVaultSecrets = await _connectionService.GetKeyVaultSecrets();
 
         var filteredFromList = Filter(fromKeyVaultSecrets!, _secretFilter);
 
-        foreach (KeyVaultSecret keyVaultSecret in filteredFromList)
+        foreach (var keyVaultSecret in filteredFromList)
         {
-            bool copyIsNeeded = false;
-            KeyVaultSecret? secretFromDestinationKeyVault = await _destinationKeyVault.GetKeyVaultSecret(keyVaultSecret.Name);
-            Dictionary<string, string> parameters = SetParametersForCopy(keyVaultSecret, ref copyIsNeeded, secretFromDestinationKeyVault!);
+            var copyIsNeeded = false;
+            var secretFromDestinationKeyVault = await _destinationKeyVault.GetKeyVaultSecret(keyVaultSecret.Name);
+            var parameters = SetParametersForCopy(keyVaultSecret, ref copyIsNeeded, secretFromDestinationKeyVault!);
 
             await AddSecretToDestionation(keyVaultSecret, copyIsNeeded, parameters);
         }
@@ -38,6 +37,7 @@ public class CopyKVCommand : KVCommand
     private Dictionary<string, string> SetParametersForCopy(KeyVaultSecret keyVaultSecret, ref bool copyIsNeeded, KeyVaultSecret secretFromDestinationKeyVault)
     {
         Dictionary<string, string> parameters = null!;
+
         if (secretFromDestinationKeyVault != null)
         {
             if (_overWrite)

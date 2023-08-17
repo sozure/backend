@@ -1,9 +1,8 @@
-using VGService.Interfaces;
 using VGService;
-using VGService.Repositories.Interface;
+using VGService.Interfaces;
 using VGService.Repositories;
+using VGService.Repositories.Interface;
 using VGService.Repositories.Interfaces;
-using System.Web.Http;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 

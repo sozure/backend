@@ -2,8 +2,7 @@
 
 public class VariableGroupGetResponse
 {
-    public string VariableGroupName { get; set; }
-    public string VariableGroupKey { get; set; }
-    public string VariableGroupValue { get; set; }
-
+    public string VariableGroupName { get; set; } = null!;
+    public string VariableGroupKey { get; set; } = null!;
+    public string VariableGroupValue { get; set; } = null!;
 }

@@ -1,17 +1,14 @@
 ﻿using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
-using Microsoft.VisualStudio.Services.Organization.Client;
 using Microsoft.VisualStudio.Services.WebApi;
-using System.IO;
 using VGService.Repositories.Interface;
 
 namespace VGService.Repositories;
 
 public class VariableGroupConnectionRepository : IVariableGroupConnectionRepository
 {
-    private VssConnection _connection;
-    private string _project;
-
+    private VssConnection _connection = null!;
+    private string _project = null!;
 
     public void Setup(string organization, string project, string pat)
     {

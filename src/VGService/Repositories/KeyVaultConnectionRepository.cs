@@ -75,4 +75,9 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
         _secretClient = new SecretClient(uri, defaultazCred);
         KeyVaultName = keyVaultName;
     }
+
+    public Task<IEnumerable<DeletedSecret>> GetDeletedSecretsAsync()
+    {
+        throw new NotImplementedException();
+    }
 }

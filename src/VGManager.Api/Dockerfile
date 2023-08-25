@@ -1,18 +1,30 @@
-# syntax=docker/dockerfile:1
+# Use the official .NET SDK image as the base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 as build-env
-WORKDIR /src
-COPY ./VGApi.Api/VGApi.Api.csproj .
-RUN dotnet restore "./VGApi.Api.csproj"
-RUN cd ..
-COPY ./VGService/VGService.csproj .
-RUN dotnet restore "./VGService.csproj"
-COPY . .
-RUN dotnet build "./VGApi.Api/VGApi.Api.csproj" -c Release -o /app/build
+# Set the working directory in the container
+WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 as runtime
-WORKDIR /app/build
-COPY --from=build-env /app/build .
-EXPOSE 7210
-ENV ASPNETCORE_URLS=http://+:7210
-ENTRYPOINT ["dotnet", "VGApi.Api.dll"]
+# Copy the .csproj and restore dependencies
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy the remaining source code
+COPY . ./
+
+# Build the project
+RUN dotnet publish -c Release -o out
+
+# Build the runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the published output from the build stage
+COPY --from=build-env /app/out .
+
+# Expose the port the app will run on
+EXPOSE 5001
+
+# Command to run the app
+ENTRYPOINT ["dotnet", "VGManager.Api.dll"]

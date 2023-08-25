@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Web.Http.Cors;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Model;
@@ -10,7 +9,6 @@ namespace VGManager.Api.Controllers;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
-[EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
 public class VariableGroupsController : ControllerBase
 {
     private readonly IVariableGroupConnectionRepository _variableGroupConnectionRepository;

@@ -1,6 +1,5 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
-using System.Web.Http.Cors;
 using VGManager.Api.Secrets.Request;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Model;
@@ -11,7 +10,6 @@ namespace VGApi.Api.Secrets;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
-[EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
 public class SecretsController : Controller
 {
     private readonly IKeyVaultConnectionRepository _keyVaultConnectionRepository;

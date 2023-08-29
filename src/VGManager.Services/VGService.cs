@@ -9,8 +9,12 @@ namespace VGManager.Services;
 
 public class VariableGroupService : IVariableGroupService
 {
-    public async Task<IEnumerable<MatchedVariableGroup>> GetVariableGroupsAsync(IVariableGroupConnectionRepository connectionService, string variableGroupFilter,
-        string keyFilter, string valueFilter)
+    public async Task<IEnumerable<MatchedVariableGroup>> GetVariableGroupsAsync(
+        IVariableGroupConnectionRepository connectionService, 
+        string variableGroupFilter,
+        string keyFilter, 
+        string valueFilter
+        )
     {
         var matchedVariableGroups = new List<MatchedVariableGroup>();
         var variableGroups = await connectionService.GetAll();
@@ -28,18 +32,27 @@ public class VariableGroupService : IVariableGroupService
 
             foreach (var filteredVariable in filteredVariables)
             {
+                var variableValue = filteredVariable.Value.Value ?? string.Empty;
                 if (valueFilter != null)
                 {
-                    if (regex.IsMatch(filteredVariable.Value.Value ?? ""))
+                    if (regex.IsMatch(variableValue))
                     {
-                        var matchedVariableGroup = new MatchedVariableGroup(filteredVariableGroup.Name, filteredVariable.Key, filteredVariable.Value.Value);
-                        matchedVariableGroups.Add(matchedVariableGroup);
+                        matchedVariableGroups.Add(new()
+                        {
+                            VariableGroupName = filteredVariableGroup.Name,
+                            VariableGroupKey = filteredVariable.Key,
+                            VariableGroupValue = variableValue
+                        });
                     }
                 }
                 else
                 {
-                    var matchedVariableGroup = new MatchedVariableGroup(filteredVariableGroup.Name, filteredVariable.Key, filteredVariable.Value.Value);
-                    matchedVariableGroups.Add(matchedVariableGroup);
+                    matchedVariableGroups.Add(new()
+                    {
+                        VariableGroupName = filteredVariableGroup.Name,
+                        VariableGroupKey = filteredVariable.Key,
+                        VariableGroupValue = variableValue
+                    });
                 }
             }
         }
@@ -86,14 +99,7 @@ public class VariableGroupService : IVariableGroupService
 
             if (updateIsNeeded)
             {
-                var variableGroupParameters = new VariableGroupParameters()
-                {
-                    Name = variableGroupName,
-                    Variables = filteredVariableGroup.Variables,
-                    Description = filteredVariableGroup.Description,
-                    Type = filteredVariableGroup.Type,
-                };
-
+                var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
                 await connectionService.Update(variableGroupParameters, filteredVariableGroup.Id);
                 Console.WriteLine($"{variableGroupName} updated.");
             }
@@ -126,15 +132,7 @@ public class VariableGroupService : IVariableGroupService
             try
             {
                 filteredVariableGroup.Variables.Add(key, newValue);
-
-                var variableGroupParameters = new VariableGroupParameters()
-                {
-                    Name = variableGroupName,
-                    Variables = filteredVariableGroup.Variables,
-                    Description = filteredVariableGroup.Description,
-                    Type = filteredVariableGroup.Type,
-                };
-
+                var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
                 await connectionService.Update(variableGroupParameters, filteredVariableGroup.Id);
                 Console.WriteLine($"{variableGroupName}, {key}, {newValue}");
             }
@@ -187,14 +185,7 @@ public class VariableGroupService : IVariableGroupService
             }
             if (deleteIsNeeded)
             {
-                var variableGroupParameters = new VariableGroupParameters()
-                {
-                    Name = variableGroupName,
-                    Variables = filteredVariableGroup.Variables,
-                    Description = filteredVariableGroup.Description,
-                    Type = filteredVariableGroup.Type,
-                };
-
+                var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
                 await connectionService.Update(variableGroupParameters, filteredVariableGroup.Id);
             }
         }
@@ -203,12 +194,23 @@ public class VariableGroupService : IVariableGroupService
     protected static IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter)
     {
         var regex = new Regex(filter);
-        return variableGroups.Where(vg => regex.IsMatch(vg.Name));
+        return variableGroups.Where(vg => regex.IsMatch(vg.Name)).ToList();
     }
 
     protected static IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, string filter)
     {
         var regex = new Regex(filter);
-        return variables.Where(v => regex.IsMatch(v.Key));
+        return variables.Where(v => regex.IsMatch(v.Key)).ToList();
+    }
+
+    private static VariableGroupParameters GetVariableGroupParameters(VariableGroup filteredVariableGroup, string variableGroupName)
+    {
+        return new VariableGroupParameters()
+        {
+            Name = variableGroupName,
+            Variables = filteredVariableGroup.Variables,
+            Description = filteredVariableGroup.Description,
+            Type = filteredVariableGroup.Type,
+        };
     }
 }

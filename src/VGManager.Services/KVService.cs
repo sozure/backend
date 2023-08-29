@@ -16,12 +16,16 @@ public class KVService : IKVService
 
         foreach (var filteredSecret in filteredSecrets)
         {
-            if (filteredSecret != null)
+            if (filteredSecret is not null)
             {
-                var secret = new MatchedSecret(filteredSecret.Name, filteredSecret.Value);
-                secretList.Add(secret);
+                secretList.Add(new()
+                {
+                    SecretName = filteredSecret.Name, 
+                    SecretValue = filteredSecret.Value
+                });
             }
         }
+
         return secretList;
     }
 
@@ -33,8 +37,11 @@ public class KVService : IKVService
 
         foreach (var filteredSecret in filteredSecrets)
         {
-            var secret = new MatchedDeletedSecret(filteredSecret.Name, filteredSecret.DeletedOn);
-            secretList.Add(secret);
+            secretList.Add(new() 
+            {
+                SecretName = filteredSecret.Name,
+                DeletedOn = filteredSecret.DeletedOn
+            });
         }
         return secretList;
     }
@@ -66,12 +73,12 @@ public class KVService : IKVService
     protected static IEnumerable<KeyVaultSecret> Filter(IEnumerable<KeyVaultSecret> keyVaultSecrets, string filter)
     {
         var regex = new Regex(filter);
-        return keyVaultSecrets.Where(secret => regex.IsMatch(secret?.Name ?? ""));
+        return keyVaultSecrets.Where(secret => regex.IsMatch(secret?.Name ?? string.Empty)).ToList();
     }
 
     protected static IEnumerable<DeletedSecret> Filter(IEnumerable<DeletedSecret> keyVaultSecrets, string filter)
     {
         var regex = new Regex(filter);
-        return keyVaultSecrets.Where(secret => regex.IsMatch(secret?.Name ?? ""));
+        return keyVaultSecrets.Where(secret => regex.IsMatch(secret?.Name ?? string.Empty)).ToList();
     }
 }

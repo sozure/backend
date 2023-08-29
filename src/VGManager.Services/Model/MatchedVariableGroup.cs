@@ -2,14 +2,7 @@
 
 public class MatchedVariableGroup
 {
-    public string VariableGroupName { get; set; }
-    public string VariableGroupKey { get; set; }
-    public string VariableGroupValue { get; set; }
-
-    public MatchedVariableGroup(string variableGroupName, string variableGroupKey, string variableGroupValue)
-    {
-        VariableGroupName = variableGroupName;
-        VariableGroupKey = variableGroupKey;
-        VariableGroupValue = variableGroupValue;
-    }
+    public string VariableGroupName { get; set; } = null!;
+    public string VariableGroupKey { get; set; } = null!;
+    public string VariableGroupValue { get; set; } = null!;
 }

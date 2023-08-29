@@ -23,7 +23,7 @@ public class VariableGroupService : IVariableGroupService
 
     public async Task<IEnumerable<MatchedVariableGroup>> GetVariableGroupsAsync(
         string variableGroupFilter,
-        string keyFilter, 
+        string keyFilter,
         string valueFilter
         )
     {
@@ -70,7 +70,7 @@ public class VariableGroupService : IVariableGroupService
         return matchedVariableGroups;
     }
 
-    public async Task UpdateVariableGroupsAsync(string variableGroupFilter, string keyFilter,string newValue, string valueCondition)
+    public async Task UpdateVariableGroupsAsync(string variableGroupFilter, string keyFilter, string newValue, string valueCondition)
     {
         Console.WriteLine("Variable group name, Key, Old value, New value");
         var variableGroups = await _variableGroupConnectionRepository.GetAll();

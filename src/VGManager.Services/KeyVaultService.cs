@@ -27,7 +27,7 @@ public class KeyVaultService : IKeyVaultService
             {
                 secretList.Add(new()
                 {
-                    SecretName = filteredSecret.Name, 
+                    SecretName = filteredSecret.Name,
                     SecretValue = filteredSecret.Value
                 });
             }
@@ -44,7 +44,7 @@ public class KeyVaultService : IKeyVaultService
 
         foreach (var filteredSecret in filteredSecrets)
         {
-            secretList.Add(new() 
+            secretList.Add(new()
             {
                 SecretName = filteredSecret.Name,
                 DeletedOn = filteredSecret.DeletedOn

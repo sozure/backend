@@ -24,10 +24,11 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<MatchedSecret>>> GetAsync(
         [FromQuery] SecretGetRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+        )
     {
         _kvService.SetupConnectionRepository(request.KeyVaultName);
-        var matchedSecrets = await _kvService.GetSecretsAsync(request.SecretFilter);
+        var matchedSecrets = await _kvService.GetSecretsAsync(request.SecretFilter, cancellationToken);
         return Ok(matchedSecrets);
     }
 
@@ -35,13 +36,13 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MatchedDeletedSecret>>> GetDeletedAsync(
+    public ActionResult<IEnumerable<MatchedDeletedSecret>> GetDeleted(
         [FromQuery] SecretGetRequest request,
         CancellationToken cancellationToken
-    )
+        )
     {
         _kvService.SetupConnectionRepository(request.KeyVaultName);
-        var matchedSecrets = await _kvService.GetDeletedSecretsAsync(request.SecretFilter);
+        var matchedSecrets = _kvService.GetDeletedSecrets(request.SecretFilter, cancellationToken);
         return Ok(matchedSecrets);
     }
 
@@ -52,11 +53,11 @@ public class SecretsController : Controller
     public async Task<ActionResult<IEnumerable<MatchedSecret>>> DeleteAsync(
         [FromBody] SecretDeleteRequest request,
         CancellationToken cancellationToken
-    )
+        )
     {
         _kvService.SetupConnectionRepository(request.KeyVaultName);
-        await _kvService.DeleteAsync(request.SecretFilter);
-        var matchedSecrets = await _kvService.GetSecretsAsync(request.SecretFilter);
+        await _kvService.DeleteAsync(request.SecretFilter, cancellationToken);
+        var matchedSecrets = await _kvService.GetSecretsAsync(request.SecretFilter, cancellationToken);
         return Ok(matchedSecrets);
     }
 
@@ -67,11 +68,11 @@ public class SecretsController : Controller
     public async Task<ActionResult<IEnumerable<MatchedDeletedSecret>>> RecoverAsync(
         [FromBody] SecretDeleteRequest request,
         CancellationToken cancellationToken
-    )
+        )
     {
         _kvService.SetupConnectionRepository(request.KeyVaultName);
-        await _kvService.RecoverSecretAsync(request.SecretFilter);
-        var matchedSecrets = await _kvService.GetDeletedSecretsAsync(request.SecretFilter);
+        await _kvService.RecoverSecretAsync(request.SecretFilter, cancellationToken);
+        var matchedSecrets = _kvService.GetDeletedSecrets(request.SecretFilter, cancellationToken);
         return Ok(matchedSecrets);
     }
 }

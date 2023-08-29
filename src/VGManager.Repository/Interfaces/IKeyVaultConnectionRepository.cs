@@ -5,11 +5,11 @@ namespace VGManager.Repository.Interfaces;
 public interface IKeyVaultConnectionRepository
 {
     public string KeyVaultName { get; }
-    Task AddKeyVaultSecret(Dictionary<string, string> parameters);
-    Task DeleteSecret(string name);
-    Task<KeyVaultSecret?> GetKeyVaultSecret(string name);
-    Task<List<KeyVaultSecret?>> GetKeyVaultSecrets();
-    Task RecoverSecret(string name);
-    Task<IEnumerable<DeletedSecret>> GetDeletedSecretsAsync();
+    Task AddKeyVaultSecret(Dictionary<string, string> parameters, CancellationToken cancellationToken = default);
+    Task DeleteSecret(string name, CancellationToken cancellationToken = default);
+    Task<KeyVaultSecret?> GetKeyVaultSecret(string name, CancellationToken cancellationToken = default);
+    Task<List<KeyVaultSecret?>> GetKeyVaultSecrets(CancellationToken cancellationToken = default);
+    Task RecoverSecret(string name, CancellationToken cancellationToken = default);
+    IEnumerable<DeletedSecret> GetDeletedSecrets(CancellationToken cancellationToken = default);
     public void Setup(string keyVaultName);
 }

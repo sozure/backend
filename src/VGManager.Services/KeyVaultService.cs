@@ -6,7 +6,7 @@ using VGManager.Services.Model;
 
 namespace VGManager.Services;
 
-public class KVService : IKVService
+public class KeyVaultService : IKeyVaultService
 {
     private readonly IKeyVaultConnectionRepository _keyVaultConnectionRepository;
 

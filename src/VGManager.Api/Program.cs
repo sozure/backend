@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IVariableGroupService, VariableGroupService>();
-builder.Services.AddScoped<IKVService, KVService>();
+builder.Services.AddScoped<IKeyVaultService, KeyVaultService>();
 builder.Services.AddScoped<IVariableGroupConnectionRepository, VariableGroupConnectionRepository>();
 builder.Services.AddScoped<IKeyVaultConnectionRepository, KeyVaultConnectionRepository>();
 

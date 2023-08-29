@@ -11,9 +11,9 @@ namespace VGApi.Api.Secrets;
 [ApiController]
 public class SecretsController : Controller
 {
-    private readonly IKVService _kvService;
+    private readonly IKeyVaultService _kvService;
 
-    public SecretsController(IKVService kvService)
+    public SecretsController(IKeyVaultService kvService)
     {
         _kvService = kvService;
     }

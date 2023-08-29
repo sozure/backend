@@ -2,7 +2,7 @@
 
 namespace VGManager.Services.Interfaces;
 
-public interface IKVService
+public interface IKeyVaultService
 {
     void SetupConnectionRepository(string keyVaultName);
     Task<IEnumerable<MatchedSecret>> GetSecretsAsync(string secretFilter);

@@ -23,12 +23,11 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<MatchedSecret>>> GetAsync(
-        string keyVaultName,
-        string secretFilter,
+        [FromQuery] SecretGetRequest request,
         CancellationToken cancellationToken)
     {
-        _kvService.SetupConnectionRepository(keyVaultName);
-        var matchedSecrets = await _kvService.GetSecretsAsync(secretFilter);
+        _kvService.SetupConnectionRepository(request.KeyVaultName);
+        var matchedSecrets = await _kvService.GetSecretsAsync(request.SecretFilter);
         return Ok(matchedSecrets);
     }
 
@@ -37,13 +36,12 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<MatchedDeletedSecret>>> GetDeletedAsync(
-        string keyVaultName,
-        string secretFilter,
+        [FromQuery] SecretGetRequest request,
         CancellationToken cancellationToken
     )
     {
-        _kvService.SetupConnectionRepository(keyVaultName);
-        var matchedSecrets = await _kvService.GetDeletedSecretsAsync(secretFilter);
+        _kvService.SetupConnectionRepository(request.KeyVaultName);
+        var matchedSecrets = await _kvService.GetDeletedSecretsAsync(request.SecretFilter);
         return Ok(matchedSecrets);
     }
 

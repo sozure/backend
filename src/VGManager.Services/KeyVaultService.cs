@@ -1,6 +1,5 @@
 ﻿using Azure.Security.KeyVault.Secrets;
 using System.Text.RegularExpressions;
-using System.Threading;
 using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Model;

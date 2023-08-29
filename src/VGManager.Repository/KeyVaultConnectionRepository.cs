@@ -1,6 +1,5 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using System.Threading;
 using VGManager.Repository.Interfaces;
 
 namespace VGManager.Repository;

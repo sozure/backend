@@ -2,7 +2,6 @@
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
-using System.Threading;
 using VGManager.Repository.Interfaces;
 
 namespace VGManager.Repository;

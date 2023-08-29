@@ -72,10 +72,10 @@ public class VariableGroupService : IVariableGroupService
     }
 
     public async Task UpdateVariableGroupsAsync(
-        string variableGroupFilter, 
-        string keyFilter, 
-        string newValue, 
-        string valueCondition, 
+        string variableGroupFilter,
+        string keyFilter,
+        string newValue,
+        string valueCondition,
         CancellationToken cancellationToken = default
         )
     {
@@ -121,10 +121,10 @@ public class VariableGroupService : IVariableGroupService
     }
 
     public async Task AddVariableAsync(
-        string variableGroupFilter, 
-        string keyFilter, 
-        string key, 
-        string newValue, 
+        string variableGroupFilter,
+        string keyFilter,
+        string key,
+        string newValue,
         CancellationToken cancellationToken = default
         )
     {
@@ -167,9 +167,9 @@ public class VariableGroupService : IVariableGroupService
     }
 
     public async Task DeleteVariableAsync(
-        string variableGroupFilter, 
-        string keyFilter, 
-        string valueCondition, 
+        string variableGroupFilter,
+        string keyFilter,
+        string valueCondition,
         CancellationToken cancellationToken = default
         )
     {

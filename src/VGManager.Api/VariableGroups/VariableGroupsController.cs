@@ -19,7 +19,7 @@ public class VariableGroupsController : ControllerBase
         _vgService = vgService;
     }
 
-    [HttpGet("getvariablegroups", Name = "getvariablegroups")]
+    [HttpGet(Name = "getvariablegroups")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -33,7 +33,8 @@ public class VariableGroupsController : ControllerBase
         var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
                 request.VariableGroupFilter,
                 request.KeyFilter,
-                request.ValueFilter!
+                request.ValueFilter!,
+                cancellationToken
             );
 
         return Ok(matchedVariableGroups);
@@ -52,13 +53,13 @@ public class VariableGroupsController : ControllerBase
 
         await _vgService.UpdateVariableGroupsAsync(
                 request.VariableGroupFilter, request.KeyFilter,
-                request.NewValue, request.ValueFilter!
+                request.NewValue, request.ValueFilter!, cancellationToken
             );
 
         var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
                 request.VariableGroupFilter,
                 request.KeyFilter,
-                request.ValueFilter!
+                request.ValueFilter!, cancellationToken
             );
 
         return Ok(matchedVariableGroups);
@@ -78,12 +79,12 @@ public class VariableGroupsController : ControllerBase
         await _vgService.AddVariableAsync(
                 request.VariableGroupFilter, request.KeyFilter,
                 request.Key,
-                request.Value
+                request.Value, cancellationToken
             );
 
         var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
                 request.VariableGroupFilter,
-                request.Key, null!
+                request.Key, null!, cancellationToken
             );
 
         return Ok(matchedVariableGroups);
@@ -103,13 +104,13 @@ public class VariableGroupsController : ControllerBase
         await _vgService.DeleteVariableAsync(
                 request.VariableGroupFilter,
                 request.KeyFilter,
-                request.ValueFilter!
+                request.ValueFilter!, cancellationToken
             );
 
         var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
                 request.VariableGroupFilter,
                 request.KeyFilter,
-                request.ValueFilter!
+                request.ValueFilter!, cancellationToken
             );
 
         return Ok(matchedVariableGroups);

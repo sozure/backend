@@ -2,6 +2,7 @@
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
+using System.Threading;
 using VGManager.Repository.Interfaces;
 
 namespace VGManager.Repository;
@@ -23,14 +24,14 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
         _connection = new VssConnection(uri, credentials);
     }
 
-    public async Task<IEnumerable<VariableGroup>> GetAll()
+    public async Task<IEnumerable<VariableGroup>> GetAll(CancellationToken cancellationToken = default)
     {
-        var httpClient = _connection.GetClient<TaskAgentHttpClient>();
-        var variableGroups = await httpClient.GetVariableGroupsAsync(_project);
+        var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+        var variableGroups = await httpClient.GetVariableGroupsAsync(_project, cancellationToken: cancellationToken);
         return variableGroups;
     }
 
-    public async Task Update(VariableGroupParameters variableGroupParameters, int variableGroupId)
+    public async Task Update(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default)
     {
         variableGroupParameters.VariableGroupProjectReferences = new List<VariableGroupProjectReference>()
         {
@@ -44,7 +45,7 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
             }
         };
 
-        var httpClient = _connection.GetClient<TaskAgentHttpClient>();
-        await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters);
+        var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+        await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
     }
 }

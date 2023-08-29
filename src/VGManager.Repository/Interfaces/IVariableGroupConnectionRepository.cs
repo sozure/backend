@@ -4,7 +4,7 @@ namespace VGManager.Repository.Interfaces;
 
 public interface IVariableGroupConnectionRepository
 {
-    public void Setup(string organization, string project, string pat);
-    public Task<IEnumerable<VariableGroup>> GetAll();
-    public Task Update(VariableGroupParameters variableGroupParameters, int variableGroupId);
+    void Setup(string organization, string project, string pat);
+    Task<IEnumerable<VariableGroup>> GetAll(CancellationToken cancellationToken = default);
+    Task Update(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default);
 }

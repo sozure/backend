@@ -1,8 +1,7 @@
+using VGManager.Repository;
+using VGManager.Repository.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Repositories;
-using VGManager.Services.Repositories.Interface;
-using VGManager.Services.Repositories.Interfaces;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -23,7 +22,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IVariableGroupService, VariableGroupService>();
-builder.Services.AddScoped<IKVService, KVService>();
+builder.Services.AddScoped<IKeyVaultService, KeyVaultService>();
 builder.Services.AddScoped<IVariableGroupConnectionRepository, VariableGroupConnectionRepository>();
 builder.Services.AddScoped<IKeyVaultConnectionRepository, KeyVaultConnectionRepository>();
 

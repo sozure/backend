@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secrets.Request;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Model;
-using VGManager.Services.Repositories.Interfaces;
 
 namespace VGApi.Api.Secrets;
 
@@ -12,12 +11,10 @@ namespace VGApi.Api.Secrets;
 [ApiController]
 public class SecretsController : Controller
 {
-    private readonly IKeyVaultConnectionRepository _keyVaultConnectionRepository;
-    private readonly IKVService _kvService;
+    private readonly IKeyVaultService _kvService;
 
-    public SecretsController(IKeyVaultConnectionRepository keyVaultConnectionRepository, IKVService kvService)
+    public SecretsController(IKeyVaultService kvService)
     {
-        _keyVaultConnectionRepository = keyVaultConnectionRepository;
         _kvService = kvService;
     }
 
@@ -26,12 +23,12 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<MatchedSecret>>> GetAsync(
-        string keyVaultName,
-        string secretFilter,
-        CancellationToken cancellationToken)
+        [FromQuery] SecretGetRequest request,
+        CancellationToken cancellationToken
+        )
     {
-        _keyVaultConnectionRepository.Setup(keyVaultName);
-        var matchedSecrets = await _kvService.GetSecretsAsync(_keyVaultConnectionRepository, secretFilter);
+        _kvService.SetupConnectionRepository(request.KeyVaultName);
+        var matchedSecrets = await _kvService.GetSecretsAsync(request.SecretFilter, cancellationToken);
         return Ok(matchedSecrets);
     }
 
@@ -39,14 +36,13 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MatchedDeletedSecret>>> GetDeletedAsync(
-        string keyVaultName,
-        string secretFilter,
+    public ActionResult<IEnumerable<MatchedDeletedSecret>> GetDeleted(
+        [FromQuery] SecretGetRequest request,
         CancellationToken cancellationToken
-    )
+        )
     {
-        _keyVaultConnectionRepository.Setup(keyVaultName);
-        var matchedSecrets = await _kvService.GetDeletedSecretsAsync(_keyVaultConnectionRepository, secretFilter);
+        _kvService.SetupConnectionRepository(request.KeyVaultName);
+        var matchedSecrets = _kvService.GetDeletedSecrets(request.SecretFilter, cancellationToken);
         return Ok(matchedSecrets);
     }
 
@@ -57,11 +53,11 @@ public class SecretsController : Controller
     public async Task<ActionResult<IEnumerable<MatchedSecret>>> DeleteAsync(
         [FromBody] SecretDeleteRequest request,
         CancellationToken cancellationToken
-    )
+        )
     {
-        _keyVaultConnectionRepository.Setup(request.KeyVaultName);
-        await _kvService.DeleteAsync(_keyVaultConnectionRepository, request.SecretFilter);
-        var matchedSecrets = await _kvService.GetSecretsAsync(_keyVaultConnectionRepository, request.SecretFilter);
+        _kvService.SetupConnectionRepository(request.KeyVaultName);
+        await _kvService.DeleteAsync(request.SecretFilter, cancellationToken);
+        var matchedSecrets = await _kvService.GetSecretsAsync(request.SecretFilter, cancellationToken);
         return Ok(matchedSecrets);
     }
 
@@ -72,11 +68,11 @@ public class SecretsController : Controller
     public async Task<ActionResult<IEnumerable<MatchedDeletedSecret>>> RecoverAsync(
         [FromBody] SecretDeleteRequest request,
         CancellationToken cancellationToken
-    )
+        )
     {
-        _keyVaultConnectionRepository.Setup(request.KeyVaultName);
-        await _kvService.RecoverSecretAsync(_keyVaultConnectionRepository, request.SecretFilter);
-        var matchedSecrets = await _kvService.GetDeletedSecretsAsync(_keyVaultConnectionRepository, request.SecretFilter);
+        _kvService.SetupConnectionRepository(request.KeyVaultName);
+        await _kvService.RecoverSecretAsync(request.SecretFilter, cancellationToken);
+        var matchedSecrets = _kvService.GetDeletedSecrets(request.SecretFilter, cancellationToken);
         return Ok(matchedSecrets);
     }
 }

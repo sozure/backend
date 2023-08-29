@@ -33,40 +33,14 @@ public class VariableGroupService : IVariableGroupService
         var filteredVariableGroups = Filter(variableGroups, variableGroupFilter);
         Regex regex = null!;
 
-        if (valueFilter != null)
+        if (valueFilter is not null)
         {
             regex = new Regex(valueFilter);
         }
 
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
-            var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
-
-            foreach (var filteredVariable in filteredVariables)
-            {
-                var variableValue = filteredVariable.Value.Value ?? string.Empty;
-                if (valueFilter != null)
-                {
-                    if (regex.IsMatch(variableValue))
-                    {
-                        matchedVariableGroups.Add(new()
-                        {
-                            VariableGroupName = filteredVariableGroup.Name,
-                            VariableGroupKey = filteredVariable.Key,
-                            VariableGroupValue = variableValue
-                        });
-                    }
-                }
-                else
-                {
-                    matchedVariableGroups.Add(new()
-                    {
-                        VariableGroupName = filteredVariableGroup.Name,
-                        VariableGroupKey = filteredVariable.Key,
-                        VariableGroupValue = variableValue
-                    });
-                }
-            }
+            GetVariables(keyFilter, valueFilter, matchedVariableGroups, regex, filteredVariableGroup);
         }
         return matchedVariableGroups;
     }
@@ -85,31 +59,9 @@ public class VariableGroupService : IVariableGroupService
 
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
-            var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
             var variableGroupName = filteredVariableGroup.Name;
-            var updateIsNeeded = false;
 
-            foreach (var filteredVariable in filteredVariables)
-            {
-                var variableValue = filteredVariable.Value.Value;
-                var variableKey = filteredVariable.Key;
-
-                if (valueCondition is not null)
-                {
-                    if (valueCondition.Equals(variableValue))
-                    {
-                        Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}, {newValue}");
-                        filteredVariable.Value.Value = newValue;
-                        updateIsNeeded = true;
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}, {newValue}");
-                    filteredVariable.Value.Value = newValue;
-                    updateIsNeeded = true;
-                }
-            }
+            var updateIsNeeded = UpdateVariables(keyFilter, newValue, valueCondition, filteredVariableGroup, variableGroupName);
 
             if (updateIsNeeded)
             {
@@ -177,34 +129,11 @@ public class VariableGroupService : IVariableGroupService
         var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
         var filteredVariableGroups = Filter(variableGroups, variableGroupFilter);
 
-
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
-            var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
-            var deleteIsNeeded = false;
             var variableGroupName = filteredVariableGroup.Name;
+            var deleteIsNeeded = DeleteVariables(filteredVariableGroup, valueCondition, keyFilter, variableGroupName);
 
-            foreach (var filteredVariable in filteredVariables)
-            {
-                var variableValue = filteredVariable.Value.Value;
-                var variableKey = filteredVariable.Key;
-
-                if (valueCondition is not null)
-                {
-                    if (valueCondition.Equals(variableValue))
-                    {
-                        Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}");
-                        filteredVariableGroup.Variables.Remove(filteredVariable.Key);
-                        deleteIsNeeded = true;
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}");
-                    filteredVariableGroup.Variables.Remove(filteredVariable.Key);
-                    deleteIsNeeded = true;
-                }
-            }
             if (deleteIsNeeded)
             {
                 var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
@@ -234,5 +163,95 @@ public class VariableGroupService : IVariableGroupService
             Description = filteredVariableGroup.Description,
             Type = filteredVariableGroup.Type,
         };
+    }
+
+    private static void GetVariables(string keyFilter, string? valueFilter, List<MatchedVariableGroup> matchedVariableGroups, Regex regex, VariableGroup filteredVariableGroup)
+    {
+        var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
+
+        foreach (var filteredVariable in filteredVariables)
+        {
+            var variableValue = filteredVariable.Value.Value ?? string.Empty;
+            if (valueFilter is not null)
+            {
+                if (regex.IsMatch(variableValue))
+                {
+                    matchedVariableGroups.Add(new()
+                    {
+                        VariableGroupName = filteredVariableGroup.Name,
+                        VariableGroupKey = filteredVariable.Key,
+                        VariableGroupValue = variableValue
+                    });
+                }
+            }
+            else
+            {
+                matchedVariableGroups.Add(new()
+                {
+                    VariableGroupName = filteredVariableGroup.Name,
+                    VariableGroupKey = filteredVariable.Key,
+                    VariableGroupValue = variableValue
+                });
+            }
+        }
+    }
+
+    private static bool UpdateVariables(string keyFilter, string newValue, string valueCondition, VariableGroup filteredVariableGroup, string variableGroupName)
+    {
+        var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
+        var updateIsNeeded = false;
+
+        foreach (var filteredVariable in filteredVariables)
+        {
+            var variableValue = filteredVariable.Value.Value;
+            var variableKey = filteredVariable.Key;
+
+            if (valueCondition is not null)
+            {
+                if (valueCondition.Equals(variableValue))
+                {
+                    Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}, {newValue}");
+                    filteredVariable.Value.Value = newValue;
+                    updateIsNeeded = true;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}, {newValue}");
+                filteredVariable.Value.Value = newValue;
+                updateIsNeeded = true;
+            }
+        }
+
+        return updateIsNeeded;
+    }
+
+    private static bool DeleteVariables(VariableGroup filteredVariableGroup, string valueCondition, string keyFilter, string variableGroupName)
+    {
+        var deleteIsNeeded = false;
+        var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
+        foreach (var filteredVariable in filteredVariables)
+        {
+            var variableValue = filteredVariable.Value.Value;
+            var variableKey = filteredVariable.Key;
+
+            if (valueCondition is not null)
+            {
+                if (valueCondition.Equals(variableValue))
+                {
+                    Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}");
+                    filteredVariableGroup.Variables.Remove(filteredVariable.Key);
+                    deleteIsNeeded = true;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}");
+                filteredVariableGroup.Variables.Remove(filteredVariable.Key);
+                deleteIsNeeded = true;
+            }
+        }
+
+        return deleteIsNeeded;
     }
 }

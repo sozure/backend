@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secrets.Request;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Model;
-using VGManager.Services.Repositories.Interfaces;
 
 namespace VGApi.Api.Secrets;
 
@@ -12,12 +11,10 @@ namespace VGApi.Api.Secrets;
 [ApiController]
 public class SecretsController : Controller
 {
-    private readonly IKeyVaultConnectionRepository _keyVaultConnectionRepository;
     private readonly IKVService _kvService;
 
-    public SecretsController(IKeyVaultConnectionRepository keyVaultConnectionRepository, IKVService kvService)
+    public SecretsController(IKVService kvService)
     {
-        _keyVaultConnectionRepository = keyVaultConnectionRepository;
         _kvService = kvService;
     }
 
@@ -30,8 +27,8 @@ public class SecretsController : Controller
         string secretFilter,
         CancellationToken cancellationToken)
     {
-        _keyVaultConnectionRepository.Setup(keyVaultName);
-        var matchedSecrets = await _kvService.GetSecretsAsync(_keyVaultConnectionRepository, secretFilter);
+        _kvService.SetupConnectionRepository(keyVaultName);
+        var matchedSecrets = await _kvService.GetSecretsAsync(secretFilter);
         return Ok(matchedSecrets);
     }
 
@@ -45,8 +42,8 @@ public class SecretsController : Controller
         CancellationToken cancellationToken
     )
     {
-        _keyVaultConnectionRepository.Setup(keyVaultName);
-        var matchedSecrets = await _kvService.GetDeletedSecretsAsync(_keyVaultConnectionRepository, secretFilter);
+        _kvService.SetupConnectionRepository(keyVaultName);
+        var matchedSecrets = await _kvService.GetDeletedSecretsAsync(secretFilter);
         return Ok(matchedSecrets);
     }
 
@@ -59,9 +56,9 @@ public class SecretsController : Controller
         CancellationToken cancellationToken
     )
     {
-        _keyVaultConnectionRepository.Setup(request.KeyVaultName);
-        await _kvService.DeleteAsync(_keyVaultConnectionRepository, request.SecretFilter);
-        var matchedSecrets = await _kvService.GetSecretsAsync(_keyVaultConnectionRepository, request.SecretFilter);
+        _kvService.SetupConnectionRepository(request.KeyVaultName);
+        await _kvService.DeleteAsync(request.SecretFilter);
+        var matchedSecrets = await _kvService.GetSecretsAsync(request.SecretFilter);
         return Ok(matchedSecrets);
     }
 
@@ -74,9 +71,9 @@ public class SecretsController : Controller
         CancellationToken cancellationToken
     )
     {
-        _keyVaultConnectionRepository.Setup(request.KeyVaultName);
-        await _kvService.RecoverSecretAsync(_keyVaultConnectionRepository, request.SecretFilter);
-        var matchedSecrets = await _kvService.GetDeletedSecretsAsync(_keyVaultConnectionRepository, request.SecretFilter);
+        _kvService.SetupConnectionRepository(request.KeyVaultName);
+        await _kvService.RecoverSecretAsync(request.SecretFilter);
+        var matchedSecrets = await _kvService.GetDeletedSecretsAsync(request.SecretFilter);
         return Ok(matchedSecrets);
     }
 }

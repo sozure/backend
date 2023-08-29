@@ -1,6 +1,6 @@
 ﻿using Azure.Security.KeyVault.Secrets;
 
-namespace VGManager.Services.Repositories.Interfaces;
+namespace VGManager.Repository.Interfaces;
 
 public interface IKeyVaultConnectionRepository
 {

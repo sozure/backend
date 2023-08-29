@@ -1,12 +1,12 @@
 ﻿using VGManager.Services.Model;
-using VGManager.Services.Repositories.Interfaces;
 
 namespace VGManager.Services.Interfaces;
 
 public interface IKVService
 {
-    public Task<IEnumerable<MatchedSecret>> GetSecretsAsync(IKeyVaultConnectionRepository connectionService, string secretFilter);
-    public Task<IEnumerable<MatchedDeletedSecret>> GetDeletedSecretsAsync(IKeyVaultConnectionRepository connectionService, string secretFilter);
-    public Task RecoverSecretAsync(IKeyVaultConnectionRepository connectionService, string secretFilter);
-    public Task DeleteAsync(IKeyVaultConnectionRepository connectionService, string secretFilter);
+    void SetupConnectionRepository(string keyVaultName);
+    Task<IEnumerable<MatchedSecret>> GetSecretsAsync(string secretFilter);
+    Task<IEnumerable<MatchedDeletedSecret>> GetDeletedSecretsAsync(string secretFilter);
+    Task RecoverSecretAsync(string secretFilter);
+    Task DeleteAsync(string secretFilter);
 }

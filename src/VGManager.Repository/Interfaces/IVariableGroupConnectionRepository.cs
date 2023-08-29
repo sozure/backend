@@ -1,6 +1,6 @@
 ﻿using Microsoft.TeamFoundation.DistributedTask.WebApi;
 
-namespace VGManager.Services.Repositories.Interface;
+namespace VGManager.Repository.Interfaces;
 
 public interface IVariableGroupConnectionRepository
 {

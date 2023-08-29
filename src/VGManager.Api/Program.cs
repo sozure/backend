@@ -1,8 +1,7 @@
+using VGManager.Repository;
+using VGManager.Repository.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Repositories;
-using VGManager.Services.Repositories.Interface;
-using VGManager.Services.Repositories.Interfaces;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 

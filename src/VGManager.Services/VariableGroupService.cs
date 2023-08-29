@@ -1,23 +1,34 @@
 ﻿using Microsoft.TeamFoundation;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
+using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Model;
-using VGManager.Services.Repositories.Interface;
 
 namespace VGManager.Services;
 
 public class VariableGroupService : IVariableGroupService
 {
+    private readonly IVariableGroupConnectionRepository _variableGroupConnectionRepository;
+
+    public VariableGroupService(IVariableGroupConnectionRepository variableGroupConnectionRepository)
+    {
+        _variableGroupConnectionRepository = variableGroupConnectionRepository;
+    }
+
+    public void SetupConnectionRepository(string organization, string project, string pat)
+    {
+        _variableGroupConnectionRepository.Setup(organization, project, pat);
+    }
+
     public async Task<IEnumerable<MatchedVariableGroup>> GetVariableGroupsAsync(
-        IVariableGroupConnectionRepository connectionService, 
         string variableGroupFilter,
         string keyFilter, 
         string valueFilter
         )
     {
         var matchedVariableGroups = new List<MatchedVariableGroup>();
-        var variableGroups = await connectionService.GetAll();
+        var variableGroups = await _variableGroupConnectionRepository.GetAll();
         var filteredVariableGroups = Filter(variableGroups, variableGroupFilter);
         Regex regex = null!;
 
@@ -59,14 +70,10 @@ public class VariableGroupService : IVariableGroupService
         return matchedVariableGroups;
     }
 
-    public async Task UpdateVariableGroupsAsync(
-        IVariableGroupConnectionRepository connectionService,
-        string variableGroupFilter, string keyFilter,
-        string newValue, string valueCondition
-        )
+    public async Task UpdateVariableGroupsAsync(string variableGroupFilter, string keyFilter,string newValue, string valueCondition)
     {
         Console.WriteLine("Variable group name, Key, Old value, New value");
-        var variableGroups = await connectionService.GetAll();
+        var variableGroups = await _variableGroupConnectionRepository.GetAll();
         var filteredVariableGroups = Filter(variableGroups, variableGroupFilter);
 
         foreach (var filteredVariableGroup in filteredVariableGroups)
@@ -100,17 +107,15 @@ public class VariableGroupService : IVariableGroupService
             if (updateIsNeeded)
             {
                 var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                await connectionService.Update(variableGroupParameters, filteredVariableGroup.Id);
+                await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id);
                 Console.WriteLine($"{variableGroupName} updated.");
             }
         }
     }
 
-    public async Task AddVariableAsync(IVariableGroupConnectionRepository connectionService,
-        string variableGroupFilter, string keyFilter, string key,
-        string newValue)
+    public async Task AddVariableAsync(string variableGroupFilter, string keyFilter, string key, string newValue)
     {
-        var variableGroups = await connectionService.GetAll();
+        var variableGroups = await _variableGroupConnectionRepository.GetAll();
         IEnumerable<VariableGroup> filteredVariableGroups = null!;
 
         if (keyFilter is not null)
@@ -133,7 +138,7 @@ public class VariableGroupService : IVariableGroupService
             {
                 filteredVariableGroup.Variables.Add(key, newValue);
                 var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                await connectionService.Update(variableGroupParameters, filteredVariableGroup.Id);
+                await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id);
                 Console.WriteLine($"{variableGroupName}, {key}, {newValue}");
             }
             catch (ArgumentException)
@@ -148,11 +153,10 @@ public class VariableGroupService : IVariableGroupService
         }
     }
 
-    public async Task DeleteVariableAsync(IVariableGroupConnectionRepository connectionService,
-        string variableGroupFilter, string keyFilter, string valueCondition)
+    public async Task DeleteVariableAsync(string variableGroupFilter, string keyFilter, string valueCondition)
     {
         Console.WriteLine("Variable group name, Deleted Key, Deleted Value");
-        var variableGroups = await connectionService.GetAll();
+        var variableGroups = await _variableGroupConnectionRepository.GetAll();
         var filteredVariableGroups = Filter(variableGroups, variableGroupFilter);
 
 
@@ -186,7 +190,7 @@ public class VariableGroupService : IVariableGroupService
             if (deleteIsNeeded)
             {
                 var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                await connectionService.Update(variableGroupParameters, filteredVariableGroup.Id);
+                await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id);
             }
         }
     }

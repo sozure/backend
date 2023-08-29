@@ -1,17 +1,24 @@
 ﻿using Azure.Security.KeyVault.Secrets;
 using System.Text.RegularExpressions;
+using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Model;
-using VGManager.Services.Repositories.Interfaces;
 
 namespace VGManager.Services;
 
 public class KVService : IKVService
 {
-    public async Task<IEnumerable<MatchedSecret>> GetSecretsAsync(IKeyVaultConnectionRepository connectionService, string secretFilter)
+    private readonly IKeyVaultConnectionRepository _keyVaultConnectionRepository;
+
+    public void SetupConnectionRepository(string keyVaultName)
+    {
+        _keyVaultConnectionRepository.Setup(keyVaultName);
+    }
+
+    public async Task<IEnumerable<MatchedSecret>> GetSecretsAsync(string secretFilter)
     {
         var secretList = new List<MatchedSecret>();
-        var secrets = await connectionService.GetKeyVaultSecrets();
+        var secrets = await _keyVaultConnectionRepository.GetKeyVaultSecrets();
         var filteredSecrets = Filter(secrets!, secretFilter);
 
         foreach (var filteredSecret in filteredSecrets)
@@ -29,10 +36,10 @@ public class KVService : IKVService
         return secretList;
     }
 
-    public async Task<IEnumerable<MatchedDeletedSecret>> GetDeletedSecretsAsync(IKeyVaultConnectionRepository connectionService, string secretFilter)
+    public async Task<IEnumerable<MatchedDeletedSecret>> GetDeletedSecretsAsync(string secretFilter)
     {
         var secretList = new List<MatchedDeletedSecret>();
-        var secrets = await connectionService.GetDeletedSecretsAsync();
+        var secrets = await _keyVaultConnectionRepository.GetDeletedSecretsAsync();
         var filteredSecrets = Filter(secrets!, secretFilter);
 
         foreach (var filteredSecret in filteredSecrets)
@@ -46,27 +53,27 @@ public class KVService : IKVService
         return secretList;
     }
 
-    public async Task DeleteAsync(IKeyVaultConnectionRepository connectionService, string secretFilter)
+    public async Task DeleteAsync(string secretFilter)
     {
         Console.WriteLine("Deleted secret key, value");
-        var secrets = await connectionService.GetKeyVaultSecrets();
+        var secrets = await _keyVaultConnectionRepository.GetKeyVaultSecrets();
         var filteredSecrets = Filter(secrets!, secretFilter);
 
         foreach (var secret in filteredSecrets)
         {
-            await connectionService.DeleteSecret(secret.Name);
+            await _keyVaultConnectionRepository.DeleteSecret(secret.Name);
             Console.WriteLine($"{secret.Name}, {secret.Value}");
         }
     }
 
-    public async Task RecoverSecretAsync(IKeyVaultConnectionRepository connectionService, string secretFilter)
+    public async Task RecoverSecretAsync(string secretFilter)
     {
-        var deletedSecrets = await connectionService.GetDeletedSecretsAsync();
+        var deletedSecrets = await _keyVaultConnectionRepository.GetDeletedSecretsAsync();
         var filteredSecrets = Filter(deletedSecrets, secretFilter);
 
         foreach (var secret in filteredSecrets)
         {
-            await connectionService.RecoverSecret(secret.Name);
+            await _keyVaultConnectionRepository.RecoverSecret(secret.Name);
         }
     }
 

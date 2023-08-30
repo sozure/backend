@@ -86,19 +86,11 @@ public class VariableGroupsController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        _vgService.SetupConnectionRepository(request.Organization, request.Project, request.PAT);
+        var vgServiceModel = _mapper.Map<VariableGroupDeleteModel>(request);
 
-        await _vgService.DeleteVariableAsync(
-                request.VariableGroupFilter,
-                request.KeyFilter,
-                request.ValueFilter!, cancellationToken
-            );
-
-        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
-                request.VariableGroupFilter,
-                request.KeyFilter,
-                request.ValueFilter!, cancellationToken
-            );
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        await _vgService.DeleteVariableAsync(vgServiceModel, cancellationToken);
+        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         return Ok(matchedVariableGroups);
     }

@@ -111,21 +111,22 @@ public class VariableGroupService : IVariableGroupService
         }
     }
 
-    public async Task DeleteVariableAsync(
-        string variableGroupFilter,
-        string keyFilter,
-        string valueCondition,
-        CancellationToken cancellationToken = default
-        )
+    public async Task DeleteVariableAsync(VariableGroupDeleteModel variableGroupDeleteModel, CancellationToken cancellationToken = default)
     {
         Console.WriteLine("Variable group name, Deleted Key, Deleted Value");
         var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
-        var filteredVariableGroups = Filter(variableGroups, variableGroupFilter);
+        var filteredVariableGroups = Filter(variableGroups, variableGroupDeleteModel.VariableGroupFilter);
 
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
             var variableGroupName = filteredVariableGroup.Name;
-            var deleteIsNeeded = DeleteVariables(filteredVariableGroup, valueCondition, keyFilter, variableGroupName);
+            
+            var deleteIsNeeded = DeleteVariables(
+                filteredVariableGroup, 
+                variableGroupDeleteModel.ValueFilter, 
+                variableGroupDeleteModel.KeyFilter, 
+                variableGroupName
+                );
 
             if (deleteIsNeeded)
             {
@@ -231,7 +232,7 @@ public class VariableGroupService : IVariableGroupService
         return updateIsNeeded;
     }
 
-    private static bool DeleteVariables(VariableGroup filteredVariableGroup, string valueCondition, string keyFilter, string variableGroupName)
+    private static bool DeleteVariables(VariableGroup filteredVariableGroup, string? valueCondition, string keyFilter, string variableGroupName)
     {
         var deleteIsNeeded = false;
         var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);

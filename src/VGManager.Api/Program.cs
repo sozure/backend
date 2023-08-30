@@ -1,4 +1,3 @@
-using Microsoft.TeamFoundation.TestManagement.WebApi;
 using VGManager.Api.MapperProfiles;
 using VGManager.Repository;
 using VGManager.Repository.Interfaces;

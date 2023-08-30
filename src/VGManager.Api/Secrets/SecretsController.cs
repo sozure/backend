@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secrets.Request;
 using VGManager.Api.Secrets.Response;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models.MatchedModels;
 
 namespace VGApi.Api.Secrets;
 

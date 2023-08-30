@@ -1,9 +1,9 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 
-namespace VGManager.Services.Models; 
+namespace VGManager.Services.Models;
 
-public class VariableGroupAddModel: VariableGroupModel
+public class VariableGroupAddModel : VariableGroupModel
 {
     [Required]
     public string Key { get; set; } = null!;

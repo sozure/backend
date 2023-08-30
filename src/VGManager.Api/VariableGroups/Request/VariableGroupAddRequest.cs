@@ -2,7 +2,7 @@
 
 namespace VGManager.Api.VariableGroups.Request;
 
-public class VariableGroupAddRequest: VariableGroupRequest
+public class VariableGroupAddRequest : VariableGroupRequest
 {
     [Required]
     public string Key { get; set; } = null!;

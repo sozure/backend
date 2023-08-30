@@ -69,7 +69,7 @@ public class VariableGroupService : IVariableGroupService
     public async Task AddVariableAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default)
     {
         var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
-        
+
         IEnumerable<VariableGroup> filteredVariableGroups = null!;
         var keyFilter = variableGroupAddModel.KeyFilter;
         var variableGroupFilter = variableGroupAddModel.VariableGroupFilter;
@@ -120,11 +120,11 @@ public class VariableGroupService : IVariableGroupService
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
             var variableGroupName = filteredVariableGroup.Name;
-            
+
             var deleteIsNeeded = DeleteVariables(
-                filteredVariableGroup, 
-                variableGroupDeleteModel.ValueFilter, 
-                variableGroupDeleteModel.KeyFilter, 
+                filteredVariableGroup,
+                variableGroupDeleteModel.ValueFilter,
+                variableGroupDeleteModel.KeyFilter,
                 variableGroupName
                 );
 
@@ -160,10 +160,10 @@ public class VariableGroupService : IVariableGroupService
     }
 
     private static void GetVariables(
-        string keyFilter, 
-        string? valueFilter, 
-        List<MatchedVariableGroup> matchedVariableGroups, 
-        Regex regex, 
+        string keyFilter,
+        string? valueFilter,
+        List<MatchedVariableGroup> matchedVariableGroups,
+        Regex regex,
         VariableGroup filteredVariableGroup
         )
     {
@@ -197,8 +197,8 @@ public class VariableGroupService : IVariableGroupService
     }
 
     private static bool UpdateVariables(
-        VariableGroupUpdateModel variableGroupUpdateModel, 
-        VariableGroup filteredVariableGroup, 
+        VariableGroupUpdateModel variableGroupUpdateModel,
+        VariableGroup filteredVariableGroup,
         string variableGroupName
         )
     {

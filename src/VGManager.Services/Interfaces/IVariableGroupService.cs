@@ -1,4 +1,4 @@
-﻿using VGManager.Services.Model;
+﻿using VGManager.Services.Models;
 
 namespace VGManager.Services.Interfaces;
 

@@ -1,4 +1,4 @@
-﻿namespace VGManager.Services.Model;
+﻿namespace VGManager.Services.Models;
 
 public class MatchedSecret
 {

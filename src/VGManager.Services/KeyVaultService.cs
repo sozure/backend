@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Model;
+using VGManager.Services.Models;
 
 namespace VGManager.Services;
 

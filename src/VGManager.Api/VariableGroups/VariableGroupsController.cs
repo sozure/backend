@@ -1,7 +1,9 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.VariableGroups.Request;
+using VGManager.Api.VariableGroups.Response;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Model;
+using VGManager.Services.Models;
 
 namespace VGManager.Api.Controllers;
 
@@ -11,108 +13,92 @@ namespace VGManager.Api.Controllers;
 public class VariableGroupsController : ControllerBase
 {
     private readonly IVariableGroupService _vgService;
+    private readonly IMapper _mapper;
 
     public VariableGroupsController(
-        IVariableGroupService vgService
+        IVariableGroupService vgService,
+        IMapper mapper
         )
     {
         _vgService = vgService;
+        _mapper = mapper;
     }
 
     [HttpGet(Name = "getvariablegroups")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MatchedVariableGroup>>> GetAsync(
+    public async Task<ActionResult<IEnumerable<VariableGroupGetResponse>>> GetAsync(
         [FromQuery] VariableGroupGetRequest request,
         CancellationToken cancellationToken
     )
     {
-        _vgService.SetupConnectionRepository(request.Organization, request.Project, request.PAT);
+        var vgServiceModel = _mapper.Map<VariableGroupGetModel>(request);
 
-        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
-                request.VariableGroupFilter,
-                request.KeyFilter,
-                request.ValueFilter!,
-                cancellationToken
-            );
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        return Ok(matchedVariableGroups);
+        var result = matchedVariableGroups.Select(_mapper.Map<VariableGroupGetResponse>);
+        return Ok(result);
     }
 
     [HttpPost("updatevariablegroups", Name = "updatevariablegroups")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MatchedVariableGroup>>> UpdateAsync(
+    public async Task<ActionResult<IEnumerable<VariableGroupGetResponse>>> UpdateAsync(
         [FromBody] VariableGroupUpdateRequest request,
         CancellationToken cancellationToken
     )
     {
-        _vgService.SetupConnectionRepository(request.Organization, request.Project, request.Pat);
+        var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
 
-        await _vgService.UpdateVariableGroupsAsync(
-                request.VariableGroupFilter, request.KeyFilter,
-                request.NewValue, request.ValueFilter!, cancellationToken
-            );
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        await _vgService.UpdateVariableGroupsAsync(vgServiceModel, cancellationToken);
+        vgServiceModel.ValueFilter = vgServiceModel.NewValue;
+        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
-                request.VariableGroupFilter,
-                request.KeyFilter,
-                request.ValueFilter!, cancellationToken
-            );
-
-        return Ok(matchedVariableGroups);
+        var result = matchedVariableGroups.Select(_mapper.Map<VariableGroupGetResponse>);
+        return Ok(result);
     }
 
     [HttpPost("addvariable", Name = "addvariable")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MatchedVariableGroup>>> AddAsync(
+    public async Task<ActionResult<IEnumerable<VariableGroupGetResponse>>> AddAsync(
         [FromBody] VariableGroupAddRequest request,
         CancellationToken cancellationToken
     )
     {
-        _vgService.SetupConnectionRepository(request.Organization, request.Project, request.Pat);
+        var vgServiceModel = _mapper.Map<VariableGroupAddModel>(request);
 
-        await _vgService.AddVariableAsync(
-                request.VariableGroupFilter, request.KeyFilter,
-                request.Key,
-                request.Value, cancellationToken
-            );
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        await _vgService.AddVariableAsync(vgServiceModel, cancellationToken);
+        vgServiceModel.KeyFilter = vgServiceModel.Key;
+        vgServiceModel.ValueFilter = vgServiceModel.Value;
+        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
-                request.VariableGroupFilter,
-                request.Key, null!, cancellationToken
-            );
-
-        return Ok(matchedVariableGroups);
+        var result = matchedVariableGroups.Select(_mapper.Map<VariableGroupGetResponse>);
+        return Ok(result);
     }
 
     [HttpPost("deletevariable", Name = "deletevariable")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MatchedVariableGroup>>> DeleteAsync(
+    public async Task<ActionResult<IEnumerable<VariableGroupGetResponse>>> DeleteAsync(
         [FromBody] VariableGroupDeleteRequest request,
         CancellationToken cancellationToken
     )
     {
-        _vgService.SetupConnectionRepository(request.Organization, request.Project, request.Pat);
+        var vgServiceModel = _mapper.Map<VariableGroupDeleteModel>(request);
 
-        await _vgService.DeleteVariableAsync(
-                request.VariableGroupFilter,
-                request.KeyFilter,
-                request.ValueFilter!, cancellationToken
-            );
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        await _vgService.DeleteVariableAsync(vgServiceModel, cancellationToken);
+        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
-                request.VariableGroupFilter,
-                request.KeyFilter,
-                request.ValueFilter!, cancellationToken
-            );
-
-        return Ok(matchedVariableGroups);
+        var result = matchedVariableGroups.Select(_mapper.Map<VariableGroupGetResponse>);
+        return Ok(result);
     }
 }

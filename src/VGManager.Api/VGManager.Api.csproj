@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\VGManager.Services\VGManager.Services.csproj" />

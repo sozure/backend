@@ -1,12 +1,12 @@
-﻿namespace VGManager.Api.VariableGroups.Request;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class VariableGroupAddRequest
+namespace VGManager.Api.VariableGroups.Request;
+
+public class VariableGroupAddRequest : VariableGroupRequest
 {
-    public string Organization { get; set; } = null!;
-    public string Project { get; set; } = null!;
-    public string Pat { get; set; } = null!;
-    public string VariableGroupFilter { get; set; } = null!;
-    public string KeyFilter { get; set; } = null!;
+    [Required]
     public string Key { get; set; } = null!;
+
+    [Required]
     public string Value { get; set; } = null!;
 }

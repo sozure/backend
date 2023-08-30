@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.VariableGroups.Request;
+using VGManager.Api.VariableGroups.Response;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models;
 using VGManager.Services.Models.MatchedModels;
@@ -28,7 +29,7 @@ public class VariableGroupsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MatchedVariableGroup>>> GetAsync(
+    public async Task<ActionResult<IEnumerable<VariableGroupGetResponse>>> GetAsync(
         [FromQuery] VariableGroupGetRequest request,
         CancellationToken cancellationToken
     )
@@ -38,14 +39,15 @@ public class VariableGroupsController : ControllerBase
         _vgService.SetupConnectionRepository(vgServiceModel);
         var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        return Ok(matchedVariableGroups);
+        var result = matchedVariableGroups.Select(_mapper.Map<VariableGroupGetResponse>);
+        return Ok(result);
     }
 
     [HttpPost("updatevariablegroups", Name = "updatevariablegroups")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MatchedVariableGroup>>> UpdateAsync(
+    public async Task<ActionResult<IEnumerable<VariableGroupGetResponse>>> UpdateAsync(
         [FromBody] VariableGroupUpdateRequest request,
         CancellationToken cancellationToken
     )
@@ -56,14 +58,15 @@ public class VariableGroupsController : ControllerBase
         await _vgService.UpdateVariableGroupsAsync(vgServiceModel, cancellationToken);
         var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        return Ok(matchedVariableGroups);
+        var result = matchedVariableGroups.Select(_mapper.Map<VariableGroupGetResponse>);
+        return Ok(result);
     }
 
     [HttpPost("addvariable", Name = "addvariable")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MatchedVariableGroup>>> AddAsync(
+    public async Task<ActionResult<IEnumerable<VariableGroupGetResponse>>> AddAsync(
         [FromBody] VariableGroupAddRequest request,
         CancellationToken cancellationToken
     )
@@ -74,14 +77,15 @@ public class VariableGroupsController : ControllerBase
         await _vgService.AddVariableAsync(vgServiceModel, cancellationToken);
         var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        return Ok(matchedVariableGroups);
+        var result = matchedVariableGroups.Select(_mapper.Map<VariableGroupGetResponse>);
+        return Ok(result);
     }
 
     [HttpPost("deletevariable", Name = "deletevariable")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<MatchedVariableGroup>>> DeleteAsync(
+    public async Task<ActionResult<IEnumerable<VariableGroupGetResponse>>> DeleteAsync(
         [FromBody] VariableGroupDeleteRequest request,
         CancellationToken cancellationToken
     )
@@ -92,6 +96,7 @@ public class VariableGroupsController : ControllerBase
         await _vgService.DeleteVariableAsync(vgServiceModel, cancellationToken);
         var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        return Ok(matchedVariableGroups);
+        var result = matchedVariableGroups.Select(_mapper.Map<VariableGroupGetResponse>);
+        return Ok(result);
     }
 }

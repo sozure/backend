@@ -23,7 +23,7 @@ public class KeyVaultService : IKeyVaultService
     public async Task<IEnumerable<MatchedSecret>> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
         var secretList = new List<MatchedSecret>();
-        var secrets = await _keyVaultConnectionRepository.GetKeyVaultSecrets(cancellationToken);
+        var secrets = await _keyVaultConnectionRepository.GetSecrets(cancellationToken);
         var filteredSecrets = Filter(secrets!, secretFilter);
 
         foreach (var filteredSecret in filteredSecrets)
@@ -61,7 +61,7 @@ public class KeyVaultService : IKeyVaultService
     public async Task DeleteAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
         Console.WriteLine("Deleted secret key, value");
-        var secrets = await _keyVaultConnectionRepository.GetKeyVaultSecrets(cancellationToken);
+        var secrets = await _keyVaultConnectionRepository.GetSecrets(cancellationToken);
         var filteredSecrets = Filter(secrets!, secretFilter);
 
         foreach (var secret in filteredSecrets)

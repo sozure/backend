@@ -9,7 +9,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
     private SecretClient _secretClient = null!;
     public string KeyVaultName { get; set; } = null!;
 
-    public async Task<KeyVaultSecret?> GetKeyVaultSecret(string name, CancellationToken cancellationToken = default)
+    public async Task<KeyVaultSecret?> GetSecret(string name, CancellationToken cancellationToken = default)
     {
         KeyVaultSecret result;
         try
@@ -28,10 +28,10 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
         await _secretClient.StartDeleteSecretAsync(name, cancellationToken);
     }
 
-    public async Task<List<KeyVaultSecret?>> GetKeyVaultSecrets(CancellationToken cancellationToken = default)
+    public async Task<List<KeyVaultSecret?>> GetSecrets(CancellationToken cancellationToken = default)
     {
         var secretProperties = _secretClient.GetPropertiesOfSecrets(cancellationToken).ToList();
-        var results = await Task.WhenAll(secretProperties.Select(p => GetKeyVaultSecret(p.Name)));
+        var results = await Task.WhenAll(secretProperties.Select(p => GetSecret(p.Name)));
         return results.ToList();
     }
 

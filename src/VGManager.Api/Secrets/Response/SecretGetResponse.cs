@@ -2,7 +2,7 @@
 
 public class SecretGetResponse
 {
-    public string SecretName { get; set; }
-    public string SecretValue { get; set; }
-    public string CreatedBy { get; set; }
+    public string SecretName { get; set; } = null!;
+    public string SecretValue { get; set; } = null!;
+    public string CreatedBy { get; set; } = null!;
 }

@@ -46,10 +46,7 @@ public class VariableGroupService : IVariableGroupService
         return matchedVariableGroups;
     }
 
-    public async Task UpdateVariableGroupsAsync(
-        VariableGroupUpdateModel variableGroupUpdateModel,
-        CancellationToken cancellationToken = default
-        )
+    public async Task UpdateVariableGroupsAsync(VariableGroupUpdateModel variableGroupUpdateModel, CancellationToken cancellationToken = default)
     {
         Console.WriteLine("Variable group name, Key, Old value, New value");
         var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
@@ -69,16 +66,15 @@ public class VariableGroupService : IVariableGroupService
         }
     }
 
-    public async Task AddVariableAsync(
-        string variableGroupFilter,
-        string keyFilter,
-        string key,
-        string newValue,
-        CancellationToken cancellationToken = default
-        )
+    public async Task AddVariableAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default)
     {
         var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
+        
         IEnumerable<VariableGroup> filteredVariableGroups = null!;
+        var keyFilter = variableGroupAddModel.KeyFilter;
+        var variableGroupFilter = variableGroupAddModel.VariableGroupFilter;
+        var key = variableGroupAddModel.Key;
+        var value = variableGroupAddModel.Value;
 
         if (keyFilter is not null)
         {
@@ -98,10 +94,10 @@ public class VariableGroupService : IVariableGroupService
             var variableGroupName = filteredVariableGroup.Name;
             try
             {
-                filteredVariableGroup.Variables.Add(key, newValue);
+                filteredVariableGroup.Variables.Add(key, value);
                 var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
                 await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
-                Console.WriteLine($"{variableGroupName}, {key}, {newValue}");
+                Console.WriteLine($"{variableGroupName}, {key}, {value}");
             }
             catch (ArgumentException)
             {

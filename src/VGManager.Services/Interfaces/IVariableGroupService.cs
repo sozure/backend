@@ -14,13 +14,7 @@ public interface IVariableGroupService
         CancellationToken cancellationToken = default
         );
 
-    Task AddVariableAsync(
-        string variableGroupFilter,
-        string keyFilter,
-        string key,
-        string newValue,
-        CancellationToken cancellationToken = default
-        );
+    Task AddVariableAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default);
 
     Task DeleteVariableAsync(
         string variableGroupFilter,

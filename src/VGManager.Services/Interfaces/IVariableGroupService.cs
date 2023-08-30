@@ -6,17 +6,14 @@ namespace VGManager.Services.Interfaces;
 public interface IVariableGroupService
 {
     void SetupConnectionRepository(VariableGroupModel variableGroupModel);
-    Task UpdateVariableGroupsAsync(
-        string variableGroupFilter,
-        string keyFilter,
-        string newValue,
-        string valueCondition,
-        CancellationToken cancellationToken = default
-        );
+
+    Task UpdateVariableGroupsAsync(VariableGroupUpdateModel variableGroupUpdateModel, CancellationToken cancellationToken = default);
+
     Task<IEnumerable<MatchedVariableGroup>> GetVariableGroupsAsync(
-        VariableGroupGetModel variableGroupGetModel,
+        VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         );
+
     Task AddVariableAsync(
         string variableGroupFilter,
         string keyFilter,
@@ -24,6 +21,7 @@ public interface IVariableGroupService
         string newValue,
         CancellationToken cancellationToken = default
         );
+
     Task DeleteVariableAsync(
         string variableGroupFilter,
         string keyFilter,

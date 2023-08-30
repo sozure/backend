@@ -23,16 +23,16 @@ public class VariableGroupService : IVariableGroupService
     }
 
     public async Task<IEnumerable<MatchedVariableGroup>> GetVariableGroupsAsync(
-        VariableGroupGetModel variableGroupGetModel,
+        VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         )
     {
         var matchedVariableGroups = new List<MatchedVariableGroup>();
         var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
-        var filteredVariableGroups = Filter(variableGroups, variableGroupGetModel.VariableGroupFilter);
+        var filteredVariableGroups = Filter(variableGroups, variableGroupModel.VariableGroupFilter);
         Regex regex = null!;
 
-        var valueFilter = variableGroupGetModel.ValueFilter;
+        var valueFilter = variableGroupModel.ValueFilter;
 
         if (valueFilter is not null)
         {
@@ -41,28 +41,24 @@ public class VariableGroupService : IVariableGroupService
 
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
-            GetVariables(variableGroupGetModel.KeyFilter, valueFilter, matchedVariableGroups, regex, filteredVariableGroup);
+            GetVariables(variableGroupModel.KeyFilter, valueFilter, matchedVariableGroups, regex, filteredVariableGroup);
         }
         return matchedVariableGroups;
     }
 
     public async Task UpdateVariableGroupsAsync(
-        string variableGroupFilter,
-        string keyFilter,
-        string newValue,
-        string valueCondition,
+        VariableGroupUpdateModel variableGroupUpdateModel,
         CancellationToken cancellationToken = default
         )
     {
         Console.WriteLine("Variable group name, Key, Old value, New value");
         var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
-        var filteredVariableGroups = Filter(variableGroups, variableGroupFilter);
+        var filteredVariableGroups = Filter(variableGroups, variableGroupUpdateModel.VariableGroupFilter);
 
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
             var variableGroupName = filteredVariableGroup.Name;
-
-            var updateIsNeeded = UpdateVariables(keyFilter, newValue, valueCondition, filteredVariableGroup, variableGroupName);
+            var updateIsNeeded = UpdateVariables(variableGroupUpdateModel, filteredVariableGroup, variableGroupName);
 
             if (updateIsNeeded)
             {
@@ -166,7 +162,13 @@ public class VariableGroupService : IVariableGroupService
         };
     }
 
-    private static void GetVariables(string keyFilter, string? valueFilter, List<MatchedVariableGroup> matchedVariableGroups, Regex regex, VariableGroup filteredVariableGroup)
+    private static void GetVariables(
+        string keyFilter, 
+        string? valueFilter, 
+        List<MatchedVariableGroup> matchedVariableGroups, 
+        Regex regex, 
+        VariableGroup filteredVariableGroup
+        )
     {
         var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
 
@@ -197,19 +199,25 @@ public class VariableGroupService : IVariableGroupService
         }
     }
 
-    private static bool UpdateVariables(string keyFilter, string newValue, string valueCondition, VariableGroup filteredVariableGroup, string variableGroupName)
+    private static bool UpdateVariables(
+        VariableGroupUpdateModel variableGroupUpdateModel, 
+        VariableGroup filteredVariableGroup, 
+        string variableGroupName
+        )
     {
-        var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
+        var filteredVariables = Filter(filteredVariableGroup.Variables, variableGroupUpdateModel.KeyFilter);
         var updateIsNeeded = false;
 
         foreach (var filteredVariable in filteredVariables)
         {
             var variableValue = filteredVariable.Value.Value;
             var variableKey = filteredVariable.Key;
+            var newValue = variableGroupUpdateModel.NewValue;
+            var valueFilter = variableGroupUpdateModel.ValueFilter;
 
-            if (valueCondition is not null)
+            if (valueFilter is not null)
             {
-                if (valueCondition.Equals(variableValue))
+                if (valueFilter.Equals(variableValue))
                 {
                     Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}, {newValue}");
                     filteredVariable.Value.Value = newValue;

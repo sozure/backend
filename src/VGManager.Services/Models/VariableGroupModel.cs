@@ -11,4 +11,6 @@ public class VariableGroupModel
     public string VariableGroupFilter { get; set; } = null!;
 
     public string KeyFilter { get; set; } = null!;
+
+    public string? ValueFilter { get; set; }
 }

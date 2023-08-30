@@ -2,5 +2,4 @@
 
 public class VariableGroupGetModel: VariableGroupModel
 {
-    public string? ValueFilter { get; set; }
 }

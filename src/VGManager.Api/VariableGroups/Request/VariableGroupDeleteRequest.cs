@@ -2,5 +2,4 @@
 
 public class VariableGroupDeleteRequest : VariableGroupRequest
 {
-    public string? ValueFilter { get; set; }
 }

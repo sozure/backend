@@ -1,4 +1,4 @@
-﻿namespace VGManager.Services.Models;
+﻿namespace VGManager.Services.Models.MatchedModels;
 
 public class MatchedVariableGroup
 {

@@ -3,7 +3,7 @@ using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models;
+using VGManager.Services.Models.MatchedModels;
 
 namespace VGManager.Services;
 

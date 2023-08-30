@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secrets.Request;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models;
+using VGManager.Services.Models.MatchedModels;
 
 namespace VGApi.Api.Secrets;
 

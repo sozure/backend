@@ -1,7 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Model;
+using VGManager.Services.Models;
 
 namespace VGManager.Api.Controllers;
 
@@ -11,12 +12,15 @@ namespace VGManager.Api.Controllers;
 public class VariableGroupsController : ControllerBase
 {
     private readonly IVariableGroupService _vgService;
+    private readonly IMapper _mapper;
 
     public VariableGroupsController(
-        IVariableGroupService vgService
+        IVariableGroupService vgService,
+        IMapper mapper
         )
     {
         _vgService = vgService;
+        _mapper = mapper;
     }
 
     [HttpGet(Name = "getvariablegroups")]
@@ -28,6 +32,7 @@ public class VariableGroupsController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        var vgServiceModel = _mapper.Map<VariableGroupGetModel>(request);
         _vgService.SetupConnectionRepository(request.Organization, request.Project, request.PAT);
 
         var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(
@@ -49,7 +54,7 @@ public class VariableGroupsController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        _vgService.SetupConnectionRepository(request.Organization, request.Project, request.Pat);
+        _vgService.SetupConnectionRepository(request.Organization, request.Project, request.PAT);
 
         await _vgService.UpdateVariableGroupsAsync(
                 request.VariableGroupFilter, request.KeyFilter,
@@ -74,7 +79,7 @@ public class VariableGroupsController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        _vgService.SetupConnectionRepository(request.Organization, request.Project, request.Pat);
+        _vgService.SetupConnectionRepository(request.Organization, request.Project, request.PAT);
 
         await _vgService.AddVariableAsync(
                 request.VariableGroupFilter, request.KeyFilter,
@@ -99,7 +104,7 @@ public class VariableGroupsController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        _vgService.SetupConnectionRepository(request.Organization, request.Project, request.Pat);
+        _vgService.SetupConnectionRepository(request.Organization, request.Project, request.PAT);
 
         await _vgService.DeleteVariableAsync(
                 request.VariableGroupFilter,

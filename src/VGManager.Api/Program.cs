@@ -1,3 +1,5 @@
+using Microsoft.TeamFoundation.TestManagement.WebApi;
+using VGManager.Api.MapperProfiles;
 using VGManager.Repository;
 using VGManager.Repository.Interfaces;
 using VGManager.Services;
@@ -31,6 +33,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHealthChecks();
+builder.Services.AddAutoMapper(typeof(Program), typeof(VariableGroupProfile));
 
 var app = builder.Build();
 

@@ -3,6 +3,7 @@ using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
+using VGManager.Services.Models;
 using VGManager.Services.Models.MatchedModels;
 
 namespace VGManager.Services;
@@ -16,22 +17,22 @@ public class VariableGroupService : IVariableGroupService
         _variableGroupConnectionRepository = variableGroupConnectionRepository;
     }
 
-    public void SetupConnectionRepository(string organization, string project, string pat)
+    public void SetupConnectionRepository(VariableGroupModel variableGroupModel)
     {
-        _variableGroupConnectionRepository.Setup(organization, project, pat);
+        _variableGroupConnectionRepository.Setup(variableGroupModel.Organization, variableGroupModel.Project, variableGroupModel.PAT);
     }
 
     public async Task<IEnumerable<MatchedVariableGroup>> GetVariableGroupsAsync(
-        string variableGroupFilter,
-        string keyFilter,
-        string valueFilter,
+        VariableGroupGetModel variableGroupGetModel,
         CancellationToken cancellationToken = default
         )
     {
         var matchedVariableGroups = new List<MatchedVariableGroup>();
         var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
-        var filteredVariableGroups = Filter(variableGroups, variableGroupFilter);
+        var filteredVariableGroups = Filter(variableGroups, variableGroupGetModel.VariableGroupFilter);
         Regex regex = null!;
+
+        var valueFilter = variableGroupGetModel.ValueFilter;
 
         if (valueFilter is not null)
         {
@@ -40,7 +41,7 @@ public class VariableGroupService : IVariableGroupService
 
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
-            GetVariables(keyFilter, valueFilter, matchedVariableGroups, regex, filteredVariableGroup);
+            GetVariables(variableGroupGetModel.KeyFilter, valueFilter, matchedVariableGroups, regex, filteredVariableGroup);
         }
         return matchedVariableGroups;
     }

@@ -1,10 +1,11 @@
-﻿using VGManager.Services.Models.MatchedModels;
+﻿using VGManager.Services.Models;
+using VGManager.Services.Models.MatchedModels;
 
 namespace VGManager.Services.Interfaces;
 
 public interface IVariableGroupService
 {
-    void SetupConnectionRepository(string organization, string project, string pat);
+    void SetupConnectionRepository(VariableGroupModel variableGroupModel);
     Task UpdateVariableGroupsAsync(
         string variableGroupFilter,
         string keyFilter,
@@ -13,9 +14,7 @@ public interface IVariableGroupService
         CancellationToken cancellationToken = default
         );
     Task<IEnumerable<MatchedVariableGroup>> GetVariableGroupsAsync(
-        string variableGroupFilter,
-        string keyFilter,
-        string valueFilter,
+        VariableGroupGetModel variableGroupGetModel,
         CancellationToken cancellationToken = default
         );
     Task AddVariableAsync(

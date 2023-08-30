@@ -55,6 +55,7 @@ public class VariableGroupsController : ControllerBase
 
         _vgService.SetupConnectionRepository(vgServiceModel);
         await _vgService.UpdateVariableGroupsAsync(vgServiceModel, cancellationToken);
+        vgServiceModel.ValueFilter = vgServiceModel.NewValue;
         var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = matchedVariableGroups.Select(_mapper.Map<VariableGroupGetResponse>);
@@ -74,6 +75,8 @@ public class VariableGroupsController : ControllerBase
 
         _vgService.SetupConnectionRepository(vgServiceModel);
         await _vgService.AddVariableAsync(vgServiceModel, cancellationToken);
+        vgServiceModel.KeyFilter = vgServiceModel.Key;
+        vgServiceModel.ValueFilter = vgServiceModel.Value;
         var matchedVariableGroups = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = matchedVariableGroups.Select(_mapper.Map<VariableGroupGetResponse>);

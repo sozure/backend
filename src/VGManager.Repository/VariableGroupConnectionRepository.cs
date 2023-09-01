@@ -50,7 +50,7 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
         }
     }
 
-    public async Task Update(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default)
+    public async Task<Status> Update(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default)
     {
         variableGroupParameters.VariableGroupProjectReferences = new List<VariableGroupProjectReference>()
         {
@@ -64,8 +64,28 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
             }
         };
 
-        var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
-        await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
+        try
+        {
+            var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+            await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
+            return Status.Success;
+        }
+        catch (VssUnauthorizedException)
+        {
+            return Status.Unauthorized;
+        }
+        catch (VssServiceResponseException)
+        {
+            return Status.ResourceNotFound;
+        }
+        catch (ProjectDoesNotExistWithNameException)
+        {
+            return Status.ProjectDoesNotExist;
+        }
+        catch (Exception)
+        {
+            return Status.Unknown;
+        }
     }
 
     private static VariableGroupEntity GetResult(Status status, IEnumerable<VariableGroup> variableGroups)

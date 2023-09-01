@@ -84,7 +84,7 @@ public class VariableGroupService : IVariableGroupService
                 if (updateIsNeeded)
                 {
                     var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                    await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
+                    status = await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
                     Console.WriteLine($"{variableGroupName} updated.");
                 }
             }
@@ -125,7 +125,7 @@ public class VariableGroupService : IVariableGroupService
                 {
                     filteredVariableGroup.Variables.Add(key, value);
                     var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                    await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
+                    status = await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
                     Console.WriteLine($"{variableGroupName}, {key}, {value}");
                 }
                 catch (ArgumentException)
@@ -166,7 +166,7 @@ public class VariableGroupService : IVariableGroupService
                 if (deleteIsNeeded)
                 {
                     var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                    await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
+                    status = await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
                 }
             }
         }

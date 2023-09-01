@@ -12,12 +12,12 @@ namespace VGApi.Api.Secrets;
 [ApiController]
 public class SecretsController : Controller
 {
-    private readonly IKeyVaultService _kvService;
+    private readonly IKeyVaultService _keyVaultService;
     private readonly IMapper _mapper;
 
-    public SecretsController(IKeyVaultService kvService, IMapper mapper)
+    public SecretsController(IKeyVaultService keyVaultService, IMapper mapper)
     {
-        _kvService = kvService;
+        _keyVaultService = keyVaultService;
         _mapper = mapper;
     }
 
@@ -30,8 +30,8 @@ public class SecretsController : Controller
         CancellationToken cancellationToken
         )
     {
-        _kvService.SetupConnectionRepository(request.KeyVaultName);
-        var matchedSecrets = await _kvService.GetSecretsAsync(request.SecretFilter, cancellationToken);
+        _keyVaultService.SetupConnectionRepository(request.KeyVaultName);
+        var matchedSecrets = await _keyVaultService.GetSecretsAsync(request.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<SecretGetResponse>(matchedSecrets);
         return Ok(result);
@@ -46,8 +46,8 @@ public class SecretsController : Controller
         CancellationToken cancellationToken
         )
     {
-        _kvService.SetupConnectionRepository(request.KeyVaultName);
-        var matchedDeletedSecrets = _kvService.GetDeletedSecrets(request.SecretFilter, cancellationToken);
+        _keyVaultService.SetupConnectionRepository(request.KeyVaultName);
+        var matchedDeletedSecrets = _keyVaultService.GetDeletedSecrets(request.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<DeletedSecretGetResponse>(matchedDeletedSecrets);
         return Ok(result);
@@ -62,9 +62,9 @@ public class SecretsController : Controller
         CancellationToken cancellationToken
         )
     {
-        _kvService.SetupConnectionRepository(request.KeyVaultName);
-        await _kvService.DeleteAsync(request.SecretFilter, cancellationToken);
-        var matchedSecrets = await _kvService.GetSecretsAsync(request.SecretFilter, cancellationToken);
+        _keyVaultService.SetupConnectionRepository(request.KeyVaultName);
+        await _keyVaultService.DeleteAsync(request.SecretFilter, cancellationToken);
+        var matchedSecrets = await _keyVaultService.GetSecretsAsync(request.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<SecretGetResponse>(matchedSecrets);
         return Ok(result);
@@ -79,9 +79,9 @@ public class SecretsController : Controller
         CancellationToken cancellationToken
         )
     {
-        _kvService.SetupConnectionRepository(request.KeyVaultName);
-        await _kvService.RecoverSecretAsync(request.SecretFilter, cancellationToken);
-        var matchedSecrets = _kvService.GetDeletedSecrets(request.SecretFilter, cancellationToken);
+        _keyVaultService.SetupConnectionRepository(request.KeyVaultName);
+        await _keyVaultService.RecoverSecretAsync(request.SecretFilter, cancellationToken);
+        var matchedSecrets = _keyVaultService.GetDeletedSecrets(request.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<SecretGetResponse>(matchedSecrets);
         return Ok(result);

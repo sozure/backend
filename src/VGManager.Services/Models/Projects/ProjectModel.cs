@@ -1,4 +1,4 @@
-﻿namespace VGManager.Services.Models;
+﻿namespace VGManager.Services.Models.Projects;
 
 public class ProjectModel
 {

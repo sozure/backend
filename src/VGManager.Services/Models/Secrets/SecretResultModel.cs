@@ -1,6 +1,6 @@
-﻿namespace VGManager.Services.Models.MatchedModels;
+﻿namespace VGManager.Services.Models.Secrets;
 
-public class MatchedSecret
+public class SecretResultModel
 {
     public string SecretName { get; set; } = null!;
     public string SecretValue { get; set; } = null!;

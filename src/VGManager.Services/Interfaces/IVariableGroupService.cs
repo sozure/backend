@@ -1,4 +1,5 @@
 ﻿using VGManager.Services.Models.VariableGroups;
+using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Services.Interfaces;
 

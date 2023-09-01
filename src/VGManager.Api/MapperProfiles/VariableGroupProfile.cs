@@ -2,6 +2,7 @@
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.Services.Models.VariableGroups;
+using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Api.MapperProfiles;
 

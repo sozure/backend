@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups;
+using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Services;
 
@@ -27,8 +28,8 @@ public class VariableGroupService : IVariableGroupService
         )
     {
         var matchedVariableGroups = new List<VariableGroupResultModel>();
-        var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
-        var filteredVariableGroups = Filter(variableGroups, variableGroupModel.VariableGroupFilter);
+        var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
+        var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
         Regex regex = null!;
 
         var valueFilter = variableGroupModel.ValueFilter;
@@ -48,8 +49,8 @@ public class VariableGroupService : IVariableGroupService
     public async Task UpdateVariableGroupsAsync(VariableGroupUpdateModel variableGroupUpdateModel, CancellationToken cancellationToken = default)
     {
         Console.WriteLine("Variable group name, Key, Old value, New value");
-        var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
-        var filteredVariableGroups = Filter(variableGroups, variableGroupUpdateModel.VariableGroupFilter);
+        var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
+        var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter);
 
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
@@ -67,7 +68,7 @@ public class VariableGroupService : IVariableGroupService
 
     public async Task AddVariableAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default)
     {
-        var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
+        var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
 
         IEnumerable<VariableGroup> filteredVariableGroups = null!;
         var keyFilter = variableGroupAddModel.KeyFilter;
@@ -79,13 +80,13 @@ public class VariableGroupService : IVariableGroupService
         {
             var regex = new Regex(keyFilter);
 
-            filteredVariableGroups = Filter(variableGroups, variableGroupFilter)
+            filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter)
                 .Select(vg => vg)
                 .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key)).Count > 0);
         }
         else
         {
-            filteredVariableGroups = Filter(variableGroups, variableGroupFilter);
+            filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter);
         }
 
         foreach (var filteredVariableGroup in filteredVariableGroups)
@@ -113,8 +114,8 @@ public class VariableGroupService : IVariableGroupService
     public async Task DeleteVariableAsync(VariableGroupDeleteModel variableGroupDeleteModel, CancellationToken cancellationToken = default)
     {
         Console.WriteLine("Variable group name, Deleted Key, Deleted Value");
-        var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
-        var filteredVariableGroups = Filter(variableGroups, variableGroupDeleteModel.VariableGroupFilter);
+        var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
+        var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupDeleteModel.VariableGroupFilter);
 
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models.VariableGroups;
+using VGManager.Services.Models.VariableGroups.Requests;
 using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Services;

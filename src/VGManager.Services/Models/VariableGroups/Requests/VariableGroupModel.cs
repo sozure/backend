@@ -1,4 +1,4 @@
-﻿namespace VGManager.Services.Models.VariableGroups;
+﻿namespace VGManager.Services.Models.VariableGroups.Requests;
 
 public class VariableGroupModel
 {

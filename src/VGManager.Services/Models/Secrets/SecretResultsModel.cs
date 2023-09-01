@@ -9,5 +9,5 @@ namespace VGManager.Services.Models.Secrets;
 public class SecretResultsModel
 {
     public Status Status { get; set; }
-    public IEnumerable<SecretResultModel> Results { get; set; } = null!;
+    public IEnumerable<SecretResultModel> Secrets { get; set; } = null!;
 }

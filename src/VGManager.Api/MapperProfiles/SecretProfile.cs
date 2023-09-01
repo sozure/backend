@@ -9,6 +9,8 @@ public class SecretProfile : Profile
     public SecretProfile()
     {
         CreateMap<SecretResultModel, SecretGetResponse>();
+        CreateMap<SecretResultsModel, SecretsGetResponse>();
         CreateMap<DeletedSecretResultModel, DeletedSecretGetResponse>();
+        CreateMap<DeletedSecretResultsModel, DeletedSecretsGetResponse>();
     }
 }

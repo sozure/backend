@@ -25,7 +25,7 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<SecretGetResponse>>> GetAsync(
+    public async Task<ActionResult<IEnumerable<SecretsGetResponse>>> GetAsync(
         [FromQuery] SecretGetRequest request,
         CancellationToken cancellationToken
         )
@@ -33,7 +33,7 @@ public class SecretsController : Controller
         _keyVaultService.SetupConnectionRepository(request.KeyVaultName);
         var matchedSecrets = await _keyVaultService.GetSecretsAsync(request.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<SecretGetResponse>(matchedSecrets);
+        var result = _mapper.Map<SecretsGetResponse>(matchedSecrets);
         return Ok(result);
     }
 
@@ -41,7 +41,7 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IEnumerable<DeletedSecretGetResponse>> GetDeleted(
+    public ActionResult<IEnumerable<DeletedSecretsGetResponse>> GetDeleted(
         [FromQuery] SecretGetRequest request,
         CancellationToken cancellationToken
         )
@@ -49,7 +49,7 @@ public class SecretsController : Controller
         _keyVaultService.SetupConnectionRepository(request.KeyVaultName);
         var matchedDeletedSecrets = _keyVaultService.GetDeletedSecrets(request.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<DeletedSecretGetResponse>(matchedDeletedSecrets);
+        var result = _mapper.Map<DeletedSecretsGetResponse>(matchedDeletedSecrets);
         return Ok(result);
     }
 
@@ -57,7 +57,7 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<SecretGetResponse>>> DeleteAsync(
+    public async Task<ActionResult<IEnumerable<SecretsGetResponse>>> DeleteAsync(
         [FromBody] SecretDeleteRequest request,
         CancellationToken cancellationToken
         )
@@ -66,7 +66,7 @@ public class SecretsController : Controller
         await _keyVaultService.DeleteAsync(request.SecretFilter, cancellationToken);
         var matchedSecrets = await _keyVaultService.GetSecretsAsync(request.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<SecretGetResponse>(matchedSecrets);
+        var result = _mapper.Map<SecretsGetResponse>(matchedSecrets);
         return Ok(result);
     }
 
@@ -74,7 +74,7 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<SecretGetResponse>>> RecoverAsync(
+    public async Task<ActionResult<IEnumerable<SecretsGetResponse>>> RecoverAsync(
         [FromBody] SecretDeleteRequest request,
         CancellationToken cancellationToken
         )
@@ -83,7 +83,7 @@ public class SecretsController : Controller
         await _keyVaultService.RecoverSecretAsync(request.SecretFilter, cancellationToken);
         var matchedSecrets = _keyVaultService.GetDeletedSecrets(request.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<SecretGetResponse>(matchedSecrets);
+        var result = _mapper.Map<SecretsGetResponse>(matchedSecrets);
         return Ok(result);
     }
 }

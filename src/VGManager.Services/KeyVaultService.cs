@@ -54,14 +54,14 @@ public class KeyVaultService : IKeyVaultService
             return new()
             {
                 Status = status,
-                Results = secretList
+                Secrets = secretList
             };
         }
 
         return new()
         {
             Status = status,
-            Results = secretList
+            Secrets = secretList
         };
     }
 
@@ -86,13 +86,13 @@ public class KeyVaultService : IKeyVaultService
             return new()
             {
                 Status = status,
-                Results = secretList
+                DeletedSecrets = secretList
             };
         }
         return new()
         {
             Status = status,
-            Results = Enumerable.Empty<DeletedSecretResultModel>()
+            DeletedSecrets = Enumerable.Empty<DeletedSecretResultModel>()
         };
     }
 

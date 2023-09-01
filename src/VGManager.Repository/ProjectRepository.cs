@@ -14,31 +14,21 @@ public class ProjectRepository : IProjectRepository
         try
         {
             await GetConnectionAsync(baseUrl, pat);
+            var teamProjectReferences = await _projectHttpClient!.GetProjects();
+            _projectHttpClient.Dispose();
+            return GetResult(Status.Success, teamProjectReferences);
         } catch (VssUnauthorizedException)
         {
-            return new()
-            {
-                Status = Status.Unauthorized,
-                Projects = Enumerable.Empty<TeamProjectReference>()
-            };
+            return GetResult(Status.Unauthorized);
         }
         catch (VssServiceResponseException)
         {
-            return new()
-            {
-                Status = Status.ResourceNotFound,
-                Projects = Enumerable.Empty<TeamProjectReference>()
-            };
+            return GetResult(Status.ResourceNotFound);
         }
-
-        var teamProjectReferences = await _projectHttpClient!.GetProjects();
-        _projectHttpClient.Dispose();
-        
-        return new()
+        catch (Exception) 
         {
-            Status = Status.Success,
-            Projects = teamProjectReferences
-        };
+            return GetResult(Status.Unknown);
+        }
     }
 
     private async Task GetConnectionAsync(string baseUrl, string pat)
@@ -56,5 +46,23 @@ public class ProjectRepository : IProjectRepository
             Console.WriteLine(ex);
             throw;
         }
+    }
+
+    private static ProjectEntity GetResult(Status status, IEnumerable<TeamProjectReference> projects)
+    {
+        return new()
+        {
+            Status = status,
+            Projects = projects
+        };
+    }
+
+    private static ProjectEntity GetResult(Status status)
+    {
+        return new()
+        {
+            Status = status,
+            Projects = Enumerable.Empty<TeamProjectReference>()
+        };
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace VGManager.Api;
+﻿namespace VGManager.Repository.Entities;
 
 public enum Status
 {

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Options;
-using Microsoft.TeamFoundation.Core.WebApi;
 using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Projects;

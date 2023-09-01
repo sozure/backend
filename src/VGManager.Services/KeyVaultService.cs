@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models.MatchedModels;
+using VGManager.Services.Models.Secrets;
 
 namespace VGManager.Services;
 
@@ -20,9 +20,9 @@ public class KeyVaultService : IKeyVaultService
         _keyVaultConnectionRepository.Setup(keyVaultName);
     }
 
-    public async Task<IEnumerable<MatchedSecret>> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<SecretResultModel>> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
-        var secretList = new List<MatchedSecret>();
+        var secretList = new List<SecretResultModel>();
         var secrets = await _keyVaultConnectionRepository.GetSecrets(cancellationToken);
         var filteredSecrets = Filter(secrets!, secretFilter);
 
@@ -41,9 +41,9 @@ public class KeyVaultService : IKeyVaultService
         return secretList;
     }
 
-    public IEnumerable<MatchedDeletedSecret> GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default)
+    public IEnumerable<DeletedSecretResultModel> GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default)
     {
-        var secretList = new List<MatchedDeletedSecret>();
+        var secretList = new List<DeletedSecretResultModel>();
         var secrets = _keyVaultConnectionRepository.GetDeletedSecrets(cancellationToken);
         var filteredSecrets = Filter(secrets!, secretFilter);
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models;
+using VGManager.Services.Models.VariableGroups;
 
 namespace VGManager.Api.Controllers;
 

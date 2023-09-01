@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using VGManager.Api.Projects.Responses;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models;
+using VGManager.Services.Models.Projects;
 
 namespace VGManager.Api.Projects;
 
@@ -23,16 +24,16 @@ public class ProjectsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<ProjectResponse>>> GetAsync(
+    public async Task<ActionResult<IEnumerable<ProjectsResponse>>> GetAsync(
         [FromQuery] ProjectRequest request,
         CancellationToken cancellationToken
     )
     {
         var projectModel = _mapper.Map<ProjectModel>(request);
 
-        var projects = await _projectService.GetProjects(projectModel, cancellationToken);
+        var project = await _projectService.GetProjects(projectModel, cancellationToken);
 
-        var result = projects.Select(_mapper.Map<ProjectResponse>);
+        var result = _mapper.Map<ProjectsResponse>(project);
         return Ok(result);
     }
 }

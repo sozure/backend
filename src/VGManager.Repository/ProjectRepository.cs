@@ -1,6 +1,7 @@
 ﻿using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
+using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 
 namespace VGManager.Repository;
@@ -8,12 +9,36 @@ public class ProjectRepository : IProjectRepository
 {
     private ProjectHttpClient? _projectHttpClient;
 
-    public async Task<IEnumerable<TeamProjectReference>> GetProjects(string baseUrl, string pat, CancellationToken cancellationToken = default)
+    public async Task<ProjectEntity> GetProjects(string baseUrl, string pat, CancellationToken cancellationToken = default)
     {
-        await GetConnectionAsync(baseUrl, pat);
+        try
+        {
+            await GetConnectionAsync(baseUrl, pat);
+        } catch (VssUnauthorizedException)
+        {
+            return new()
+            {
+                Status = Status.Unauthorized,
+                Projects = Enumerable.Empty<TeamProjectReference>()
+            };
+        }
+        catch (VssServiceResponseException)
+        {
+            return new()
+            {
+                Status = Status.ResourceNotFound,
+                Projects = Enumerable.Empty<TeamProjectReference>()
+            };
+        }
+
         var teamProjectReferences = await _projectHttpClient!.GetProjects();
         _projectHttpClient.Dispose();
-        return teamProjectReferences.ToList();
+        
+        return new()
+        {
+            Status = Status.Success,
+            Projects = teamProjectReferences
+        };
     }
 
     private async Task GetConnectionAsync(string baseUrl, string pat)

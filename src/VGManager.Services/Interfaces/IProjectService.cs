@@ -1,8 +1,8 @@
 ﻿using Microsoft.TeamFoundation.Core.WebApi;
-using VGManager.Services.Models;
+using VGManager.Services.Models.Projects;
 
 namespace VGManager.Services.Interfaces;
 public interface IProjectService
 {
-    Task<IEnumerable<TeamProjectReference>> GetProjects(ProjectModel projectModel, CancellationToken cancellationToken = default);
+    Task<ProjectResultModel> GetProjects(ProjectModel projectModel, CancellationToken cancellationToken = default);
 }

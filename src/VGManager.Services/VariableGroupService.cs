@@ -3,8 +3,7 @@ using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models;
-using VGManager.Services.Models.MatchedModels;
+using VGManager.Services.Models.VariableGroups;
 
 namespace VGManager.Services;
 
@@ -22,12 +21,12 @@ public class VariableGroupService : IVariableGroupService
         _variableGroupConnectionRepository.Setup(variableGroupModel.Organization, variableGroupModel.Project, variableGroupModel.PAT);
     }
 
-    public async Task<IEnumerable<MatchedVariableGroup>> GetVariableGroupsAsync(
+    public async Task<IEnumerable<VariableGroupResultModel>> GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         )
     {
-        var matchedVariableGroups = new List<MatchedVariableGroup>();
+        var matchedVariableGroups = new List<VariableGroupResultModel>();
         var variableGroups = await _variableGroupConnectionRepository.GetAll(cancellationToken);
         var filteredVariableGroups = Filter(variableGroups, variableGroupModel.VariableGroupFilter);
         Regex regex = null!;
@@ -162,7 +161,7 @@ public class VariableGroupService : IVariableGroupService
     private static void GetVariables(
         string keyFilter,
         string? valueFilter,
-        List<MatchedVariableGroup> matchedVariableGroups,
+        List<VariableGroupResultModel> matchedVariableGroups,
         Regex regex,
         VariableGroup filteredVariableGroup
         )

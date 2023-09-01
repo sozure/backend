@@ -1,5 +1,4 @@
-﻿using VGManager.Services.Models;
-using VGManager.Services.Models.MatchedModels;
+﻿using VGManager.Services.Models.VariableGroups;
 
 namespace VGManager.Services.Interfaces;
 
@@ -9,7 +8,7 @@ public interface IVariableGroupService
 
     Task UpdateVariableGroupsAsync(VariableGroupUpdateModel variableGroupUpdateModel, CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<MatchedVariableGroup>> GetVariableGroupsAsync(
+    Task<IEnumerable<VariableGroupResultModel>> GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         );

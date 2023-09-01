@@ -1,6 +1,4 @@
-﻿using VGManager.Services.Settings;
-
-namespace VGManager.Api;
+﻿namespace VGManager.Api;
 
 public static class Constants
 {

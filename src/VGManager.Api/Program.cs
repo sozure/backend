@@ -1,8 +1,10 @@
+using VGManager.Api;
 using VGManager.Api.MapperProfiles;
 using VGManager.Repository;
 using VGManager.Repository.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
+using VGManager.Services.Settings;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -35,6 +37,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHealthChecks();
 builder.Services.AddAutoMapper(typeof(Program), typeof(VariableGroupProfile));
+
+builder.Services.AddOptions<ProjectSettings>()
+            .Bind(builder.Configuration.GetSection(Constants.SettingsKey.ProjectSettings))
+            .ValidateDataAnnotations();
 
 var app = builder.Build();
 

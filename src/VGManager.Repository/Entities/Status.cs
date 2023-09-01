@@ -2,5 +2,5 @@
 
 public enum Status
 {
-    Success, Unauthorized, ResourceNotFound, Unknown
+    Success, Unauthorized, ResourceNotFound, ProjectDoesNotExist, Unknown
 }

@@ -2,7 +2,7 @@
 
 public class ProjectModel
 {
-    public string BaseUrl { get; set; } = null!;
+    public string Organization { get; set; } = null!;
 
     public string PAT { get; set; } = null!;
 }

@@ -8,6 +8,7 @@ namespace VGManager.Services;
 public class ProjectService : IProjectService
 {
     private readonly IProjectRepository _projectRepository;
+    private readonly string BaseUrl = "https://dev.azure.com";
 
     public ProjectService(IProjectRepository projectRepository)
     {
@@ -16,6 +17,7 @@ public class ProjectService : IProjectService
 
     public async Task<IEnumerable<TeamProjectReference>> GetProjects(ProjectModel projectModel, CancellationToken cancellationToken = default)
     {
-        return await _projectRepository.GetProjects(projectModel.BaseUrl, projectModel.PAT, cancellationToken);
+        var url = $"{BaseUrl}/{projectModel.Organization}";
+        return await _projectRepository.GetProjects(url, projectModel.PAT, cancellationToken);
     }
 }

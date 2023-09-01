@@ -1,7 +1,7 @@
-﻿
-using Microsoft.TeamFoundation.DistributedTask.WebApi;
+﻿using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
+using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 
 namespace VGManager.Repository;
@@ -23,21 +23,36 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
         _connection = new VssConnection(uri, credentials);
     }
 
-    public async Task<IEnumerable<VariableGroup>> GetAll(CancellationToken cancellationToken = default)
+    public async Task<VariableGroupEntity> GetAll(CancellationToken cancellationToken = default)
     {
-        var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
-        var variableGroups = await httpClient.GetVariableGroupsAsync(_project, cancellationToken: cancellationToken);
-        return variableGroups;
+        try
+        {
+            var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+            var variableGroups = await httpClient.GetVariableGroupsAsync(_project, cancellationToken: cancellationToken);
+            return GetResult(Status.Success, variableGroups);
+        }
+        catch (VssUnauthorizedException)
+        {
+            return GetResult(Status.Unauthorized);
+        }
+        catch (VssServiceResponseException) 
+        {
+            return GetResult(Status.ResourceNotFound);
+        }
+        catch(Exception)
+        {
+            return GetResult(Status.Unknown);
+        }
     }
 
     public async Task Update(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default)
     {
         variableGroupParameters.VariableGroupProjectReferences = new List<VariableGroupProjectReference>()
         {
-            new VariableGroupProjectReference()
+            new()
             {
                 Name = variableGroupParameters.Name,
-                ProjectReference = new ProjectReference()
+                ProjectReference = new()
                 {
                     Name = _project
                 }
@@ -46,5 +61,23 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
 
         var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
         await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
+    }
+
+    private static VariableGroupEntity GetResult(Status status, IEnumerable<VariableGroup> variableGroups)
+    {
+        return new()
+        {
+            Status = status,
+            VariableGroups = variableGroups
+        };
+    }
+
+    private static VariableGroupEntity GetResult(Status status)
+    {
+        return new()
+        {
+            Status = status,
+            VariableGroups = Enumerable.Empty<VariableGroup>()
+        };
     }
 }

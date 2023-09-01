@@ -1,4 +1,5 @@
 ﻿using Microsoft.TeamFoundation.Core.WebApi;
+using VGManager.Repository.Entities;
 
 namespace VGManager.Services.Models.Projects;
 public class ProjectResultModel

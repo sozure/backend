@@ -1,4 +1,6 @@
-﻿namespace VGManager.Api.Projects.Responses;
+﻿using VGManager.Repository.Entities;
+
+namespace VGManager.Api.Projects.Responses;
 
 public class ProjectsResponse
 {

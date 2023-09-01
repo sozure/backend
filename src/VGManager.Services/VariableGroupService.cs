@@ -1,6 +1,7 @@
 ﻿using Microsoft.TeamFoundation;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
+using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups;
@@ -22,118 +23,155 @@ public class VariableGroupService : IVariableGroupService
         _variableGroupConnectionRepository.Setup(variableGroupModel.Organization, variableGroupModel.Project, variableGroupModel.PAT);
     }
 
-    public async Task<IEnumerable<VariableGroupResultModel>> GetVariableGroupsAsync(
+    public async Task<VariableGroupResultsModel> GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         )
     {
         var matchedVariableGroups = new List<VariableGroupResultModel>();
         var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
-        var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
-        Regex regex = null!;
+        var status = vgEntity.Status;
 
-        var valueFilter = variableGroupModel.ValueFilter;
-
-        if (valueFilter is not null)
+        if(status == Status.Success)
         {
-            regex = new Regex(valueFilter);
-        }
+            var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
+            Regex regex = null!;
 
-        foreach (var filteredVariableGroup in filteredVariableGroups)
+            var valueFilter = variableGroupModel.ValueFilter;
+
+            if (valueFilter is not null)
+            {
+                regex = new Regex(valueFilter);
+            }
+
+            foreach (var filteredVariableGroup in filteredVariableGroups)
+            {
+                GetVariables(variableGroupModel.KeyFilter, valueFilter, matchedVariableGroups, regex, filteredVariableGroup);
+            }
+            return new()
+            {
+                Status = status,
+                VariableGroups = matchedVariableGroups,
+            };
+        } else
         {
-            GetVariables(variableGroupModel.KeyFilter, valueFilter, matchedVariableGroups, regex, filteredVariableGroup);
+            return new()
+            {
+                Status = status,
+                VariableGroups = Enumerable.Empty<VariableGroupResultModel>(),
+            };
         }
-        return matchedVariableGroups;
     }
 
-    public async Task UpdateVariableGroupsAsync(VariableGroupUpdateModel variableGroupUpdateModel, CancellationToken cancellationToken = default)
+    public async Task<Status> UpdateVariableGroupsAsync(
+        VariableGroupUpdateModel variableGroupUpdateModel, 
+        CancellationToken cancellationToken = default
+        )
     {
         Console.WriteLine("Variable group name, Key, Old value, New value");
         var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
-        var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter);
+        var status = vgEntity.Status;
 
-        foreach (var filteredVariableGroup in filteredVariableGroups)
+        if(status == Status.Success)
         {
-            var variableGroupName = filteredVariableGroup.Name;
-            var updateIsNeeded = UpdateVariables(variableGroupUpdateModel, filteredVariableGroup, variableGroupName);
+            var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter);
 
-            if (updateIsNeeded)
+            foreach (var filteredVariableGroup in filteredVariableGroups)
             {
-                var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
-                Console.WriteLine($"{variableGroupName} updated.");
+                var variableGroupName = filteredVariableGroup.Name;
+                var updateIsNeeded = UpdateVariables(variableGroupUpdateModel, filteredVariableGroup, variableGroupName);
+
+                if (updateIsNeeded)
+                {
+                    var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
+                    await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
+                    Console.WriteLine($"{variableGroupName} updated.");
+                }
             }
         }
+        return status;
     }
 
-    public async Task AddVariableAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default)
+    public async Task<Status> AddVariableAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default)
     {
         var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
+        var status = vgEntity.Status;
 
-        IEnumerable<VariableGroup> filteredVariableGroups = null!;
-        var keyFilter = variableGroupAddModel.KeyFilter;
-        var variableGroupFilter = variableGroupAddModel.VariableGroupFilter;
-        var key = variableGroupAddModel.Key;
-        var value = variableGroupAddModel.Value;
-
-        if (keyFilter is not null)
+        if (status == Status.Success)
         {
-            var regex = new Regex(keyFilter);
+            IEnumerable<VariableGroup> filteredVariableGroups = null!;
+            var keyFilter = variableGroupAddModel.KeyFilter;
+            var variableGroupFilter = variableGroupAddModel.VariableGroupFilter;
+            var key = variableGroupAddModel.Key;
+            var value = variableGroupAddModel.Value;
 
-            filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter)
-                .Select(vg => vg)
-                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key)).Count > 0);
-        }
-        else
-        {
-            filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter);
-        }
-
-        foreach (var filteredVariableGroup in filteredVariableGroups)
-        {
-            var variableGroupName = filteredVariableGroup.Name;
-            try
+            if (keyFilter is not null)
             {
-                filteredVariableGroup.Variables.Add(key, value);
-                var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
-                Console.WriteLine($"{variableGroupName}, {key}, {value}");
+                var regex = new Regex(keyFilter);
+
+                filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter)
+                    .Select(vg => vg)
+                    .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key)).Count > 0);
             }
-            catch (ArgumentException)
+            else
             {
-                Console.WriteLine($"An item with the same '{key}' key has already been added to {variableGroupName}");
+                filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter);
             }
 
-            catch (TeamFoundationServerInvalidRequestException)
+            foreach (var filteredVariableGroup in filteredVariableGroups)
             {
-                Console.WriteLine($"Wasn't added to {variableGroupName} because of TeamFoundationServerInvalidRequestException");
+                var variableGroupName = filteredVariableGroup.Name;
+                try
+                {
+                    filteredVariableGroup.Variables.Add(key, value);
+                    var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
+                    await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
+                    Console.WriteLine($"{variableGroupName}, {key}, {value}");
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine($"An item with the same '{key}' key has already been added to {variableGroupName}");
+                }
+
+                catch (TeamFoundationServerInvalidRequestException)
+                {
+                    Console.WriteLine($"Wasn't added to {variableGroupName} because of TeamFoundationServerInvalidRequestException");
+                }
             }
         }
+        return status;
     }
 
-    public async Task DeleteVariableAsync(VariableGroupDeleteModel variableGroupDeleteModel, CancellationToken cancellationToken = default)
+    public async Task<Status> DeleteVariableAsync(VariableGroupDeleteModel variableGroupDeleteModel, CancellationToken cancellationToken = default)
     {
         Console.WriteLine("Variable group name, Deleted Key, Deleted Value");
         var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
-        var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupDeleteModel.VariableGroupFilter);
+        var status = vgEntity.Status;
 
-        foreach (var filteredVariableGroup in filteredVariableGroups)
+        if(status == Status.Success)
         {
-            var variableGroupName = filteredVariableGroup.Name;
+            var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupDeleteModel.VariableGroupFilter);
 
-            var deleteIsNeeded = DeleteVariables(
-                filteredVariableGroup,
-                variableGroupDeleteModel.ValueFilter,
-                variableGroupDeleteModel.KeyFilter,
-                variableGroupName
-                );
-
-            if (deleteIsNeeded)
+            foreach (var filteredVariableGroup in filteredVariableGroups)
             {
-                var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
+                var variableGroupName = filteredVariableGroup.Name;
+
+                var deleteIsNeeded = DeleteVariables(
+                    filteredVariableGroup,
+                    variableGroupDeleteModel.ValueFilter,
+                    variableGroupDeleteModel.KeyFilter,
+                    variableGroupName
+                    );
+
+                if (deleteIsNeeded)
+                {
+                    var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
+                    await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
+                }
             }
         }
+
+        return status;
     }
 
     protected static IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter)

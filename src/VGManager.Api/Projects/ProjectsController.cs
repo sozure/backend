@@ -8,12 +8,12 @@ namespace VGManager.Api.Projects;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
-public class ProjectController : ControllerBase
+public class ProjectsController : ControllerBase
 {
     private readonly IProjectService _projectService;
     private readonly IMapper _mapper;
 
-    public ProjectController(IProjectService projectService, IMapper mapper)
+    public ProjectsController(IProjectService projectService, IMapper mapper)
     {
         _projectService = projectService;
         _mapper = mapper;

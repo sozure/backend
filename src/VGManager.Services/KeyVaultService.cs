@@ -35,34 +35,12 @@ public class KeyVaultService : IKeyVaultService
 
             foreach (var filteredSecret in filteredSecrets)
             {
-                if (filteredSecret is not null)
-                {
-                    var secretName = filteredSecret.Secret?.Name ?? string.Empty;
-                    var secretValue = filteredSecret.Secret?.Value ?? string.Empty;
-
-                    if(!string.IsNullOrEmpty(secretName) && !string.IsNullOrEmpty(secretValue))
-                    {
-                        secretList.Add(new()
-                        {
-                            SecretName = secretName,
-                            SecretValue = secretValue
-                        });
-                    }
-                }
+                CollectSecrets(secretList, filteredSecret);
             }
 
-            return new()
-            {
-                Status = status,
-                Secrets = secretList
-            };
+            return GetResult(status, secretList);
         }
-
-        return new()
-        {
-            Status = status,
-            Secrets = secretList
-        };
+        return GetResult(status, secretList);
     }
 
     public DeletedSecretResultsModel GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default)
@@ -83,18 +61,11 @@ public class KeyVaultService : IKeyVaultService
                     DeletedOn = filteredSecret.DeletedOn
                 });
             }
-            return new()
-            {
-                Status = status,
-                DeletedSecrets = secretList
-            };
+            return GetResult(status, secretList);
         }
-        return new()
-        {
-            Status = status,
-            DeletedSecrets = Enumerable.Empty<DeletedSecretResultModel>()
-        };
+        return GetResult(status);
     }
+    
 
     public async Task<Status> DeleteAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
@@ -167,12 +138,51 @@ public class KeyVaultService : IKeyVaultService
                 }
             }
         }
+        return deletionCounter1 == deletionCounter2 ? Status.Success : Status.Unknown;
+    }
 
-        if (deletionCounter1 != deletionCounter2)
+    private static void CollectSecrets(List<SecretResultModel> secretList, SecretEntity? filteredSecret)
+    {
+        if (filteredSecret is not null)
         {
-            return Status.Unknown;
-        }
+            var secretName = filteredSecret.Secret?.Name ?? string.Empty;
+            var secretValue = filteredSecret.Secret?.Value ?? string.Empty;
 
-        return Status.Success;
+            if (!string.IsNullOrEmpty(secretName) && !string.IsNullOrEmpty(secretValue))
+            {
+                secretList.Add(new()
+                {
+                    SecretName = secretName,
+                    SecretValue = secretValue
+                });
+            }
+        }
+    }
+
+    private static DeletedSecretResultsModel GetResult(Status status)
+    {
+        return new()
+        {
+            Status = status,
+            DeletedSecrets = Enumerable.Empty<DeletedSecretResultModel>()
+        };
+    }
+
+    private static DeletedSecretResultsModel GetResult(Status status, IEnumerable<DeletedSecretResultModel> secretList)
+    {
+        return new()
+        {
+            Status = status,
+            DeletedSecrets = secretList
+        };
+    }
+
+    private static SecretResultsModel GetResult(Status status, IEnumerable<SecretResultModel> secretList)
+    {
+        return new()
+        {
+            Status = status,
+            Secrets = secretList
+        };
     }
 }

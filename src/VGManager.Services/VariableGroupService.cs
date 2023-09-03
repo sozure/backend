@@ -75,6 +75,8 @@ public class VariableGroupService : IVariableGroupService
         if(status == Status.Success)
         {
             var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter);
+            var updateCounter1 = 0;
+            var updateCounter2 = 0;
 
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
@@ -83,11 +85,23 @@ public class VariableGroupService : IVariableGroupService
 
                 if (updateIsNeeded)
                 {
+                    updateCounter2++;
                     var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                    status = await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
-                    Console.WriteLine($"{variableGroupName} updated.");
+
+                    var updateStatus = await _variableGroupConnectionRepository.Update(
+                        variableGroupParameters, 
+                        filteredVariableGroup.Id, 
+                        cancellationToken
+                        );
+                    
+                    if(updateStatus == Status.Success)
+                    {
+                        updateCounter1++;
+                        Console.WriteLine($"{variableGroupName} updated.");
+                    }
                 }
             }
+            return updateCounter1 == updateCounter2 ? Status.Success: Status.Unknown;
         }
         return status;
     }
@@ -118,26 +132,27 @@ public class VariableGroupService : IVariableGroupService
                 filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter);
             }
 
+            var updateCounter = 0;
+
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
                 var variableGroupName = filteredVariableGroup.Name;
-                try
+                filteredVariableGroup.Variables.Add(key, value);
+                var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
+
+                var updateStatus = await _variableGroupConnectionRepository.Update(
+                    variableGroupParameters, 
+                    filteredVariableGroup.Id, 
+                    cancellationToken
+                    );
+                
+                if(updateStatus == Status.Success)
                 {
-                    filteredVariableGroup.Variables.Add(key, value);
-                    var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                    status = await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
+                    updateCounter++;
                     Console.WriteLine($"{variableGroupName}, {key}, {value}");
                 }
-                catch (ArgumentException)
-                {
-                    Console.WriteLine($"An item with the same '{key}' key has already been added to {variableGroupName}");
-                }
-
-                catch (TeamFoundationServerInvalidRequestException)
-                {
-                    Console.WriteLine($"Wasn't added to {variableGroupName} because of TeamFoundationServerInvalidRequestException");
-                }
             }
+            return updateCounter == filteredVariableGroups.Count() ? Status.Success : Status.Unknown;
         }
         return status;
     }
@@ -151,6 +166,8 @@ public class VariableGroupService : IVariableGroupService
         if(status == Status.Success)
         {
             var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupDeleteModel.VariableGroupFilter);
+            var deletionCounter1 = 0;
+            var deletionCounter2 = 0;
 
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
@@ -165,22 +182,34 @@ public class VariableGroupService : IVariableGroupService
 
                 if (deleteIsNeeded)
                 {
+                    deletionCounter1++;
                     var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-                    status = await _variableGroupConnectionRepository.Update(variableGroupParameters, filteredVariableGroup.Id, cancellationToken);
+
+                    var updateStatus = await _variableGroupConnectionRepository.Update(
+                        variableGroupParameters, 
+                        filteredVariableGroup.Id, 
+                        cancellationToken
+                        );
+
+                    if(updateStatus == Status.Success)
+                    {
+                        deletionCounter2++;
+                    }
                 }
             }
+            return deletionCounter1 == deletionCounter2? Status.Success : Status.Unknown;
         }
 
         return status;
     }
 
-    protected static IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter)
+    private static IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter)
     {
         var regex = new Regex(filter);
         return variableGroups.Where(vg => regex.IsMatch(vg.Name)).ToList();
     }
 
-    protected static IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, string filter)
+    private static IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, string filter)
     {
         var regex = new Regex(filter);
         return variables.Where(v => regex.IsMatch(v.Key)).ToList();

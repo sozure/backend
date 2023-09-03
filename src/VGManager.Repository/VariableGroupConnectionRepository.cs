@@ -1,4 +1,5 @@
-﻿using Microsoft.TeamFoundation.Core.WebApi;
+﻿using Microsoft.TeamFoundation;
+using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
@@ -81,6 +82,16 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
         catch (ProjectDoesNotExistWithNameException)
         {
             return Status.ProjectDoesNotExist;
+        }
+        catch (ArgumentException)
+        {
+            Console.WriteLine($"An item with the same key has already been added to {variableGroupParameters.Name}");
+            return Status.Unknown;
+        }
+        catch (TeamFoundationServerInvalidRequestException)
+        {
+            Console.WriteLine($"Wasn't added to {variableGroupParameters.Name} because of TeamFoundationServerInvalidRequestException");
+            return Status.Unknown;
         }
         catch (Exception)
         {

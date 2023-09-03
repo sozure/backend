@@ -24,13 +24,12 @@ public class ProjectsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<ProjectsResponse>>> GetAsync(
+    public async Task<ActionResult<ProjectsResponse>> GetAsync(
         [FromQuery] ProjectRequest request,
         CancellationToken cancellationToken
     )
     {
         var projectModel = _mapper.Map<ProjectModel>(request);
-
         var project = await _projectService.GetProjects(projectModel, cancellationToken);
 
         var result = _mapper.Map<ProjectsResponse>(project);

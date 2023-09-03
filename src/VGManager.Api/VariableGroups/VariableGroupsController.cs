@@ -28,7 +28,7 @@ public class VariableGroupsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<VariableGroupGetResponses>>> GetAsync(
+    public async Task<ActionResult<VariableGroupGetResponses>> GetAsync(
         [FromQuery] VariableGroupGetRequest request,
         CancellationToken cancellationToken
     )
@@ -46,7 +46,7 @@ public class VariableGroupsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<VariableGroupGetResponses>>> UpdateAsync(
+    public async Task<ActionResult<VariableGroupGetResponses>> UpdateAsync(
         [FromBody] VariableGroupUpdateRequest request,
         CancellationToken cancellationToken
     )
@@ -66,7 +66,7 @@ public class VariableGroupsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<VariableGroupGetResponses>>> AddAsync(
+    public async Task<ActionResult<VariableGroupGetResponses>> AddAsync(
         [FromBody] VariableGroupAddRequest request,
         CancellationToken cancellationToken
     )
@@ -87,7 +87,7 @@ public class VariableGroupsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<VariableGroupGetResponses>>> DeleteAsync(
+    public async Task<ActionResult<VariableGroupGetResponses>> DeleteAsync(
         [FromBody] VariableGroupDeleteRequest request,
         CancellationToken cancellationToken
     )

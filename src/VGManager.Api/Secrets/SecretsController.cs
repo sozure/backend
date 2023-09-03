@@ -25,7 +25,7 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<SecretsGetResponse>>> GetAsync(
+    public async Task<ActionResult<SecretsGetResponse>> GetAsync(
         [FromQuery] SecretGetRequest request,
         CancellationToken cancellationToken
         )
@@ -41,7 +41,7 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<IEnumerable<DeletedSecretsGetResponse>> GetDeleted(
+    public ActionResult<DeletedSecretsGetResponse> GetDeleted(
         [FromQuery] SecretGetRequest request,
         CancellationToken cancellationToken
         )
@@ -57,7 +57,7 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<SecretsGetResponse>>> DeleteAsync(
+    public async Task<ActionResult<SecretsGetResponse>> DeleteAsync(
         [FromBody] SecretDeleteRequest request,
         CancellationToken cancellationToken
         )
@@ -74,7 +74,7 @@ public class SecretsController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<SecretsGetResponse>>> RecoverAsync(
+    public async Task<ActionResult<SecretsGetResponse>> RecoverAsync(
         [FromBody] SecretDeleteRequest request,
         CancellationToken cancellationToken
         )

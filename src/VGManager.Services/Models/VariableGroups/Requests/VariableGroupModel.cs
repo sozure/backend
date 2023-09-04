@@ -12,5 +12,7 @@ public class VariableGroupModel
 
     public string KeyFilter { get; set; } = null!;
 
+    public bool ContainsSecrets { get; set; }
+
     public string? ValueFilter { get; set; }
 }

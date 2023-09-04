@@ -12,6 +12,7 @@ namespace VGManager.Services;
 public class VariableGroupService : IVariableGroupService
 {
     private readonly IVariableGroupConnectionRepository _variableGroupConnectionRepository;
+    private readonly string _notContains = "Secrets";
 
     public VariableGroupService(IVariableGroupConnectionRepository variableGroupConnectionRepository)
     {
@@ -34,9 +35,11 @@ public class VariableGroupService : IVariableGroupService
 
         if(status == Status.Success)
         {
-            var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
+            var filteredVariableGroups = variableGroupModel.ContainsSecrets ? 
+                Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter): 
+                Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter, _notContains);
+            
             Regex regex = null!;
-
             var valueFilter = variableGroupModel.ValueFilter;
 
             if (valueFilter is not null)
@@ -74,7 +77,7 @@ public class VariableGroupService : IVariableGroupService
 
         if(status == Status.Success)
         {
-            var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter);
+            var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter, _notContains);
             var updateCounter1 = 0;
             var updateCounter2 = 0;
 
@@ -123,13 +126,13 @@ public class VariableGroupService : IVariableGroupService
             {
                 var regex = new Regex(keyFilter);
 
-                filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter)
+                filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter, _notContains)
                     .Select(vg => vg)
                     .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key)).Count > 0);
             }
             else
             {
-                filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter);
+                filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter, _notContains);
             }
 
             var updateCounter = 0;
@@ -165,7 +168,7 @@ public class VariableGroupService : IVariableGroupService
 
         if(status == Status.Success)
         {
-            var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupDeleteModel.VariableGroupFilter);
+            var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupDeleteModel.VariableGroupFilter, _notContains);
             var deletionCounter1 = 0;
             var deletionCounter2 = 0;
 
@@ -201,6 +204,12 @@ public class VariableGroupService : IVariableGroupService
         }
 
         return status;
+    }
+
+    private static IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter, string notContainsFilter)
+    {
+        var regex = new Regex(filter);
+        return variableGroups.Where(vg => regex.IsMatch(vg.Name) && !vg.Name.Contains(notContainsFilter)).ToList();
     }
 
     private static IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter)

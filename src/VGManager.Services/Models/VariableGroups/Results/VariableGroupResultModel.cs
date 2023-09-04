@@ -1,6 +1,6 @@
-﻿namespace VGManager.Services.Models.MatchedModels;
+﻿namespace VGManager.Services.Models.VariableGroups.Results;
 
-public class MatchedVariableGroup
+public class VariableGroupResultModel
 {
     public string VariableGroupName { get; set; } = null!;
     public string VariableGroupKey { get; set; } = null!;

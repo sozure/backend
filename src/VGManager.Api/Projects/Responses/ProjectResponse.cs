@@ -1,4 +1,4 @@
-﻿namespace VGManager.Api.Projects;
+﻿namespace VGManager.Api.Projects.Responses;
 
 public class ProjectResponse
 {

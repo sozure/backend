@@ -1,7 +1,9 @@
-﻿
+﻿using Microsoft.TeamFoundation;
+using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
+using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 
 namespace VGManager.Repository;
@@ -23,28 +25,95 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
         _connection = new VssConnection(uri, credentials);
     }
 
-    public async Task<IEnumerable<VariableGroup>> GetAll(CancellationToken cancellationToken = default)
+    public async Task<VariableGroupEntity> GetAll(CancellationToken cancellationToken = default)
     {
-        var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
-        var variableGroups = await httpClient.GetVariableGroupsAsync(_project, cancellationToken: cancellationToken);
-        return variableGroups;
+        try
+        {
+            var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+            var variableGroups = await httpClient.GetVariableGroupsAsync(_project, cancellationToken: cancellationToken);
+            return GetResult(Status.Success, variableGroups);
+        }
+        catch (VssUnauthorizedException)
+        {
+            return GetResult(Status.Unauthorized);
+        }
+        catch (VssServiceResponseException) 
+        {
+            return GetResult(Status.ResourceNotFound);
+        }
+        catch (ProjectDoesNotExistWithNameException)
+        {
+            return GetResult(Status.ProjectDoesNotExist);
+        }
+        catch(Exception)
+        {
+            return GetResult(Status.Unknown);
+        }
     }
 
-    public async Task Update(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default)
+    public async Task<Status> Update(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default)
     {
         variableGroupParameters.VariableGroupProjectReferences = new List<VariableGroupProjectReference>()
         {
-            new VariableGroupProjectReference()
+            new()
             {
                 Name = variableGroupParameters.Name,
-                ProjectReference = new ProjectReference()
+                ProjectReference = new()
                 {
                     Name = _project
                 }
             }
         };
 
-        var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
-        await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
+        try
+        {
+            var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+            await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
+            return Status.Success;
+        }
+        catch (VssUnauthorizedException)
+        {
+            return Status.Unauthorized;
+        }
+        catch (VssServiceResponseException)
+        {
+            return Status.ResourceNotFound;
+        }
+        catch (ProjectDoesNotExistWithNameException)
+        {
+            return Status.ProjectDoesNotExist;
+        }
+        catch (ArgumentException)
+        {
+            Console.WriteLine($"An item with the same key has already been added to {variableGroupParameters.Name}");
+            return Status.Unknown;
+        }
+        catch (TeamFoundationServerInvalidRequestException)
+        {
+            Console.WriteLine($"Wasn't added to {variableGroupParameters.Name} because of TeamFoundationServerInvalidRequestException");
+            return Status.Unknown;
+        }
+        catch (Exception)
+        {
+            return Status.Unknown;
+        }
+    }
+
+    private static VariableGroupEntity GetResult(Status status, IEnumerable<VariableGroup> variableGroups)
+    {
+        return new()
+        {
+            Status = status,
+            VariableGroups = variableGroups
+        };
+    }
+
+    private static VariableGroupEntity GetResult(Status status)
+    {
+        return new()
+        {
+            Status = status,
+            VariableGroups = Enumerable.Empty<VariableGroup>()
+        };
     }
 }

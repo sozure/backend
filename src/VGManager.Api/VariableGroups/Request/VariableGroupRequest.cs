@@ -19,5 +19,8 @@ public abstract class VariableGroupRequest
     [Required]
     public string KeyFilter { get; set; } = null!;
 
+    [Required]
+    public bool ContainsSecrets { get; set; }
+
     public string? ValueFilter { get; set; }
 }

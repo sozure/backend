@@ -1,7 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 
-namespace VGManager.Services.Models;
+namespace VGManager.Services.Models.VariableGroups.Requests;
 
 public class VariableGroupAddModel : VariableGroupModel
 {

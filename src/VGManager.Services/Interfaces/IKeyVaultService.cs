@@ -1,12 +1,13 @@
-﻿using VGManager.Services.Models.MatchedModels;
+﻿using VGManager.Repository.Entities;
+using VGManager.Services.Models.Secrets;
 
 namespace VGManager.Services.Interfaces;
 
 public interface IKeyVaultService
 {
     void SetupConnectionRepository(string keyVaultName);
-    Task<IEnumerable<MatchedSecret>> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default);
-    IEnumerable<MatchedDeletedSecret> GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default);
-    Task RecoverSecretAsync(string secretFilter, CancellationToken cancellationToken = default);
-    Task DeleteAsync(string secretFilter, CancellationToken cancellationToken = default);
+    Task<SecretResultsModel> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default);
+    DeletedSecretResultsModel GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default);
+    Task<Status> RecoverSecretAsync(string secretFilter, CancellationToken cancellationToken = default);
+    Task<Status> DeleteAsync(string secretFilter, CancellationToken cancellationToken = default);
 }

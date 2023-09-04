@@ -1,6 +1,6 @@
-﻿namespace VGManager.Services.Models.MatchedModels;
+﻿namespace VGManager.Services.Models.Secrets;
 
-public class MatchedDeletedSecret
+public class DeletedSecretResultModel
 {
     public string SecretName { get; set; } = null!;
     public DateTimeOffset? DeletedOn { get; set; }

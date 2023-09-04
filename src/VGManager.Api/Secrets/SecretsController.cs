@@ -5,7 +5,7 @@ using VGManager.Api.Secrets.Request;
 using VGManager.Api.Secrets.Response;
 using VGManager.Services.Interfaces;
 
-namespace VGApi.Api.Secrets;
+namespace VGManager.Api.Controllers;
 
 [ApiVersion("1.0")]
 [Route("api/[controller]")]

@@ -1,6 +1,7 @@
 ﻿using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
+using Serilog;
 using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 
@@ -8,6 +9,7 @@ namespace VGManager.Repository;
 public class ProjectRepository : IProjectRepository
 {
     private ProjectHttpClient? _projectHttpClient;
+    private readonly ILogger _logger = Log.ForContext<ProjectRepository>();
 
     public async Task<ProjectEntity> GetProjects(string baseUrl, string pat, CancellationToken cancellationToken = default)
     {
@@ -17,17 +19,23 @@ public class ProjectRepository : IProjectRepository
             var teamProjectReferences = await _projectHttpClient!.GetProjects();
             _projectHttpClient.Dispose();
             return GetResult(Status.Success, teamProjectReferences);
-        } catch (VssUnauthorizedException)
+        } catch (VssUnauthorizedException ex)
         {
-            return GetResult(Status.Unauthorized);
+            var status = Status.Unauthorized;
+            _logger.Error(ex, "Couldn't get projects. Status: {status}.", status);
+            return GetResult(status);
         }
-        catch (VssServiceResponseException)
+        catch (VssServiceResponseException ex)
         {
-            return GetResult(Status.ResourceNotFound);
+            var status = Status.ResourceNotFound;
+            _logger.Error(ex, "Couldn't get projects. Status: {status}.", status);
+            return GetResult(status);
         }
-        catch (Exception) 
+        catch (Exception ex) 
         {
-            return GetResult(Status.Unknown);
+            var status = Status.Unknown;
+            _logger.Error(ex, "Couldn't get projects. Status: {status}.", status);
+            return GetResult(status);
         }
     }
 
@@ -43,7 +51,7 @@ public class ProjectRepository : IProjectRepository
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            _logger.Error(ex, "Couldn't establish connection.");
             throw;
         }
     }

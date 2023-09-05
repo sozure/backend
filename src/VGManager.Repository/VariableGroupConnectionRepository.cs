@@ -1,8 +1,11 @@
-﻿using Microsoft.TeamFoundation;
+﻿using Microsoft.Azure.Pipelines.WebApi;
+using Microsoft.TeamFoundation;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
+using Serilog;
+using SerilogLog = Serilog.Log;
 using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 
@@ -12,6 +15,7 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
 {
     private VssConnection _connection = null!;
     private string _project = null!;
+    private readonly ILogger _logger = SerilogLog.ForContext<VariableGroupConnectionRepository>();
 
     public void Setup(string organization, string project, string pat)
     {
@@ -33,21 +37,29 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
             var variableGroups = await httpClient.GetVariableGroupsAsync(_project, cancellationToken: cancellationToken);
             return GetResult(Status.Success, variableGroups);
         }
-        catch (VssUnauthorizedException)
+        catch (VssUnauthorizedException ex)
         {
-            return GetResult(Status.Unauthorized);
+            var status = Status.Unauthorized;
+            _logger.Error(ex, "Couldn't get variable groups. Status: {status}.", status);
+            return GetResult(status);
         }
-        catch (VssServiceResponseException) 
+        catch (VssServiceResponseException ex) 
         {
-            return GetResult(Status.ResourceNotFound);
+            var status = Status.ResourceNotFound;
+            _logger.Error(ex, "Couldn't get variable groups. Status: {status}.", status);
+            return GetResult(status);
         }
-        catch (ProjectDoesNotExistWithNameException)
+        catch (ProjectDoesNotExistWithNameException ex)
         {
-            return GetResult(Status.ProjectDoesNotExist);
+            var status = Status.ProjectDoesNotExist;
+            _logger.Error(ex, "Couldn't get variable groups. Status: {status}.", status);
+            return GetResult(status);
         }
-        catch(Exception)
+        catch(Exception ex)
         {
-            return GetResult(Status.Unknown);
+            var status = Status.Unknown;
+            _logger.Error(ex, "Couldn't get variable groups. Status: {status}.", status);
+            return GetResult(status);
         }
     }
 
@@ -71,31 +83,39 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
             await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
             return Status.Success;
         }
-        catch (VssUnauthorizedException)
+        catch (VssUnauthorizedException ex)
         {
-            return Status.Unauthorized;
+            var status = Status.Unauthorized;
+            _logger.Error(ex, "Couldn't update variable groups. Status: {status}.", status);
+            return status;
         }
-        catch (VssServiceResponseException)
+        catch (VssServiceResponseException ex)
         {
-            return Status.ResourceNotFound;
+            var status = Status.ResourceNotFound;
+            _logger.Error(ex, "Couldn't update variable groups. Status: {status}.", status);
+            return status;
         }
-        catch (ProjectDoesNotExistWithNameException)
+        catch (ProjectDoesNotExistWithNameException ex)
         {
-            return Status.ProjectDoesNotExist;
+            var status = Status.ProjectDoesNotExist;
+            _logger.Error(ex, "Couldn't update variable groups. Status: {status}.", status);
+            return status;
         }
-        catch (ArgumentException)
+        catch (ArgumentException ex)
         {
-            Console.WriteLine($"An item with the same key has already been added to {variableGroupParameters.Name}");
+            _logger.Error(ex, $"An item with the same key has already been added to {variableGroupParameters.Name}.");
             return Status.Unknown;
         }
-        catch (TeamFoundationServerInvalidRequestException)
+        catch (TeamFoundationServerInvalidRequestException ex)
         {
-            Console.WriteLine($"Wasn't added to {variableGroupParameters.Name} because of TeamFoundationServerInvalidRequestException");
+            _logger.Error(ex, $"Wasn't added to {variableGroupParameters.Name} because of TeamFoundationServerInvalidRequestException.");
             return Status.Unknown;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return Status.Unknown;
+            var status = Status.Unknown;
+            _logger.Error(ex, "Couldn't update variable groups. Status: {status}.", status);
+            return status;
         }
     }
 

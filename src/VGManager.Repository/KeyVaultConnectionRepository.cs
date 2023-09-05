@@ -1,6 +1,6 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using Microsoft.TeamFoundation.Core.WebApi;
+using Serilog;
 using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 
@@ -10,6 +10,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
 {
     private SecretClient _secretClient = null!;
     public string KeyVaultName { get; set; } = null!;
+    private readonly ILogger _logger = Log.ForContext<KeyVaultConnectionRepository>();
 
     public void Setup(string keyVaultName)
     {
@@ -27,13 +28,17 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
             result = await _secretClient.GetSecretAsync(name, cancellationToken: cancellationToken);
             return GetSecretResult(result);
         }
-        catch (Azure.RequestFailedException)
+        catch (Azure.RequestFailedException ex)
         {
-            return GetSecretResult(Status.Unknown);
+            var status = Status.Unknown;
+            _logger.Error(ex, "Couldn't get secret. Status: {status}.", status);
+            return GetSecretResult(status);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return GetSecretResult(Status.Unknown);
+            var status = Status.Unknown;
+            _logger.Error(ex, "Couldn't get secret. Status: {status}.", status);
+            return GetSecretResult(status);
         }
     }
 
@@ -44,9 +49,11 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
             await _secretClient.StartDeleteSecretAsync(name, cancellationToken);
             return Status.Success;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return Status.Unknown;
+            var status = Status.Unknown;
+            _logger.Error(ex, "Couldn't delete secret. Status: {status}.", status);
+            return status;
         }
     }
 
@@ -63,9 +70,11 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
             }
             return GetSecretsResult(results.ToList());
 
-        } catch (Exception)
+        } catch (Exception ex)
         {
-            return GetSecretsResult(Status.Unknown);
+            var status = Status.Unknown;
+            _logger.Error(ex, "Couldn't get secrets. Status: {status}.", status);
+            return GetSecretsResult(status);
         }
     }
 
@@ -95,9 +104,11 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
 
             return Status.Success;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return Status.Unknown;
+            var status = Status.Unknown;
+            _logger.Error(ex, "Couldn't add secret. Status: {status}.", status);
+            return status;
         }
     }
 
@@ -108,9 +119,11 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
             await _secretClient.StartRecoverDeletedSecretAsync(name, cancellationToken);
             return Status.Success;
         }
-        catch (Exception) 
+        catch (Exception ex) 
         {
-            return Status.Unknown;
+            var status = Status.Unknown;
+            _logger.Error(ex, "Couldn't recover secret. Status: {status}.", status);
+            return status;
         }
     }
 
@@ -121,9 +134,11 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
             var deletedSecrets = _secretClient.GetDeletedSecrets(cancellationToken).ToList();
             return GetDeletedSecretsResult(deletedSecrets);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return GetDeletedSecretsResult(Status.Unknown);
+            var status = Status.Unknown;
+            _logger.Error(ex, "Couldn't get deleted secrets. Status: {status}.", status);
+            return GetDeletedSecretsResult(status);
         }
     }
 

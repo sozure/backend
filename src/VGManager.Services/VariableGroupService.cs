@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.TeamFoundation.DistributedTask.WebApi;
+﻿using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;

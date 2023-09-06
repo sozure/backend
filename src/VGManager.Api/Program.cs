@@ -5,7 +5,6 @@ using VGManager.Repository;
 using VGManager.Repository.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Settings;
 using ServiceProfiles = VGManager.Services.MapperProfiles;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";

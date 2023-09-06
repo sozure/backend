@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VGManager.Api.VariableGroups.Request.FromSingleProject;
+namespace VGManager.Api.VariableGroups.Request;
 
-public class VariableGroupAddSingleRequest : VariableGroupSingleRequest
+public class VariableGroupAddRequest : VariableGroupRequest
 {
     [Required]
     public string Key { get; set; } = null!;

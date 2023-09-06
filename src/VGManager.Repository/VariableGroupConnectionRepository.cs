@@ -20,11 +20,11 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
         _logger = logger;
     }
 
-    public void Setup(string organization, string project, string pat)
+    public void Setup(string baseUrl, string organization, string project, string pat)
     {
         _project = project;
 
-        var uriString = $"https://dev.azure.com/{organization}";
+        var uriString = $"{baseUrl}/{organization}";
         Uri uri;
         Uri.TryCreate(uriString, UriKind.Absolute, out uri!);
 

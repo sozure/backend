@@ -1,6 +1,6 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using Serilog;
+using Microsoft.Extensions.Logging;
 using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 
@@ -9,15 +9,18 @@ namespace VGManager.Repository;
 public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
 {
     private SecretClient _secretClient = null!;
-    public string KeyVaultName { get; set; } = null!;
-    private readonly ILogger _logger = Log.ForContext<KeyVaultConnectionRepository>();
+    private readonly ILogger _logger;
+
+    public KeyVaultConnectionRepository(ILogger<KeyVaultConnectionRepository> logger)
+    {
+        _logger = logger;
+    }
 
     public void Setup(string keyVaultName)
     {
         var uri = new Uri($"https://{keyVaultName.ToLower()}.vault.azure.net/");
         var defaultazCred = new DefaultAzureCredential();
         _secretClient = new SecretClient(uri, defaultazCred);
-        KeyVaultName = keyVaultName;
     }
 
     public async Task<SecretEntity> GetSecret(string name, CancellationToken cancellationToken = default)
@@ -25,19 +28,19 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
         KeyVaultSecret result;
         try
         {
-            result = await _secretClient.GetSecretAsync(name, cancellationToken: cancellationToken);
+            result = await _secretClient.GetSecretAsync(name);
             return GetSecretResult(result);
         }
         catch (Azure.RequestFailedException ex)
         {
             var status = Status.Unknown;
-            _logger.Error(ex, "Couldn't get secret. Status: {status}.", status);
+            _logger.LogError(ex, "Couldn't get secret. Status: {status}.", status);
             return GetSecretResult(status);
         }
         catch (Exception ex)
         {
             var status = Status.Unknown;
-            _logger.Error(ex, "Couldn't get secret. Status: {status}.", status);
+            _logger.LogError(ex, "Couldn't get secret. Status: {status}.", status);
             return GetSecretResult(status);
         }
     }
@@ -52,7 +55,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
         catch (Exception ex)
         {
             var status = Status.Unknown;
-            _logger.Error(ex, "Couldn't delete secret. Status: {status}.", status);
+            _logger.LogError(ex, "Couldn't delete secret. Status: {status}.", status);
             return status;
         }
     }
@@ -73,7 +76,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
         } catch (Exception ex)
         {
             var status = Status.Unknown;
-            _logger.Error(ex, "Couldn't get secrets. Status: {status}.", status);
+            _logger.LogError(ex, "Couldn't get secrets. Status: {status}.", status);
             return GetSecretsResult(status);
         }
     }
@@ -107,7 +110,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
         catch (Exception ex)
         {
             var status = Status.Unknown;
-            _logger.Error(ex, "Couldn't add secret. Status: {status}.", status);
+            _logger.LogError(ex, "Couldn't add secret. Status: {status}.", status);
             return status;
         }
     }
@@ -122,7 +125,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
         catch (Exception ex) 
         {
             var status = Status.Unknown;
-            _logger.Error(ex, "Couldn't recover secret. Status: {status}.", status);
+            _logger.LogError(ex, "Couldn't recover secret. Status: {status}.", status);
             return status;
         }
     }
@@ -137,7 +140,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
         catch (Exception ex)
         {
             var status = Status.Unknown;
-            _logger.Error(ex, "Couldn't get deleted secrets. Status: {status}.", status);
+            _logger.LogError(ex, "Couldn't get deleted secrets. Status: {status}.", status);
             return GetDeletedSecretsResult(status);
         }
     }

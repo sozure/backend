@@ -7,7 +7,8 @@ using VGManager.Services.Interfaces;
 using ServiceProfiles = VGManager.Services.MapperProfiles;
 using VGManager.Services.Settings;
 using System.Reflection;
-using Serilog;
+using Microsoft.TeamFoundation.TestManagement.WebApi;
+using static System.Net.Mime.MediaTypeNames;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -18,16 +19,6 @@ var assemblyInformationalVersion = assembly.GetCustomAttribute<AssemblyInformati
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-
-    Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
-
-    Log.Information("Starting up {AssemblyName}", assemblyName.Name);
-    Log.Information("Assembly version {AssemblyVersion}", assemblyName.Version);
-    Log.Information("Version {AssemblyInformationalVersion}", assemblyInformationalVersion?.InformationalVersion);
-
-    builder.Logging.ClearProviders();
-    builder.Logging.AddSerilog(Log.Logger);
-
     builder.Services.AddCors(options =>
     {
         options.AddPolicy(name: myAllowSpecificOrigins,
@@ -46,6 +37,8 @@ try
     builder.Services.AddScoped<IVariableGroupConnectionRepository, VariableGroupConnectionRepository>();
     builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
     builder.Services.AddScoped<IKeyVaultConnectionRepository, KeyVaultConnectionRepository>();
+
+    builder.Services.AddLogging(configure => configure.AddConsole());
 
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
@@ -81,15 +74,9 @@ try
 } 
 catch(Exception ex)
 {
-    Log.Fatal(
-        ex,
-        "Failed to run {AssemblyName} {AssemblyInformationalVersion}",
-        assemblyName.Name,
-        assemblyInformationalVersion?.InformationalVersion
-    );
+    
 }
 finally
 {
-    Log.CloseAndFlush();
 }
 

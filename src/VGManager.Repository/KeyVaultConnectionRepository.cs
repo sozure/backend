@@ -21,6 +21,12 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
     {
         var uri = new Uri($"https://{keyVaultName.ToLower()}.vault.azure.net/");
         var defaultazCred = new DefaultAzureCredential();
+        //var tenantId = "5e196325-b631-45e6-be5f-6f82b0be4d23";
+        //var clientId = "ccb849f5-460b-4d83-a3a8-38c3ebffa653";
+        //var clientSecret = "";
+
+        //var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+        //_secretClient = new SecretClient(uri, clientSecretCredential);
         _secretClient = new SecretClient(uri, defaultazCred);
         _keyVaultName = keyVaultName;
     }

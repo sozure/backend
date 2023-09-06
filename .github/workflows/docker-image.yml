@@ -1,0 +1,32 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker/setup-action@v2
+        with:
+          registry: docker.io
+          repository: boczviktor/vgmanager-backend
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker build --rm -t boczviktor/vgmanager-backend:latest ./src/
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push boczviktor/vgmanager-backend:latest

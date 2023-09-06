@@ -1,4 +1,5 @@
 using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
@@ -235,6 +236,12 @@ public class VariableGroupsController : ControllerBase
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
+
+        foreach (var variableGroupResponse in result.VariableGroups)
+        {
+            variableGroupResponse.Project = request.Project;
+        }
+
         return result;
     }
 
@@ -249,12 +256,18 @@ public class VariableGroupsController : ControllerBase
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
+
+        foreach (var variableGroupResponse in result.VariableGroups)
+        {
+            variableGroupResponse.Project = request.Project;
+        }
+
         return result;
     }
 
-    private async Task<VariableGroupGetResponses> GetResultAsync(VariableGroupUpdateRequest singleRequest, CancellationToken cancellationToken)
+    private async Task<VariableGroupGetResponses> GetResultAsync(VariableGroupUpdateRequest request, CancellationToken cancellationToken)
     {
-        var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(singleRequest);
+        var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
         await _vgService.UpdateVariableGroupsAsync(vgServiceModel, cancellationToken);
@@ -262,6 +275,12 @@ public class VariableGroupsController : ControllerBase
         vgServiceModel.ValueFilter = vgServiceModel.NewValue;
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
         var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
+
+        foreach (var variableGroupResponse in result.VariableGroups)
+        {
+            variableGroupResponse.Project = request.Project;
+        }
+
         return result;
     }
 

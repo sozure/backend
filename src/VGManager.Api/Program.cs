@@ -44,10 +44,6 @@ try
     builder.Services.AddHealthChecks();
     builder.Services.AddAutoMapper(typeof(Program), typeof(VariableGroupProfile), typeof(ServiceProfiles.ProjectProfile));
 
-    builder.Services.AddOptions<ProjectSettings>()
-                .Bind(builder.Configuration.GetSection(Constants.SettingsKey.ProjectSettings))
-                .ValidateDataAnnotations();
-
     var app = builder.Build();
 
     app.MapHealthChecks("/health");

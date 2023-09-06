@@ -6,5 +6,4 @@ public class VariableGroupUpdateRequest : VariableGroupRequest
 {
     [Required]
     public string NewValue { get; set; } = null!;
-
 }

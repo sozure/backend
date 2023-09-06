@@ -6,26 +6,22 @@ using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups.Requests;
 using VGManager.Services.Models.VariableGroups.Results;
-using VGManager.Services.Settings;
 
 namespace VGManager.Services;
 
 public class VariableGroupService : IVariableGroupService
 {
     private readonly IVariableGroupConnectionRepository _variableGroupConnectionRepository;
-    private readonly ProjectSettings _projectSettings;
     private readonly string _notContains = "Secrets";
 
-    public VariableGroupService(IVariableGroupConnectionRepository variableGroupConnectionRepository, IOptions<ProjectSettings> projectSettings)
+    public VariableGroupService(IVariableGroupConnectionRepository variableGroupConnectionRepository)
     {
         _variableGroupConnectionRepository = variableGroupConnectionRepository;
-        _projectSettings = projectSettings.Value;
     }
 
     public void SetupConnectionRepository(VariableGroupModel variableGroupModel)
     {
         _variableGroupConnectionRepository.Setup(
-            _projectSettings.BaseUrl,
             variableGroupModel.Organization,
             variableGroupModel.Project,
             variableGroupModel.PAT

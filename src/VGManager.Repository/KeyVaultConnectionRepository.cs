@@ -72,13 +72,14 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
             var secretProperties = _secretClient.GetPropertiesOfSecrets(cancellationToken).ToList();
             var results = await Task.WhenAll(secretProperties.Select(p => GetSecret(p.Name)));
 
-            if(results is null)
+            if (results is null)
             {
                 return GetSecretsResult(Status.Unknown);
             }
             return GetSecretsResult(results.ToList());
 
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             var status = Status.Unknown;
             _logger.LogError(ex, "Couldn't get secrets. Status: {status}.", status);
@@ -131,7 +132,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
             await _secretClient.StartRecoverDeletedSecretAsync(name, cancellationToken);
             return Status.Success;
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             var status = Status.Unknown;
             _logger.LogError(ex, "Couldn't recover secret. Status: {status}.", status);

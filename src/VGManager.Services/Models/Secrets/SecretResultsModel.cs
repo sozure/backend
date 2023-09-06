@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VGManager.Repository.Entities;
+﻿using VGManager.Repository.Entities;
 
 namespace VGManager.Services.Models.Secrets;
 public class SecretResultsModel

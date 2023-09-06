@@ -1,14 +1,12 @@
+using System.Reflection;
 using VGManager.Api;
 using VGManager.Api.MapperProfiles;
 using VGManager.Repository;
 using VGManager.Repository.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
-using ServiceProfiles = VGManager.Services.MapperProfiles;
 using VGManager.Services.Settings;
-using System.Reflection;
-using Microsoft.TeamFoundation.TestManagement.WebApi;
-using static System.Net.Mime.MediaTypeNames;
+using ServiceProfiles = VGManager.Services.MapperProfiles;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -71,10 +69,10 @@ try
     app.MapControllers();
 
     app.Run();
-} 
-catch(Exception ex)
+}
+catch (Exception ex)
 {
-    
+
 }
 finally
 {

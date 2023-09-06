@@ -47,7 +47,7 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
             _logger.LogError(ex, "Couldn't get variable groups. Status: {status}.", status);
             return GetResult(status);
         }
-        catch (VssServiceResponseException ex) 
+        catch (VssServiceResponseException ex)
         {
             var status = Status.ResourceNotFound;
             _logger.LogError(ex, "Couldn't get variable groups. Status: {status}.", status);
@@ -59,7 +59,7 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
             _logger.LogError(ex, "Couldn't get variable groups. Status: {status}.", status);
             return GetResult(status);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             var status = Status.Unknown;
             _logger.LogError(ex, "Couldn't get variable groups. Status: {status}.", status);

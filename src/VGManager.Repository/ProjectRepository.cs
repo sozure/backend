@@ -25,7 +25,8 @@ public class ProjectRepository : IProjectRepository
             var teamProjectReferences = await _projectHttpClient!.GetProjects();
             _projectHttpClient.Dispose();
             return GetResult(Status.Success, teamProjectReferences);
-        } catch (VssUnauthorizedException ex)
+        }
+        catch (VssUnauthorizedException ex)
         {
             var status = Status.Unauthorized;
             _logger.LogError(ex, "Couldn't get projects. Status: {status}.", status);
@@ -37,7 +38,7 @@ public class ProjectRepository : IProjectRepository
             _logger.LogError(ex, "Couldn't get projects. Status: {status}.", status);
             return GetResult(status);
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             var status = Status.Unknown;
             _logger.LogError(ex, "Couldn't get projects. Status: {status}.", status);

@@ -1,5 +1,4 @@
-﻿using Microsoft.TeamFoundation.Core.WebApi;
-using VGManager.Repository.Entities;
+﻿using VGManager.Repository.Entities;
 
 namespace VGManager.Repository.Interfaces;
 public interface IProjectRepository

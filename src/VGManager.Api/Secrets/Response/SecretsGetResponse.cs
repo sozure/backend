@@ -1,5 +1,4 @@
 ﻿using VGManager.Repository.Entities;
-using VGManager.Services.Models.Secrets;
 
 namespace VGManager.Api.Secrets.Response;
 

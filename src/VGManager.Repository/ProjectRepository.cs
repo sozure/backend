@@ -1,7 +1,7 @@
-﻿using Microsoft.TeamFoundation.Core.WebApi;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
-using Serilog;
 using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 
@@ -9,32 +9,39 @@ namespace VGManager.Repository;
 public class ProjectRepository : IProjectRepository
 {
     private ProjectHttpClient? _projectHttpClient;
-    private readonly ILogger _logger = Log.ForContext<ProjectRepository>();
+    private readonly ILogger _logger;
+
+    public ProjectRepository(ILogger<ProjectRepository> logger)
+    {
+        _logger = logger;
+    }
 
     public async Task<ProjectEntity> GetProjects(string baseUrl, string pat, CancellationToken cancellationToken = default)
     {
         try
         {
+            _logger.LogInformation("Get projects from {baseUrl}.", baseUrl);
             await GetConnectionAsync(baseUrl, pat);
             var teamProjectReferences = await _projectHttpClient!.GetProjects();
             _projectHttpClient.Dispose();
             return GetResult(Status.Success, teamProjectReferences);
-        } catch (VssUnauthorizedException ex)
+        }
+        catch (VssUnauthorizedException ex)
         {
             var status = Status.Unauthorized;
-            _logger.Error(ex, "Couldn't get projects. Status: {status}.", status);
+            _logger.LogError(ex, "Couldn't get projects. Status: {status}.", status);
             return GetResult(status);
         }
         catch (VssServiceResponseException ex)
         {
             var status = Status.ResourceNotFound;
-            _logger.Error(ex, "Couldn't get projects. Status: {status}.", status);
+            _logger.LogError(ex, "Couldn't get projects. Status: {status}.", status);
             return GetResult(status);
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             var status = Status.Unknown;
-            _logger.Error(ex, "Couldn't get projects. Status: {status}.", status);
+            _logger.LogError(ex, "Couldn't get projects. Status: {status}.", status);
             return GetResult(status);
         }
     }
@@ -51,7 +58,7 @@ public class ProjectRepository : IProjectRepository
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Couldn't establish connection.");
+            _logger.LogError(ex, "Couldn't establish connection.");
             throw;
         }
     }

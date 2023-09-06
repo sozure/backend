@@ -1,5 +1,4 @@
-﻿using Microsoft.TeamFoundation.Core.WebApi;
-using VGManager.Services.Models.Projects;
+﻿using VGManager.Services.Models.Projects;
 
 namespace VGManager.Services.Interfaces;
 public interface IProjectService

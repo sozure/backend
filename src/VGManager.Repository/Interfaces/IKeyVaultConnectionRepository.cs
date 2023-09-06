@@ -1,5 +1,4 @@
-﻿using Azure.Security.KeyVault.Secrets;
-using VGManager.Repository.Entities;
+﻿using VGManager.Repository.Entities;
 
 namespace VGManager.Repository.Interfaces;
 

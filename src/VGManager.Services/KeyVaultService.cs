@@ -1,5 +1,4 @@
 ﻿using Azure.Security.KeyVault.Secrets;
-using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
@@ -65,14 +64,14 @@ public class KeyVaultService : IKeyVaultService
         }
         return GetResult(status);
     }
-    
+
 
     public async Task<Status> DeleteAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
         Console.WriteLine("Deleted secret key, value");
         var secretsResultModel = await _keyVaultConnectionRepository.GetSecrets(cancellationToken);
         var status = secretsResultModel.Status;
-        
+
         if (status == Status.Success)
         {
             return await DeleteAsync(secretFilter, secretsResultModel, cancellationToken);
@@ -93,12 +92,12 @@ public class KeyVaultService : IKeyVaultService
             foreach (var secret in filteredSecrets)
             {
                 var recoverStatus = await _keyVaultConnectionRepository.RecoverSecret(secret.Name, cancellationToken);
-                if(recoverStatus == Status.Success)
+                if (recoverStatus == Status.Success)
                 {
                     recoverCounter++;
                 }
             }
-            return recoverCounter == filteredSecrets.Count()? Status.Success: Status.Unknown;
+            return recoverCounter == filteredSecrets.Count() ? Status.Success : Status.Unknown;
         }
         return status;
     }

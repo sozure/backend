@@ -1,5 +1,4 @@
-﻿using Microsoft.TeamFoundation;
-using Microsoft.TeamFoundation.DistributedTask.WebApi;
+﻿using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
@@ -21,7 +20,11 @@ public class VariableGroupService : IVariableGroupService
 
     public void SetupConnectionRepository(VariableGroupModel variableGroupModel)
     {
-        _variableGroupConnectionRepository.Setup(variableGroupModel.Organization, variableGroupModel.Project, variableGroupModel.PAT);
+        _variableGroupConnectionRepository.Setup(
+            variableGroupModel.Organization,
+            variableGroupModel.Project,
+            variableGroupModel.PAT
+            );
     }
 
     public async Task<VariableGroupResultsModel> GetVariableGroupsAsync(
@@ -33,12 +36,12 @@ public class VariableGroupService : IVariableGroupService
         var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
         var status = vgEntity.Status;
 
-        if(status == Status.Success)
+        if (status == Status.Success)
         {
-            var filteredVariableGroups = variableGroupModel.ContainsSecrets ? 
-                Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter): 
+            var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
+                Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
                 Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter, _notContains);
-            
+
             Regex regex = null!;
             var valueFilter = variableGroupModel.ValueFilter;
 
@@ -56,7 +59,8 @@ public class VariableGroupService : IVariableGroupService
                 Status = status,
                 VariableGroups = matchedVariableGroups,
             };
-        } else
+        }
+        else
         {
             return new()
             {
@@ -67,7 +71,7 @@ public class VariableGroupService : IVariableGroupService
     }
 
     public async Task<Status> UpdateVariableGroupsAsync(
-        VariableGroupUpdateModel variableGroupUpdateModel, 
+        VariableGroupUpdateModel variableGroupUpdateModel,
         CancellationToken cancellationToken = default
         )
     {
@@ -75,7 +79,7 @@ public class VariableGroupService : IVariableGroupService
         var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
         var status = vgEntity.Status;
 
-        if(status == Status.Success)
+        if (status == Status.Success)
         {
             var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter, _notContains);
             var updateCounter1 = 0;
@@ -92,19 +96,19 @@ public class VariableGroupService : IVariableGroupService
                     var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
 
                     var updateStatus = await _variableGroupConnectionRepository.Update(
-                        variableGroupParameters, 
-                        filteredVariableGroup.Id, 
+                        variableGroupParameters,
+                        filteredVariableGroup.Id,
                         cancellationToken
                         );
-                    
-                    if(updateStatus == Status.Success)
+
+                    if (updateStatus == Status.Success)
                     {
                         updateCounter1++;
                         Console.WriteLine($"{variableGroupName} updated.");
                     }
                 }
             }
-            return updateCounter1 == updateCounter2 ? Status.Success: Status.Unknown;
+            return updateCounter1 == updateCounter2 ? Status.Success : Status.Unknown;
         }
         return status;
     }
@@ -144,12 +148,12 @@ public class VariableGroupService : IVariableGroupService
                 var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
 
                 var updateStatus = await _variableGroupConnectionRepository.Update(
-                    variableGroupParameters, 
-                    filteredVariableGroup.Id, 
+                    variableGroupParameters,
+                    filteredVariableGroup.Id,
                     cancellationToken
                     );
-                
-                if(updateStatus == Status.Success)
+
+                if (updateStatus == Status.Success)
                 {
                     updateCounter++;
                     Console.WriteLine($"{variableGroupName}, {key}, {value}");
@@ -166,7 +170,7 @@ public class VariableGroupService : IVariableGroupService
         var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
         var status = vgEntity.Status;
 
-        if(status == Status.Success)
+        if (status == Status.Success)
         {
             var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupDeleteModel.VariableGroupFilter, _notContains);
             var deletionCounter1 = 0;
@@ -189,18 +193,18 @@ public class VariableGroupService : IVariableGroupService
                     var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
 
                     var updateStatus = await _variableGroupConnectionRepository.Update(
-                        variableGroupParameters, 
-                        filteredVariableGroup.Id, 
+                        variableGroupParameters,
+                        filteredVariableGroup.Id,
                         cancellationToken
                         );
 
-                    if(updateStatus == Status.Success)
+                    if (updateStatus == Status.Success)
                     {
                         deletionCounter2++;
                     }
                 }
             }
-            return deletionCounter1 == deletionCounter2? Status.Success : Status.Unknown;
+            return deletionCounter1 == deletionCounter2 ? Status.Success : Status.Unknown;
         }
 
         return status;

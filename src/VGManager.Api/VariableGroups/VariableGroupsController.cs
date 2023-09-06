@@ -74,7 +74,7 @@ public class VariableGroupsController : ControllerBase
         var vgServiceModel = _mapper.Map<VariableGroupAddModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
-        await _vgService.AddVariableAsync(vgServiceModel, cancellationToken);
+        await _vgService.AddVariablesAsync(vgServiceModel, cancellationToken);
         vgServiceModel.KeyFilter = vgServiceModel.Key;
         vgServiceModel.ValueFilter = vgServiceModel.Value;
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);

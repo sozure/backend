@@ -1,5 +1,7 @@
-﻿using Microsoft.TeamFoundation.DistributedTask.WebApi;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
+using VGManager.Repository;
 using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 using VGManager.Services.Interfaces;
@@ -11,11 +13,13 @@ namespace VGManager.Services;
 public class VariableGroupService : IVariableGroupService
 {
     private readonly IVariableGroupConnectionRepository _variableGroupConnectionRepository;
+    private readonly ILogger _logger;
     private readonly string _notContains = "Secrets";
 
-    public VariableGroupService(IVariableGroupConnectionRepository variableGroupConnectionRepository)
+    public VariableGroupService(IVariableGroupConnectionRepository variableGroupConnectionRepository, ILogger<VariableGroupService> logger)
     {
         _variableGroupConnectionRepository = variableGroupConnectionRepository;
+        _logger = logger;
     }
 
     public void SetupConnectionRepository(VariableGroupModel variableGroupModel)
@@ -75,7 +79,7 @@ public class VariableGroupService : IVariableGroupService
         CancellationToken cancellationToken = default
         )
     {
-        Console.WriteLine("Variable group name, Key, Old value, New value");
+        _logger.LogInformation("Variable group name, Key, Old value, New value");
         var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
         var status = vgEntity.Status;
 
@@ -104,7 +108,7 @@ public class VariableGroupService : IVariableGroupService
                     if (updateStatus == Status.Success)
                     {
                         updateCounter1++;
-                        Console.WriteLine($"{variableGroupName} updated.");
+                        _logger.LogInformation($"{variableGroupName} updated.");
                     }
                 }
             }
@@ -113,7 +117,7 @@ public class VariableGroupService : IVariableGroupService
         return status;
     }
 
-    public async Task<Status> AddVariableAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default)
+    public async Task<Status> AddVariablesAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default)
     {
         var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
         var status = vgEntity.Status;
@@ -143,20 +147,23 @@ public class VariableGroupService : IVariableGroupService
 
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
-                var variableGroupName = filteredVariableGroup.Name;
-                filteredVariableGroup.Variables.Add(key, value);
-                var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-
-                var updateStatus = await _variableGroupConnectionRepository.Update(
-                    variableGroupParameters,
-                    filteredVariableGroup.Id,
-                    cancellationToken
-                    );
-
-                if (updateStatus == Status.Success)
+                try
                 {
-                    updateCounter++;
-                    Console.WriteLine($"{variableGroupName}, {key}, {value}");
+                    var success = await AddVariableAsync(key, value, filteredVariableGroup, cancellationToken);
+                    
+                    if(success)
+                    {
+                        updateCounter++;
+                    }
+
+                } catch(Exception ex)
+                {
+                    _logger.LogError(
+                        ex, 
+                        "Something went wrong during variable addition. Variable group: {variableGroupName}, Key: {key}", 
+                        filteredVariableGroup.Name, 
+                        key
+                        );
                 }
             }
             return updateCounter == filteredVariableGroups.Count() ? Status.Success : Status.Unknown;
@@ -339,5 +346,25 @@ public class VariableGroupService : IVariableGroupService
         }
 
         return deleteIsNeeded;
+    }
+
+    private async Task<bool> AddVariableAsync(string key, string value, VariableGroup filteredVariableGroup, CancellationToken cancellationToken)
+    {
+        var variableGroupName = filteredVariableGroup.Name;
+        filteredVariableGroup.Variables.Add(key, value);
+        var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
+
+        var updateStatus = await _variableGroupConnectionRepository.Update(
+            variableGroupParameters,
+            filteredVariableGroup.Id,
+            cancellationToken
+            );
+
+        if (updateStatus == Status.Success)
+        {
+            _logger.LogInformation($"{variableGroupName}, {key}, {value}");
+            return true;
+        }
+        return false;
     }
 }

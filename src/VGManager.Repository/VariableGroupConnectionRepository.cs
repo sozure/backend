@@ -36,6 +36,7 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
     {
         try
         {
+            _logger.LogInformation("Request variable groups from {project} Azure project.", _project);
             var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
             var variableGroups = await httpClient.GetVariableGroupsAsync(_project, cancellationToken: cancellationToken);
             return GetResult(Status.Success, variableGroups);
@@ -68,11 +69,12 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
 
     public async Task<Status> Update(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default)
     {
+        var variableGroupName = variableGroupParameters.Name;
         variableGroupParameters.VariableGroupProjectReferences = new List<VariableGroupProjectReference>()
         {
             new()
             {
-                Name = variableGroupParameters.Name,
+                Name = variableGroupName,
                 ProjectReference = new()
                 {
                     Name = _project
@@ -82,6 +84,7 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
 
         try
         {
+            _logger.LogInformation("Update variable group with name: {variableGroupName} in {project} Azure project.", variableGroupName, _project);
             var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
             await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
             return Status.Success;
@@ -106,12 +109,12 @@ public class VariableGroupConnectionRepository : IVariableGroupConnectionReposit
         }
         catch (ArgumentException ex)
         {
-            _logger.LogError(ex, $"An item with the same key has already been added to {variableGroupParameters.Name}.");
+            _logger.LogError(ex, $"An item with the same key has already been added to {variableGroupName}.");
             return Status.Unknown;
         }
         catch (TeamFoundationServerInvalidRequestException ex)
         {
-            _logger.LogError(ex, $"Wasn't added to {variableGroupParameters.Name} because of TeamFoundationServerInvalidRequestException.");
+            _logger.LogError(ex, $"Wasn't added to {variableGroupName} because of TeamFoundationServerInvalidRequestException.");
             return Status.Unknown;
         }
         catch (Exception ex)

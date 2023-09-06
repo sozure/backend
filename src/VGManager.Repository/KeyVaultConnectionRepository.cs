@@ -10,6 +10,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
 {
     private SecretClient _secretClient = null!;
     private readonly ILogger _logger;
+    private string _keyVaultName = null!;
 
     public KeyVaultConnectionRepository(ILogger<KeyVaultConnectionRepository> logger)
     {
@@ -21,6 +22,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
         var uri = new Uri($"https://{keyVaultName.ToLower()}.vault.azure.net/");
         var defaultazCred = new DefaultAzureCredential();
         _secretClient = new SecretClient(uri, defaultazCred);
+        _keyVaultName = keyVaultName;
     }
 
     public async Task<SecretEntity> GetSecret(string name, CancellationToken cancellationToken = default)
@@ -28,7 +30,8 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
         KeyVaultSecret result;
         try
         {
-            result = await _secretClient.GetSecretAsync(name);
+            _logger.LogInformation("Get secret {name} from {keyVault}.", name, _keyVaultName);
+            result = await _secretClient.GetSecretAsync(name, cancellationToken: cancellationToken);
             return GetSecretResult(result);
         }
         catch (Azure.RequestFailedException ex)
@@ -49,6 +52,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
     {
         try
         {
+            _logger.LogInformation("Delete secret {name} in {keyVault}.", name, _keyVaultName);
             await _secretClient.StartDeleteSecretAsync(name, cancellationToken);
             return Status.Success;
         }
@@ -64,6 +68,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
     {
         try
         {
+            _logger.LogInformation("Get secrets from {keyVault}.", _keyVaultName);
             var secretProperties = _secretClient.GetPropertiesOfSecrets(cancellationToken).ToList();
             var results = await Task.WhenAll(secretProperties.Select(p => GetSecret(p.Name)));
 
@@ -89,12 +94,14 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
             var secretName = parameters["secretName"];
             var secretValue = parameters["secretValue"];
             var newSecret = new KeyVaultSecret(secretName, secretValue);
+            _logger.LogInformation("Get deleted secrets from {keyVault}.", _keyVaultName);
             var deletedSecrets = _secretClient.GetDeletedSecrets(cancellationToken).ToList();
 
             foreach (var deletedSecret in deletedSecrets)
             {
                 if (deletedSecret.Name.Equals(secretName))
                 {
+                    _logger.LogInformation("Recover deleted secret: {secretName} in {keyVault}.", secretName, _keyVaultName);
                     await _secretClient.StartRecoverDeletedSecretAsync(secretName, cancellationToken);
                     didWeRecover = true;
                 }
@@ -102,6 +109,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
 
             if (!didWeRecover)
             {
+                _logger.LogInformation("Set secret: {secretName} in {keyVault}.", secretName, _keyVaultName);
                 await _secretClient.SetSecretAsync(newSecret, cancellationToken);
             }
 
@@ -119,6 +127,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
     {
         try
         {
+            _logger.LogInformation("Recover deleted secret: {secretName} in {keyVault}.", name, _keyVaultName);
             await _secretClient.StartRecoverDeletedSecretAsync(name, cancellationToken);
             return Status.Success;
         }
@@ -134,6 +143,7 @@ public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
     {
         try
         {
+            _logger.LogInformation("Get deleted secrets from {keyVault}.", _keyVaultName);
             var deletedSecrets = _secretClient.GetDeletedSecrets(cancellationToken).ToList();
             return GetDeletedSecretsResult(deletedSecrets);
         }

@@ -20,6 +20,7 @@ public class ProjectRepository : IProjectRepository
     {
         try
         {
+            _logger.LogInformation("Get projects from {baseUrl}.", baseUrl);
             await GetConnectionAsync(baseUrl, pat);
             var teamProjectReferences = await _projectHttpClient!.GetProjects();
             _projectHttpClient.Dispose();

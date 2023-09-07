@@ -37,7 +37,7 @@ public class VariableGroupAdapter : IVariableGroupAdapter
         try
         {
             _logger.LogInformation("Request variable groups from {project} Azure project.", _project);
-            var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+            var httpClient = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
             var variableGroups = await httpClient.GetVariableGroupsAsync(_project, cancellationToken: cancellationToken);
             return GetResult(Status.Success, variableGroups);
         }
@@ -85,7 +85,7 @@ public class VariableGroupAdapter : IVariableGroupAdapter
         try
         {
             _logger.LogInformation("Update variable group with name: {variableGroupName} in {project} Azure project.", variableGroupName, _project);
-            var httpClient = _connection.GetClient<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+            var httpClient = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
             await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
             return Status.Success;
         }

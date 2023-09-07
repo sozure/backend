@@ -26,7 +26,7 @@ public class KeyVaultService : IKeyVaultService
         var secretList = new List<SecretResultModel>();
         var secretsEntity = await _keyVaultConnectionRepository.GetSecrets(cancellationToken);
         var status = secretsEntity.Status;
-        var secrets = secretsEntity?.Secrets ?? Enumerable.Empty<SecretEntity>();
+        var secrets = CollectSecrets(secretsEntity);
 
         if (status == Status.Success)
         {
@@ -116,7 +116,7 @@ public class KeyVaultService : IKeyVaultService
 
     private async Task<Status> DeleteAsync(string secretFilter, SecretsEntity? secretsResultModel, CancellationToken cancellationToken)
     {
-        var secrets = secretsResultModel?.Secrets ?? Enumerable.Empty<SecretEntity>();
+        var secrets = CollectSecrets(secretsResultModel);
         var filteredSecrets = Filter(secrets, secretFilter);
         var deletionCounter1 = 0;
         var deletionCounter2 = 0;
@@ -138,6 +138,25 @@ public class KeyVaultService : IKeyVaultService
             }
         }
         return deletionCounter1 == deletionCounter2 ? Status.Success : Status.Unknown;
+    }
+
+    private static IEnumerable<SecretEntity> CollectSecrets(SecretsEntity? secretsResultModel)
+    {
+        var result = new List<SecretEntity>();
+        if(secretsResultModel is null)
+        {
+            return Enumerable.Empty<SecretEntity>();
+        }
+
+        foreach(var secret in secretsResultModel.Secrets)
+        {
+            if(secret is not null)
+            {
+                result.Add(secret);
+            }
+        }
+
+        return result;
     }
 
     private static void CollectSecrets(List<SecretResultModel> secretList, SecretEntity? filteredSecret)

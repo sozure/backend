@@ -31,9 +31,9 @@ try
     builder.Services.AddScoped<IVariableGroupService, VariableGroupService>();
     builder.Services.AddScoped<IKeyVaultService, KeyVaultService>();
     builder.Services.AddScoped<IProjectService, ProjectService>();
-    builder.Services.AddScoped<IVariableGroupConnectionRepository, VariableGroupConnectionRepository>();
-    builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-    builder.Services.AddScoped<IKeyVaultConnectionRepository, KeyVaultConnectionRepository>();
+    builder.Services.AddScoped<IVariableGroupAdapter, VariableGroupAdapter>();
+    builder.Services.AddScoped<IProjectAdapter, ProjectAdapter>();
+    builder.Services.AddScoped<IKeyVaultAdapter, KeyVaultAdapter>();
 
     builder.Services.AddLogging(configure => configure.AddConsole());
 

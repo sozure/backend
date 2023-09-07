@@ -12,11 +12,11 @@ namespace VGManager.Services;
 
 public class VariableGroupService : IVariableGroupService
 {
-    private readonly IVariableGroupConnectionRepository _variableGroupConnectionRepository;
+    private readonly IVariableGroupAdapter _variableGroupConnectionRepository;
     private readonly ILogger _logger;
     private readonly string _notContains = "Secrets";
 
-    public VariableGroupService(IVariableGroupConnectionRepository variableGroupConnectionRepository, ILogger<VariableGroupService> logger)
+    public VariableGroupService(IVariableGroupAdapter variableGroupConnectionRepository, ILogger<VariableGroupService> logger)
     {
         _variableGroupConnectionRepository = variableGroupConnectionRepository;
         _logger = logger;

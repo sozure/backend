@@ -2,7 +2,7 @@
 
 namespace VGManager.Repository.Interfaces;
 
-public interface IKeyVaultConnectionRepository
+public interface IKeyVaultAdapter
 {
     Task<Status> AddKeyVaultSecret(Dictionary<string, string> parameters, CancellationToken cancellationToken = default);
     Task<Status> DeleteSecret(string name, CancellationToken cancellationToken = default);

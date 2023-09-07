@@ -9,9 +9,9 @@ namespace VGManager.Services;
 
 public class KeyVaultService : IKeyVaultService
 {
-    private readonly IKeyVaultConnectionRepository _keyVaultConnectionRepository;
+    private readonly IKeyVaultAdapter _keyVaultConnectionRepository;
 
-    public KeyVaultService(IKeyVaultConnectionRepository keyVaultConnectionRepository)
+    public KeyVaultService(IKeyVaultAdapter keyVaultConnectionRepository)
     {
         _keyVaultConnectionRepository = keyVaultConnectionRepository;
     }

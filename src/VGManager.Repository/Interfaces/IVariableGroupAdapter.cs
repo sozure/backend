@@ -3,7 +3,7 @@ using VGManager.Repository.Entities;
 
 namespace VGManager.Repository.Interfaces;
 
-public interface IVariableGroupConnectionRepository
+public interface IVariableGroupAdapter
 {
     void Setup(string organization, string project, string pat);
     Task<VariableGroupEntity> GetAll(CancellationToken cancellationToken = default);

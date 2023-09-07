@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Services", "VGMan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Api", "VGManager.Api\VGManager.Api.csproj", "{F67CD103-1923-4EA7-9042-CD4B5763A545}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Repository", "VGManager.Repository\VGManager.Repository.csproj", "{7139BBFE-AE80-45A1-A70C-6385EC1ECB9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Adapter", "VGManager.Repository\VGManager.Adapter.csproj", "{7139BBFE-AE80-45A1-A70C-6385EC1ECB9A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D854C5B6-4514-4911-91CA-47D747484C97}"
 EndProject

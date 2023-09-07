@@ -7,10 +7,10 @@ namespace VGManager.Services;
 
 public class ProjectService : IProjectService
 {
-    private readonly IProjectRepository _projectRepository;
+    private readonly IProjectAdapter _projectRepository;
     private readonly IMapper _mapper;
 
-    public ProjectService(IProjectRepository projectRepository, IMapper mapper)
+    public ProjectService(IProjectAdapter projectRepository, IMapper mapper)
     {
         _projectRepository = projectRepository;
         _mapper = mapper;

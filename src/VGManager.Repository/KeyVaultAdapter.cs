@@ -6,13 +6,13 @@ using VGManager.Repository.Interfaces;
 
 namespace VGManager.Repository;
 
-public class KeyVaultConnectionRepository : IKeyVaultConnectionRepository
+public class KeyVaultAdapter : IKeyVaultAdapter
 {
     private SecretClient _secretClient = null!;
     private readonly ILogger _logger;
     private string _keyVaultName = null!;
 
-    public KeyVaultConnectionRepository(ILogger<KeyVaultConnectionRepository> logger)
+    public KeyVaultAdapter(ILogger<KeyVaultAdapter> logger)
     {
         _logger = logger;
     }

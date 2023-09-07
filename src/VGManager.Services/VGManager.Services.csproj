@@ -8,7 +8,7 @@
   </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\VGManager.Repository\VGManager.Repository.csproj" />
+      <ProjectReference Include="..\VGManager.Repository\VGManager.Adapter.csproj" />
     </ItemGroup>
 
     <ItemGroup>

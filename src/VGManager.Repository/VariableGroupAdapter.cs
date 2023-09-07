@@ -9,13 +9,13 @@ using VGManager.Repository.Interfaces;
 
 namespace VGManager.Repository;
 
-public class VariableGroupConnectionRepository : IVariableGroupConnectionRepository
+public class VariableGroupAdapter : IVariableGroupAdapter
 {
     private VssConnection _connection = null!;
     private string _project = null!;
     private readonly ILogger _logger;
 
-    public VariableGroupConnectionRepository(ILogger<VariableGroupConnectionRepository> logger)
+    public VariableGroupAdapter(ILogger<VariableGroupAdapter> logger)
     {
         _logger = logger;
     }

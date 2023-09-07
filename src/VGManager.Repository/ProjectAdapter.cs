@@ -6,12 +6,12 @@ using VGManager.Repository.Entities;
 using VGManager.Repository.Interfaces;
 
 namespace VGManager.Repository;
-public class ProjectRepository : IProjectRepository
+public class ProjectAdapter : IProjectAdapter
 {
     private ProjectHttpClient? _projectHttpClient;
     private readonly ILogger _logger;
 
-    public ProjectRepository(ILogger<ProjectRepository> logger)
+    public ProjectAdapter(ILogger<ProjectAdapter> logger)
     {
         _logger = logger;
     }

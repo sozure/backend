@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
-using VGManager.Repository;
-using VGManager.Repository.Entities;
-using VGManager.Repository.Interfaces;
+using VGManager.AzureAdapter.Entities;
+using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups.Requests;
 using VGManager.Services.Models.VariableGroups.Results;
@@ -12,11 +11,11 @@ namespace VGManager.Services;
 
 public class VariableGroupService : IVariableGroupService
 {
-    private readonly IVariableGroupConnectionRepository _variableGroupConnectionRepository;
+    private readonly IVariableGroupAdapter _variableGroupConnectionRepository;
     private readonly ILogger _logger;
     private readonly string _notContains = "Secrets";
 
-    public VariableGroupService(IVariableGroupConnectionRepository variableGroupConnectionRepository, ILogger<VariableGroupService> logger)
+    public VariableGroupService(IVariableGroupAdapter variableGroupConnectionRepository, ILogger<VariableGroupService> logger)
     {
         _variableGroupConnectionRepository = variableGroupConnectionRepository;
         _logger = logger;

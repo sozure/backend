@@ -7,7 +7,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Services", "VGMan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Api", "VGManager.Api\VGManager.Api.csproj", "{F67CD103-1923-4EA7-9042-CD4B5763A545}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VGManager.Repository", "VGManager.Repository\VGManager.Repository.csproj", "{7139BBFE-AE80-45A1-A70C-6385EC1ECB9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.AzureAdapter", "VGManager.AzureAdapter\VGManager.AzureAdapter.csproj", "{7139BBFE-AE80-45A1-A70C-6385EC1ECB9A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D854C5B6-4514-4911-91CA-47D747484C97}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Api.Tests", "VGManager.Api.Tests\VGManager.Api.Tests.csproj", "{DF517D09-FE0B-488E-89B9-520CD948E95B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{47DE5E48-002C-40E6-A9CD-4F0FCC6608A6}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		nuget.config = nuget.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{37117FB8-241F-405A-AA1C-299A8F2521A0}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,9 +43,16 @@ Global
 		{7139BBFE-AE80-45A1-A70C-6385EC1ECB9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7139BBFE-AE80-45A1-A70C-6385EC1ECB9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7139BBFE-AE80-45A1-A70C-6385EC1ECB9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF517D09-FE0B-488E-89B9-520CD948E95B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF517D09-FE0B-488E-89B9-520CD948E95B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF517D09-FE0B-488E-89B9-520CD948E95B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF517D09-FE0B-488E-89B9-520CD948E95B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DF517D09-FE0B-488E-89B9-520CD948E95B} = {D854C5B6-4514-4911-91CA-47D747484C97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {886779FE-B1AA-4B88-BFBA-4ED6187FC214}

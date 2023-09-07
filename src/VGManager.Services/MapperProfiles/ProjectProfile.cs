@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using VGManager.Repository.Entities;
+using AutoMapper;
+using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Models.Projects;
 
 namespace VGManager.Services.MapperProfiles;

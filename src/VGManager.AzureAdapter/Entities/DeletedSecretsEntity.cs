@@ -1,6 +1,6 @@
-﻿using Azure.Security.KeyVault.Secrets;
+using Azure.Security.KeyVault.Secrets;
 
-namespace VGManager.Repository.Entities;
+namespace VGManager.AzureAdapter.Entities;
 
 public class DeletedSecretsEntity
 {

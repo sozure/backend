@@ -1,6 +1,6 @@
-﻿using VGManager.Repository.Entities;
+using VGManager.AzureAdapter.Entities;
 
-namespace VGManager.Repository.Interfaces;
+namespace VGManager.AzureAdapter.Interfaces;
 public interface IProjectAdapter
 {
     Task<ProjectEntity> GetProjects(string baseUrl, string pat, CancellationToken cancellationToken = default);

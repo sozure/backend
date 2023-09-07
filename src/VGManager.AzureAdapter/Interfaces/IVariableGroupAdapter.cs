@@ -1,7 +1,7 @@
-﻿using Microsoft.TeamFoundation.DistributedTask.WebApi;
-using VGManager.Repository.Entities;
+using Microsoft.TeamFoundation.DistributedTask.WebApi;
+using VGManager.AzureAdapter.Entities;
 
-namespace VGManager.Repository.Interfaces;
+namespace VGManager.AzureAdapter.Interfaces;
 
 public interface IVariableGroupAdapter
 {

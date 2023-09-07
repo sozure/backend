@@ -1,13 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
-using VGManager.Repository.Entities;
-using VGManager.Repository.Interfaces;
+using VGManager.AzureAdapter.Entities;
+using VGManager.AzureAdapter.Interfaces;
 
-namespace VGManager.Repository;
+namespace VGManager.AzureAdapter;
 
 public class VariableGroupAdapter : IVariableGroupAdapter
 {

@@ -1,5 +1,5 @@
-﻿using Microsoft.TeamFoundation.Core.WebApi;
-using VGManager.Repository.Entities;
+using Microsoft.TeamFoundation.Core.WebApi;
+using VGManager.AzureAdapter.Entities;
 
 namespace VGManager.Services.Models.Projects;
 public class ProjectResultModel

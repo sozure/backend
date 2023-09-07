@@ -1,6 +1,6 @@
-﻿using Microsoft.TeamFoundation.Core.WebApi;
+using Microsoft.TeamFoundation.Core.WebApi;
 
-namespace VGManager.Repository.Entities;
+namespace VGManager.AzureAdapter.Entities;
 public class ProjectEntity
 {
     public Status Status { get; set; }

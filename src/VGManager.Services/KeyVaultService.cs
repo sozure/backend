@@ -1,7 +1,7 @@
-﻿using Azure.Security.KeyVault.Secrets;
+using Azure.Security.KeyVault.Secrets;
 using System.Text.RegularExpressions;
-using VGManager.Repository.Entities;
-using VGManager.Repository.Interfaces;
+using VGManager.AzureAdapter.Entities;
+using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Secrets;
 

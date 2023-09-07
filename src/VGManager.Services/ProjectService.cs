@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using VGManager.Repository.Interfaces;
+using AutoMapper;
+using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Projects;
 

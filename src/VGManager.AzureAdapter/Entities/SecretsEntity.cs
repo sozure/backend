@@ -1,4 +1,4 @@
-﻿namespace VGManager.Repository.Entities;
+namespace VGManager.AzureAdapter.Entities;
 public class SecretsEntity
 {
     public Status Status { get; set; }

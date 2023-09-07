@@ -1,10 +1,10 @@
-﻿using Azure.Identity;
+using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Logging;
-using VGManager.Repository.Entities;
-using VGManager.Repository.Interfaces;
+using VGManager.AzureAdapter.Entities;
+using VGManager.AzureAdapter.Interfaces;
 
-namespace VGManager.Repository;
+namespace VGManager.AzureAdapter;
 
 public class KeyVaultAdapter : IKeyVaultAdapter
 {

@@ -1,8 +1,8 @@
 using System.Reflection;
 using VGManager.Api;
 using VGManager.Api.MapperProfiles;
-using VGManager.Repository;
-using VGManager.Repository.Interfaces;
+using VGManager.AzureAdapter;
+using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
 using ServiceProfiles = VGManager.Services.MapperProfiles;

@@ -1,6 +1,6 @@
-﻿using Microsoft.TeamFoundation.DistributedTask.WebApi;
+using Microsoft.TeamFoundation.DistributedTask.WebApi;
 
-namespace VGManager.Repository.Entities;
+namespace VGManager.AzureAdapter.Entities;
 public class VariableGroupEntity
 {
     public Status Status { get; set; }

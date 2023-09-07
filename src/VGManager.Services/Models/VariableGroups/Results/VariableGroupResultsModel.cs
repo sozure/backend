@@ -1,4 +1,4 @@
-﻿using VGManager.Repository.Entities;
+using VGManager.AzureAdapter.Entities;
 
 namespace VGManager.Services.Models.VariableGroups.Results;
 

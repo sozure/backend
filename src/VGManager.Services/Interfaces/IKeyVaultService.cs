@@ -1,4 +1,4 @@
-﻿using VGManager.Repository.Entities;
+using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Models.Secrets;
 
 namespace VGManager.Services.Interfaces;

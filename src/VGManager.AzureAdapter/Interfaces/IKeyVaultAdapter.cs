@@ -1,6 +1,6 @@
-﻿using VGManager.Repository.Entities;
+using VGManager.AzureAdapter.Entities;
 
-namespace VGManager.Repository.Interfaces;
+namespace VGManager.AzureAdapter.Interfaces;
 
 public interface IKeyVaultAdapter
 {

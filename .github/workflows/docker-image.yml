@@ -34,5 +34,5 @@ jobs:
           context: ./src/
           file: ./src/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: boczviktor/vgmanager-backend:latest
           labels: ${{ steps.meta.outputs.labels }}

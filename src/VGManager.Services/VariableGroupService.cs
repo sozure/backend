@@ -219,20 +219,20 @@ public class VariableGroupService : IVariableGroupService
 
     private static IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter, string notContainsFilter)
     {
-        var regex = new Regex(filter);
-        return variableGroups.Where(vg => regex.IsMatch(vg.Name) && !vg.Name.Contains(notContainsFilter)).ToList();
+        var regex = new Regex(filter.ToLower());
+        return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower()) && !vg.Name.Contains(notContainsFilter)).ToList();
     }
 
     private static IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter)
     {
-        var regex = new Regex(filter);
-        return variableGroups.Where(vg => regex.IsMatch(vg.Name)).ToList();
+        var regex = new Regex(filter.ToLower());
+        return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower())).ToList();
     }
 
     private static IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, string filter)
     {
-        var regex = new Regex(filter);
-        return variables.Where(v => regex.IsMatch(v.Key)).ToList();
+        var regex = new Regex(filter.ToLower());
+        return variables.Where(v => regex.IsMatch(v.Key.ToLower())).ToList();
     }
 
     private static VariableGroupParameters GetVariableGroupParameters(VariableGroup filteredVariableGroup, string variableGroupName)

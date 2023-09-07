@@ -1,6 +1,6 @@
 namespace VGManager.Api.Tests;
 
-public class Tests
+public class ProjectControllerTests
 {
     [SetUp]
     public void Setup()

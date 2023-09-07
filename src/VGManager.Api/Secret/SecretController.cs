@@ -21,7 +21,7 @@ public class SecretController : Controller
         _mapper = mapper;
     }
 
-    [HttpGet("getsecrets", Name = "getsecrets")]
+    [HttpGet(Name = "GetSecrets")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -37,7 +37,7 @@ public class SecretController : Controller
         return Ok(result);
     }
 
-    [HttpGet("getdeletedsecrets", Name = "getdeletedsecrets")]
+    [HttpGet("Deleted", Name = "GetDeletedSecrets")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -53,7 +53,7 @@ public class SecretController : Controller
         return Ok(result);
     }
 
-    [HttpPost("deletesecret", Name = "deletesecret")]
+    [HttpPost("Delete", Name = "DeleteSecrets")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -70,7 +70,7 @@ public class SecretController : Controller
         return Ok(result);
     }
 
-    [HttpPost("recoversecret", Name = "recoversecret")]
+    [HttpPost("Recover", Name = "RecoverSecrets")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

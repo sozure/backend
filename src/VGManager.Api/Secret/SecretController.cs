@@ -10,12 +10,12 @@ namespace VGManager.Api.Controllers;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
-public class SecretsController : Controller
+public class SecretController : Controller
 {
     private readonly IKeyVaultService _keyVaultService;
     private readonly IMapper _mapper;
 
-    public SecretsController(IKeyVaultService keyVaultService, IMapper mapper)
+    public SecretController(IKeyVaultService keyVaultService, IMapper mapper)
     {
         _keyVaultService = keyVaultService;
         _mapper = mapper;

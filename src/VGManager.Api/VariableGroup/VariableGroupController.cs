@@ -13,13 +13,13 @@ namespace VGManager.Api.Controllers;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
-public class VariableGroupsController : ControllerBase
+public class VariableGroupController : ControllerBase
 {
     private readonly IVariableGroupService _vgService;
     private readonly IProjectService _projectService;
     private readonly IMapper _mapper;
 
-    public VariableGroupsController(
+    public VariableGroupController(
         IVariableGroupService vgService,
         IProjectService projectService,
         IMapper mapper

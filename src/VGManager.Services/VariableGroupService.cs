@@ -45,17 +45,11 @@ public class VariableGroupService : IVariableGroupService
                 Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
                 Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter, _notContains);
 
-            Regex regex = null!;
             var valueFilter = variableGroupModel.ValueFilter;
-
-            if (valueFilter is not null)
-            {
-                regex = new Regex(valueFilter.ToLower());
-            }
 
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
-                GetVariables(variableGroupModel.KeyFilter, valueFilter, matchedVariableGroups, regex, filteredVariableGroup);
+                GetVariables(variableGroupModel.KeyFilter, valueFilter, matchedVariableGroups, filteredVariableGroup);
             }
 
             return new()
@@ -250,7 +244,6 @@ public class VariableGroupService : IVariableGroupService
         string keyFilter,
         string? valueFilter,
         List<VariableGroupResultModel> matchedVariableGroups,
-        Regex regex,
         VariableGroup filteredVariableGroup
         )
     {
@@ -261,6 +254,7 @@ public class VariableGroupService : IVariableGroupService
             var variableValue = filteredVariable.Value.Value ?? string.Empty;
             if (valueFilter is not null)
             {
+                var regex = new Regex(valueFilter.ToLower());
                 if (regex.IsMatch(variableValue.ToLower()))
                 {
                     matchedVariableGroups.Add(new()

@@ -50,13 +50,14 @@ public class VariableGroupService : IVariableGroupService
 
             if (valueFilter is not null)
             {
-                regex = new Regex(valueFilter);
+                regex = new Regex(valueFilter.ToLower());
             }
 
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
                 GetVariables(variableGroupModel.KeyFilter, valueFilter, matchedVariableGroups, regex, filteredVariableGroup);
             }
+
             return new()
             {
                 Status = status,
@@ -260,7 +261,7 @@ public class VariableGroupService : IVariableGroupService
             var variableValue = filteredVariable.Value.Value ?? string.Empty;
             if (valueFilter is not null)
             {
-                if (regex.IsMatch(variableValue))
+                if (regex.IsMatch(variableValue.ToLower()))
                 {
                     matchedVariableGroups.Add(new()
                     {

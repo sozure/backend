@@ -23,11 +23,11 @@ jobs:
         dotnet-version: 6.0.x
 
     - name: Restore dependencies
-      working-directory: VGManager.sln
+      working-directory: /src
       run: dotnet restore
 
     - name: Build
-      working-directory: VGManager.sln
+      working-directory: /src
       run: dotnet build --no-restore
     
     - name: Test

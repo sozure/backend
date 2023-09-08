@@ -102,7 +102,7 @@ public class VariableGroupService : IVariableGroupService
                     if (updateStatus == Status.Success)
                     {
                         updateCounter1++;
-                        _logger.LogInformation($"{variableGroupName} updated.");
+                        _logger.LogInformation("{variableGroupName} updated.", variableGroupName);
                     }
                 }
             }
@@ -150,7 +150,8 @@ public class VariableGroupService : IVariableGroupService
                         updateCounter++;
                     }
 
-                } catch(Exception ex)
+                } 
+                catch(Exception ex)
                 {
                     _logger.LogError(
                         ex, 
@@ -167,7 +168,7 @@ public class VariableGroupService : IVariableGroupService
 
     public async Task<Status> DeleteVariableAsync(VariableGroupDeleteModel variableGroupDeleteModel, CancellationToken cancellationToken = default)
     {
-        Console.WriteLine("Variable group name, Deleted Key, Deleted Value");
+        _logger.LogInformation("Variable group name, Deleted Key, Deleted Value");
         var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
         var status = vgEntity.Status;
 
@@ -277,7 +278,7 @@ public class VariableGroupService : IVariableGroupService
         }
     }
 
-    private static bool UpdateVariables(
+    private bool UpdateVariables(
         VariableGroupUpdateModel variableGroupUpdateModel,
         VariableGroup filteredVariableGroup,
         string variableGroupName
@@ -297,14 +298,28 @@ public class VariableGroupService : IVariableGroupService
             {
                 if (valueFilter.Equals(variableValue))
                 {
-                    Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}, {newValue}");
+                    _logger.LogInformation(
+                    "{variableGroupName}, {variableKey}, {variableValue}, {newValue}",
+                    variableGroupName,
+                    variableKey,
+                    variableValue,
+                    newValue
+                    );
+
                     filteredVariable.Value.Value = newValue;
                     updateIsNeeded = true;
                 }
             }
             else
             {
-                Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}, {newValue}");
+                _logger.LogInformation(
+                    "{variableGroupName}, {variableKey}, {variableValue}, {newValue}", 
+                    variableGroupName, 
+                    variableKey, 
+                    variableValue, 
+                    newValue
+                    );
+
                 filteredVariable.Value.Value = newValue;
                 updateIsNeeded = true;
             }
@@ -313,7 +328,7 @@ public class VariableGroupService : IVariableGroupService
         return updateIsNeeded;
     }
 
-    private static bool DeleteVariables(VariableGroup filteredVariableGroup, string? valueCondition, string keyFilter, string variableGroupName)
+    private bool DeleteVariables(VariableGroup filteredVariableGroup, string? valueCondition, string keyFilter, string variableGroupName)
     {
         var deleteIsNeeded = false;
         var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
@@ -326,14 +341,14 @@ public class VariableGroupService : IVariableGroupService
             {
                 if (valueCondition.Equals(variableValue))
                 {
-                    Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}");
+                    _logger.LogInformation("{variableGroupName}, {variableKey}, {variableValue}", variableGroupName, variableKey, variableValue);
                     filteredVariableGroup.Variables.Remove(filteredVariable.Key);
                     deleteIsNeeded = true;
                 }
             }
             else
             {
-                Console.WriteLine($"{variableGroupName}, {variableKey}, {variableValue}");
+                _logger.LogInformation("{variableGroupName}, {variableKey}, {variableValue}", variableGroupName, variableKey, variableValue);
                 filteredVariableGroup.Variables.Remove(filteredVariable.Key);
                 deleteIsNeeded = true;
             }
@@ -356,7 +371,7 @@ public class VariableGroupService : IVariableGroupService
 
         if (updateStatus == Status.Success)
         {
-            _logger.LogInformation($"{variableGroupName}, {key}, {value}");
+            _logger.LogInformation("{variableGroupName}, {key}, {value}", variableGroupName, key, value);
             return true;
         }
         return false;

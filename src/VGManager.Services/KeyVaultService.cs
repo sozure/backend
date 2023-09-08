@@ -1,4 +1,5 @@
 using Azure.Security.KeyVault.Secrets;
+using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
@@ -10,10 +11,12 @@ namespace VGManager.Services;
 public class KeyVaultService : IKeyVaultService
 {
     private readonly IKeyVaultAdapter _keyVaultConnectionRepository;
+    private readonly ILogger _logger;
 
-    public KeyVaultService(IKeyVaultAdapter keyVaultConnectionRepository)
+    public KeyVaultService(IKeyVaultAdapter keyVaultConnectionRepository, ILogger<KeyVaultService> logger)
     {
         _keyVaultConnectionRepository = keyVaultConnectionRepository;
+        _logger = logger;
     }
 
     public void SetupConnectionRepository(string keyVaultName)
@@ -68,7 +71,7 @@ public class KeyVaultService : IKeyVaultService
 
     public async Task<Status> DeleteAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
-        Console.WriteLine("Deleted secret key, value");
+        _logger.LogInformation("Deleted secret key, value");
         var secretsResultModel = await _keyVaultConnectionRepository.GetSecrets(cancellationToken);
         var status = secretsResultModel.Status;
 
@@ -132,7 +135,7 @@ public class KeyVaultService : IKeyVaultService
 
                 if (deletionStatus == Status.Success)
                 {
-                    Console.WriteLine($"{secretName}, {secretValue}");
+                    _logger.LogInformation("{secretName}, {secretValue}", secretName, secretValue);
                     deletionCounter2++;
                 }
             }

@@ -1,16 +1,15 @@
 using AutoMapper;
-using VGManager.Api.Controllers;
-using VGManager.Services;
-using VGManager.Api.MapperProfiles;
-using VGManager.AzureAdapter.Interfaces;
-using Microsoft.Extensions.Logging;
-using ProjectProfile = VGManager.Services.MapperProfiles.ProjectProfile;
-using VGManager.Api.VariableGroups.Request;
-using VGManager.AzureAdapter.Entities;
-using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.AspNetCore.Mvc;
-using VGManager.Api.Projects.Responses;
+using Microsoft.Extensions.Logging;
+using Microsoft.TeamFoundation.DistributedTask.WebApi;
+using VGManager.Api.Controllers;
+using VGManager.Api.MapperProfiles;
+using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
+using VGManager.AzureAdapter.Entities;
+using VGManager.AzureAdapter.Interfaces;
+using VGManager.Services;
+using ProjectProfile = VGManager.Services.MapperProfiles.ProjectProfile;
 
 namespace VGManager.Api.Tests;
 
@@ -124,7 +123,7 @@ public class VariableGroupControllerTests
         var variableGroupResponse = GetVariableGroupGetResponses(newValue);
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
-        
+
         _variableGroupAdapter.Setup(x => x.Update(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(statusResult);
 
@@ -239,11 +238,11 @@ public class VariableGroupControllerTests
     }
 
     private static VariableGroupAddRequest GetVariableAddRequest(
-        string organization, 
-        string pat, 
-        string project, 
-        string valueFilter, 
-        string newKey, 
+        string organization,
+        string pat,
+        string project,
+        string valueFilter,
+        string newKey,
         string newValue
         )
     {
@@ -261,10 +260,10 @@ public class VariableGroupControllerTests
     }
 
     private static VariableGroupUpdateRequest GetVariableUpdateRequest(
-        string organization, 
-        string pat, 
-        string project, 
-        string valueFilter, 
+        string organization,
+        string pat,
+        string project,
+        string valueFilter,
         string newValue
         )
     {

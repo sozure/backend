@@ -146,14 +146,14 @@ public class KeyVaultService : IKeyVaultService
     private static IEnumerable<SecretEntity> CollectSecrets(SecretsEntity? secretsResultModel)
     {
         var result = new List<SecretEntity>();
-        if(secretsResultModel is null)
+        if (secretsResultModel is null)
         {
             return Enumerable.Empty<SecretEntity>();
         }
 
-        foreach(var secret in secretsResultModel.Secrets)
+        foreach (var secret in secretsResultModel.Secrets)
         {
-            if(secret is not null)
+            if (secret is not null)
             {
                 result.Add(secret);
             }

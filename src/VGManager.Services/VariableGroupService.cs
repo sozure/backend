@@ -144,19 +144,19 @@ public class VariableGroupService : IVariableGroupService
                 try
                 {
                     var success = await AddVariableAsync(key, value, filteredVariableGroup, cancellationToken);
-                    
-                    if(success)
+
+                    if (success)
                     {
                         updateCounter++;
                     }
 
-                } 
-                catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     _logger.LogError(
-                        ex, 
-                        "Something went wrong during variable addition. Variable group: {variableGroupName}, Key: {key}", 
-                        filteredVariableGroup.Name, 
+                        ex,
+                        "Something went wrong during variable addition. Variable group: {variableGroupName}, Key: {key}",
+                        filteredVariableGroup.Name,
                         key
                         );
                 }
@@ -313,10 +313,10 @@ public class VariableGroupService : IVariableGroupService
             else
             {
                 _logger.LogInformation(
-                    "{variableGroupName}, {variableKey}, {variableValue}, {newValue}", 
-                    variableGroupName, 
-                    variableKey, 
-                    variableValue, 
+                    "{variableGroupName}, {variableKey}, {variableValue}, {newValue}",
+                    variableGroupName,
+                    variableKey,
+                    variableValue,
                     newValue
                     );
 

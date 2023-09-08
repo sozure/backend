@@ -1,4 +1,4 @@
-﻿
+
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secrets.Request;
@@ -10,7 +10,7 @@ namespace VGManager.Api.Controllers;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
-public class SecretController : Controller
+public class SecretController : ControllerBase
 {
     private readonly IKeyVaultService _keyVaultService;
     private readonly IMapper _mapper;

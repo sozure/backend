@@ -1,5 +1,4 @@
 using AutoMapper;
-using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
@@ -58,19 +57,19 @@ public class VariableGroupController : ControllerBase
         {
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
-            foreach ( var project in projectResponse.Projects) 
+            foreach (var project in projectResponse.Projects)
             {
                 var singleRequest = GetSingleRequest(request, project.Name);
                 var subResult = await GetResultAsync(singleRequest, cancellationToken);
                 result.VariableGroups.AddRange(subResult.VariableGroups);
 
-                if(subResult.Status != Status.Success)
+                if (subResult.Status != Status.Success)
                 {
                     result.Status = subResult.Status;
                 }
             }
         }
-        
+
         return Ok(result);
     }
 
@@ -114,7 +113,7 @@ public class VariableGroupController : ControllerBase
                 }
             }
         }
-        
+
         return Ok(result);
     }
 

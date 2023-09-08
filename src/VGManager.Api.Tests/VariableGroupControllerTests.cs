@@ -60,9 +60,9 @@ public class VariableGroupControllerTests
             Organization = organization,
             PAT = pat,
             Project = project,
-            VariableGroupFilter = "Neptun",
-            KeyFilter = "Key",
-            ValueFilter = "Value",
+            VariableGroupFilter = "neptun",
+            KeyFilter = "key",
+            ValueFilter = "value",
             ContainsSecrets = false
         };
 

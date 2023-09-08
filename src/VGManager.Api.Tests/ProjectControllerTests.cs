@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.TeamFoundation.Core.WebApi;
 using VGManager.Api.Projects;
 using VGManager.Api.Projects.Responses;
-using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services;

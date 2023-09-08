@@ -1,5 +1,4 @@
 using System.Reflection;
-using VGManager.Api;
 using VGManager.Api.MapperProfiles;
 using VGManager.AzureAdapter;
 using VGManager.AzureAdapter.Interfaces;

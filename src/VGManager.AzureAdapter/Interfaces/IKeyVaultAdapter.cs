@@ -10,5 +10,5 @@ public interface IKeyVaultAdapter
     Task<SecretsEntity> GetSecrets(CancellationToken cancellationToken = default);
     Task<Status> RecoverSecret(string name, CancellationToken cancellationToken = default);
     DeletedSecretsEntity GetDeletedSecrets(CancellationToken cancellationToken = default);
-    public void Setup(string keyVaultName);
+    public void Setup(string keyVaultName, string tenantId, string clientId, string clientSecret);
 }

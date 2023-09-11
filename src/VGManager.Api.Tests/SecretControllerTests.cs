@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using VGManager.Api.Controllers;
 using VGManager.Api.MapperProfiles;
+using VGManager.Api.Secret.Request;
 using VGManager.Api.Secrets.Request;
 using VGManager.Api.Secrets.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
+using VGManager.Services.Models.Secrets;
 
 namespace VGManager.Api.Tests;
 
@@ -42,13 +44,17 @@ public class SecretControllerTests
     {
         // Arrange
         var keyVaultName = "KeyVaultName1";
-        var request = GetRequest(keyVaultName, "SecretFilter");
+        var tenantId = "tenantId1";
+        var clientId = "clientId1";
+        var clientSecret = "clientSecret1";
+        var secretFilter = "SecretFilter";
+        var request = GetRequest(keyVaultName, secretFilter, tenantId, clientId, clientSecret);
 
         var secretsEntity = GetSecretsEntity();
         var secretsGetResponse = GetSecretsGetResponse();
 
         _adapter.Setup(x => x.GetSecrets(It.IsAny<CancellationToken>())).ReturnsAsync(secretsEntity);
-        _adapter.Setup(x => x.Setup(It.IsAny<string>()));
+        _adapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
         // Act
         var result = await _controller.GetAsync(request, default);
@@ -58,7 +64,7 @@ public class SecretControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((SecretsGetResponse)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
-        _adapter.Verify(x => x.Setup(keyVaultName), Times.Once);
+        _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetSecrets(default), Times.Once);
     }
 
@@ -67,13 +73,17 @@ public class SecretControllerTests
     {
         // Arrange
         var keyVaultName = "KeyVaultName1";
-        var request = GetRequest(keyVaultName, "DeletedSecretFilter");
+        var tenantId = "tenantId1";
+        var clientId = "clientId1";
+        var clientSecret = "clientSecret1";
+        var secretFilter = "DeletedSecretFilter";
+        var request = GetRequest(keyVaultName, secretFilter, tenantId, clientId, clientSecret);
 
         var secretsEntity = GetEmptyDeletedSecretsEntity();
         var secretsGetResponse = GetEmptySecretsGetResponse1();
 
         _adapter.Setup(x => x.GetDeletedSecrets(It.IsAny<CancellationToken>())).Returns(secretsEntity);
-        _adapter.Setup(x => x.Setup(It.IsAny<string>()));
+        _adapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
         // Act
         var result = _controller.GetDeleted(request, default);
@@ -83,7 +93,7 @@ public class SecretControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((DeletedSecretsGetResponse)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
-        _adapter.Verify(x => x.Setup(keyVaultName), Times.Once);
+        _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetDeletedSecrets(default), Times.Once);
     }
 
@@ -92,7 +102,11 @@ public class SecretControllerTests
     {
         // Arrange
         var keyVaultName = "KeyVaultName1";
-        var request = GetDeletedRequest(keyVaultName, "SecretFilter");
+        var tenantId = "tenantId1";
+        var clientId = "clientId1";
+        var clientSecret = "clientSecret1";
+        var secretFilter = "SecretFilter";
+        var request = GetRequest(keyVaultName, secretFilter, tenantId, clientId, clientSecret);
 
         var secretsEntity1 = GetSecretsEntity();
         var secretsEntity2 = GetEmptySecretsEntity();
@@ -103,7 +117,7 @@ public class SecretControllerTests
             .ReturnsAsync(secretsEntity2);
 
         _adapter.Setup(x => x.DeleteSecret(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Status.Success);
-        _adapter.Setup(x => x.Setup(It.IsAny<string>()));
+        _adapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
         // Act
         var result = await _controller.DeleteAsync(request, default);
@@ -113,26 +127,20 @@ public class SecretControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((SecretsGetResponse)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
-        _adapter.Verify(x => x.Setup(keyVaultName), Times.Once);
+        _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetSecrets(default), Times.Exactly(2));
         _adapter.Verify(x => x.DeleteSecret(It.IsAny<string>(), default), Times.Exactly(3));
     }
 
-    private static SecretDeleteRequest GetDeletedRequest(string keyVaultName, string secretFilter)
+    private static SecretRequest GetRequest(string keyVaultName, string secretFilter, string tenantId, string clientId, string clientSecret)
     {
-        return new SecretDeleteRequest
+        return new SecretRequest
         {
             KeyVaultName = keyVaultName,
-            SecretFilter = secretFilter
-        };
-    }
-
-    private static SecretGetRequest GetRequest(string keyVaultName, string secretFilter)
-    {
-        return new SecretGetRequest
-        {
-            KeyVaultName = keyVaultName,
-            SecretFilter = secretFilter
+            SecretFilter = secretFilter,
+            TenantId = tenantId,
+            ClientId = clientId,
+            ClientSecret = clientSecret
         };
     }
 

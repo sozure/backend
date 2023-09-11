@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace VGManager.Api.Secrets.Request;
+namespace VGManager.Api.Secret.Request;
 
-public class SecretGetRequest
+public class SecretRequest
 {
     [Required]
     public string TenantId { get; set; } = null!;

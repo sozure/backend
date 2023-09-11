@@ -5,7 +5,7 @@ namespace VGManager.Services.Interfaces;
 
 public interface IKeyVaultService
 {
-    void SetupConnectionRepository(string keyVaultName);
+    void SetupConnectionRepository(SecretModel secretModel);
     Task<SecretResultsModel> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default);
     DeletedSecretResultsModel GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default);
     Task<Status> RecoverSecretAsync(string secretFilter, CancellationToken cancellationToken = default);

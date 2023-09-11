@@ -19,9 +19,9 @@ public class KeyVaultService : IKeyVaultService
         _logger = logger;
     }
 
-    public void SetupConnectionRepository(string keyVaultName)
+    public void SetupConnectionRepository(SecretModel secretModel)
     {
-        _keyVaultConnectionRepository.Setup(keyVaultName);
+        _keyVaultConnectionRepository.Setup(secretModel.KeyVaultName, secretModel.TenantId, secretModel.ClientId, secretModel.ClientSecret);
     }
 
     public async Task<SecretResultsModel> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default)

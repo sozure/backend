@@ -13,7 +13,6 @@ public class VariableGroupService : IVariableGroupService
 {
     private readonly IVariableGroupAdapter _variableGroupConnectionRepository;
     private readonly ILogger _logger;
-    private readonly string _notContains = "Secrets";
 
     public VariableGroupService(IVariableGroupAdapter variableGroupConnectionRepository, ILogger<VariableGroupService> logger)
     {
@@ -43,7 +42,7 @@ public class VariableGroupService : IVariableGroupService
         {
             var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
                 Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
-                Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter, _notContains);
+                FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
 
             var valueFilter = variableGroupModel.ValueFilter;
 
@@ -79,7 +78,7 @@ public class VariableGroupService : IVariableGroupService
 
         if (status == Status.Success)
         {
-            var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter, _notContains);
+            var filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter);
             var updateCounter1 = 0;
             var updateCounter2 = 0;
 
@@ -128,13 +127,13 @@ public class VariableGroupService : IVariableGroupService
             {
                 var regex = new Regex(keyFilter);
 
-                filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter, _notContains)
+                filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupFilter)
                     .Select(vg => vg)
                     .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key)).Count > 0);
             }
             else
             {
-                filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupFilter, _notContains);
+                filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupFilter);
             }
 
             var updateCounter = 0;
@@ -174,7 +173,7 @@ public class VariableGroupService : IVariableGroupService
 
         if (status == Status.Success)
         {
-            var filteredVariableGroups = Filter(vgEntity.VariableGroups, variableGroupDeleteModel.VariableGroupFilter, _notContains);
+            var filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupDeleteModel.VariableGroupFilter);
             var deletionCounter1 = 0;
             var deletionCounter2 = 0;
 
@@ -212,10 +211,10 @@ public class VariableGroupService : IVariableGroupService
         return status;
     }
 
-    private static IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter, string notContainsFilter)
+    private static IEnumerable<VariableGroup> FilterWithoutSecrets(IEnumerable<VariableGroup> variableGroups, string filter)
     {
         var regex = new Regex(filter.ToLower());
-        return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower()) && !vg.Name.Contains(notContainsFilter)).ToList();
+        return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower()) && vg.Type != "AzureKeyVault").ToList();
     }
 
     private static IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter)

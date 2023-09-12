@@ -2,17 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VGManager.Api.Secret.Request;
 
-public class SecretRequest
+public class SecretRequest: SecretBaseRequest
 {
-    [Required]
-    public string TenantId { get; set; } = null!;
-
-    [Required]
-    public string ClientId { get; set; } = null!;
-
-    [Required]
-    public string ClientSecret { get; set; } = null!;
-
     [Required]
     public string KeyVaultName { get; set; } = null!;
 

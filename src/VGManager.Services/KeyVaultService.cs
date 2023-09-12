@@ -27,7 +27,7 @@ public class KeyVaultService : IKeyVaultService
     public async Task<SecretResultsModel> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
         var secretList = new List<SecretResultModel>();
-        var secretsEntity = await _keyVaultConnectionRepository.GetSecrets(cancellationToken);
+        var secretsEntity = await _keyVaultConnectionRepository.GetSecretsAsync(cancellationToken);
         var status = secretsEntity.Status;
         var secrets = CollectSecrets(secretsEntity);
 
@@ -43,6 +43,40 @@ public class KeyVaultService : IKeyVaultService
             return GetResult(status, secretList);
         }
         return GetResult(status, secretList);
+    }
+
+    public async Task<Status> CopySecretsAsync(SecretCopyModel secretCopyModel, CancellationToken cancellationToken = default)
+    {
+        _keyVaultConnectionRepository.Setup(
+            secretCopyModel.FromKeyVault, 
+            secretCopyModel.TenantId, 
+            secretCopyModel.ClientId, 
+            secretCopyModel.ClientSecret
+            );
+
+        var fromSecrets = await _keyVaultConnectionRepository.GetAllAsync(cancellationToken);
+
+        _keyVaultConnectionRepository.Setup(
+            secretCopyModel.ToKeyVault,
+            secretCopyModel.TenantId,
+            secretCopyModel.ClientId,
+            secretCopyModel.ClientSecret
+            );
+
+        var toSecrets = await _keyVaultConnectionRepository.GetAllAsync(cancellationToken);
+
+        foreach (var secret in fromSecrets)
+        {
+            var parameters = ParametersBuilder(secret, toSecrets, secretCopyModel.overrideSecret);
+            var partialStatus = await _keyVaultConnectionRepository.AddKeyVaultSecretAsync(parameters, cancellationToken);
+
+            if(partialStatus != Status.Success)
+            {
+                return partialStatus;
+            }
+        }
+
+        return Status.Success;
     }
 
     public DeletedSecretResultsModel GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default)
@@ -72,7 +106,7 @@ public class KeyVaultService : IKeyVaultService
     public async Task<Status> DeleteAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Deleted secret key, value");
-        var secretsResultModel = await _keyVaultConnectionRepository.GetSecrets(cancellationToken);
+        var secretsResultModel = await _keyVaultConnectionRepository.GetSecretsAsync(cancellationToken);
         var status = secretsResultModel.Status;
 
         if (status == Status.Success)
@@ -94,7 +128,7 @@ public class KeyVaultService : IKeyVaultService
             var recoverCounter = 0;
             foreach (var secret in filteredSecrets)
             {
-                var recoverStatus = await _keyVaultConnectionRepository.RecoverSecret(secret.Name, cancellationToken);
+                var recoverStatus = await _keyVaultConnectionRepository.RecoverSecretAsync(secret.Name, cancellationToken);
                 if (recoverStatus == Status.Success)
                 {
                     recoverCounter++;
@@ -117,6 +151,23 @@ public class KeyVaultService : IKeyVaultService
         return keyVaultSecrets.Where(secret => regex.IsMatch(secret?.Name.ToLower() ?? string.Empty)).ToList();
     }
 
+    private static Dictionary<string, string> ParametersBuilder(
+        KeyVaultSecret keyVaultSecret, 
+        IEnumerable<KeyVaultSecret> toKeyVaultSecrets, 
+        bool overrideSecret
+        )
+    {
+        var parameters = new Dictionary<string, string>
+        {
+            ["secretName"] = keyVaultSecret.Name
+        };
+
+        var toKeyVaultSecret = toKeyVaultSecrets.FirstOrDefault(kv => kv.Name.Equals(keyVaultSecret.Name));
+        parameters["secretValue"] = overrideSecret || toKeyVaultSecret is null ? keyVaultSecret.Value : toKeyVaultSecret.Value;
+
+        return parameters;
+    }
+
     private async Task<Status> DeleteAsync(string secretFilter, SecretsEntity? secretsResultModel, CancellationToken cancellationToken)
     {
         var secrets = CollectSecrets(secretsResultModel);
@@ -131,7 +182,7 @@ public class KeyVaultService : IKeyVaultService
             if (secretName is not null && secretValue is not null)
             {
                 deletionCounter1++;
-                var deletionStatus = await _keyVaultConnectionRepository.DeleteSecret(secretName, cancellationToken);
+                var deletionStatus = await _keyVaultConnectionRepository.DeleteSecretAsync(secretName, cancellationToken);
 
                 if (deletionStatus == Status.Success)
                 {

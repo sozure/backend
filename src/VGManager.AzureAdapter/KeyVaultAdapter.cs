@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 
@@ -26,7 +27,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         _keyVaultName = keyVaultName;
     }
 
-    public async Task<SecretEntity> GetSecret(string name, CancellationToken cancellationToken = default)
+    public async Task<SecretEntity> GetSecretAsync(string name, CancellationToken cancellationToken = default)
     {
         KeyVaultSecret result;
         try
@@ -49,7 +50,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         }
     }
 
-    public async Task<Status> DeleteSecret(string name, CancellationToken cancellationToken = default)
+    public async Task<Status> DeleteSecretAsync(string name, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -65,13 +66,13 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         }
     }
 
-    public async Task<SecretsEntity> GetSecrets(CancellationToken cancellationToken = default)
+    public async Task<SecretsEntity> GetSecretsAsync(CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Get secrets from {keyVault}.", _keyVaultName);
             var secretProperties = _secretClient.GetPropertiesOfSecrets(cancellationToken).ToList();
-            var results = await Task.WhenAll(secretProperties.Select(p => GetSecret(p.Name)));
+            var results = await Task.WhenAll(secretProperties.Select(p => GetSecretAsync(p.Name)));
 
             if (results is null)
             {
@@ -88,7 +89,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         }
     }
 
-    public async Task<Status> AddKeyVaultSecret(Dictionary<string, string> parameters, CancellationToken cancellationToken = default)
+    public async Task<Status> AddKeyVaultSecretAsync(Dictionary<string, string> parameters, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -125,7 +126,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         }
     }
 
-    public async Task<Status> RecoverSecret(string name, CancellationToken cancellationToken = default)
+    public async Task<Status> RecoverSecretAsync(string name, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -155,6 +156,20 @@ public class KeyVaultAdapter : IKeyVaultAdapter
             _logger.LogError(ex, "Couldn't get deleted secrets. Status: {status}.", status);
             return GetDeletedSecretsResult(status);
         }
+    }
+
+    public async Task<IEnumerable<KeyVaultSecret>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var secretProperties = _secretClient.GetPropertiesOfSecrets(cancellationToken).ToList();
+        var results = new List<KeyVaultSecret>();
+
+        foreach (var secretProp in secretProperties)
+        {
+            var secret = await _secretClient.GetSecretAsync(secretProp.Name, cancellationToken: cancellationToken);
+            results.Add(secret);
+        }
+        
+        return results;
     }
 
     private static DeletedSecretsEntity GetDeletedSecretsResult(Status status)

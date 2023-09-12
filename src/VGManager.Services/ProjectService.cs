@@ -16,10 +16,10 @@ public class ProjectService : IProjectService
         _mapper = mapper;
     }
 
-    public async Task<ProjectResultModel> GetProjects(ProjectModel projectModel, CancellationToken cancellationToken = default)
+    public async Task<ProjectResultModel> GetProjectsAsync(ProjectModel projectModel, CancellationToken cancellationToken = default)
     {
         var url = $"https://dev.azure.com/{projectModel.Organization}";
-        var projectEntity = await _projectRepository.GetProjects(url, projectModel.PAT, cancellationToken);
+        var projectEntity = await _projectRepository.GetProjectsAsync(url, projectModel.PAT, cancellationToken);
         return _mapper.Map<ProjectResultModel>(projectEntity);
     }
 }

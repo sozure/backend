@@ -35,7 +35,7 @@ public class VariableGroupService : IVariableGroupService
         )
     {
         var matchedVariableGroups = new List<VariableGroupResultModel>();
-        var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
+        var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
         if (status == Status.Success)
@@ -73,7 +73,7 @@ public class VariableGroupService : IVariableGroupService
         )
     {
         _logger.LogInformation("Variable group name, Key, Old value, New value");
-        var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
+        var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
         if (status == Status.Success)
@@ -92,7 +92,7 @@ public class VariableGroupService : IVariableGroupService
                     updateCounter2++;
                     var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
 
-                    var updateStatus = await _variableGroupConnectionRepository.Update(
+                    var updateStatus = await _variableGroupConnectionRepository.UpdateAsync(
                         variableGroupParameters,
                         filteredVariableGroup.Id,
                         cancellationToken
@@ -112,7 +112,7 @@ public class VariableGroupService : IVariableGroupService
 
     public async Task<Status> AddVariablesAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default)
     {
-        var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
+        var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
         if (status == Status.Success)
@@ -168,7 +168,7 @@ public class VariableGroupService : IVariableGroupService
     public async Task<Status> DeleteVariableAsync(VariableGroupDeleteModel variableGroupDeleteModel, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Variable group name, Deleted Key, Deleted Value");
-        var vgEntity = await _variableGroupConnectionRepository.GetAll(cancellationToken);
+        var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
         if (status == Status.Success)
@@ -193,7 +193,7 @@ public class VariableGroupService : IVariableGroupService
                     deletionCounter1++;
                     var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
 
-                    var updateStatus = await _variableGroupConnectionRepository.Update(
+                    var updateStatus = await _variableGroupConnectionRepository.UpdateAsync(
                         variableGroupParameters,
                         filteredVariableGroup.Id,
                         cancellationToken
@@ -362,7 +362,7 @@ public class VariableGroupService : IVariableGroupService
         filteredVariableGroup.Variables.Add(key, value);
         var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
 
-        var updateStatus = await _variableGroupConnectionRepository.Update(
+        var updateStatus = await _variableGroupConnectionRepository.UpdateAsync(
             variableGroupParameters,
             filteredVariableGroup.Id,
             cancellationToken

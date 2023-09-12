@@ -85,7 +85,7 @@ public class ProjectControllerTests
             }
         };
 
-        _adapter.Setup(x => x.GetProjects(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(projectEntity);
+        _adapter.Setup(x => x.GetProjectsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(projectEntity);
 
         // Act
         var result = await _controller.GetAsync(request, default);
@@ -95,6 +95,6 @@ public class ProjectControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((ProjectsResponse)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(projectsResponse);
 
-        _adapter.Verify(x => x.GetProjects(url, pat, default), Times.Once);
+        _adapter.Verify(x => x.GetProjectsAsync(url, pat, default), Times.Once);
     }
 }

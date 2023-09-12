@@ -107,14 +107,14 @@ public class KeyVaultService : IKeyVaultService
 
     private static IEnumerable<SecretEntity> Filter(IEnumerable<SecretEntity> keyVaultSecrets, string filter)
     {
-        var regex = new Regex(filter);
-        return keyVaultSecrets.Where(secret => regex.IsMatch(secret?.Secret?.Name ?? string.Empty)).ToList();
+        var regex = new Regex(filter.ToLower());
+        return keyVaultSecrets.Where(secret => regex.IsMatch(secret?.Secret?.Name.ToLower() ?? string.Empty)).ToList();
     }
 
     private static IEnumerable<DeletedSecret> Filter(IEnumerable<DeletedSecret> keyVaultSecrets, string filter)
     {
-        var regex = new Regex(filter);
-        return keyVaultSecrets.Where(secret => regex.IsMatch(secret?.Name ?? string.Empty)).ToList();
+        var regex = new Regex(filter.ToLower());
+        return keyVaultSecrets.Where(secret => regex.IsMatch(secret?.Name.ToLower() ?? string.Empty)).ToList();
     }
 
     private async Task<Status> DeleteAsync(string secretFilter, SecretsEntity? secretsResultModel, CancellationToken cancellationToken)

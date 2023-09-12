@@ -67,7 +67,7 @@ public class KeyVaultService : IKeyVaultService
 
         foreach (var secret in fromSecrets)
         {
-            var parameters = ParametersBuilder(secret, toSecrets, secretCopyModel.overrideSecret);
+            var parameters = ParametersBuilder(secret, toSecrets, secretCopyModel.OverrideSecret);
             var partialStatus = await _keyVaultConnectionRepository.AddKeyVaultSecretAsync(parameters, cancellationToken);
 
             if (partialStatus != Status.Success)

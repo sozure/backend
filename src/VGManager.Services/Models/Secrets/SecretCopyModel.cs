@@ -5,5 +5,5 @@ public class SecretCopyModel : SecretBaseModel
 
     public string ToKeyVault { get; set; } = null!;
 
-    public bool overrideSecret { get; set; }
+    public bool OverrideSecret { get; set; }
 }

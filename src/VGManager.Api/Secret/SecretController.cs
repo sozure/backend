@@ -2,7 +2,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secret.Request;
-using VGManager.Api.Secrets.Request;
 using VGManager.Api.Secrets.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Interfaces;

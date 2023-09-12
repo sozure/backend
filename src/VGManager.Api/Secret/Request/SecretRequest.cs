@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VGManager.Api.Secret.Request;
 
-public class SecretRequest: SecretBaseRequest
+public class SecretRequest : SecretBaseRequest
 {
     [Required]
     public string KeyVaultName { get; set; } = null!;

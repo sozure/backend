@@ -48,9 +48,9 @@ public class KeyVaultService : IKeyVaultService
     public async Task<Status> CopySecretsAsync(SecretCopyModel secretCopyModel, CancellationToken cancellationToken = default)
     {
         _keyVaultConnectionRepository.Setup(
-            secretCopyModel.FromKeyVault, 
-            secretCopyModel.TenantId, 
-            secretCopyModel.ClientId, 
+            secretCopyModel.FromKeyVault,
+            secretCopyModel.TenantId,
+            secretCopyModel.ClientId,
             secretCopyModel.ClientSecret
             );
 
@@ -70,7 +70,7 @@ public class KeyVaultService : IKeyVaultService
             var parameters = ParametersBuilder(secret, toSecrets, secretCopyModel.overrideSecret);
             var partialStatus = await _keyVaultConnectionRepository.AddKeyVaultSecretAsync(parameters, cancellationToken);
 
-            if(partialStatus != Status.Success)
+            if (partialStatus != Status.Success)
             {
                 return partialStatus;
             }
@@ -152,8 +152,8 @@ public class KeyVaultService : IKeyVaultService
     }
 
     private static Dictionary<string, string> ParametersBuilder(
-        KeyVaultSecret keyVaultSecret, 
-        IEnumerable<KeyVaultSecret> toKeyVaultSecrets, 
+        KeyVaultSecret keyVaultSecret,
+        IEnumerable<KeyVaultSecret> toKeyVaultSecrets,
         bool overrideSecret
         )
     {

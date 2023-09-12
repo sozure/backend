@@ -1,7 +1,6 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Logging;
-using System.Threading;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 
@@ -168,7 +167,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
             var secret = await _secretClient.GetSecretAsync(secretProp.Name, cancellationToken: cancellationToken);
             results.Add(secret);
         }
-        
+
         return results;
     }
 

@@ -5,13 +5,11 @@ using Microsoft.Extensions.Logging;
 using VGManager.Api.Controllers;
 using VGManager.Api.MapperProfiles;
 using VGManager.Api.Secret.Request;
-using VGManager.Api.Secrets.Request;
 using VGManager.Api.Secrets.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models.Secrets;
 
 namespace VGManager.Api.Tests;
 

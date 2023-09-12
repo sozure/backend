@@ -107,8 +107,7 @@ public class SecretController : ControllerBase
         )
     {
         var secretModel = _mapper.Map<SecretCopyModel>(request);
-        var status = _keyVaultService.CopySecretsAsync(secretModel, cancellationToken);
-
+        var status = await _keyVaultService.CopySecretsAsync(secretModel, cancellationToken);
         return Ok(status);
     }
 }

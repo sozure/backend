@@ -3,5 +3,5 @@
 namespace VGManager.Services.Interfaces;
 public interface IProjectService
 {
-    Task<ProjectResultModel> GetProjects(ProjectModel projectModel, CancellationToken cancellationToken = default);
+    Task<ProjectResultModel> GetProjectsAsync(ProjectModel projectModel, CancellationToken cancellationToken = default);
 }

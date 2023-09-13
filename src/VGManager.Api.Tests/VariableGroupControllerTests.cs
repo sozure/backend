@@ -61,7 +61,7 @@ public class VariableGroupControllerTests
         var variableGroupResponse = GetVariableGroupGetResponses();
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
-        _variableGroupAdapter.Setup(x => x.GetAll(It.IsAny<CancellationToken>()))
+        _variableGroupAdapter.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(variableGroupEntity);
 
         // Act
@@ -72,7 +72,7 @@ public class VariableGroupControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
-        _variableGroupAdapter.Verify(x => x.GetAll(default), Times.Once());
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
     }
 
@@ -90,7 +90,7 @@ public class VariableGroupControllerTests
         var variableGroupResponse = GetVariableGroupGetResponses();
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
-        _variableGroupAdapter.Setup(x => x.GetAll(It.IsAny<CancellationToken>()))
+        _variableGroupAdapter.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(variableGroupEntity);
 
         // Act
@@ -101,7 +101,7 @@ public class VariableGroupControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
-        _variableGroupAdapter.Verify(x => x.GetAll(default), Times.Once());
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
     }
 
@@ -124,10 +124,10 @@ public class VariableGroupControllerTests
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
-        _variableGroupAdapter.Setup(x => x.Update(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+        _variableGroupAdapter.Setup(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(statusResult);
 
-        _variableGroupAdapter.SetupSequence(x => x.GetAll(It.IsAny<CancellationToken>()))
+        _variableGroupAdapter.SetupSequence(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(variableGroupEntity1)
             .ReturnsAsync(variableGroupEntity2);
 
@@ -139,8 +139,8 @@ public class VariableGroupControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
-        _variableGroupAdapter.Verify(x => x.GetAll(default), Times.Exactly(2));
-        _variableGroupAdapter.Verify(x => x.Update(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
+        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
     }
 
@@ -164,10 +164,10 @@ public class VariableGroupControllerTests
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
-        _variableGroupAdapter.Setup(x => x.Update(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+        _variableGroupAdapter.Setup(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(statusResult);
 
-        _variableGroupAdapter.SetupSequence(x => x.GetAll(It.IsAny<CancellationToken>()))
+        _variableGroupAdapter.SetupSequence(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(variableGroupEntity1)
             .ReturnsAsync(variableGroupEntity2);
 
@@ -179,8 +179,8 @@ public class VariableGroupControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
-        _variableGroupAdapter.Verify(x => x.GetAll(default), Times.Exactly(2));
-        _variableGroupAdapter.Verify(x => x.Update(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
+        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
     }
 
@@ -203,10 +203,10 @@ public class VariableGroupControllerTests
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
-        _variableGroupAdapter.Setup(x => x.Update(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+        _variableGroupAdapter.Setup(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(statusResult);
 
-        _variableGroupAdapter.SetupSequence(x => x.GetAll(It.IsAny<CancellationToken>()))
+        _variableGroupAdapter.SetupSequence(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(variableGroupEntity1)
             .ReturnsAsync(variableGroupEntity2);
 
@@ -218,8 +218,8 @@ public class VariableGroupControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
-        _variableGroupAdapter.Verify(x => x.GetAll(default), Times.Exactly(2));
-        _variableGroupAdapter.Verify(x => x.Update(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
+        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
     }
 

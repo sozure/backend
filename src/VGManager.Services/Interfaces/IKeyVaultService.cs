@@ -10,4 +10,5 @@ public interface IKeyVaultService
     DeletedSecretResultsModel GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default);
     Task<Status> RecoverSecretAsync(string secretFilter, CancellationToken cancellationToken = default);
     Task<Status> DeleteAsync(string secretFilter, CancellationToken cancellationToken = default);
+    Task<Status> CopySecretsAsync(SecretCopyModel secretCopyModel, CancellationToken cancellationToken = default);
 }

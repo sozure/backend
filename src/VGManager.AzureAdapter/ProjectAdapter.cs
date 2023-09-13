@@ -16,7 +16,7 @@ public class ProjectAdapter : IProjectAdapter
         _logger = logger;
     }
 
-    public async Task<ProjectEntity> GetProjects(string baseUrl, string pat, CancellationToken cancellationToken = default)
+    public async Task<ProjectEntity> GetProjectsAsync(string baseUrl, string pat, CancellationToken cancellationToken = default)
     {
         try
         {

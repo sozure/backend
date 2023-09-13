@@ -32,7 +32,7 @@ public class VariableGroupAdapter : IVariableGroupAdapter
         _connection = new VssConnection(uri, credentials);
     }
 
-    public async Task<VariableGroupEntity> GetAll(CancellationToken cancellationToken = default)
+    public async Task<VariableGroupEntity> GetAllAsync(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -67,7 +67,7 @@ public class VariableGroupAdapter : IVariableGroupAdapter
         }
     }
 
-    public async Task<Status> Update(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default)
+    public async Task<Status> UpdateAsync(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default)
     {
         var variableGroupName = variableGroupParameters.Name;
         variableGroupParameters.VariableGroupProjectReferences = new List<VariableGroupProjectReference>()

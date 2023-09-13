@@ -2,8 +2,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secret.Request;
-using VGManager.Api.Secrets.Request;
 using VGManager.Api.Secrets.Response;
+using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Secrets;
 
@@ -95,5 +95,19 @@ public class SecretController : ControllerBase
 
         var result = _mapper.Map<SecretsGetResponse>(matchedSecrets);
         return Ok(result);
+    }
+
+    [HttpPost("Copy", Name = "CopySecrets")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<Status>> CopyAsync(
+        [FromBody] SecretCopyRequest request,
+        CancellationToken cancellationToken
+        )
+    {
+        var secretModel = _mapper.Map<SecretCopyModel>(request);
+        var status = await _keyVaultService.CopySecretsAsync(secretModel, cancellationToken);
+        return Ok(status);
     }
 }

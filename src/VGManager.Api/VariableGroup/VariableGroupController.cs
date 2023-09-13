@@ -222,7 +222,7 @@ public class VariableGroupController : ControllerBase
             PAT = request.PAT
         };
 
-        var projectResponse = await _projectService.GetProjects(projectModel, cancellationToken);
+        var projectResponse = await _projectService.GetProjectsAsync(projectModel, cancellationToken);
         return projectResponse;
     }
 

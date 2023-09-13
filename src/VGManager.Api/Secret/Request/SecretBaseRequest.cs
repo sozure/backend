@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace VGManager.Api.Secrets.Request;
+namespace VGManager.Api.Secret.Request;
 
-public class SecretGetRequest
+public abstract class SecretBaseRequest
 {
     [Required]
     public string TenantId { get; set; } = null!;
@@ -12,10 +12,4 @@ public class SecretGetRequest
 
     [Required]
     public string ClientSecret { get; set; } = null!;
-
-    [Required]
-    public string KeyVaultName { get; set; } = null!;
-
-    [Required]
-    public string SecretFilter { get; set; } = null!;
 }

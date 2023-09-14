@@ -82,7 +82,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<SecretsGetResponse>> RecoverAsync(
+    public async Task<ActionResult<DeletedSecretsGetResponse>> RecoverAsync(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -93,7 +93,7 @@ public class SecretController : ControllerBase
         await _keyVaultService.RecoverSecretAsync(secretModel.SecretFilter, cancellationToken);
         var matchedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<SecretsGetResponse>(matchedSecrets);
+        var result = _mapper.Map<DeletedSecretsGetResponse>(matchedSecrets);
         return Ok(result);
     }
 

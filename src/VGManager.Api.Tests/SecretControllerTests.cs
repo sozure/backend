@@ -151,16 +151,19 @@ public class SecretControllerTests
             {
                 new()
                 {
+                    KeyVault = "KeyVaultName1",
                     SecretName = "SecretFilter123",
                     SecretValue = "3Kpu6gF214vAqHlzaX5G"
                 },
                 new()
                 {
+                    KeyVault = "KeyVaultName1",
                     SecretName = "SecretFilter456",
                     SecretValue = "KCRQJ08PdFHU9Ly2pUI2"
                 },
                 new()
                 {
+                    KeyVault = "KeyVaultName1",
                     SecretName = "SecretFilter789",
                     SecretValue = "ggl1oBLSiYNBliNQhsGW"
                 }

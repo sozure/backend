@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secret.Request;
+using VGManager.Api.Secret.Response;
 using VGManager.Api.Secrets.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Interfaces;
@@ -38,6 +39,12 @@ public class SecretController : ControllerBase
         var matchedSecrets = await _keyVaultService.GetSecretsAsync(secretModel.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<SecretsGetResponse>(matchedSecrets);
+
+        if (result.Status == 0)
+        {
+            SetKeyVault(result.Secrets, request.KeyVaultName);
+        }
+
         return Ok(result);
     }
 
@@ -54,8 +61,13 @@ public class SecretController : ControllerBase
 
         _keyVaultService.SetupConnectionRepository(secretModel);
         var matchedDeletedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
-
         var result = _mapper.Map<DeletedSecretsGetResponse>(matchedDeletedSecrets);
+
+        if (result.Status == 0)
+        {
+            SetKeyVault(result.DeletedSecrets, request.KeyVaultName);
+        }
+
         return Ok(result);
     }
 
@@ -75,6 +87,12 @@ public class SecretController : ControllerBase
         var matchedSecrets = await _keyVaultService.GetSecretsAsync(secretModel.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<SecretsGetResponse>(matchedSecrets);
+
+        if (result.Status == 0)
+        {
+            SetKeyVault(result.Secrets, request.KeyVaultName);
+        }
+
         return Ok(result);
     }
 
@@ -94,6 +112,12 @@ public class SecretController : ControllerBase
         var matchedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<DeletedSecretsGetResponse>(matchedSecrets);
+
+        if (result.Status == 0)
+        {
+            SetKeyVault(result.DeletedSecrets, request.KeyVaultName);
+        }
+
         return Ok(result);
     }
 
@@ -109,5 +133,13 @@ public class SecretController : ControllerBase
         var secretModel = _mapper.Map<SecretCopyModel>(request);
         var status = await _keyVaultService.CopySecretsAsync(secretModel, cancellationToken);
         return Ok(status);
+    }
+
+    private static void SetKeyVault(IEnumerable<SecretBaseResponse> responses, string keyVault)
+    {
+        foreach (var response in responses)
+        {
+            response.KeyVault = keyVault;
+        }
     }
 }

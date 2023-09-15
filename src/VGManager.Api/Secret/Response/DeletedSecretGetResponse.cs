@@ -1,8 +1,8 @@
+using VGManager.Api.Secret.Response;
+
 namespace VGManager.Api.Secrets.Response;
 
-public class DeletedSecretGetResponse
+public class DeletedSecretGetResponse: SecretBaseResponse
 {
-    public string SecretName { get; set; } = null!;
-    public string SecretValue { get; set; } = null!;
     public DateTimeOffset? DeletedOn { get; set; }
 }

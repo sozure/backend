@@ -268,6 +268,7 @@ public class VariableGroupService : IVariableGroupService
                             SecretVariableGroup = true,
                             VariableGroupName = filteredVariableGroup.Name,
                             VariableGroupKey = filteredVariable.Key,
+                            KeyVaultName = string.Empty
                         });
                     }
                     else
@@ -278,6 +279,7 @@ public class VariableGroupService : IVariableGroupService
                             SecretVariableGroup = false,
                             VariableGroupName = filteredVariableGroup.Name,
                             VariableGroupKey = filteredVariable.Key,
+                            VariableGroupValue = variableValue
                         });
                     }
                 }
@@ -291,7 +293,8 @@ public class VariableGroupService : IVariableGroupService
                         Project = _project ?? string.Empty,
                         SecretVariableGroup = true,
                         VariableGroupName = filteredVariableGroup.Name,
-                        VariableGroupKey = filteredVariable.Key
+                        VariableGroupKey = filteredVariable.Key,
+                        KeyVaultName = string.Empty
                     });
                 }
                 else
@@ -302,6 +305,7 @@ public class VariableGroupService : IVariableGroupService
                         SecretVariableGroup = false,
                         VariableGroupName = filteredVariableGroup.Name,
                         VariableGroupKey = filteredVariable.Key,
+                        VariableGroupValue = variableValue
                     });
                 }
             }

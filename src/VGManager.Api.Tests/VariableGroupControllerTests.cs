@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using VGManager.Api.Controllers;
 using VGManager.Api.MapperProfiles;
-using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
@@ -72,7 +71,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
@@ -101,7 +100,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
@@ -139,7 +138,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
@@ -179,7 +178,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
@@ -218,7 +217,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
@@ -429,9 +428,9 @@ public class VariableGroupControllerTests
         };
     }
 
-    private static VariableGroupGetResponses GetVariableGroupGetResponses(string key, string value)
+    private static VariableGroupResponses GetVariableGroupGetResponses(string key, string value)
     {
-        var list = new List<VariableGroupGetResponse>()
+        var list = new List<VariableGroupResponse>()
         {
                 new()
                 {
@@ -449,23 +448,23 @@ public class VariableGroupControllerTests
                 }
         };
 
-        var result = new List<VariableGroupGetBaseResponse>();
+        var result = new List<VariableGroupResponse>();
 
         foreach (var item in list)
         {
             result.Add(item);
         }
 
-        return new VariableGroupGetResponses
+        return new VariableGroupResponses
         {
             Status = Status.Success,
             VariableGroups = result
         };
     }
 
-    private static VariableGroupGetResponses GetVariableGroupGetResponses(string value)
+    private static VariableGroupResponses GetVariableGroupGetResponses(string value)
     {
-        var list = new List<VariableGroupGetResponse>()
+        var list = new List<VariableGroupResponse>()
         {
                 new()
                 {
@@ -490,23 +489,23 @@ public class VariableGroupControllerTests
                 }
         };
 
-        var result = new List<VariableGroupGetBaseResponse>();
+        var result = new List<VariableGroupResponse>();
 
         foreach (var item in list)
         {
             result.Add(item);
         }
 
-        return new VariableGroupGetResponses
+        return new VariableGroupResponses
         {
             Status = Status.Success,
             VariableGroups = result
         };
     }
 
-    private static VariableGroupGetResponses GetVariableGroupGetResponses()
+    private static VariableGroupResponses GetVariableGroupGetResponses()
     {
-        var list = new List<VariableGroupGetResponse>()
+        var list = new List<VariableGroupResponse>()
         {
             new()
             {
@@ -531,26 +530,26 @@ public class VariableGroupControllerTests
             }
         };
 
-        var result = new List<VariableGroupGetBaseResponse>();
+        var result = new List<VariableGroupResponse>();
 
         foreach (var item in list)
         {
             result.Add(item);
         }
 
-        return new VariableGroupGetResponses
+        return new VariableGroupResponses
         {
             Status = Status.Success,
             VariableGroups = result
         };
     }
 
-    private static VariableGroupGetResponses GetVariableGroupGetResponsesAfterDelete()
+    private static VariableGroupResponses GetVariableGroupGetResponsesAfterDelete()
     {
-        return new VariableGroupGetResponses
+        return new VariableGroupResponses
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroupGetBaseResponse>()
+            VariableGroups = new List<VariableGroupResponse>()
         };
     }
 }

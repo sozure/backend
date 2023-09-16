@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
@@ -34,7 +33,7 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupGetResponses>> GetAsync(
+    public async Task<ActionResult<VariableGroupResponses>> GetAsync(
         [FromQuery] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
@@ -47,7 +46,7 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupGetResponses>> GetFromMultipleProjectsAsync(
+    public async Task<ActionResult<VariableGroupResponses>> GetFromMultipleProjectsAsync(
         [FromQuery] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
@@ -78,7 +77,7 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupGetResponses>> UpdateAsync(
+    public async Task<ActionResult<VariableGroupResponses>> UpdateAsync(
         [FromBody] VariableGroupUpdateRequest request,
         CancellationToken cancellationToken
     )
@@ -91,7 +90,7 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupGetResponses>> UpdateFromMultipleProjectsAsync(
+    public async Task<ActionResult<VariableGroupResponses>> UpdateFromMultipleProjectsAsync(
         [FromBody] VariableGroupUpdateRequest request,
         CancellationToken cancellationToken
     )
@@ -122,7 +121,7 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupGetResponses>> AddAsync(
+    public async Task<ActionResult<VariableGroupResponses>> AddAsync(
         [FromBody] VariableGroupAddRequest request,
         CancellationToken cancellationToken
     )
@@ -135,7 +134,7 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupGetResponses>> AddFromMultipleProjectsAsync(
+    public async Task<ActionResult<VariableGroupResponses>> AddFromMultipleProjectsAsync(
         [FromBody] VariableGroupAddRequest request,
         CancellationToken cancellationToken
     )
@@ -166,7 +165,7 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupGetResponses>> DeleteAsync(
+    public async Task<ActionResult<VariableGroupResponses>> DeleteAsync(
         [FromBody] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
@@ -179,7 +178,7 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupGetResponses>> DeleteFromMultipleProjectsAsync(
+    public async Task<ActionResult<VariableGroupResponses>> DeleteFromMultipleProjectsAsync(
         [FromBody] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
@@ -206,12 +205,12 @@ public class VariableGroupController : ControllerBase
         return Ok(result);
     }
 
-    private static VariableGroupGetResponses GetEmptyVariableGroupGetResponses()
+    private static VariableGroupResponses GetEmptyVariableGroupGetResponses()
     {
-        return new VariableGroupGetResponses
+        return new VariableGroupResponses
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroupGetBaseResponse>()
+            VariableGroups = new List<VariableGroupResponse>()
         };
     }
 
@@ -227,7 +226,7 @@ public class VariableGroupController : ControllerBase
         return projectResponse;
     }
 
-    private async Task<VariableGroupGetResponses> GetResultAfterDeleteAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    private async Task<VariableGroupResponses> GetResultAfterDeleteAsync(VariableGroupRequest request, CancellationToken cancellationToken)
     {
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
 
@@ -235,22 +234,22 @@ public class VariableGroupController : ControllerBase
         await _vgService.DeleteVariableAsync(vgServiceModel, cancellationToken);
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
+        var result = _mapper.Map<VariableGroupResponses>(variableGroupResultModel);
         return result;
     }
 
-    private async Task<VariableGroupGetResponses> GetResultAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    private async Task<VariableGroupResponses> GetResultAsync(VariableGroupRequest request, CancellationToken cancellationToken)
     {
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
         var variableGroupResultsModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultsModel);
+        var result = _mapper.Map<VariableGroupResponses>(variableGroupResultsModel);
         return result;
     }
 
-    private async Task<VariableGroupGetResponses> GetResultAsync(VariableGroupAddRequest request, CancellationToken cancellationToken)
+    private async Task<VariableGroupResponses> GetResultAsync(VariableGroupAddRequest request, CancellationToken cancellationToken)
     {
         var vgServiceModel = _mapper.Map<VariableGroupAddModel>(request);
 
@@ -260,11 +259,11 @@ public class VariableGroupController : ControllerBase
         vgServiceModel.ValueFilter = vgServiceModel.Value;
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
+        var result = _mapper.Map<VariableGroupResponses>(variableGroupResultModel);
         return result;
     }
 
-    private async Task<VariableGroupGetResponses> GetResultAsync(VariableGroupUpdateRequest request, CancellationToken cancellationToken)
+    private async Task<VariableGroupResponses> GetResultAsync(VariableGroupUpdateRequest request, CancellationToken cancellationToken)
     {
         var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
 
@@ -274,7 +273,7 @@ public class VariableGroupController : ControllerBase
         vgServiceModel.ValueFilter = vgServiceModel.NewValue;
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
+        var result = _mapper.Map<VariableGroupResponses>(variableGroupResultModel);
         return result;
     }
 }

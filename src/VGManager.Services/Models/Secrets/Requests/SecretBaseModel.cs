@@ -1,4 +1,4 @@
-namespace VGManager.Services.Models.Secrets;
+namespace VGManager.Services.Models.Secrets.Requests;
 public abstract class SecretBaseModel
 {
     public string TenantId { get; set; } = null!;

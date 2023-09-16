@@ -10,12 +10,12 @@ public interface IVariableGroupService
 
     Task<Status> UpdateVariableGroupsAsync(VariableGroupUpdateModel variableGroupUpdateModel, CancellationToken cancellationToken = default);
 
-    Task<VariableGroupResultsModel> GetVariableGroupsAsync(
+    Task<VariableGroupResults> GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         );
 
     Task<Status> AddVariablesAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default);
 
-    Task<Status> DeleteVariableAsync(VariableGroupDeleteModel variableGroupDeleteModel, CancellationToken cancellationToken = default);
+    Task<Status> DeleteVariableAsync(VariableGroupModel variableGroupModel, CancellationToken cancellationToken = default);
 }

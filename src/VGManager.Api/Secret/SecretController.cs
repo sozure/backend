@@ -6,7 +6,7 @@ using VGManager.Api.Secret.Response;
 using VGManager.Api.Secrets.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models.Secrets;
+using VGManager.Services.Models.Secrets.Requests;
 
 namespace VGManager.Api.Controllers;
 
@@ -28,7 +28,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<SecretsGetResponse>> GetAsync(
+    public async Task<ActionResult<SecretResponses>> GetAsync(
         [FromQuery] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -38,13 +38,7 @@ public class SecretController : ControllerBase
         _keyVaultService.SetupConnectionRepository(secretModel);
         var matchedSecrets = await _keyVaultService.GetSecretsAsync(secretModel.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<SecretsGetResponse>(matchedSecrets);
-
-        if (result.Status == 0)
-        {
-            SetKeyVault(result.Secrets, request.KeyVaultName);
-        }
-
+        var result = _mapper.Map<SecretResponses>(matchedSecrets);
         return Ok(result);
     }
 
@@ -52,7 +46,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<DeletedSecretsGetResponse> GetDeleted(
+    public ActionResult<DeletedSecretResponses> GetDeleted(
         [FromQuery] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -61,13 +55,7 @@ public class SecretController : ControllerBase
 
         _keyVaultService.SetupConnectionRepository(secretModel);
         var matchedDeletedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
-        var result = _mapper.Map<DeletedSecretsGetResponse>(matchedDeletedSecrets);
-
-        if (result.Status == 0)
-        {
-            SetKeyVault(result.DeletedSecrets, request.KeyVaultName);
-        }
-
+        var result = _mapper.Map<DeletedSecretResponses>(matchedDeletedSecrets);
         return Ok(result);
     }
 
@@ -75,7 +63,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<SecretsGetResponse>> DeleteAsync(
+    public async Task<ActionResult<SecretResponses>> DeleteAsync(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -86,13 +74,7 @@ public class SecretController : ControllerBase
         await _keyVaultService.DeleteAsync(secretModel.SecretFilter, cancellationToken);
         var matchedSecrets = await _keyVaultService.GetSecretsAsync(secretModel.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<SecretsGetResponse>(matchedSecrets);
-
-        if (result.Status == 0)
-        {
-            SetKeyVault(result.Secrets, request.KeyVaultName);
-        }
-
+        var result = _mapper.Map<SecretResponses>(matchedSecrets);
         return Ok(result);
     }
 
@@ -100,7 +82,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<DeletedSecretsGetResponse>> RecoverAsync(
+    public async Task<ActionResult<DeletedSecretResponses>> RecoverAsync(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -111,13 +93,7 @@ public class SecretController : ControllerBase
         await _keyVaultService.RecoverSecretAsync(secretModel.SecretFilter, cancellationToken);
         var matchedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<DeletedSecretsGetResponse>(matchedSecrets);
-
-        if (result.Status == 0)
-        {
-            SetKeyVault(result.DeletedSecrets, request.KeyVaultName);
-        }
-
+        var result = _mapper.Map<DeletedSecretResponses>(matchedSecrets);
         return Ok(result);
     }
 
@@ -133,13 +109,5 @@ public class SecretController : ControllerBase
         var secretModel = _mapper.Map<SecretCopyModel>(request);
         var status = await _keyVaultService.CopySecretsAsync(secretModel, cancellationToken);
         return Ok(status);
-    }
-
-    private static void SetKeyVault(IEnumerable<SecretBaseResponse> responses, string keyVault)
-    {
-        foreach (var response in responses)
-        {
-            response.KeyVault = keyVault;
-        }
     }
 }

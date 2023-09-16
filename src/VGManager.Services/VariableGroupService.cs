@@ -12,6 +12,7 @@ namespace VGManager.Services;
 public class VariableGroupService : IVariableGroupService
 {
     private readonly IVariableGroupAdapter _variableGroupConnectionRepository;
+    private string _project = null!;
     private readonly ILogger _logger;
 
     public VariableGroupService(IVariableGroupAdapter variableGroupConnectionRepository, ILogger<VariableGroupService> logger)
@@ -22,19 +23,21 @@ public class VariableGroupService : IVariableGroupService
 
     public void SetupConnectionRepository(VariableGroupModel variableGroupModel)
     {
+        var project = variableGroupModel.Project;
         _variableGroupConnectionRepository.Setup(
             variableGroupModel.Organization,
-            variableGroupModel.Project,
+            project,
             variableGroupModel.PAT
             );
+        _project = project;
     }
 
-    public async Task<VariableGroupResultsModel> GetVariableGroupsAsync(
+    public async Task<VariableGroupResults> GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         )
     {
-        var matchedVariableGroups = new List<VariableGroupResultModel>();
+        var matchedVariableGroups = new List<VariableGroupResult>();
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
@@ -48,7 +51,7 @@ public class VariableGroupService : IVariableGroupService
 
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
-                GetVariables(variableGroupModel.KeyFilter, valueFilter, matchedVariableGroups, filteredVariableGroup);
+                matchedVariableGroups.AddRange(GetVariables(variableGroupModel.KeyFilter, valueFilter, filteredVariableGroup));
             }
 
             return new()
@@ -62,7 +65,7 @@ public class VariableGroupService : IVariableGroupService
             return new()
             {
                 Status = status,
-                VariableGroups = Enumerable.Empty<VariableGroupResultModel>(),
+                VariableGroups = new List<VariableGroupResult>(),
             };
         }
     }
@@ -165,7 +168,7 @@ public class VariableGroupService : IVariableGroupService
         return status;
     }
 
-    public async Task<Status> DeleteVariableAsync(VariableGroupDeleteModel variableGroupDeleteModel, CancellationToken cancellationToken = default)
+    public async Task<Status> DeleteVariableAsync(VariableGroupModel variableGroupModel, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Variable group name, Deleted Key, Deleted Value");
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
@@ -173,7 +176,7 @@ public class VariableGroupService : IVariableGroupService
 
         if (status == Status.Success)
         {
-            var filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupDeleteModel.VariableGroupFilter);
+            var filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
             var deletionCounter1 = 0;
             var deletionCounter2 = 0;
 
@@ -183,8 +186,8 @@ public class VariableGroupService : IVariableGroupService
 
                 var deleteIsNeeded = DeleteVariables(
                     filteredVariableGroup,
-                    variableGroupDeleteModel.ValueFilter,
-                    variableGroupDeleteModel.KeyFilter,
+                    variableGroupModel.ValueFilter,
+                    variableGroupModel.KeyFilter,
                     variableGroupName
                     );
 
@@ -240,13 +243,13 @@ public class VariableGroupService : IVariableGroupService
         };
     }
 
-    private static void GetVariables(
+    private List<VariableGroupResult> GetVariables(
         string keyFilter,
         string? valueFilter,
-        List<VariableGroupResultModel> matchedVariableGroups,
         VariableGroup filteredVariableGroup
         )
     {
+        var result = new List<VariableGroupResult>();
         var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
 
         foreach (var filteredVariable in filteredVariables)
@@ -257,23 +260,41 @@ public class VariableGroupService : IVariableGroupService
                 var regex = new Regex(valueFilter.ToLower());
                 if (regex.IsMatch(variableValue.ToLower()))
                 {
-                    matchedVariableGroups.Add(new()
-                    {
-                        VariableGroupName = filteredVariableGroup.Name,
-                        VariableGroupKey = filteredVariable.Key,
-                        VariableGroupValue = variableValue
-                    });
+                    AddVariableGroupResult(filteredVariableGroup, result, filteredVariable, variableValue);
                 }
             }
             else
             {
-                matchedVariableGroups.Add(new()
-                {
-                    VariableGroupName = filteredVariableGroup.Name,
-                    VariableGroupKey = filteredVariable.Key,
-                    VariableGroupValue = variableValue
-                });
+                AddVariableGroupResult(filteredVariableGroup, result, filteredVariable, variableValue);
             }
+        }
+        return result;
+    }
+
+    private void AddVariableGroupResult(VariableGroup filteredVariableGroup, List<VariableGroupResult> result, KeyValuePair<string, VariableValue> filteredVariable, string variableValue)
+    {
+        if (filteredVariableGroup.Type == "AzureKeyVault")
+        {
+            var azProviderData = filteredVariableGroup.ProviderData as AzureKeyVaultVariableGroupProviderData;
+            result.Add(new VariableGroupResult()
+            {
+                Project = _project ?? string.Empty,
+                SecretVariableGroup = true,
+                VariableGroupName = filteredVariableGroup.Name,
+                VariableGroupKey = filteredVariable.Key,
+                KeyVaultName = azProviderData?.Vault ?? string.Empty
+            });
+        }
+        else
+        {
+            result.Add(new VariableGroupResult()
+            {
+                Project = _project ?? string.Empty,
+                SecretVariableGroup = false,
+                VariableGroupName = filteredVariableGroup.Name,
+                VariableGroupKey = filteredVariable.Key,
+                VariableGroupValue = variableValue
+            });
         }
     }
 

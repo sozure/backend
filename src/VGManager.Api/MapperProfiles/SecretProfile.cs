@@ -1,7 +1,8 @@
 using AutoMapper;
 using VGManager.Api.Secret.Request;
 using VGManager.Api.Secrets.Response;
-using VGManager.Services.Models.Secrets;
+using VGManager.Services.Models.Secrets.Requests;
+using VGManager.Services.Models.Secrets.Results;
 
 namespace VGManager.Api.MapperProfiles;
 
@@ -12,9 +13,9 @@ public class SecretProfile : Profile
         CreateMap<SecretRequest, SecretModel>();
         CreateMap<SecretCopyRequest, SecretCopyModel>();
 
-        CreateMap<SecretResultModel, SecretGetResponse>();
-        CreateMap<SecretResultsModel, SecretsGetResponse>();
-        CreateMap<DeletedSecretResultModel, DeletedSecretGetResponse>();
-        CreateMap<DeletedSecretResultsModel, DeletedSecretsGetResponse>();
+        CreateMap<SecretResult, SecretGetResponse>();
+        CreateMap<SecretResults, SecretsGetResponse>();
+        CreateMap<DeletedSecretResult, DeletedSecretGetResponse>();
+        CreateMap<DeletedSecretResults, DeletedSecretsGetResponse>();
     }
 }

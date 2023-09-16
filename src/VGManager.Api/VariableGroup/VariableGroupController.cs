@@ -214,7 +214,7 @@ public class VariableGroupController : ControllerBase
         };
     }
 
-    private async Task<ProjectResultModel> GetProjectsAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    private async Task<ProjectResult> GetProjectsAsync(VariableGroupRequest request, CancellationToken cancellationToken)
     {
         var projectModel = new ProjectModel
         {

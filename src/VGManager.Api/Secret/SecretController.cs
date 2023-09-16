@@ -6,7 +6,7 @@ using VGManager.Api.Secret.Response;
 using VGManager.Api.Secrets.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models.Secrets;
+using VGManager.Services.Models.Secrets.Requests;
 
 namespace VGManager.Api.Controllers;
 

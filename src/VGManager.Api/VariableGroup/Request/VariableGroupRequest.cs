@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace VGManager.Api.VariableGroups.Request;
 
-public abstract class VariableGroupRequest
+public class VariableGroupRequest
 {
     [Required]
     public string Organization { get; set; } = null!;

@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using VGManager.Api.Controllers;
 using VGManager.Api.MapperProfiles;
-using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
@@ -55,10 +54,10 @@ public class VariableGroupControllerTests
         var project = "Project1";
         var valueFilter = "value";
 
-        var variableRequest = GetVariableRequest(organization, pat, project, valueFilter);
+        var variableRequest = TestSampleData.GetVariableRequest(organization, pat, project, "key", valueFilter);
 
-        var variableGroupEntity = GetVariableGroupEntity();
-        var variableGroupResponse = GetVariableGroupGetResponses();
+        var variableGroupEntity = TestSampleData.GetVariableGroupEntity();
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses();
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
         _variableGroupAdapter.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
@@ -70,7 +69,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
@@ -84,10 +83,10 @@ public class VariableGroupControllerTests
         var pat = "WtxMFit1uz1k64u527mB";
         var project = "Project1";
 
-        var variableRequest = GetVariableRequest(organization, pat, project);
+        var variableRequest = TestSampleData.GetVariableRequest(organization, pat, project);
 
-        var variableGroupEntity = GetVariableGroupEntity();
-        var variableGroupResponse = GetVariableGroupGetResponses();
+        var variableGroupEntity = TestSampleData.GetVariableGroupEntity();
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses();
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
         _variableGroupAdapter.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
@@ -99,7 +98,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
@@ -116,11 +115,11 @@ public class VariableGroupControllerTests
         var newValue = "newValue";
         var statusResult = Status.Success;
 
-        var variableRequest = GetVariableUpdateRequest(organization, pat, project, valueFilter, newValue);
+        var variableRequest = TestSampleData.GetVariableUpdateRequest(organization, pat, project, valueFilter, newValue);
 
-        var variableGroupEntity1 = GetVariableGroupEntity();
-        var variableGroupEntity2 = GetVariableGroupEntity(newValue);
-        var variableGroupResponse = GetVariableGroupGetResponses(newValue);
+        var variableGroupEntity1 = TestSampleData.GetVariableGroupEntity();
+        var variableGroupEntity2 = TestSampleData.GetVariableGroupEntity(newValue);
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(newValue);
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
@@ -137,7 +136,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
@@ -156,11 +155,11 @@ public class VariableGroupControllerTests
         var newValue = "Test1";
         var statusResult = Status.Success;
 
-        var variableRequest = GetVariableAddRequest(organization, pat, project, valueFilter, newKey, newValue);
+        var variableRequest = TestSampleData.GetVariableAddRequest(organization, pat, project, valueFilter, newKey, newValue);
 
-        var variableGroupEntity1 = GetVariableGroupEntity();
-        var variableGroupEntity2 = GetVariableGroupEntity(newKey, newValue);
-        var variableGroupResponse = GetVariableGroupGetResponses(newKey, newValue);
+        var variableGroupEntity1 = TestSampleData.GetVariableGroupEntity();
+        var variableGroupEntity2 = TestSampleData.GetVariableGroupEntity(newKey, newValue);
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(newKey, newValue);
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
@@ -177,7 +176,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
@@ -195,11 +194,11 @@ public class VariableGroupControllerTests
         var entityValue = "Value1";
         var statusResult = Status.Success;
 
-        var variableRequest = GetVariableDeleteRequest(organization, pat, project, keyFilter);
+        var variableRequest = TestSampleData.GetVariableRequest(organization, pat, project, keyFilter, null!);
 
-        var variableGroupEntity1 = GetVariableGroupEntity(keyFilter, entityValue);
-        var variableGroupEntity2 = GetVariableGroupEntityAfterDelete();
-        var variableGroupResponse = GetVariableGroupGetResponsesAfterDelete();
+        var variableGroupEntity1 = TestSampleData.GetVariableGroupEntity(keyFilter, entityValue);
+        var variableGroupEntity2 = TestSampleData.GetVariableGroupEntityAfterDelete();
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponsesAfterDelete();
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
@@ -216,312 +215,10 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableGroupGetResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
-    }
-
-    private static VariableGroupDeleteRequest GetVariableDeleteRequest(string organization, string pat, string project, string keyFilter)
-    {
-        return new VariableGroupDeleteRequest
-        {
-            Organization = organization,
-            PAT = pat,
-            Project = project,
-            VariableGroupFilter = "neptun",
-            KeyFilter = keyFilter,
-            ValueFilter = null!,
-            ContainsSecrets = false
-        };
-    }
-
-    private static VariableGroupAddRequest GetVariableAddRequest(
-        string organization,
-        string pat,
-        string project,
-        string valueFilter,
-        string newKey,
-        string newValue
-        )
-    {
-        return new VariableGroupAddRequest
-        {
-            Organization = organization,
-            PAT = pat,
-            Project = project,
-            VariableGroupFilter = "neptun",
-            KeyFilter = null!,
-            ValueFilter = valueFilter,
-            Key = newKey,
-            Value = newValue
-        };
-    }
-
-    private static VariableGroupUpdateRequest GetVariableUpdateRequest(
-        string organization,
-        string pat,
-        string project,
-        string valueFilter,
-        string newValue
-        )
-    {
-        return new VariableGroupUpdateRequest
-        {
-            Organization = organization,
-            PAT = pat,
-            Project = project,
-            VariableGroupFilter = "neptun",
-            KeyFilter = "key",
-            ValueFilter = valueFilter,
-            ContainsSecrets = false,
-            NewValue = newValue
-        };
-    }
-
-    private static VariableGroupGetRequest GetVariableRequest(string organization, string pat, string project, string valueFilter)
-    {
-        return new VariableGroupGetRequest
-        {
-            Organization = organization,
-            PAT = pat,
-            Project = project,
-            VariableGroupFilter = "neptun",
-            KeyFilter = "key",
-            ValueFilter = valueFilter,
-            ContainsSecrets = false
-        };
-    }
-
-    private static VariableGroupGetRequest GetVariableRequest(string organization, string pat, string project)
-    {
-        return new VariableGroupGetRequest
-        {
-            Organization = organization,
-            PAT = pat,
-            Project = project,
-            VariableGroupFilter = "neptun",
-            KeyFilter = "key",
-            ContainsSecrets = false
-        };
-    }
-
-    private static VariableGroupEntity GetVariableGroupEntity()
-    {
-        return new VariableGroupEntity
-        {
-            Status = Status.Success,
-            VariableGroups = new List<VariableGroup>
-            {
-                new()
-                {
-                    Name = "NeptunAdapter",
-                    Variables = new Dictionary<string, VariableValue>
-                    {
-                        ["Key123"] = new()
-                        {
-                            Value = "Value123"
-                        },
-                        ["Key456"] = new()
-                        {
-                            Value = "Value456"
-                        }
-                    }
-                },
-                new()
-                {
-                    Name = "NeptunApi",
-                    Variables = new Dictionary<string, VariableValue>
-                    {
-                        ["Key789"] = new()
-                        {
-                            Value = "Value789"
-                        },
-                        ["Kec"] = new()
-                        {
-                            Value = "Valuc"
-                        }
-                    }
-                },
-            }
-        };
-    }
-
-    private static VariableGroupEntity GetVariableGroupEntityAfterDelete()
-    {
-        return new VariableGroupEntity
-        {
-            Status = Status.Success,
-            VariableGroups = new List<VariableGroup>()
-        };
-    }
-
-    private static VariableGroupEntity GetVariableGroupEntity(string value)
-    {
-        return new VariableGroupEntity
-        {
-            Status = Status.Success,
-            VariableGroups = new List<VariableGroup>
-            {
-                new()
-                {
-                    Name = "NeptunAdapter",
-                    Variables = new Dictionary<string, VariableValue>
-                    {
-                        ["Key123"] = new()
-                        {
-                            Value = value
-                        },
-                        ["Key456"] = new()
-                        {
-                            Value = value
-                        }
-                    }
-                },
-                new()
-                {
-                    Name = "NeptunApi",
-                    Variables = new Dictionary<string, VariableValue>
-                    {
-                        ["Key789"] = new()
-                        {
-                            Value = value
-                        }
-                    }
-                },
-            }
-        };
-    }
-
-    private static VariableGroupEntity GetVariableGroupEntity(string key, string value)
-    {
-        return new VariableGroupEntity
-        {
-            Status = Status.Success,
-            VariableGroups = new List<VariableGroup>
-            {
-                new()
-                {
-                    Name = "NeptunAdapter",
-                    Variables = new Dictionary<string, VariableValue>
-                    {
-                        [key] = new()
-                        {
-                            Value = value
-                        }
-                    }
-                },
-                new()
-                {
-                    Name = "NeptunApi",
-                    Variables = new Dictionary<string, VariableValue>
-                    {
-                        [key] = new()
-                        {
-                            Value = value
-                        }
-                    }
-                },
-            }
-        };
-    }
-
-    private static VariableGroupGetResponses GetVariableGroupGetResponses(string key, string value)
-    {
-        return new VariableGroupGetResponses
-        {
-            Status = Status.Success,
-            VariableGroups = new List<VariableGroupGetResponse>()
-            {
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunAdapter",
-                    VariableGroupKey = key,
-                    VariableGroupValue = value
-                },
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunApi",
-                    VariableGroupKey = key,
-                    VariableGroupValue = value
-                }
-            }
-        };
-    }
-
-    private static VariableGroupGetResponses GetVariableGroupGetResponses(string value)
-    {
-        return new VariableGroupGetResponses
-        {
-            Status = Status.Success,
-            VariableGroups = new List<VariableGroupGetResponse>()
-            {
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunAdapter",
-                    VariableGroupKey = "Key123",
-                    VariableGroupValue = value
-                },
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunAdapter",
-                    VariableGroupKey = "Key456",
-                    VariableGroupValue = value
-                },
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunApi",
-                    VariableGroupKey = "Key789",
-                    VariableGroupValue = value
-                }
-            }
-        };
-    }
-
-    private static VariableGroupGetResponses GetVariableGroupGetResponses()
-    {
-        return new VariableGroupGetResponses
-        {
-            Status = Status.Success,
-            VariableGroups = new List<VariableGroupGetResponse>()
-            {
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunAdapter",
-                    VariableGroupKey = "Key123",
-                    VariableGroupValue = "Value123"
-                },
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunAdapter",
-                    VariableGroupKey = "Key456",
-                    VariableGroupValue = "Value456"
-                },
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunApi",
-                    VariableGroupKey = "Key789",
-                    VariableGroupValue = "Value789"
-                }
-            }
-        };
-    }
-
-    private static VariableGroupGetResponses GetVariableGroupGetResponsesAfterDelete()
-    {
-        return new VariableGroupGetResponses
-        {
-            Status = Status.Success,
-            VariableGroups = new List<VariableGroupGetResponse>()
-        };
     }
 }

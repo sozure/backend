@@ -1,4 +1,4 @@
-namespace VGManager.Services.Models.Secrets;
+namespace VGManager.Services.Models.Secrets.Requests;
 public class SecretModel : SecretBaseModel
 {
     public string KeyVaultName { get; set; } = null!;

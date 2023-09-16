@@ -35,7 +35,7 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<VariableGroupGetResponses>> GetAsync(
-        [FromQuery] VariableGroupGetRequest request,
+        [FromQuery] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -48,11 +48,11 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<VariableGroupGetResponses>> GetFromMultipleProjectsAsync(
-        [FromQuery] VariableGroupGetRequest request,
+        [FromQuery] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
     {
-        var result = GetVariableGroupGetResponses();
+        var result = GetEmptyVariableGroupGetResponses();
 
         if (request.Project == "All")
         {
@@ -60,8 +60,8 @@ public class VariableGroupController : ControllerBase
 
             foreach (var project in projectResponse.Projects)
             {
-                var singleRequest = GetSingleRequest(request, project.Name);
-                var subResult = await GetResultAsync(singleRequest, cancellationToken);
+                request.Project = project.Name;
+                var subResult = await GetResultAsync(request, cancellationToken);
                 result.VariableGroups.AddRange(subResult.VariableGroups);
 
                 if (subResult.Status != Status.Success)
@@ -96,7 +96,7 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = GetVariableGroupGetResponses();
+        var result = GetEmptyVariableGroupGetResponses();
 
         if (request.Project == "All")
         {
@@ -104,8 +104,8 @@ public class VariableGroupController : ControllerBase
 
             foreach (var project in projectResponse.Projects)
             {
-                var singleRequest = GetSingleRequest(request, project.Name);
-                var subResult = await GetResultAsync(singleRequest, cancellationToken);
+                request.Project = project.Name;
+                var subResult = await GetResultAsync(request, cancellationToken);
                 result.VariableGroups.AddRange(subResult.VariableGroups);
 
                 if (subResult.Status != Status.Success)
@@ -140,7 +140,7 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = GetVariableGroupGetResponses();
+        var result = GetEmptyVariableGroupGetResponses();
 
         if (request.Project == "All")
         {
@@ -148,8 +148,8 @@ public class VariableGroupController : ControllerBase
 
             foreach (var project in projectResponse.Projects)
             {
-                var singleRequest = GetSingleRequest(request, project.Name);
-                var subResult = await GetResultAsync(singleRequest, cancellationToken);
+                request.Project = project.Name;
+                var subResult = await GetResultAsync(request, cancellationToken);
                 result.VariableGroups.AddRange(subResult.VariableGroups);
 
                 if (subResult.Status != Status.Success)
@@ -167,11 +167,11 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<VariableGroupGetResponses>> DeleteAsync(
-        [FromBody] VariableGroupDeleteRequest request,
+        [FromBody] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
     {
-        var result = await GetResultAsync(request, cancellationToken);
+        var result = await GetResultAfterDeleteAsync(request, cancellationToken);
         return Ok(result);
     }
 
@@ -180,11 +180,11 @@ public class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<VariableGroupGetResponses>> DeleteFromMultipleProjectsAsync(
-        [FromBody] VariableGroupDeleteRequest request,
+        [FromBody] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
     {
-        var result = GetVariableGroupGetResponses();
+        var result = GetEmptyVariableGroupGetResponses();
 
         if (request.Project == "All")
         {
@@ -192,8 +192,8 @@ public class VariableGroupController : ControllerBase
 
             foreach (var project in projectResponse.Projects)
             {
-                var singleRequest = GetSingleRequest(request, project.Name);
-                var subResult = await GetResultAsync(singleRequest, cancellationToken);
+                request.Project = project.Name;
+                var subResult = await GetResultAfterDeleteAsync(request, cancellationToken);
                 result.VariableGroups.AddRange(subResult.VariableGroups);
 
                 if (subResult.Status != Status.Success)
@@ -206,7 +206,7 @@ public class VariableGroupController : ControllerBase
         return Ok(result);
     }
 
-    private static VariableGroupGetResponses GetVariableGroupGetResponses()
+    private static VariableGroupGetResponses GetEmptyVariableGroupGetResponses()
     {
         return new VariableGroupGetResponses
         {
@@ -227,15 +227,26 @@ public class VariableGroupController : ControllerBase
         return projectResponse;
     }
 
-    private async Task<VariableGroupGetResponses> GetResultAsync(VariableGroupDeleteRequest request, CancellationToken cancellationToken)
+    private async Task<VariableGroupGetResponses> GetResultAfterDeleteAsync(VariableGroupRequest request, CancellationToken cancellationToken)
     {
-        var vgServiceModel = _mapper.Map<VariableGroupDeleteModel>(request);
+        var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
         await _vgService.DeleteVariableAsync(vgServiceModel, cancellationToken);
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
+        return result;
+    }
+
+    private async Task<VariableGroupGetResponses> GetResultAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    {
+        var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
+
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        var variableGroupResultsModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
+
+        var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultsModel);
         return result;
     }
 
@@ -265,75 +276,5 @@ public class VariableGroupController : ControllerBase
 
         var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
         return result;
-    }
-
-    private async Task<VariableGroupGetResponses> GetResultAsync(VariableGroupGetRequest request, CancellationToken cancellationToken)
-    {
-        var vgServiceModel = _mapper.Map<VariableGroupGetModel>(request);
-
-        _vgService.SetupConnectionRepository(vgServiceModel);
-        var variableGroupResultsModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
-
-        var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultsModel);
-        return result;
-    }
-
-    private static VariableGroupDeleteRequest GetSingleRequest(VariableGroupDeleteRequest request, string project)
-    {
-        return new VariableGroupDeleteRequest
-        {
-            Project = project,
-            KeyFilter = request.KeyFilter,
-            Organization = request.Organization,
-            PAT = request.PAT,
-            ValueFilter = request.ValueFilter,
-            ContainsSecrets = request.ContainsSecrets,
-            VariableGroupFilter = request.VariableGroupFilter
-        };
-    }
-
-    private static VariableGroupAddRequest GetSingleRequest(VariableGroupAddRequest request, string project)
-    {
-        return new VariableGroupAddRequest
-        {
-            Project = project,
-            KeyFilter = request.KeyFilter,
-            Organization = request.Organization,
-            PAT = request.PAT,
-            ValueFilter = request.ValueFilter,
-            ContainsSecrets = request.ContainsSecrets,
-            VariableGroupFilter = request.VariableGroupFilter,
-            Key = request.Key,
-            Value = request.Value
-        };
-    }
-
-    private static VariableGroupGetRequest GetSingleRequest(VariableGroupGetRequest request, string project)
-    {
-        return new VariableGroupGetRequest
-        {
-            Project = project,
-            KeyFilter = request.KeyFilter,
-            Organization = request.Organization,
-            PAT = request.PAT,
-            ValueFilter = request.ValueFilter,
-            ContainsSecrets = request.ContainsSecrets,
-            VariableGroupFilter = request.VariableGroupFilter
-        };
-    }
-
-    private static VariableGroupUpdateRequest GetSingleRequest(VariableGroupUpdateRequest request, string project)
-    {
-        return new VariableGroupUpdateRequest
-        {
-            Project = project,
-            KeyFilter = request.KeyFilter,
-            Organization = request.Organization,
-            PAT = request.PAT,
-            ValueFilter = request.ValueFilter,
-            ContainsSecrets = request.ContainsSecrets,
-            VariableGroupFilter = request.VariableGroupFilter,
-            NewValue = request.NewValue
-        };
     }
 }

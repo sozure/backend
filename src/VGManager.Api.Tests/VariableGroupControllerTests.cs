@@ -197,7 +197,7 @@ public class VariableGroupControllerTests
         var entityValue = "Value1";
         var statusResult = Status.Success;
 
-        var variableRequest = GetVariableDeleteRequest(organization, pat, project, keyFilter);
+        var variableRequest = GetVariableRequest(organization, pat, project, keyFilter);
 
         var variableGroupEntity1 = GetVariableGroupEntity(keyFilter, entityValue);
         var variableGroupEntity2 = GetVariableGroupEntityAfterDelete();
@@ -225,9 +225,9 @@ public class VariableGroupControllerTests
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
     }
 
-    private static VariableGroupDeleteRequest GetVariableDeleteRequest(string organization, string pat, string project, string keyFilter)
+    private static VariableGroupRequest GetVariableGetRequest(string organization, string pat, string project, string keyFilter)
     {
-        return new VariableGroupDeleteRequest
+        return new VariableGroupRequest
         {
             Organization = organization,
             PAT = pat,
@@ -282,9 +282,9 @@ public class VariableGroupControllerTests
         };
     }
 
-    private static VariableGroupGetRequest GetVariableRequest(string organization, string pat, string project, string valueFilter)
+    private static VariableGroupRequest GetVariableRequest(string organization, string pat, string project, string valueFilter)
     {
-        return new VariableGroupGetRequest
+        return new VariableGroupRequest
         {
             Organization = organization,
             PAT = pat,
@@ -296,9 +296,9 @@ public class VariableGroupControllerTests
         };
     }
 
-    private static VariableGroupGetRequest GetVariableRequest(string organization, string pat, string project)
+    private static VariableGroupRequest GetVariableRequest(string organization, string pat, string project)
     {
-        return new VariableGroupGetRequest
+        return new VariableGroupRequest
         {
             Organization = organization,
             PAT = pat,

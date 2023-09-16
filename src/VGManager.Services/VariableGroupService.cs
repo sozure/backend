@@ -168,7 +168,7 @@ public class VariableGroupService : IVariableGroupService
         return status;
     }
 
-    public async Task<Status> DeleteVariableAsync(VariableGroupDeleteModel variableGroupDeleteModel, CancellationToken cancellationToken = default)
+    public async Task<Status> DeleteVariableAsync(VariableGroupModel variableGroupModel, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Variable group name, Deleted Key, Deleted Value");
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
@@ -176,7 +176,7 @@ public class VariableGroupService : IVariableGroupService
 
         if (status == Status.Success)
         {
-            var filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupDeleteModel.VariableGroupFilter);
+            var filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
             var deletionCounter1 = 0;
             var deletionCounter2 = 0;
 
@@ -186,8 +186,8 @@ public class VariableGroupService : IVariableGroupService
 
                 var deleteIsNeeded = DeleteVariables(
                     filteredVariableGroup,
-                    variableGroupDeleteModel.ValueFilter,
-                    variableGroupDeleteModel.KeyFilter,
+                    variableGroupModel.ValueFilter,
+                    variableGroupModel.KeyFilter,
                     variableGroupName
                     );
 

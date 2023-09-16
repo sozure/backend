@@ -13,9 +13,9 @@ public class SecretProfile : Profile
         CreateMap<SecretRequest, SecretModel>();
         CreateMap<SecretCopyRequest, SecretCopyModel>();
 
-        CreateMap<SecretResult, SecretGetResponse>();
-        CreateMap<SecretResults, SecretsGetResponse>();
-        CreateMap<DeletedSecretResult, DeletedSecretGetResponse>();
-        CreateMap<DeletedSecretResults, DeletedSecretsGetResponse>();
+        CreateMap<SecretResult, SecretResponse>();
+        CreateMap<SecretResults, SecretResponses>();
+        CreateMap<DeletedSecretResult, DeletedSecretResponse>();
+        CreateMap<DeletedSecretResults, DeletedSecretResponses>();
     }
 }

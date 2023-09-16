@@ -60,7 +60,7 @@ public class SecretControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((SecretsGetResponse)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
+        ((SecretResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetSecretsAsync(default), Times.Once);
@@ -89,7 +89,7 @@ public class SecretControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((DeletedSecretsGetResponse)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
+        ((DeletedSecretResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetDeletedSecrets(default), Times.Once);
@@ -123,7 +123,7 @@ public class SecretControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((SecretsGetResponse)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
+        ((SecretResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetSecretsAsync(default), Times.Exactly(2));
@@ -142,12 +142,12 @@ public class SecretControllerTests
         };
     }
 
-    private static SecretsGetResponse GetSecretsGetResponse()
+    private static SecretResponses GetSecretsGetResponse()
     {
-        return new SecretsGetResponse
+        return new SecretResponses
         {
             Status = Status.Success,
-            Secrets = new List<SecretGetResponse>()
+            Secrets = new List<SecretResponse>()
             {
                 new()
                 {
@@ -215,22 +215,22 @@ public class SecretControllerTests
         };
     }
 
-    private static SecretsGetResponse GetEmptySecretsGetResponse()
+    private static SecretResponses GetEmptySecretsGetResponse()
     {
-        return new SecretsGetResponse
+        return new SecretResponses
         {
             Status = Status.Success,
-            Secrets = Enumerable.Empty<SecretGetResponse>()
+            Secrets = Enumerable.Empty<SecretResponse>()
 
         };
     }
 
-    private static DeletedSecretsGetResponse GetEmptySecretsGetResponse1()
+    private static DeletedSecretResponses GetEmptySecretsGetResponse1()
     {
-        return new DeletedSecretsGetResponse
+        return new DeletedSecretResponses
         {
             Status = Status.Success,
-            DeletedSecrets = Enumerable.Empty<DeletedSecretGetResponse>()
+            DeletedSecrets = Enumerable.Empty<DeletedSecretResponse>()
         };
     }
 }

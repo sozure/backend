@@ -12,6 +12,7 @@ namespace VGManager.Services;
 public class VariableGroupService : IVariableGroupService
 {
     private readonly IVariableGroupAdapter _variableGroupConnectionRepository;
+    private string _project = null!;
     private readonly ILogger _logger;
 
     public VariableGroupService(IVariableGroupAdapter variableGroupConnectionRepository, ILogger<VariableGroupService> logger)
@@ -22,11 +23,13 @@ public class VariableGroupService : IVariableGroupService
 
     public void SetupConnectionRepository(VariableGroupModel variableGroupModel)
     {
+        var project = variableGroupModel.Project;
         _variableGroupConnectionRepository.Setup(
             variableGroupModel.Organization,
-            variableGroupModel.Project,
+            project,
             variableGroupModel.PAT
             );
+        _project = project;
     }
 
     public async Task<VariableGroupResultsModel> GetVariableGroupsAsync(
@@ -34,7 +37,7 @@ public class VariableGroupService : IVariableGroupService
         CancellationToken cancellationToken = default
         )
     {
-        var matchedVariableGroups = new List<VariableGroupResultModel>();
+        var matchedVariableGroups = new List<VariableGroupBaseResultModel>();
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
@@ -48,7 +51,7 @@ public class VariableGroupService : IVariableGroupService
 
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
-                GetVariables(variableGroupModel.KeyFilter, valueFilter, matchedVariableGroups, filteredVariableGroup);
+                matchedVariableGroups.AddRange(GetVariables(variableGroupModel.KeyFilter, valueFilter, filteredVariableGroup));
             }
 
             return new()
@@ -62,7 +65,7 @@ public class VariableGroupService : IVariableGroupService
             return new()
             {
                 Status = status,
-                VariableGroups = Enumerable.Empty<VariableGroupResultModel>(),
+                VariableGroups = new List<VariableGroupBaseResultModel>(),
             };
         }
     }
@@ -240,13 +243,13 @@ public class VariableGroupService : IVariableGroupService
         };
     }
 
-    private static void GetVariables(
+    private List<VariableGroupBaseResultModel> GetVariables(
         string keyFilter,
         string? valueFilter,
-        List<VariableGroupResultModel> matchedVariableGroups,
         VariableGroup filteredVariableGroup
         )
     {
+        var result = new List<VariableGroupBaseResultModel>();
         var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
 
         foreach (var filteredVariable in filteredVariables)
@@ -257,24 +260,52 @@ public class VariableGroupService : IVariableGroupService
                 var regex = new Regex(valueFilter.ToLower());
                 if (regex.IsMatch(variableValue.ToLower()))
                 {
-                    matchedVariableGroups.Add(new()
+                    if(filteredVariableGroup.Type == "AzureKeyVault")
                     {
-                        VariableGroupName = filteredVariableGroup.Name,
-                        VariableGroupKey = filteredVariable.Key,
-                        VariableGroupValue = variableValue
-                    });
+                        result.Add(new SecretVariableGroupResultModel()
+                        {
+                            Project = _project ?? string.Empty,
+                            SecretVariableGroup = true,
+                            VariableGroupName = filteredVariableGroup.Name,
+                            VariableGroupKey = filteredVariable.Key,
+                        });
+                    } else
+                    {
+                        result.Add(new VariableGroupResultModel()
+                        {
+                            Project = _project ?? string.Empty,
+                            SecretVariableGroup = false,
+                            VariableGroupName = filteredVariableGroup.Name,
+                            VariableGroupKey = filteredVariable.Key,
+                        });
+                    }
                 }
             }
             else
             {
-                matchedVariableGroups.Add(new()
+                if (filteredVariableGroup.Type == "AzureKeyVault")
                 {
-                    VariableGroupName = filteredVariableGroup.Name,
-                    VariableGroupKey = filteredVariable.Key,
-                    VariableGroupValue = variableValue
-                });
+                    result.Add(new SecretVariableGroupResultModel()
+                    {
+                        Project = _project ?? string.Empty,
+                        SecretVariableGroup = true,
+                        VariableGroupName = filteredVariableGroup.Name,
+                        VariableGroupKey = filteredVariable.Key
+                    });
+                }
+                else
+                {
+                    result.Add(new VariableGroupResultModel()
+                    {
+                        Project = _project ?? string.Empty,
+                        SecretVariableGroup = false,
+                        VariableGroupName = filteredVariableGroup.Name,
+                        VariableGroupKey = filteredVariable.Key,
+                    });
+                }
             }
         }
+        return result;
     }
 
     private bool UpdateVariables(

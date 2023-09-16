@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
@@ -210,7 +211,7 @@ public class VariableGroupController : ControllerBase
         return new VariableGroupGetResponses
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroupGetResponse>()
+            VariableGroups = new List<VariableGroupGetBaseResponse>()
         };
     }
 
@@ -235,12 +236,6 @@ public class VariableGroupController : ControllerBase
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
-
-        foreach (var variableGroupResponse in result.VariableGroups)
-        {
-            variableGroupResponse.Project = request.Project;
-        }
-
         return result;
     }
 
@@ -255,12 +250,6 @@ public class VariableGroupController : ControllerBase
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
-
-        foreach (var variableGroupResponse in result.VariableGroups)
-        {
-            variableGroupResponse.Project = request.Project;
-        }
-
         return result;
     }
 
@@ -273,13 +262,8 @@ public class VariableGroupController : ControllerBase
 
         vgServiceModel.ValueFilter = vgServiceModel.NewValue;
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
+
         var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
-
-        foreach (var variableGroupResponse in result.VariableGroups)
-        {
-            variableGroupResponse.Project = request.Project;
-        }
-
         return result;
     }
 
@@ -288,15 +272,9 @@ public class VariableGroupController : ControllerBase
         var vgServiceModel = _mapper.Map<VariableGroupGetModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
-        var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
+        var variableGroupResultsModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
-        var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultModel);
-
-        foreach (var variableGroupResponse in result.VariableGroups)
-        {
-            variableGroupResponse.Project = request.Project;
-        }
-
+        var result = _mapper.Map<VariableGroupGetResponses>(variableGroupResultsModel);
         return result;
     }
 

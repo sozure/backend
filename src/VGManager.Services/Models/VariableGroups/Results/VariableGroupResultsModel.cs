@@ -5,5 +5,5 @@ namespace VGManager.Services.Models.VariableGroups.Results;
 public class VariableGroupResultsModel
 {
     public Status Status { get; set; }
-    public IEnumerable<VariableGroupResultModel> VariableGroups { get; set; } = null!;
+    public List<VariableGroupBaseResultModel> VariableGroups { get; set; } = null!;
 }

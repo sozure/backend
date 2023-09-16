@@ -1,9 +1,8 @@
-﻿namespace VGManager.Api.VariableGroups.Response;
+using VGManager.Api.VariableGroup.Response;
 
-public class VariableGroupGetResponse
+namespace VGManager.Api.VariableGroups.Response;
+
+public class VariableGroupGetResponse: VariableGroupGetBaseResponse
 {
-    public string Project { get; set; } = null!;
-    public string VariableGroupName { get; set; } = null!;
-    public string VariableGroupKey { get; set; } = null!;
     public string VariableGroupValue { get; set; } = null!;
 }

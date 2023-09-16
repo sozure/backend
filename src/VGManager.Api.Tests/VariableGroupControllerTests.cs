@@ -1,9 +1,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using VariableGroupE = Microsoft.TeamFoundation.DistributedTask.WebApi.VariableGroup;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using VGManager.Api.Controllers;
 using VGManager.Api.MapperProfiles;
+using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
@@ -312,7 +314,7 @@ public class VariableGroupControllerTests
         return new VariableGroupEntity
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroup>
+            VariableGroups = new List<VariableGroupE>
             {
                 new()
                 {
@@ -353,7 +355,7 @@ public class VariableGroupControllerTests
         return new VariableGroupEntity
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroup>()
+            VariableGroups = new List<VariableGroupE>()
         };
     }
 
@@ -362,7 +364,7 @@ public class VariableGroupControllerTests
         return new VariableGroupEntity
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroup>
+            VariableGroups = new List<VariableGroupE>
             {
                 new()
                 {
@@ -399,7 +401,7 @@ public class VariableGroupControllerTests
         return new VariableGroupEntity
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroup>
+            VariableGroups = new List<VariableGroupE>
             {
                 new()
                 {
@@ -429,11 +431,8 @@ public class VariableGroupControllerTests
 
     private static VariableGroupGetResponses GetVariableGroupGetResponses(string key, string value)
     {
-        return new VariableGroupGetResponses
+        var list = new List<VariableGroupGetResponse>()
         {
-            Status = Status.Success,
-            VariableGroups = new List<VariableGroupGetResponse>()
-            {
                 new()
                 {
                     Project = "Project1",
@@ -448,17 +447,26 @@ public class VariableGroupControllerTests
                     VariableGroupKey = key,
                     VariableGroupValue = value
                 }
-            }
+        };
+
+        var result = new List<VariableGroupGetBaseResponse>();
+
+        foreach (var item in list)
+        {
+            result.Add(item);
+        }
+
+        return new VariableGroupGetResponses
+        {
+            Status = Status.Success,
+            VariableGroups = result
         };
     }
 
     private static VariableGroupGetResponses GetVariableGroupGetResponses(string value)
     {
-        return new VariableGroupGetResponses
+        var list = new List<VariableGroupGetResponse>()
         {
-            Status = Status.Success,
-            VariableGroups = new List<VariableGroupGetResponse>()
-            {
                 new()
                 {
                     Project = "Project1",
@@ -480,39 +488,60 @@ public class VariableGroupControllerTests
                     VariableGroupKey = "Key789",
                     VariableGroupValue = value
                 }
-            }
+        };
+
+        var result = new List<VariableGroupGetBaseResponse>();
+
+        foreach (var item in list)
+        {
+            result.Add(item);
+        }
+
+        return new VariableGroupGetResponses
+        {
+            Status = Status.Success,
+            VariableGroups = result
         };
     }
 
     private static VariableGroupGetResponses GetVariableGroupGetResponses()
     {
+        var list = new List<VariableGroupGetResponse>()
+        {
+            new()
+            {
+                Project = "Project1",
+                VariableGroupName = "NeptunAdapter",
+                VariableGroupKey = "Key123",
+                VariableGroupValue = "Value123"
+            },
+            new()
+            {
+                Project = "Project1",
+                VariableGroupName = "NeptunAdapter",
+                VariableGroupKey = "Key456",
+                VariableGroupValue = "Value456"
+            },
+            new()
+            {
+                Project = "Project1",
+                VariableGroupName = "NeptunApi",
+                VariableGroupKey = "Key789",
+                VariableGroupValue = "Value789"
+            }
+        };
+
+        var result = new List<VariableGroupGetBaseResponse>();
+
+        foreach (var item in list)
+        {
+            result.Add(item);
+        }
+
         return new VariableGroupGetResponses
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroupGetResponse>()
-            {
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunAdapter",
-                    VariableGroupKey = "Key123",
-                    VariableGroupValue = "Value123"
-                },
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunAdapter",
-                    VariableGroupKey = "Key456",
-                    VariableGroupValue = "Value456"
-                },
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunApi",
-                    VariableGroupKey = "Key789",
-                    VariableGroupValue = "Value789"
-                }
-            }
+            VariableGroups = result
         };
     }
 
@@ -521,7 +550,7 @@ public class VariableGroupControllerTests
         return new VariableGroupGetResponses
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroupGetResponse>()
+            VariableGroups = new List<VariableGroupGetBaseResponse>()
         };
     }
 }

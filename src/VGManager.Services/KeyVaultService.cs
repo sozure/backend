@@ -97,6 +97,7 @@ public class KeyVaultService : IKeyVaultService
             {
                 secretList.Add(new()
                 {
+                    KeyVault = _keyVault,
                     SecretName = filteredSecret.Name,
                     SecretValue = filteredSecret.Value,
                     DeletedOn = filteredSecret.DeletedOn

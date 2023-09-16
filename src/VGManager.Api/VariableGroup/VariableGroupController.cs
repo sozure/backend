@@ -231,10 +231,16 @@ public class VariableGroupController : ControllerBase
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
-        await _vgService.DeleteVariableAsync(vgServiceModel, cancellationToken);
+        var status = await _vgService.DeleteVariableAsync(vgServiceModel, cancellationToken);
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableGroupResponses>(variableGroupResultModel);
+        
+        if(status != Status.Success)
+        {
+            result.Status = status;
+        }
+
         return result;
     }
 
@@ -254,12 +260,18 @@ public class VariableGroupController : ControllerBase
         var vgServiceModel = _mapper.Map<VariableGroupAddModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
-        await _vgService.AddVariablesAsync(vgServiceModel, cancellationToken);
+        var status = await _vgService.AddVariablesAsync(vgServiceModel, cancellationToken);
         vgServiceModel.KeyFilter = vgServiceModel.Key;
         vgServiceModel.ValueFilter = vgServiceModel.Value;
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableGroupResponses>(variableGroupResultModel);
+
+        if (status != Status.Success)
+        {
+            result.Status = status;
+        }
+
         return result;
     }
 
@@ -268,12 +280,18 @@ public class VariableGroupController : ControllerBase
         var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
-        await _vgService.UpdateVariableGroupsAsync(vgServiceModel, cancellationToken);
+        var status = await _vgService.UpdateVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         vgServiceModel.ValueFilter = vgServiceModel.NewValue;
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableGroupResponses>(variableGroupResultModel);
+
+        if (status != Status.Success)
+        {
+            result.Status = status;
+        }
+
         return result;
     }
 }

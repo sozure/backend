@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VGManager.Services.Models.VariableGroups.Results;
 
-public abstract class VariableGroupBaseResultModel
+public abstract class VariableGroupResultBaseModel
 {
     public string Project { get; set; } = null!;
     public bool SecretVariableGroup { get; set; }

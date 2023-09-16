@@ -37,7 +37,7 @@ public class VariableGroupService : IVariableGroupService
         CancellationToken cancellationToken = default
         )
     {
-        var matchedVariableGroups = new List<VariableGroupBaseResultModel>();
+        var matchedVariableGroups = new List<VariableGroupResultBaseModel>();
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
@@ -65,7 +65,7 @@ public class VariableGroupService : IVariableGroupService
             return new()
             {
                 Status = status,
-                VariableGroups = new List<VariableGroupBaseResultModel>(),
+                VariableGroups = new List<VariableGroupResultBaseModel>(),
             };
         }
     }
@@ -243,13 +243,13 @@ public class VariableGroupService : IVariableGroupService
         };
     }
 
-    private List<VariableGroupBaseResultModel> GetVariables(
+    private List<VariableGroupResultBaseModel> GetVariables(
         string keyFilter,
         string? valueFilter,
         VariableGroup filteredVariableGroup
         )
     {
-        var result = new List<VariableGroupBaseResultModel>();
+        var result = new List<VariableGroupResultBaseModel>();
         var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
 
         foreach (var filteredVariable in filteredVariables)

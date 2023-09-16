@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace VGManager.Services.Models.VariableGroups.Results;
-public class SecretVariableGroupResultModel: VariableGroupBaseResultModel
+public class SecretVariableGroupResultModel: VariableGroupResultBaseModel
 {
     public string KeyVaultName { get; set; } = null!;
 }

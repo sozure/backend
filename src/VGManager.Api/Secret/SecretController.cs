@@ -39,12 +39,6 @@ public class SecretController : ControllerBase
         var matchedSecrets = await _keyVaultService.GetSecretsAsync(secretModel.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<SecretResponses>(matchedSecrets);
-
-        if (result.Status == 0)
-        {
-            SetKeyVault(result.Secrets, request.KeyVaultName);
-        }
-
         return Ok(result);
     }
 
@@ -62,12 +56,6 @@ public class SecretController : ControllerBase
         _keyVaultService.SetupConnectionRepository(secretModel);
         var matchedDeletedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
         var result = _mapper.Map<DeletedSecretResponses>(matchedDeletedSecrets);
-
-        if (result.Status == 0)
-        {
-            SetKeyVault(result.DeletedSecrets, request.KeyVaultName);
-        }
-
         return Ok(result);
     }
 
@@ -87,12 +75,6 @@ public class SecretController : ControllerBase
         var matchedSecrets = await _keyVaultService.GetSecretsAsync(secretModel.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<SecretResponses>(matchedSecrets);
-
-        if (result.Status == 0)
-        {
-            SetKeyVault(result.Secrets, request.KeyVaultName);
-        }
-
         return Ok(result);
     }
 
@@ -112,12 +94,6 @@ public class SecretController : ControllerBase
         var matchedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<DeletedSecretResponses>(matchedSecrets);
-
-        if (result.Status == 0)
-        {
-            SetKeyVault(result.DeletedSecrets, request.KeyVaultName);
-        }
-
         return Ok(result);
     }
 
@@ -133,13 +109,5 @@ public class SecretController : ControllerBase
         var secretModel = _mapper.Map<SecretCopyModel>(request);
         var status = await _keyVaultService.CopySecretsAsync(secretModel, cancellationToken);
         return Ok(status);
-    }
-
-    private static void SetKeyVault(IEnumerable<SecretBaseResponse> responses, string keyVault)
-    {
-        foreach (var response in responses)
-        {
-            response.KeyVault = keyVault;
-        }
     }
 }

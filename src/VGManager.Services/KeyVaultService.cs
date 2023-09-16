@@ -4,13 +4,15 @@ using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models.Secrets;
+using VGManager.Services.Models.Secrets.Requests;
+using VGManager.Services.Models.Secrets.Results;
 
 namespace VGManager.Services;
 
 public class KeyVaultService : IKeyVaultService
 {
     private readonly IKeyVaultAdapter _keyVaultConnectionRepository;
+    private string _keyVault = null!;
     private readonly ILogger _logger;
 
     public KeyVaultService(IKeyVaultAdapter keyVaultConnectionRepository, ILogger<KeyVaultService> logger)
@@ -21,12 +23,14 @@ public class KeyVaultService : IKeyVaultService
 
     public void SetupConnectionRepository(SecretModel secretModel)
     {
-        _keyVaultConnectionRepository.Setup(secretModel.KeyVaultName, secretModel.TenantId, secretModel.ClientId, secretModel.ClientSecret);
+        var keyVault = secretModel.KeyVaultName;
+        _keyVaultConnectionRepository.Setup(keyVault, secretModel.TenantId, secretModel.ClientId, secretModel.ClientSecret);
+        _keyVault = keyVault;
     }
 
-    public async Task<SecretResultsModel> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default)
+    public async Task<SecretResults> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
-        var secretList = new List<SecretResultModel>();
+        var secretList = new List<SecretResult>();
         var secretsEntity = await _keyVaultConnectionRepository.GetSecretsAsync(cancellationToken);
         var status = secretsEntity.Status;
         var secrets = CollectSecrets(secretsEntity);
@@ -79,9 +83,9 @@ public class KeyVaultService : IKeyVaultService
         return Status.Success;
     }
 
-    public DeletedSecretResultsModel GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default)
+    public DeletedSecretResults GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default)
     {
-        var secretList = new List<DeletedSecretResultModel>();
+        var secretList = new List<DeletedSecretResult>();
         var secretsEntity = _keyVaultConnectionRepository.GetDeletedSecrets(cancellationToken);
         var status = secretsEntity.Status;
 
@@ -214,7 +218,7 @@ public class KeyVaultService : IKeyVaultService
         return result;
     }
 
-    private static void CollectSecrets(List<SecretResultModel> secretList, SecretEntity? filteredSecret)
+    private void CollectSecrets(List<SecretResult> secretList, SecretEntity? filteredSecret)
     {
         if (filteredSecret is not null)
         {
@@ -225,6 +229,7 @@ public class KeyVaultService : IKeyVaultService
             {
                 secretList.Add(new()
                 {
+                    KeyVault = _keyVault,
                     SecretName = secretName,
                     SecretValue = secretValue
                 });
@@ -232,16 +237,16 @@ public class KeyVaultService : IKeyVaultService
         }
     }
 
-    private static DeletedSecretResultsModel GetResult(Status status)
+    private static DeletedSecretResults GetResult(Status status)
     {
         return new()
         {
             Status = status,
-            DeletedSecrets = Enumerable.Empty<DeletedSecretResultModel>()
+            DeletedSecrets = Enumerable.Empty<DeletedSecretResult>()
         };
     }
 
-    private static DeletedSecretResultsModel GetResult(Status status, IEnumerable<DeletedSecretResultModel> secretList)
+    private static DeletedSecretResults GetResult(Status status, IEnumerable<DeletedSecretResult> secretList)
     {
         return new()
         {
@@ -250,7 +255,7 @@ public class KeyVaultService : IKeyVaultService
         };
     }
 
-    private static SecretResultsModel GetResult(Status status, IEnumerable<SecretResultModel> secretList)
+    private static SecretResults GetResult(Status status, IEnumerable<SecretResult> secretList)
     {
         return new()
         {

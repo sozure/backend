@@ -260,7 +260,7 @@ public class VariableGroupService : IVariableGroupService
                 var regex = new Regex(valueFilter.ToLower());
                 if (regex.IsMatch(variableValue.ToLower()))
                 {
-                    if(filteredVariableGroup.Type == "AzureKeyVault")
+                    if (filteredVariableGroup.Type == "AzureKeyVault")
                     {
                         result.Add(new SecretVariableGroupResultModel()
                         {
@@ -269,7 +269,8 @@ public class VariableGroupService : IVariableGroupService
                             VariableGroupName = filteredVariableGroup.Name,
                             VariableGroupKey = filteredVariable.Key,
                         });
-                    } else
+                    }
+                    else
                     {
                         result.Add(new VariableGroupResultModel()
                         {

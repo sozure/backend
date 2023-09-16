@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace VGManager.Services.Models.VariableGroups.Results;
 
 public abstract class VariableGroupResultBaseModel

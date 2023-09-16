@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VariableGroupE = Microsoft.TeamFoundation.DistributedTask.WebApi.VariableGroup;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using VGManager.Api.Controllers;
 using VGManager.Api.MapperProfiles;
@@ -12,6 +11,7 @@ using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services;
 using ProjectProfile = VGManager.Services.MapperProfiles.ProjectProfile;
+using VariableGroupE = Microsoft.TeamFoundation.DistributedTask.WebApi.VariableGroup;
 
 namespace VGManager.Api.Tests;
 

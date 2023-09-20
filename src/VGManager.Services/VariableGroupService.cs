@@ -151,8 +151,19 @@ public class VariableGroupService : IVariableGroupService
                     {
                         updateCounter++;
                     }
-
                 }
+
+                catch(ArgumentException ex)
+                {
+                    _logger.LogDebug(
+                        ex,
+                        "Key has been added previously. Not a breaking error. Variable group: {variableGroupName}, Key: {key}",
+                        filteredVariableGroup.Name,
+                        key
+                        );
+                    updateCounter++;
+                }
+
                 catch (Exception ex)
                 {
                     _logger.LogError(

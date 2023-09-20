@@ -2,5 +2,5 @@ namespace VGManager.AzureAdapter.Entities;
 
 public enum Status
 {
-    Success, Unauthorized, ResourceNotFound, ProjectDoesNotExist, Unknown
+    Success, VariableOrSecretIsAlreadyAdded, Unauthorized, ResourceNotFound, ProjectDoesNotExist, Unknown
 }

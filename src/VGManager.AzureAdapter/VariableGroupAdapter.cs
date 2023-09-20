@@ -110,7 +110,7 @@ public class VariableGroupAdapter : IVariableGroupAdapter
         catch (ArgumentException ex)
         {
             _logger.LogError(ex, $"An item with the same key has already been added to {variableGroupName}.");
-            return Status.Unknown;
+            return Status.VariableOrSecretIsAlreadyAdded;
         }
         catch (TeamFoundationServerInvalidRequestException ex)
         {

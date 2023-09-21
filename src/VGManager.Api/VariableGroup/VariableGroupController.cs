@@ -29,7 +29,7 @@ public class VariableGroupController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet(Name = "GetVariableGroups")]
+    [HttpGet(Name = "GetVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -38,23 +38,10 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = await GetResultAsync(request, cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpGet("GetFromMultipleProjects", Name = "GetVariableGroupsFromMultipleProjects")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> GetFromMultipleProjectsAsync(
-        [FromQuery] VariableGroupRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        var result = GetEmptyVariableGroupGetResponses();
-
+        VariableGroupResponses? result;
         if (request.Project == "All")
         {
+            result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
             foreach (var project in projectResponse.Projects)
@@ -68,12 +55,15 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
+        } 
+        else
+        {
+            result = await GetResultAsync(request, cancellationToken);
         }
-
         return Ok(result);
     }
 
-    [HttpPost("Update", Name = "UpdateVariableGroups")]
+    [HttpPost("Update", Name = "UpdateVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -82,23 +72,10 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = await GetResultAsync(request, cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpPost("UpdateFromMultipleProjects", Name = "UpdateVariableGroupsFromMultipleProjects")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> UpdateFromMultipleProjectsAsync(
-        [FromBody] VariableGroupUpdateRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        var result = GetEmptyVariableGroupGetResponses();
-
+        VariableGroupResponses? result;
         if (request.Project == "All")
         {
+            result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
             foreach (var project in projectResponse.Projects)
@@ -112,12 +89,32 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
+        } 
+        else
+        {
+            result = await GetResultAsync(request, cancellationToken);
         }
-
         return Ok(result);
     }
 
-    [HttpPost("Add", Name = "AddVariableGroups")]
+    [HttpPost("UpdateInline", Name = "UpdateVariableInline")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<Status>> UpdateInlineAsync(
+        [FromBody] VariableGroupUpdateRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
+
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        var status = await _vgService.UpdateVariableGroupsAsync(vgServiceModel, cancellationToken);
+
+        return Ok(status);
+    }
+
+    [HttpPost("Add", Name = "AddVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -126,23 +123,10 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = await GetResultAsync(request, cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpPost("AddFromMultipleProjects", Name = "AddVariableGroupsFromMultipleProjects")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> AddFromMultipleProjectsAsync(
-        [FromBody] VariableGroupAddRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        var result = GetEmptyVariableGroupGetResponses();
-
+        VariableGroupResponses? result;
         if (request.Project == "All")
         {
+            result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
             foreach (var project in projectResponse.Projects)
@@ -156,12 +140,15 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
+        } 
+        else
+        {
+            result = await GetResultAsync(request, cancellationToken);
         }
-
         return Ok(result);
     }
 
-    [HttpPost("Delete", Name = "DeleteVariableGroups")]
+    [HttpPost("Delete", Name = "DeleteVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -170,23 +157,10 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = await GetResultAfterDeleteAsync(request, cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpPost("DeleteFromMultipleProjects", Name = "DeleteVariableGroupsFromMultipleProjects")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> DeleteFromMultipleProjectsAsync(
-        [FromBody] VariableGroupRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        var result = GetEmptyVariableGroupGetResponses();
-
-        if (request.Project == "All")
+        VariableGroupResponses? result;
+        if(request.Project == "All")
         {
+            result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
             foreach (var project in projectResponse.Projects)
@@ -200,9 +174,29 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
+        } 
+        else
+        {
+            result = await GetResultAfterDeleteAsync(request, cancellationToken);
         }
-
         return Ok(result);
+    }
+
+    [HttpPost("DeleteInline", Name = "DeleteVariableInline")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<Status>> DeleteInlineAsync(
+        [FromBody] VariableGroupRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
+
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        var status = await _vgService.DeleteVariableAsync(vgServiceModel, cancellationToken);
+
+        return Ok(status);
     }
 
     private static VariableGroupResponses GetEmptyVariableGroupGetResponses()

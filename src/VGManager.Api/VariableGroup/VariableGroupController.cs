@@ -97,6 +97,23 @@ public class VariableGroupController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("UpdateInline", Name = "UpdateInline")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<Status>> UpdateInlineAsync(
+        [FromBody] VariableGroupUpdateRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
+
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        var status = await _vgService.UpdateVariableGroupsAsync(vgServiceModel, cancellationToken);
+
+        return Ok(status);
+    }
+
     [HttpPost("Add", Name = "AddVariableGroups")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -163,6 +180,23 @@ public class VariableGroupController : ControllerBase
             result = await GetResultAfterDeleteAsync(request, cancellationToken);
         }
         return Ok(result);
+    }
+
+    [HttpPost("DeleteInline", Name = "DeleteInline")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<Status>> DeleteInlineAsync(
+        [FromBody] VariableGroupRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
+
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        var status = await _vgService.DeleteVariableAsync(vgServiceModel, cancellationToken);
+
+        return Ok(status);
     }
 
     private static VariableGroupResponses GetEmptyVariableGroupGetResponses()

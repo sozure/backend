@@ -29,7 +29,7 @@ public class VariableGroupController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet(Name = "GetVariableGroups")]
+    [HttpGet(Name = "GetVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -63,7 +63,7 @@ public class VariableGroupController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("Update", Name = "UpdateVariableGroups")]
+    [HttpPost("Update", Name = "UpdateVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -97,7 +97,7 @@ public class VariableGroupController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("UpdateInline", Name = "UpdateInline")]
+    [HttpPost("UpdateInline", Name = "UpdateVariableInline")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -114,7 +114,7 @@ public class VariableGroupController : ControllerBase
         return Ok(status);
     }
 
-    [HttpPost("Add", Name = "AddVariableGroups")]
+    [HttpPost("Add", Name = "AddVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -148,7 +148,7 @@ public class VariableGroupController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("Delete", Name = "DeleteVariableGroups")]
+    [HttpPost("Delete", Name = "DeleteVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -182,7 +182,7 @@ public class VariableGroupController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("DeleteInline", Name = "DeleteInline")]
+    [HttpPost("DeleteInline", Name = "DeleteVariableInline")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

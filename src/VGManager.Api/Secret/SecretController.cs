@@ -78,6 +78,23 @@ public class SecretController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("DeleteInline", Name = "DeleteSecretInline")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<Status>> DeleteInlineAsync(
+        [FromBody] SecretRequest request,
+        CancellationToken cancellationToken
+        )
+    {
+        var secretModel = _mapper.Map<SecretModel>(request);
+
+        _keyVaultService.SetupConnectionRepository(secretModel);
+        var status = await _keyVaultService.DeleteAsync(secretModel.SecretFilter, cancellationToken);
+
+        return Ok(status);
+    }
+
     [HttpPost("Recover", Name = "RecoverSecrets")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -95,6 +112,23 @@ public class SecretController : ControllerBase
 
         var result = _mapper.Map<DeletedSecretResponses>(matchedSecrets);
         return Ok(result);
+    }
+
+    [HttpPost("RecoverInline", Name = "RecoverSecretInline")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<Status>> RecoverInlineAsync(
+        [FromBody] SecretRequest request,
+        CancellationToken cancellationToken
+        )
+    {
+        var secretModel = _mapper.Map<SecretModel>(request);
+
+        _keyVaultService.SetupConnectionRepository(secretModel);
+        var status = await _keyVaultService.RecoverSecretAsync(secretModel.SecretFilter, cancellationToken);
+
+        return Ok(status);
     }
 
     [HttpPost("Copy", Name = "CopySecrets")]

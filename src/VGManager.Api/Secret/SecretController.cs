@@ -78,7 +78,7 @@ public class SecretController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("DeleteInline", Name = "DeleteInline")]
+    [HttpPost("DeleteInline", Name = "DeleteSecretInline")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -114,7 +114,7 @@ public class SecretController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("RecoverInline", Name = "RecoverInline")]
+    [HttpPost("RecoverInline", Name = "RecoverSecretInline")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

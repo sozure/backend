@@ -38,23 +38,10 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = await GetResultAsync(request, cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpGet("GetFromMultipleProjects", Name = "GetVariableGroupsFromMultipleProjects")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> GetFromMultipleProjectsAsync(
-        [FromQuery] VariableGroupRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        var result = GetEmptyVariableGroupGetResponses();
-
+        VariableGroupResponses? result;
         if (request.Project == "All")
         {
+            result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
             foreach (var project in projectResponse.Projects)
@@ -68,8 +55,11 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
+        } 
+        else
+        {
+            result = await GetResultAsync(request, cancellationToken);
         }
-
         return Ok(result);
     }
 
@@ -82,23 +72,10 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = await GetResultAsync(request, cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpPost("UpdateFromMultipleProjects", Name = "UpdateVariableGroupsFromMultipleProjects")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> UpdateFromMultipleProjectsAsync(
-        [FromBody] VariableGroupUpdateRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        var result = GetEmptyVariableGroupGetResponses();
-
+        VariableGroupResponses? result;
         if (request.Project == "All")
         {
+            result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
             foreach (var project in projectResponse.Projects)
@@ -112,8 +89,11 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
+        } 
+        else
+        {
+            result = await GetResultAsync(request, cancellationToken);
         }
-
         return Ok(result);
     }
 
@@ -126,23 +106,10 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = await GetResultAsync(request, cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpPost("AddFromMultipleProjects", Name = "AddVariableGroupsFromMultipleProjects")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> AddFromMultipleProjectsAsync(
-        [FromBody] VariableGroupAddRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        var result = GetEmptyVariableGroupGetResponses();
-
+        VariableGroupResponses? result;
         if (request.Project == "All")
         {
+            result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
             foreach (var project in projectResponse.Projects)
@@ -156,8 +123,11 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
+        } 
+        else
+        {
+            result = await GetResultAsync(request, cancellationToken);
         }
-
         return Ok(result);
     }
 
@@ -170,23 +140,10 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = await GetResultAfterDeleteAsync(request, cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpPost("DeleteFromMultipleProjects", Name = "DeleteVariableGroupsFromMultipleProjects")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> DeleteFromMultipleProjectsAsync(
-        [FromBody] VariableGroupRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        var result = GetEmptyVariableGroupGetResponses();
-
-        if (request.Project == "All")
+        VariableGroupResponses? result;
+        if(request.Project == "All")
         {
+            result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
             foreach (var project in projectResponse.Projects)
@@ -200,8 +157,11 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
+        } 
+        else
+        {
+            result = await GetResultAfterDeleteAsync(request, cancellationToken);
         }
-
         return Ok(result);
     }
 

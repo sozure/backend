@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
@@ -12,6 +13,7 @@ namespace VGManager.Api.Controllers;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
+[EnableCors("_allowSpecificOrigins")]
 public class VariableGroupController : ControllerBase
 {
     private readonly IVariableGroupService _vgService;

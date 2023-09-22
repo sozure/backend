@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Projects.Responses;
 using VGManager.Services.Interfaces;
@@ -9,6 +10,7 @@ namespace VGManager.Api.Projects;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
+[EnableCors("_allowSpecificOrigins")]
 public class ProjectController : ControllerBase
 {
     private readonly IProjectService _projectService;

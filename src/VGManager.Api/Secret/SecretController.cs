@@ -1,5 +1,6 @@
 
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secret.Request;
 using VGManager.Api.Secret.Response;
@@ -13,6 +14,7 @@ namespace VGManager.Api.Controllers;
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
+[EnableCors("_allowSpecificOrigins")]
 public class SecretController : ControllerBase
 {
     private readonly IKeyVaultService _keyVaultService;

@@ -78,16 +78,4 @@ Before you can use this API, make sure you have the following prerequisites inst
 ## Usage
 Once the API is up and running, you can interact with it using your preferred API client or by making HTTP requests directly. Make sure to provide the required parameters and authentication tokens as needed for each endpoint.
 
-## Contributing
-Contributions to this project are welcome. Please follow these guidelines when contributing:
-1. Fork the repository.
-2. Create a branch for your feature or bug fix.
-3. Make your changes and test thoroughly.
-4. Create a pull request to the `main` branch of this repository.
-
-## License
-This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute it as per the terms of the license.
-
----
-
 Enjoy using the Azure DevOps and KeyVault interaction API! If you encounter any issues or have suggestions for improvements, please feel free to open an issue or submit a pull request.

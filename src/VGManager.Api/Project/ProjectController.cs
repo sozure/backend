@@ -22,12 +22,12 @@ public class ProjectController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet(Name = "getprojects")]
+    [HttpPost("Get",Name = "getprojects")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ProjectsResponse>> GetAsync(
-        [FromQuery] ProjectRequest request,
+        [FromBody] ProjectRequest request,
         CancellationToken cancellationToken
     )
     {

@@ -22,8 +22,6 @@ This .NET API project is designed to provide a seamless interface for interactin
   - [Delete variable of Variable Group Inline](#delete-variable-of-variable-group-inline)
 
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Prerequisites
 Before you can use this API, make sure you have the following prerequisites installed and configured:

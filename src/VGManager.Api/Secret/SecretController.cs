@@ -26,12 +26,12 @@ public class SecretController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet(Name = "GetSecrets")]
+    [HttpPost("Get", Name = "GetSecrets")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<SecretResponses>> GetAsync(
-        [FromQuery] SecretRequest request,
+        [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
     {
@@ -44,12 +44,12 @@ public class SecretController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("Deleted", Name = "GetDeletedSecrets")]
+    [HttpPost("GetDeleted", Name = "GetDeletedSecrets")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<DeletedSecretResponses> GetDeleted(
-        [FromQuery] SecretRequest request,
+        [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
     {

@@ -31,12 +31,12 @@ public class VariableGroupController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet(Name = "GetVariables")]
+    [HttpPost("Get", Name = "GetVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<VariableGroupResponses>> GetAsync(
-        [FromQuery] VariableGroupRequest request,
+        [FromBody] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
     {

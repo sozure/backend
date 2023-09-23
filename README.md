@@ -1,4 +1,4 @@
-# Backend API for Azure DevOps and KeyVault Interaction
+# VGManager Backend: A Backend API for Library and KeyVault Interaction
 
 This .NET API project is designed to provide a seamless interface for interacting with Azure DevOps and Azure KeyVault. It is stateless and allows users to perform various operations related to these services through a set of well-defined endpoints. This README will guide you through the setup, endpoints, and usage of this API.
 

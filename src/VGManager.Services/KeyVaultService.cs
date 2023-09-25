@@ -111,7 +111,6 @@ public class KeyVaultService : IKeyVaultService
 
     public async Task<Status> DeleteAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Deleted secret key, value");
         var secretsResultModel = await _keyVaultConnectionRepository.GetSecretsAsync(cancellationToken);
         var status = secretsResultModel.Status;
 
@@ -192,7 +191,6 @@ public class KeyVaultService : IKeyVaultService
 
                 if (deletionStatus == Status.Success)
                 {
-                    _logger.LogInformation("{secretName}, {secretValue}", secretName, secretValue);
                     deletionCounter2++;
                 }
             }

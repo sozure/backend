@@ -31,7 +31,6 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         KeyVaultSecret result;
         try
         {
-            _logger.LogInformation("Get secret {name} from {keyVault}.", name, _keyVaultName);
             result = await _secretClient.GetSecretAsync(name, cancellationToken: cancellationToken);
             return GetSecretResult(result);
         }
@@ -53,7 +52,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
     {
         try
         {
-            _logger.LogInformation("Delete secret {name} in {keyVault}.", name, _keyVaultName);
+            _logger.LogDebug("Delete secret {name} in {keyVault}.", name, _keyVaultName);
             await _secretClient.StartDeleteSecretAsync(name, cancellationToken);
             return Status.Success;
         }
@@ -103,7 +102,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
             {
                 if (deletedSecret.Name.Equals(secretName))
                 {
-                    _logger.LogInformation("Recover deleted secret: {secretName} in {keyVault}.", secretName, _keyVaultName);
+                    _logger.LogDebug("Recover deleted secret: {secretName} in {keyVault}.", secretName, _keyVaultName);
                     await _secretClient.StartRecoverDeletedSecretAsync(secretName, cancellationToken);
                     didWeRecover = true;
                 }
@@ -111,7 +110,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
 
             if (!didWeRecover)
             {
-                _logger.LogInformation("Set secret: {secretName} in {keyVault}.", secretName, _keyVaultName);
+                _logger.LogDebug("Set secret: {secretName} in {keyVault}.", secretName, _keyVaultName);
                 await _secretClient.SetSecretAsync(newSecret, cancellationToken);
             }
 
@@ -129,7 +128,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
     {
         try
         {
-            _logger.LogInformation("Recover deleted secret: {secretName} in {keyVault}.", name, _keyVaultName);
+            _logger.LogDebug("Recover deleted secret: {secretName} in {keyVault}.", name, _keyVaultName);
             await _secretClient.StartRecoverDeletedSecretAsync(name, cancellationToken);
             return Status.Success;
         }

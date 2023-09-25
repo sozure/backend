@@ -75,7 +75,6 @@ public class VariableGroupService : IVariableGroupService
         CancellationToken cancellationToken = default
         )
     {
-        _logger.LogInformation("Variable group name, Key, Old value, New value");
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
@@ -88,7 +87,7 @@ public class VariableGroupService : IVariableGroupService
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
                 var variableGroupName = filteredVariableGroup.Name;
-                var updateIsNeeded = UpdateVariables(variableGroupUpdateModel, filteredVariableGroup, variableGroupName);
+                var updateIsNeeded = UpdateVariables(variableGroupUpdateModel, filteredVariableGroup);
 
                 if (updateIsNeeded)
                 {
@@ -104,7 +103,7 @@ public class VariableGroupService : IVariableGroupService
                     if (updateStatus == Status.Success)
                     {
                         updateCounter1++;
-                        _logger.LogInformation("{variableGroupName} updated.", variableGroupName);
+                        _logger.LogDebug("{variableGroupName} updated.", variableGroupName);
                     }
                 }
             }
@@ -181,7 +180,6 @@ public class VariableGroupService : IVariableGroupService
 
     public async Task<Status> DeleteVariableAsync(VariableGroupModel variableGroupModel, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Variable group name, Deleted Key, Deleted Value");
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
@@ -311,8 +309,7 @@ public class VariableGroupService : IVariableGroupService
 
     private bool UpdateVariables(
         VariableGroupUpdateModel variableGroupUpdateModel,
-        VariableGroup filteredVariableGroup,
-        string variableGroupName
+        VariableGroup filteredVariableGroup
         )
     {
         var filteredVariables = Filter(filteredVariableGroup.Variables, variableGroupUpdateModel.KeyFilter);
@@ -329,28 +326,12 @@ public class VariableGroupService : IVariableGroupService
             {
                 if (valueFilter.Equals(variableValue))
                 {
-                    _logger.LogInformation(
-                    "{variableGroupName}, {variableKey}, {variableValue}, {newValue}",
-                    variableGroupName,
-                    variableKey,
-                    variableValue,
-                    newValue
-                    );
-
                     filteredVariable.Value.Value = newValue;
                     updateIsNeeded = true;
                 }
             }
             else
             {
-                _logger.LogInformation(
-                    "{variableGroupName}, {variableKey}, {variableValue}, {newValue}",
-                    variableGroupName,
-                    variableKey,
-                    variableValue,
-                    newValue
-                    );
-
                 filteredVariable.Value.Value = newValue;
                 updateIsNeeded = true;
             }
@@ -372,14 +353,12 @@ public class VariableGroupService : IVariableGroupService
             {
                 if (valueCondition.Equals(variableValue))
                 {
-                    _logger.LogInformation("{variableGroupName}, {variableKey}, {variableValue}", variableGroupName, variableKey, variableValue);
                     filteredVariableGroup.Variables.Remove(filteredVariable.Key);
                     deleteIsNeeded = true;
                 }
             }
             else
             {
-                _logger.LogInformation("{variableGroupName}, {variableKey}, {variableValue}", variableGroupName, variableKey, variableValue);
                 filteredVariableGroup.Variables.Remove(filteredVariable.Key);
                 deleteIsNeeded = true;
             }
@@ -402,7 +381,6 @@ public class VariableGroupService : IVariableGroupService
 
         if (updateStatus == Status.Success)
         {
-            _logger.LogInformation("{variableGroupName}, {key}, {value}", variableGroupName, key, value);
             return true;
         }
         return false;

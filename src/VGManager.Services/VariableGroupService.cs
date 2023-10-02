@@ -324,7 +324,8 @@ public class VariableGroupService : IVariableGroupService
 
             if (valueFilter is not null)
             {
-                if (valueFilter.Equals(variableValue))
+                var regex = new Regex(valueFilter.ToLower());
+                if (regex.IsMatch(variableValue))
                 {
                     filteredVariable.Value.Value = newValue;
                     updateIsNeeded = true;

@@ -22,7 +22,7 @@ public class ProjectController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpPost("Get",Name = "getprojects")]
+    [HttpPost("Get", Name = "getprojects")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

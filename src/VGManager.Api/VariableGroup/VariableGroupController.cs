@@ -57,7 +57,7 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
-        } 
+        }
         else
         {
             result = await GetResultAsync(request, cancellationToken);
@@ -91,7 +91,7 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
-        } 
+        }
         else
         {
             result = await GetResultAsync(request, cancellationToken);
@@ -142,7 +142,7 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
-        } 
+        }
         else
         {
             result = await GetResultAsync(request, cancellationToken);
@@ -160,7 +160,7 @@ public class VariableGroupController : ControllerBase
     )
     {
         VariableGroupResponses? result;
-        if(request.Project == "All")
+        if (request.Project == "All")
         {
             result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
@@ -176,7 +176,7 @@ public class VariableGroupController : ControllerBase
                     result.Status = subResult.Status;
                 }
             }
-        } 
+        }
         else
         {
             result = await GetResultAfterDeleteAsync(request, cancellationToken);
@@ -231,8 +231,8 @@ public class VariableGroupController : ControllerBase
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableGroupResponses>(variableGroupResultModel);
-        
-        if(status != Status.Success)
+
+        if (status != Status.Success)
         {
             result.Status = status;
         }

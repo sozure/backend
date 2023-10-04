@@ -1,11 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Models.VariableGroups.Requests;
 

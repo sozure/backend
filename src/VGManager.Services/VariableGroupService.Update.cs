@@ -105,7 +105,7 @@ public partial class VariableGroupService
 
             if (regex is not null)
             {
-                if (regex.IsMatch(variableValue))
+                if (regex.IsMatch(variableValue.ToLower()))
                 {
                     filteredVariable.Value.Value = newValue;
                     updateIsNeeded = true;

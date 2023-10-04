@@ -40,7 +40,7 @@ public partial class VariableGroupService : IVariableGroupService
         catch (RegexParseException ex)
         {
             _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
-            return Enumerable.Empty<VariableGroup>();
+            return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower() && vg.Type != "AzureKeyVault").ToList();
         }
         return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower()) && vg.Type != "AzureKeyVault").ToList();
     }
@@ -55,7 +55,7 @@ public partial class VariableGroupService : IVariableGroupService
         catch (RegexParseException ex)
         {
             _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
-            return Enumerable.Empty<VariableGroup>();
+            return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower()).ToList();
         }
         return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower())).ToList();
     }
@@ -63,6 +63,11 @@ public partial class VariableGroupService : IVariableGroupService
     private static IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, Regex regex)
     {
         return variables.Where(v => regex.IsMatch(v.Key.ToLower())).ToList();
+    }
+
+    private static IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, string filter)
+    {
+        return variables.Where(v => filter.ToLower() == v.Key.ToLower()).ToList();
     }
 
     private static VariableGroupParameters GetVariableGroupParameters(VariableGroup filteredVariableGroup, string variableGroupName)

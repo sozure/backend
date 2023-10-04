@@ -29,17 +29,7 @@ public partial class VariableGroupService
     {
         var deletionCounter1 = 0;
         var deletionCounter2 = 0;
-        var filter = variableGroupModel.KeyFilter;
-        Regex regex;
-        try
-        {
-            regex = new Regex(filter.ToLower());
-        }
-        catch (RegexParseException ex)
-        {
-            _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
-            return Status.Success;
-        }
+        var keyFilter = variableGroupModel.KeyFilter;
 
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
@@ -47,8 +37,8 @@ public partial class VariableGroupService
 
             var deleteIsNeeded = DeleteVariables(
                 filteredVariableGroup,
-                variableGroupModel.ValueFilter,
-                regex
+                keyFilter,
+                variableGroupModel.ValueFilter
                 );
 
             if (deleteIsNeeded)
@@ -71,10 +61,10 @@ public partial class VariableGroupService
         return deletionCounter1 == deletionCounter2 ? Status.Success : Status.Unknown;
     }
 
-    private static bool DeleteVariables(VariableGroup filteredVariableGroup, string? valueCondition, Regex regex)
+    private static bool DeleteVariables(VariableGroup filteredVariableGroup, string keyFilter, string? valueCondition)
     {
         var deleteIsNeeded = false;
-        var filteredVariables = Filter(filteredVariableGroup.Variables, regex);
+        var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
         foreach (var filteredVariable in filteredVariables)
         {
             var variableValue = filteredVariable.Value.Value;

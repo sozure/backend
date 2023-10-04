@@ -43,7 +43,9 @@ public partial class VariableGroupService
             catch (RegexParseException ex)
             {
                 _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", keyFilter);
-                filteredVariableGroups = Enumerable.Empty<VariableGroup>();
+                filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupFilter)
+                .Select(vg => vg)
+                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => keyFilter.ToLower() == key.ToLower()).Count > 0);
             }
         }
         else

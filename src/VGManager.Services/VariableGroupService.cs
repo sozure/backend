@@ -48,10 +48,30 @@ public class VariableGroupService : IVariableGroupService
                 FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
 
             var valueFilter = variableGroupModel.ValueFilter;
+            Regex? regex = null;
+            
+            if (valueFilter is not null)
+            {
+                try
+                {
+                    regex = new Regex(valueFilter.ToLower());
+                }
+                catch (RegexParseException ex)
+                {
+                    _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", valueFilter);
+                    return new()
+                    {
+                        Status = status,
+                        VariableGroups = matchedVariableGroups,
+                    };
+                }
+            }
 
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
-                matchedVariableGroups.AddRange(GetVariables(variableGroupModel.KeyFilter, valueFilter, filteredVariableGroup));
+                matchedVariableGroups.AddRange(
+                    GetVariables(variableGroupModel.KeyFilter, regex, filteredVariableGroup)
+                    );
             }
 
             return new()
@@ -81,33 +101,23 @@ public class VariableGroupService : IVariableGroupService
         if (status == Status.Success)
         {
             var filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter);
-            var updateCounter1 = 0;
-            var updateCounter2 = 0;
+            var valueFilter = variableGroupUpdateModel.ValueFilter;
+            Regex? regex = null;
 
-            foreach (var filteredVariableGroup in filteredVariableGroups)
+            if (valueFilter is not null)
             {
-                var variableGroupName = filteredVariableGroup.Name;
-                var updateIsNeeded = UpdateVariables(variableGroupUpdateModel, filteredVariableGroup);
-
-                if (updateIsNeeded)
+                try
                 {
-                    updateCounter2++;
-                    var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-
-                    var updateStatus = await _variableGroupConnectionRepository.UpdateAsync(
-                        variableGroupParameters,
-                        filteredVariableGroup.Id,
-                        cancellationToken
-                        );
-
-                    if (updateStatus == Status.Success)
-                    {
-                        updateCounter1++;
-                        _logger.LogDebug("{variableGroupName} updated.", variableGroupName);
-                    }
+                    regex = new Regex(valueFilter.ToLower());
+                }
+                catch (RegexParseException ex)
+                {
+                    _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", valueFilter);
+                    return status;
                 }
             }
-            return updateCounter1 == updateCounter2 ? Status.Success : Status.Unknown;
+
+            return await UpdateVariableGroupsAsync(variableGroupUpdateModel, filteredVariableGroups, regex, cancellationToken);
         }
         return status;
     }
@@ -131,7 +141,7 @@ public class VariableGroupService : IVariableGroupService
         return status;
     }
 
-    public async Task<Status> DeleteVariableAsync(VariableGroupModel variableGroupModel, CancellationToken cancellationToken = default)
+    public async Task<Status> DeleteVariablesAsync(VariableGroupModel variableGroupModel, CancellationToken cancellationToken = default)
     {
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
@@ -139,38 +149,7 @@ public class VariableGroupService : IVariableGroupService
         if (status == Status.Success)
         {
             var filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
-            var deletionCounter1 = 0;
-            var deletionCounter2 = 0;
-
-            foreach (var filteredVariableGroup in filteredVariableGroups)
-            {
-                var variableGroupName = filteredVariableGroup.Name;
-
-                var deleteIsNeeded = DeleteVariables(
-                    filteredVariableGroup,
-                    variableGroupModel.ValueFilter,
-                    variableGroupModel.KeyFilter,
-                    variableGroupName
-                    );
-
-                if (deleteIsNeeded)
-                {
-                    deletionCounter1++;
-                    var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-
-                    var updateStatus = await _variableGroupConnectionRepository.UpdateAsync(
-                        variableGroupParameters,
-                        filteredVariableGroup.Id,
-                        cancellationToken
-                        );
-
-                    if (updateStatus == Status.Success)
-                    {
-                        deletionCounter2++;
-                    }
-                }
-            }
-            return deletionCounter1 == deletionCounter2 ? Status.Success : Status.Unknown;
+            return await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
         }
 
         return status;
@@ -219,6 +198,72 @@ public class VariableGroupService : IVariableGroupService
             return Enumerable.Empty<KeyValuePair<string, VariableValue>>();
         }
         return variables.Where(v => regex.IsMatch(v.Key.ToLower())).ToList();
+    }
+
+    private async Task<Status> DeleteVariablesAsync(VariableGroupModel variableGroupModel, IEnumerable<VariableGroup> filteredVariableGroups, CancellationToken cancellationToken)
+    {
+        var deletionCounter1 = 0;
+        var deletionCounter2 = 0;
+
+        foreach (var filteredVariableGroup in filteredVariableGroups)
+        {
+            var variableGroupName = filteredVariableGroup.Name;
+
+            var deleteIsNeeded = DeleteVariables(
+                filteredVariableGroup,
+                variableGroupModel.ValueFilter,
+                variableGroupModel.KeyFilter,
+                variableGroupName
+                );
+
+            if (deleteIsNeeded)
+            {
+                deletionCounter1++;
+                var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
+
+                var updateStatus = await _variableGroupConnectionRepository.UpdateAsync(
+                    variableGroupParameters,
+                    filteredVariableGroup.Id,
+                    cancellationToken
+                    );
+
+                if (updateStatus == Status.Success)
+                {
+                    deletionCounter2++;
+                }
+            }
+        }
+        return deletionCounter1 == deletionCounter2 ? Status.Success : Status.Unknown;
+    }
+
+    private async Task<Status> UpdateVariableGroupsAsync(VariableGroupUpdateModel variableGroupUpdateModel, IEnumerable<VariableGroup> filteredVariableGroups, Regex? regex, CancellationToken cancellationToken)
+    {
+        var updateCounter1 = 0;
+        var updateCounter2 = 0;
+        foreach (var filteredVariableGroup in filteredVariableGroups)
+        {
+            var variableGroupName = filteredVariableGroup.Name;
+            var updateIsNeeded = UpdateVariables(variableGroupUpdateModel, regex, filteredVariableGroup);
+
+            if (updateIsNeeded)
+            {
+                updateCounter2++;
+                var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
+
+                var updateStatus = await _variableGroupConnectionRepository.UpdateAsync(
+                    variableGroupParameters,
+                    filteredVariableGroup.Id,
+                    cancellationToken
+                    );
+
+                if (updateStatus == Status.Success)
+                {
+                    updateCounter1++;
+                    _logger.LogDebug("{variableGroupName} updated.", variableGroupName);
+                }
+            }
+        }
+        return updateCounter1 == updateCounter2 ? Status.Success : Status.Unknown;
     }
 
     private async Task<Status> AddVariablesAsync(IEnumerable<VariableGroup> filteredVariableGroups, string key, string value, CancellationToken cancellationToken)
@@ -301,7 +346,7 @@ public class VariableGroupService : IVariableGroupService
 
     private List<VariableGroupResult> GetVariables(
         string keyFilter,
-        string? valueFilter,
+        Regex? regex,
         VariableGroup filteredVariableGroup
         )
     {
@@ -311,20 +356,11 @@ public class VariableGroupService : IVariableGroupService
         foreach (var filteredVariable in filteredVariables)
         {
             var variableValue = filteredVariable.Value.Value ?? string.Empty;
-            if (valueFilter is not null)
+            if (regex is not null)
             {
-                try
+                if (regex.IsMatch(variableValue.ToLower()))
                 {
-                    var regex = new Regex(valueFilter.ToLower());
-                    if (regex.IsMatch(variableValue.ToLower()))
-                    {
-                        AddVariableGroupResult(filteredVariableGroup, result, filteredVariable, variableValue);
-                    }
-                } 
-                catch(RegexParseException ex)
-                {
-                    _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", valueFilter);
-                    return result;
+                    AddVariableGroupResult(filteredVariableGroup, result, filteredVariable, variableValue);
                 }
             }
             else
@@ -364,6 +400,7 @@ public class VariableGroupService : IVariableGroupService
 
     private bool UpdateVariables(
         VariableGroupUpdateModel variableGroupUpdateModel,
+        Regex? regex,
         VariableGroup filteredVariableGroup
         )
     {
@@ -373,25 +410,14 @@ public class VariableGroupService : IVariableGroupService
         foreach (var filteredVariable in filteredVariables)
         {
             var variableValue = filteredVariable.Value.Value;
-            var variableKey = filteredVariable.Key;
             var newValue = variableGroupUpdateModel.NewValue;
-            var valueFilter = variableGroupUpdateModel.ValueFilter;
 
-            if (valueFilter is not null)
+            if (regex is not null)
             {
-                try
+                if (regex.IsMatch(variableValue))
                 {
-                    var regex = new Regex(valueFilter.ToLower());
-                    if (regex.IsMatch(variableValue))
-                    {
-                        filteredVariable.Value.Value = newValue;
-                        updateIsNeeded = true;
-                    }
-                }
-                catch (RegexParseException ex)
-                {
-                    _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", valueFilter);
-                    return false;
+                    filteredVariable.Value.Value = newValue;
+                    updateIsNeeded = true;
                 }
             }
             else

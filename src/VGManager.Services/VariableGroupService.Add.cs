@@ -58,7 +58,7 @@ public partial class VariableGroupService
 
                 filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupFilter)
                 .Select(vg => vg)
-                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key)).Count > 0);
+                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key.ToLower())).Count > 0);
             }
             catch (RegexParseException ex)
             {

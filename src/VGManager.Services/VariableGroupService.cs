@@ -119,62 +119,15 @@ public class VariableGroupService : IVariableGroupService
 
         if (status == Status.Success)
         {
-            IEnumerable<VariableGroup> filteredVariableGroups = null!;
             var keyFilter = variableGroupAddModel.KeyFilter;
             var variableGroupFilter = variableGroupAddModel.VariableGroupFilter;
             var key = variableGroupAddModel.Key;
             var value = variableGroupAddModel.Value;
+            var filteredVariableGroups = CollectVariableGroups(vgEntity, keyFilter, variableGroupFilter);
 
-            if (keyFilter is not null)
-            {
-                var regex = new Regex(keyFilter);
-
-                filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupFilter)
-                    .Select(vg => vg)
-                    .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key)).Count > 0);
-            }
-            else
-            {
-                filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupFilter);
-            }
-
-            var updateCounter = 0;
-
-            foreach (var filteredVariableGroup in filteredVariableGroups)
-            {
-                try
-                {
-                    var success = await AddVariableAsync(key, value, filteredVariableGroup, cancellationToken);
-
-                    if (success)
-                    {
-                        updateCounter++;
-                    }
-                }
-
-                catch(ArgumentException ex)
-                {
-                    _logger.LogDebug(
-                        ex,
-                        "Key has been added previously. Not a breaking error. Variable group: {variableGroupName}, Key: {key}",
-                        filteredVariableGroup.Name,
-                        key
-                        );
-                    updateCounter++;
-                }
-
-                catch (Exception ex)
-                {
-                    _logger.LogError(
-                        ex,
-                        "Something went wrong during variable addition. Variable group: {variableGroupName}, Key: {key}",
-                        filteredVariableGroup.Name,
-                        key
-                        );
-                }
-            }
-            return updateCounter == filteredVariableGroups.Count() ? Status.Success : Status.Unknown;
+            return await AddVariablesAsync(filteredVariableGroups, key, value, cancellationToken);
         }
+
         return status;
     }
 
@@ -223,22 +176,116 @@ public class VariableGroupService : IVariableGroupService
         return status;
     }
 
-    private static IEnumerable<VariableGroup> FilterWithoutSecrets(IEnumerable<VariableGroup> variableGroups, string filter)
+    private IEnumerable<VariableGroup> FilterWithoutSecrets(IEnumerable<VariableGroup> variableGroups, string filter)
     {
-        var regex = new Regex(filter.ToLower());
+        Regex regex;
+        try
+        {
+            regex = new Regex(filter.ToLower());
+        }
+        catch (RegexParseException ex)
+        {
+            _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
+            return Enumerable.Empty<VariableGroup>();
+        }
         return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower()) && vg.Type != "AzureKeyVault").ToList();
     }
 
-    private static IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter)
+    private IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter)
     {
-        var regex = new Regex(filter.ToLower());
+        Regex regex;
+        try
+        {
+            regex = new Regex(filter.ToLower());
+        }
+        catch (RegexParseException ex)
+        {
+            _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
+            return Enumerable.Empty<VariableGroup>();
+        }
         return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower())).ToList();
     }
 
-    private static IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, string filter)
+    private IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, string filter)
     {
-        var regex = new Regex(filter.ToLower());
+        Regex regex;
+        try
+        {
+            regex = new Regex(filter.ToLower());
+        }
+        catch (RegexParseException ex)
+        {
+            _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
+            return Enumerable.Empty<KeyValuePair<string, VariableValue>>();
+        }
         return variables.Where(v => regex.IsMatch(v.Key.ToLower())).ToList();
+    }
+
+    private async Task<Status> AddVariablesAsync(IEnumerable<VariableGroup> filteredVariableGroups, string key, string value, CancellationToken cancellationToken)
+    {
+        var updateCounter = 0;
+
+        foreach (var filteredVariableGroup in filteredVariableGroups)
+        {
+            try
+            {
+                var success = await AddVariableAsync(key, value, filteredVariableGroup, cancellationToken);
+
+                if (success)
+                {
+                    updateCounter++;
+                }
+            }
+
+            catch (ArgumentException ex)
+            {
+                _logger.LogDebug(
+                    ex,
+                    "Key has been added previously. Not a breaking error. Variable group: {variableGroupName}, Key: {key}",
+                    filteredVariableGroup.Name,
+                    key
+                    );
+                updateCounter++;
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Something went wrong during variable addition. Variable group: {variableGroupName}, Key: {key}",
+                    filteredVariableGroup.Name,
+                    key
+                    );
+            }
+        }
+        return updateCounter == filteredVariableGroups.Count() ? Status.Success : Status.Unknown;
+    }
+
+    private IEnumerable<VariableGroup> CollectVariableGroups(VariableGroupEntity vgEntity, string? keyFilter, string variableGroupFilter)
+    {
+        IEnumerable<VariableGroup> filteredVariableGroups;
+        if (keyFilter is not null)
+        {
+            try
+            {
+                var regex = new Regex(keyFilter.ToLower());
+
+                filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupFilter)
+                .Select(vg => vg)
+                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key)).Count > 0);
+            }
+            catch (RegexParseException ex)
+            {
+                _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", keyFilter);
+                filteredVariableGroups = Enumerable.Empty<VariableGroup>();
+            }
+        }
+        else
+        {
+            filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupFilter);
+        }
+
+        return filteredVariableGroups;
     }
 
     private static VariableGroupParameters GetVariableGroupParameters(VariableGroup filteredVariableGroup, string variableGroupName)
@@ -266,10 +313,18 @@ public class VariableGroupService : IVariableGroupService
             var variableValue = filteredVariable.Value.Value ?? string.Empty;
             if (valueFilter is not null)
             {
-                var regex = new Regex(valueFilter.ToLower());
-                if (regex.IsMatch(variableValue.ToLower()))
+                try
                 {
-                    AddVariableGroupResult(filteredVariableGroup, result, filteredVariable, variableValue);
+                    var regex = new Regex(valueFilter.ToLower());
+                    if (regex.IsMatch(variableValue.ToLower()))
+                    {
+                        AddVariableGroupResult(filteredVariableGroup, result, filteredVariable, variableValue);
+                    }
+                } 
+                catch(RegexParseException ex)
+                {
+                    _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", valueFilter);
+                    return result;
                 }
             }
             else
@@ -324,11 +379,19 @@ public class VariableGroupService : IVariableGroupService
 
             if (valueFilter is not null)
             {
-                var regex = new Regex(valueFilter.ToLower());
-                if (regex.IsMatch(variableValue))
+                try
                 {
-                    filteredVariable.Value.Value = newValue;
-                    updateIsNeeded = true;
+                    var regex = new Regex(valueFilter.ToLower());
+                    if (regex.IsMatch(variableValue))
+                    {
+                        filteredVariable.Value.Value = newValue;
+                        updateIsNeeded = true;
+                    }
+                }
+                catch (RegexParseException ex)
+                {
+                    _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", valueFilter);
+                    return false;
                 }
             }
             else
@@ -348,7 +411,6 @@ public class VariableGroupService : IVariableGroupService
         foreach (var filteredVariable in filteredVariables)
         {
             var variableValue = filteredVariable.Value.Value;
-            var variableKey = filteredVariable.Key;
 
             if (valueCondition is not null)
             {
@@ -384,6 +446,7 @@ public class VariableGroupService : IVariableGroupService
         {
             return true;
         }
+
         return false;
     }
 }

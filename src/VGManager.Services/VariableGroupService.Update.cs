@@ -89,7 +89,7 @@ public partial class VariableGroupService
         return updateCounter1 == updateCounter2 ? Status.Success : Status.Unknown;
     }
 
-    private bool UpdateVariables(
+    private static bool UpdateVariables(
         string newValue,
         Regex keyRegex,
         Regex? regex,

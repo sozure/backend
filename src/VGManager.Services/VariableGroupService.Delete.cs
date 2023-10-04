@@ -21,7 +21,11 @@ public partial class VariableGroupService
         return status;
     }
 
-    private async Task<Status> DeleteVariablesAsync(VariableGroupModel variableGroupModel, IEnumerable<VariableGroup> filteredVariableGroups, CancellationToken cancellationToken)
+    private async Task<Status> DeleteVariablesAsync(
+        VariableGroupModel variableGroupModel, 
+        IEnumerable<VariableGroup> filteredVariableGroups, 
+        CancellationToken cancellationToken
+        )
     {
         var deletionCounter1 = 0;
         var deletionCounter2 = 0;
@@ -67,7 +71,7 @@ public partial class VariableGroupService
         return deletionCounter1 == deletionCounter2 ? Status.Success : Status.Unknown;
     }
 
-    private bool DeleteVariables(VariableGroup filteredVariableGroup, string? valueCondition, Regex regex)
+    private static bool DeleteVariables(VariableGroup filteredVariableGroup, string? valueCondition, Regex regex)
     {
         var deleteIsNeeded = false;
         var filteredVariables = Filter(filteredVariableGroup.Variables, regex);

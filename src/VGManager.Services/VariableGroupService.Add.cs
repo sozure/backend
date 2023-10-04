@@ -27,26 +27,6 @@ public partial class VariableGroupService
         return status;
     }
 
-    private async Task<bool> AddVariableAsync(string key, string value, VariableGroup filteredVariableGroup, CancellationToken cancellationToken)
-    {
-        var variableGroupName = filteredVariableGroup.Name;
-        filteredVariableGroup.Variables.Add(key, value);
-        var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
-
-        var updateStatus = await _variableGroupConnectionRepository.UpdateAsync(
-            variableGroupParameters,
-            filteredVariableGroup.Id,
-            cancellationToken
-            );
-
-        if (updateStatus == Status.Success)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
     private IEnumerable<VariableGroup> CollectVariableGroups(VariableGroupEntity vgEntity, string? keyFilter, string variableGroupFilter)
     {
         IEnumerable<VariableGroup> filteredVariableGroups;
@@ -112,5 +92,25 @@ public partial class VariableGroupService
             }
         }
         return updateCounter == filteredVariableGroups.Count() ? Status.Success : Status.Unknown;
+    }
+
+    private async Task<bool> AddVariableAsync(string key, string value, VariableGroup filteredVariableGroup, CancellationToken cancellationToken)
+    {
+        var variableGroupName = filteredVariableGroup.Name;
+        filteredVariableGroup.Variables.Add(key, value);
+        var variableGroupParameters = GetVariableGroupParameters(filteredVariableGroup, variableGroupName);
+
+        var updateStatus = await _variableGroupConnectionRepository.UpdateAsync(
+            variableGroupParameters,
+            filteredVariableGroup.Id,
+            cancellationToken
+            );
+
+        if (updateStatus == Status.Success)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

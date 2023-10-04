@@ -5,6 +5,7 @@ using VGManager.AzureAdapter;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
+using VGManager.Services.VariableGroupServices;
 using ServiceProfiles = VGManager.Services.MapperProfiles;
 
 var myAllowSpecificOrigins = Constants.Cors.AllowSpecificOrigins;

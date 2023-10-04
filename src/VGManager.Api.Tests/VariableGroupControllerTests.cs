@@ -8,6 +8,7 @@ using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services;
+using VGManager.Services.VariableGroupServices;
 using ProjectProfile = VGManager.Services.MapperProfiles.ProjectProfile;
 
 namespace VGManager.Api.Tests;

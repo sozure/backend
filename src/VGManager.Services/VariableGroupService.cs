@@ -60,18 +60,8 @@ public partial class VariableGroupService : IVariableGroupService
         return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower())).ToList();
     }
 
-    private IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, string filter)
+    private static IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, Regex regex)
     {
-        Regex regex;
-        try
-        {
-            regex = new Regex(filter.ToLower());
-        }
-        catch (RegexParseException ex)
-        {
-            _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
-            return Enumerable.Empty<KeyValuePair<string, VariableValue>>();
-        }
         return variables.Where(v => regex.IsMatch(v.Key.ToLower())).ToList();
     }
 

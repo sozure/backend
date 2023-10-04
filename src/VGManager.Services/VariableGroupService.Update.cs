@@ -18,14 +18,17 @@ public partial class VariableGroupService
         if (status == Status.Success)
         {
             var filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter);
+            var filter = variableGroupUpdateModel.KeyFilter;
             var valueFilter = variableGroupUpdateModel.ValueFilter;
-            Regex? regex = null;
+            var newValue = variableGroupUpdateModel.NewValue;
+            Regex keyRegex;
+            Regex? valueRegex = null;
 
             if (valueFilter is not null)
             {
                 try
                 {
-                    regex = new Regex(valueFilter.ToLower());
+                    valueRegex = new Regex(valueFilter.ToLower());
                 }
                 catch (RegexParseException ex)
                 {
@@ -34,19 +37,36 @@ public partial class VariableGroupService
                 }
             }
 
-            return await UpdateVariableGroupsAsync(variableGroupUpdateModel, filteredVariableGroups, regex, cancellationToken);
+            try
+            {
+                keyRegex = new Regex(filter.ToLower());
+            }
+            catch (RegexParseException ex)
+            {
+                _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
+                return Status.Success;
+            }
+
+            return await UpdateVariableGroupsAsync(newValue, filteredVariableGroups, keyRegex, valueRegex, cancellationToken);
         }
         return status;
     }
 
-    private async Task<Status> UpdateVariableGroupsAsync(VariableGroupUpdateModel variableGroupUpdateModel, IEnumerable<VariableGroup> filteredVariableGroups, Regex? regex, CancellationToken cancellationToken)
+    private async Task<Status> UpdateVariableGroupsAsync(
+        string newValue,
+        IEnumerable<VariableGroup> filteredVariableGroups, 
+        Regex keyRegex, 
+        Regex? valueRegex, 
+        CancellationToken cancellationToken
+        )
     {
         var updateCounter1 = 0;
         var updateCounter2 = 0;
+
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
             var variableGroupName = filteredVariableGroup.Name;
-            var updateIsNeeded = UpdateVariables(variableGroupUpdateModel, regex, filteredVariableGroup);
+            var updateIsNeeded = UpdateVariables(newValue, keyRegex, valueRegex, filteredVariableGroup);
 
             if (updateIsNeeded)
             {
@@ -70,18 +90,18 @@ public partial class VariableGroupService
     }
 
     private bool UpdateVariables(
-        VariableGroupUpdateModel variableGroupUpdateModel,
+        string newValue,
+        Regex keyRegex,
         Regex? regex,
         VariableGroup filteredVariableGroup
         )
     {
-        var filteredVariables = Filter(filteredVariableGroup.Variables, variableGroupUpdateModel.KeyFilter);
+        var filteredVariables = Filter(filteredVariableGroup.Variables, keyRegex);
         var updateIsNeeded = false;
 
         foreach (var filteredVariable in filteredVariables)
         {
             var variableValue = filteredVariable.Value.Value;
-            var newValue = variableGroupUpdateModel.NewValue;
 
             if (regex is not null)
             {

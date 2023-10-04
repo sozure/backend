@@ -19,42 +19,7 @@ public partial class VariableGroupService
 
         if (status == Status.Success)
         {
-            var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
-                Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
-                FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
-
-            var valueFilter = variableGroupModel.ValueFilter;
-            Regex? regex = null;
-
-            if (valueFilter is not null)
-            {
-                try
-                {
-                    regex = new Regex(valueFilter.ToLower());
-                }
-                catch (RegexParseException ex)
-                {
-                    _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", valueFilter);
-                    return new()
-                    {
-                        Status = status,
-                        VariableGroups = matchedVariableGroups,
-                    };
-                }
-            }
-
-            foreach (var filteredVariableGroup in filteredVariableGroups)
-            {
-                matchedVariableGroups.AddRange(
-                    GetVariables(variableGroupModel.KeyFilter, regex, filteredVariableGroup)
-                    );
-            }
-
-            return new()
-            {
-                Status = status,
-                VariableGroups = matchedVariableGroups,
-            };
+            return GetVariableGroupsAsync(variableGroupModel, matchedVariableGroups, vgEntity, status);
         }
         else
         {
@@ -66,21 +31,82 @@ public partial class VariableGroupService
         }
     }
 
+    private VariableGroupResults GetVariableGroupsAsync(
+        VariableGroupModel variableGroupModel,
+        List<VariableGroupResult> matchedVariableGroups, 
+        VariableGroupEntity vgEntity, 
+        Status status
+        )
+    {
+        var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
+                        Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
+                        FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
+
+        var valueFilter = variableGroupModel.ValueFilter;
+        var keyFilter = variableGroupModel.KeyFilter;
+        Regex? valueRegex = null;
+
+        if (valueFilter is not null)
+        {
+            try
+            {
+                valueRegex = new Regex(valueFilter.ToLower());
+            }
+            catch (RegexParseException ex)
+            {
+                _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", valueFilter);
+                return new()
+                {
+                    Status = status,
+                    VariableGroups = matchedVariableGroups,
+                };
+            }
+        }
+
+        Regex keyRegex;
+        try
+        {
+            keyRegex = new Regex(keyFilter.ToLower());
+        }
+        catch (RegexParseException ex)
+        {
+            _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", keyFilter);
+            return new()
+            {
+                Status = status,
+                VariableGroups = matchedVariableGroups,
+            };
+        }
+
+        foreach (var filteredVariableGroup in filteredVariableGroups)
+        {
+            matchedVariableGroups.AddRange(
+                GetVariables(keyRegex, valueRegex, filteredVariableGroup)
+                );
+        }
+
+        return new()
+        {
+            Status = status,
+            VariableGroups = matchedVariableGroups,
+        };
+    }
+
     private List<VariableGroupResult> GetVariables(
-        string keyFilter,
-        Regex? regex,
+        Regex keyRegex,
+        Regex? valueRegex,
         VariableGroup filteredVariableGroup
         )
     {
         var result = new List<VariableGroupResult>();
-        var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
+        var filteredVariables = Filter(filteredVariableGroup.Variables, keyRegex);
 
         foreach (var filteredVariable in filteredVariables)
         {
             var variableValue = filteredVariable.Value.Value ?? string.Empty;
-            if (regex is not null)
+            if (valueRegex is not null)
             {
-                if (regex.IsMatch(variableValue.ToLower()))
+                if (valueRegex.IsMatch(variableValue.ToLower()))
                 {
                     AddVariableGroupResult(filteredVariableGroup, result, filteredVariable, variableValue);
                 }
@@ -91,5 +117,37 @@ public partial class VariableGroupService
             }
         }
         return result;
+    }
+
+    private void AddVariableGroupResult(
+        VariableGroup filteredVariableGroup, 
+        List<VariableGroupResult> result, 
+        KeyValuePair<string, VariableValue> filteredVariable, 
+        string variableValue
+        )
+    {
+        if (filteredVariableGroup.Type == "AzureKeyVault")
+        {
+            var azProviderData = filteredVariableGroup.ProviderData as AzureKeyVaultVariableGroupProviderData;
+            result.Add(new VariableGroupResult()
+            {
+                Project = _project ?? string.Empty,
+                SecretVariableGroup = true,
+                VariableGroupName = filteredVariableGroup.Name,
+                VariableGroupKey = filteredVariable.Key,
+                KeyVaultName = azProviderData?.Vault ?? string.Empty
+            });
+        }
+        else
+        {
+            result.Add(new VariableGroupResult()
+            {
+                Project = _project ?? string.Empty,
+                SecretVariableGroup = false,
+                VariableGroupName = filteredVariableGroup.Name,
+                VariableGroupKey = filteredVariable.Key,
+                VariableGroupValue = variableValue
+            });
+        }
     }
 }

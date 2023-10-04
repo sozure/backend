@@ -27,33 +27,6 @@ public partial class VariableGroupService
         return status;
     }
 
-    private void AddVariableGroupResult(VariableGroup filteredVariableGroup, List<VariableGroupResult> result, KeyValuePair<string, VariableValue> filteredVariable, string variableValue)
-    {
-        if (filteredVariableGroup.Type == "AzureKeyVault")
-        {
-            var azProviderData = filteredVariableGroup.ProviderData as AzureKeyVaultVariableGroupProviderData;
-            result.Add(new VariableGroupResult()
-            {
-                Project = _project ?? string.Empty,
-                SecretVariableGroup = true,
-                VariableGroupName = filteredVariableGroup.Name,
-                VariableGroupKey = filteredVariable.Key,
-                KeyVaultName = azProviderData?.Vault ?? string.Empty
-            });
-        }
-        else
-        {
-            result.Add(new VariableGroupResult()
-            {
-                Project = _project ?? string.Empty,
-                SecretVariableGroup = false,
-                VariableGroupName = filteredVariableGroup.Name,
-                VariableGroupKey = filteredVariable.Key,
-                VariableGroupValue = variableValue
-            });
-        }
-    }
-
     private async Task<bool> AddVariableAsync(string key, string value, VariableGroup filteredVariableGroup, CancellationToken cancellationToken)
     {
         var variableGroupName = filteredVariableGroup.Name;

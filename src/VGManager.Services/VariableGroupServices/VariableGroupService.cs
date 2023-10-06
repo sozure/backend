@@ -30,19 +30,23 @@ public partial class VariableGroupService : IVariableGroupService
         _project = project;
     }
 
-    private IEnumerable<VariableGroup> FilterWithoutSecrets(IEnumerable<VariableGroup> variableGroups, string filter)
+    private IEnumerable<VariableGroup> FilterWithoutSecrets(bool filterAsRegex, string filter, IEnumerable<VariableGroup> variableGroups)
     {
-        Regex regex;
-        try
+        if (filterAsRegex)
         {
-            regex = new Regex(filter.ToLower());
+            Regex regex;
+            try
+            {
+                regex = new Regex(filter.ToLower());
+            }
+            catch (RegexParseException ex)
+            {
+                _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
+                return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower() && vg.Type != "AzureKeyVault").ToList();
+            }
+            return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower()) && vg.Type != "AzureKeyVault").ToList();
         }
-        catch (RegexParseException ex)
-        {
-            _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
-            return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower() && vg.Type != "AzureKeyVault").ToList();
-        }
-        return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower()) && vg.Type != "AzureKeyVault").ToList();
+        return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower() && vg.Type != "AzureKeyVault").ToList();
     }
 
     private IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter)

@@ -8,7 +8,11 @@ public interface IVariableGroupService
 {
     void SetupConnectionRepository(VariableGroupModel variableGroupModel);
 
-    Task<Status> UpdateVariableGroupsAsync(VariableGroupUpdateModel variableGroupUpdateModel, CancellationToken cancellationToken = default);
+    Task<Status> UpdateVariableGroupsAsync(
+        VariableGroupUpdateModel variableGroupUpdateModel, 
+        bool filterAsRegex, 
+        CancellationToken cancellationToken = default
+        );
 
     Task<VariableGroupResults> GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,

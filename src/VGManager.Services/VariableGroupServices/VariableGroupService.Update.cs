@@ -9,6 +9,7 @@ public partial class VariableGroupService
 {
     public async Task<Status> UpdateVariableGroupsAsync(
         VariableGroupUpdateModel variableGroupUpdateModel,
+        bool filterAsRegex,
         CancellationToken cancellationToken = default
         )
     {
@@ -17,7 +18,7 @@ public partial class VariableGroupService
 
         if (status == Status.Success)
         {
-            var filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupUpdateModel.VariableGroupFilter);
+            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupUpdateModel.VariableGroupFilter, vgEntity.VariableGroups);
             var keyFilter = variableGroupUpdateModel.KeyFilter;
             var valueFilter = variableGroupUpdateModel.ValueFilter;
             var newValue = variableGroupUpdateModel.NewValue;

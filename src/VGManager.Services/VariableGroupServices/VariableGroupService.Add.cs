@@ -36,21 +36,21 @@ public partial class VariableGroupService
             {
                 var regex = new Regex(keyFilter.ToLower());
 
-                filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupFilter)
+                filteredVariableGroups = FilterWithoutSecrets(true, variableGroupFilter, vgEntity.VariableGroups)
                 .Select(vg => vg)
                 .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key.ToLower())).Count > 0);
             }
             catch (RegexParseException ex)
             {
                 _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", keyFilter);
-                filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupFilter)
+                filteredVariableGroups = FilterWithoutSecrets(true, variableGroupFilter, vgEntity.VariableGroups)
                 .Select(vg => vg)
                 .Where(vg => vg.Variables.Keys.ToList().FindAll(key => keyFilter.ToLower() == key.ToLower()).Count > 0);
             }
         }
         else
         {
-            filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupFilter);
+            filteredVariableGroups = FilterWithoutSecrets(true, variableGroupFilter, vgEntity.VariableGroups);
         }
 
         return filteredVariableGroups;

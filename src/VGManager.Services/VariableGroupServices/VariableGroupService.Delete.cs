@@ -14,7 +14,7 @@ public partial class VariableGroupService
 
         if (status == Status.Success)
         {
-            var filteredVariableGroups = FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
+            var filteredVariableGroups = FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
             return await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
         }
 

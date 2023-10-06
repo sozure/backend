@@ -39,7 +39,7 @@ public partial class VariableGroupService
         var matchedVariableGroups = new List<VariableGroupResult>();
         var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
                         Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
-                        FilterWithoutSecrets(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter);
+                        FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
 
         var valueFilter = variableGroupModel.ValueFilter;
         var keyFilter = variableGroupModel.KeyFilter;

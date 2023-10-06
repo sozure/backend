@@ -111,7 +111,7 @@ public class VariableGroupController : ControllerBase
         var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
-        var status = await _vgService.UpdateVariableGroupsAsync(vgServiceModel, cancellationToken);
+        var status = await _vgService.UpdateVariableGroupsAsync(vgServiceModel, false, cancellationToken);
 
         return Ok(status);
     }
@@ -276,7 +276,7 @@ public class VariableGroupController : ControllerBase
         var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
-        var status = await _vgService.UpdateVariableGroupsAsync(vgServiceModel, cancellationToken);
+        var status = await _vgService.UpdateVariableGroupsAsync(vgServiceModel, true, cancellationToken);
 
         vgServiceModel.ValueFilter = vgServiceModel.NewValue;
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);

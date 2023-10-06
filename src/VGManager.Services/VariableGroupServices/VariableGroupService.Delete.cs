@@ -1,6 +1,4 @@
-using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
-using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Models.VariableGroups.Requests;
 
@@ -26,8 +24,8 @@ public partial class VariableGroupService
     }
 
     private async Task<Status> DeleteVariablesAsync(
-        VariableGroupModel variableGroupModel, 
-        IEnumerable<VariableGroup> filteredVariableGroups, 
+        VariableGroupModel variableGroupModel,
+        IEnumerable<VariableGroup> filteredVariableGroups,
         CancellationToken cancellationToken
         )
     {

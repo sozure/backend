@@ -32,7 +32,7 @@ public partial class VariableGroupService
 
     private VariableGroupResults GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
-        VariableGroupEntity vgEntity, 
+        VariableGroupEntity vgEntity,
         Status status
         )
     {
@@ -85,7 +85,8 @@ public partial class VariableGroupService
                     GetVariables(keyRegex, valueRegex, filteredVariableGroup)
                     );
             }
-        } else
+        }
+        else
         {
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
@@ -123,8 +124,8 @@ public partial class VariableGroupService
     }
 
     private IEnumerable<VariableGroupResult> CollectVariables(
-        Regex? valueRegex, 
-        VariableGroup filteredVariableGroup, 
+        Regex? valueRegex,
+        VariableGroup filteredVariableGroup,
         IEnumerable<KeyValuePair<string, VariableValue>> filteredVariables
         )
     {
@@ -153,7 +154,7 @@ public partial class VariableGroupService
 
     private IEnumerable<VariableGroupResult> AddVariableGroupResult(
         VariableGroup filteredVariableGroup,
-        KeyValuePair<string, VariableValue> filteredVariable, 
+        KeyValuePair<string, VariableValue> filteredVariable,
         string variableValue
         )
     {

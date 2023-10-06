@@ -9,7 +9,7 @@ public interface IVariableGroupService
     void SetupConnectionRepository(VariableGroupModel variableGroupModel);
 
     Task<Status> UpdateVariableGroupsAsync(
-        VariableGroupUpdateModel variableGroupUpdateModel, 
+        VariableGroupUpdateModel variableGroupUpdateModel,
         bool filterAsRegex,
         CancellationToken cancellationToken = default
         );
@@ -22,7 +22,7 @@ public interface IVariableGroupService
     Task<Status> AddVariablesAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default);
 
     Task<Status> DeleteVariablesAsync(
-        VariableGroupModel variableGroupModel, 
-        bool filterAsRegex, 
+        VariableGroupModel variableGroupModel,
+        bool filterAsRegex,
         CancellationToken cancellationToken = default);
 }

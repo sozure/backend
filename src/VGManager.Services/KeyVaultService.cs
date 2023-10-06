@@ -144,15 +144,33 @@ public class KeyVaultService : IKeyVaultService
         return status;
     }
 
-    private static IEnumerable<SecretEntity> Filter(IEnumerable<SecretEntity> keyVaultSecrets, string filter)
+    private IEnumerable<SecretEntity> Filter(IEnumerable<SecretEntity> keyVaultSecrets, string filter)
     {
-        var regex = new Regex(filter.ToLower());
+        Regex regex;
+        try
+        {
+            regex = new Regex(filter.ToLower());
+        }
+        catch (RegexParseException ex)
+        {
+            _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
+            return Enumerable.Empty<SecretEntity>();
+        }
         return keyVaultSecrets.Where(secret => regex.IsMatch(secret?.Secret?.Name.ToLower() ?? string.Empty)).ToList();
     }
 
-    private static IEnumerable<DeletedSecret> Filter(IEnumerable<DeletedSecret> keyVaultSecrets, string filter)
+    private IEnumerable<DeletedSecret> Filter(IEnumerable<DeletedSecret> keyVaultSecrets, string filter)
     {
-        var regex = new Regex(filter.ToLower());
+        Regex regex;
+        try
+        {
+            regex = new Regex(filter.ToLower());
+        }
+        catch (RegexParseException ex)
+        {
+            _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
+            return Enumerable.Empty<DeletedSecret>();
+        }
         return keyVaultSecrets.Where(secret => regex.IsMatch(secret?.Name.ToLower() ?? string.Empty)).ToList();
     }
 

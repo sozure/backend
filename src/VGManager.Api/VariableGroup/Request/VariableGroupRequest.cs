@@ -22,5 +22,7 @@ public class VariableGroupRequest
     [Required]
     public bool ContainsSecrets { get; set; }
 
+    public bool? KeyIsRegex { get; set; }
+
     public string? ValueFilter { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿namespace VGManager.Services.Models.VariableGroups.Requests;
+namespace VGManager.Services.Models.VariableGroups.Requests;
 
 public class VariableGroupModel
 {
@@ -13,6 +13,8 @@ public class VariableGroupModel
     public string KeyFilter { get; set; } = null!;
 
     public bool ContainsSecrets { get; set; }
+
+    public bool? KeyIsRegex { get; set; }
 
     public string? ValueFilter { get; set; }
 }

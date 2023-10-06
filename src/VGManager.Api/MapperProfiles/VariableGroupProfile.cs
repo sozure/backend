@@ -1,4 +1,5 @@
 using AutoMapper;
+using VGManager.Api.VariableGroup.Request;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.Services.Models.VariableGroups.Requests;
@@ -12,6 +13,7 @@ public class VariableGroupProfile : Profile
     {
         CreateMap<VariableGroupUpdateRequest, VariableGroupUpdateModel>();
         CreateMap<VariableGroupAddRequest, VariableGroupAddModel>();
+        CreateMap<VariableGroupGetRequest, VariableGroupGetModel>();
         CreateMap<VariableGroupRequest, VariableGroupModel>();
 
         CreateMap<VariableGroupResult, VariableGroupResponse>();

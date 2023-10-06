@@ -11,7 +11,7 @@ public interface IVariableGroupService
     Task<Status> UpdateVariableGroupsAsync(VariableGroupUpdateModel variableGroupUpdateModel, CancellationToken cancellationToken = default);
 
     Task<VariableGroupResults> GetVariableGroupsAsync(
-        VariableGroupGetModel variableGroupModel,
+        VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         );
 

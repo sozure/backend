@@ -9,7 +9,7 @@ namespace VGManager.Services.VariableGroupServices;
 public partial class VariableGroupService
 {
     public async Task<VariableGroupResults> GetVariableGroupsAsync(
-        VariableGroupGetModel variableGroupModel,
+        VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         )
     {
@@ -31,7 +31,7 @@ public partial class VariableGroupService
     }
 
     private VariableGroupResults GetVariableGroupsAsync(
-        VariableGroupGetModel variableGroupModel,
+        VariableGroupModel variableGroupModel,
         VariableGroupEntity vgEntity, 
         Status status
         )
@@ -62,7 +62,7 @@ public partial class VariableGroupService
             }
         }
 
-        if (variableGroupModel.KeyIsRegex)
+        if (variableGroupModel.KeyIsRegex ?? false)
         {
             Regex keyRegex;
             try

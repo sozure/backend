@@ -20,6 +20,7 @@ public static class TestSampleData
             VariableGroupFilter = "neptun",
             KeyFilter = keyFilter,
             ValueFilter = null!,
+            KeyIsRegex = true,
             ContainsSecrets = false
         };
     }
@@ -60,7 +61,7 @@ public static class TestSampleData
             PAT = pat,
             Project = project,
             VariableGroupFilter = "neptun",
-            KeyFilter = "key",
+            KeyFilter = "Key123",
             ValueFilter = valueFilter,
             ContainsSecrets = false,
             NewValue = newValue
@@ -77,6 +78,7 @@ public static class TestSampleData
             VariableGroupFilter = "neptun",
             KeyFilter = keyFilter,
             ValueFilter = valueFilter,
+            KeyIsRegex = true,
             ContainsSecrets = false
         };
     }
@@ -90,7 +92,8 @@ public static class TestSampleData
             Project = project,
             VariableGroupFilter = "neptun",
             KeyFilter = "key",
-            ContainsSecrets = false
+            ContainsSecrets = false,
+            KeyIsRegex = true,
         };
     }
 
@@ -257,20 +260,6 @@ public static class TestSampleData
                     Project = "Project1",
                     VariableGroupName = "NeptunAdapter",
                     VariableGroupKey = "Key123",
-                    VariableGroupValue = value
-                },
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunAdapter",
-                    VariableGroupKey = "Key456",
-                    VariableGroupValue = value
-                },
-                new()
-                {
-                    Project = "Project1",
-                    VariableGroupName = "NeptunApi",
-                    VariableGroupKey = "Key789",
                     VariableGroupValue = value
                 }
         };

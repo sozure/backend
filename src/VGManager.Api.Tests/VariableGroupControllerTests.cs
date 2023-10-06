@@ -8,6 +8,7 @@ using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services;
+using VGManager.Services.VariableGroupServices;
 using ProjectProfile = VGManager.Services.MapperProfiles.ProjectProfile;
 
 namespace VGManager.Api.Tests;
@@ -139,7 +140,7 @@ public class VariableGroupControllerTests
         ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
-        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
+        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(1));
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
     }
 

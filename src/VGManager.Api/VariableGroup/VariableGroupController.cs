@@ -196,7 +196,7 @@ public class VariableGroupController : ControllerBase
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
-        var status = await _vgService.DeleteVariablesAsync(vgServiceModel, cancellationToken);
+        var status = await _vgService.DeleteVariablesAsync(vgServiceModel, false, cancellationToken);
 
         return Ok(status);
     }
@@ -227,7 +227,7 @@ public class VariableGroupController : ControllerBase
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
-        var status = await _vgService.DeleteVariablesAsync(vgServiceModel, cancellationToken);
+        var status = await _vgService.DeleteVariablesAsync(vgServiceModel, true, cancellationToken);
         var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableGroupResponses>(variableGroupResultModel);

@@ -10,7 +10,7 @@ public interface IVariableGroupService
 
     Task<Status> UpdateVariableGroupsAsync(
         VariableGroupUpdateModel variableGroupUpdateModel, 
-        bool filterAsRegex, 
+        bool filterAsRegex,
         CancellationToken cancellationToken = default
         );
 
@@ -21,5 +21,8 @@ public interface IVariableGroupService
 
     Task<Status> AddVariablesAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default);
 
-    Task<Status> DeleteVariablesAsync(VariableGroupModel variableGroupModel, CancellationToken cancellationToken = default);
+    Task<Status> DeleteVariablesAsync(
+        VariableGroupModel variableGroupModel, 
+        bool filterAsRegex, 
+        CancellationToken cancellationToken = default);
 }

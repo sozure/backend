@@ -7,14 +7,18 @@ using VGManager.Services.Models.VariableGroups.Requests;
 namespace VGManager.Services.VariableGroupServices;
 public partial class VariableGroupService
 {
-    public async Task<Status> DeleteVariablesAsync(VariableGroupModel variableGroupModel, CancellationToken cancellationToken = default)
+    public async Task<Status> DeleteVariablesAsync(
+        VariableGroupModel variableGroupModel,
+        bool filterAsRegex,
+        CancellationToken cancellationToken = default
+        )
     {
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
         if (status == Status.Success)
         {
-            var filteredVariableGroups = FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
+            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
             return await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
         }
 

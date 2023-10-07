@@ -1,5 +1,6 @@
 
 using Azure.Security.KeyVault.Secrets;
+using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using VGManager.Api.Secret.Request;
 using VGManager.Api.Secrets.Response;
@@ -48,6 +49,7 @@ public static class TestSampleData
     }
 
     public static VariableGroupUpdateRequest GetVariableUpdateRequest(
+        string variableGroupFilter,
         string organization,
         string pat,
         string project,
@@ -60,7 +62,7 @@ public static class TestSampleData
             Organization = organization,
             PAT = pat,
             Project = project,
-            VariableGroupFilter = "neptun",
+            VariableGroupFilter = variableGroupFilter,
             KeyFilter = "Key123",
             ValueFilter = valueFilter,
             ContainsSecrets = false,
@@ -217,20 +219,20 @@ public static class TestSampleData
         };
     }
 
-    public static VariableGroupResponses GetVariableGroupGetResponses(string key, string value)
+    public static VariableGroupResponses GetVariableGroupGetResponses(string projectName, string key, string value)
     {
         var list = new List<VariableGroupResponse>()
         {
                 new()
                 {
-                    Project = "Project1",
+                    Project = projectName,
                     VariableGroupName = "NeptunAdapter",
                     VariableGroupKey = key,
                     VariableGroupValue = value
                 },
                 new()
                 {
-                    Project = "Project1",
+                    Project = projectName,
                     VariableGroupName = "NeptunApi",
                     VariableGroupKey = key,
                     VariableGroupValue = value
@@ -251,13 +253,13 @@ public static class TestSampleData
         };
     }
 
-    public static VariableGroupResponses GetVariableGroupGetResponses(string value)
+    public static VariableGroupResponses GetVariableGroupGetResponses(string projectName, string value)
     {
         var list = new List<VariableGroupResponse>()
         {
                 new()
                 {
-                    Project = "Project1",
+                    Project = projectName,
                     VariableGroupName = "NeptunAdapter",
                     VariableGroupKey = "Key123",
                     VariableGroupValue = value
@@ -278,27 +280,27 @@ public static class TestSampleData
         };
     }
 
-    public static VariableGroupResponses GetVariableGroupGetResponses()
+    public static VariableGroupResponses GetVariableGroupGetResponses(string projectName)
     {
         var list = new List<VariableGroupResponse>()
         {
             new()
             {
-                Project = "Project1",
+                Project = projectName,
                 VariableGroupName = "NeptunAdapter",
                 VariableGroupKey = "Key123",
                 VariableGroupValue = "Value123"
             },
             new()
             {
-                Project = "Project1",
+                Project = projectName,
                 VariableGroupName = "NeptunAdapter",
                 VariableGroupKey = "Key456",
                 VariableGroupValue = "Value456"
             },
             new()
             {
-                Project = "Project1",
+                Project = projectName,
                 VariableGroupName = "NeptunApi",
                 VariableGroupKey = "Key789",
                 VariableGroupValue = "Value789"
@@ -429,6 +431,25 @@ public static class TestSampleData
         {
             Status = Status.Success,
             DeletedSecrets = Enumerable.Empty<DeletedSecretResponse>()
+        };
+    }
+
+    public static ProjectEntity GetProjectEntity(string firstProjectName, string secondProjectName)
+    {
+        return new ProjectEntity
+        {
+            Status = Status.Success,
+            Projects = new List<TeamProjectReference>
+            {
+                new()
+                {
+                    Name = firstProjectName,
+                },
+                new()
+                {
+                    Name = secondProjectName,
+                }
+            }
         };
     }
 }

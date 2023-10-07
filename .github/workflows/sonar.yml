@@ -38,7 +38,6 @@ jobs:
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
       - name: Install Coverlet MSBuild package
         run: |
-          cd ./src
           dotnet add package coverlet.msbuild
       - name: Build and analyze
         env:

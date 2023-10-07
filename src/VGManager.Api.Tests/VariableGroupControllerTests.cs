@@ -72,8 +72,8 @@ public class VariableGroupControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
-        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
-        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once);
+        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once);
     }
 
     [Test]
@@ -101,8 +101,8 @@ public class VariableGroupControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
-        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
-        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once);
+        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once);
     }
 
     [Test]
@@ -142,9 +142,9 @@ public class VariableGroupControllerTests
         ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
-        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once());
-        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once());
-        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once);
+        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once);
+        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once);
     }
 
     [Test]
@@ -183,7 +183,7 @@ public class VariableGroupControllerTests
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(1));
-        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once);
     }
 
     [Test]
@@ -236,9 +236,9 @@ public class VariableGroupControllerTests
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(4));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
-        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once());
-        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once());
-        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once);
+        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once);
+        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once);
     }
 
     [Test]
@@ -271,9 +271,9 @@ public class VariableGroupControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((Status)((OkObjectResult)result.Result!).Value!).Should().Be(statusResult);
 
-        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once);
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(1));
-        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once);
     }
 
     [Test]
@@ -313,7 +313,7 @@ public class VariableGroupControllerTests
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
-        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once);
     }
 
     [Test]
@@ -366,9 +366,9 @@ public class VariableGroupControllerTests
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(4));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(4));
-        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once());
-        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once());
-        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once);
+        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once);
+        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once);
     }
 
     [Test]
@@ -407,7 +407,7 @@ public class VariableGroupControllerTests
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
-        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once);
     }
 
     [Test]
@@ -455,9 +455,9 @@ public class VariableGroupControllerTests
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(4));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(4));
-        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once());
-        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once());
-        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once);
+        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once);
+        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once);
     }
 
     [Test]
@@ -493,8 +493,8 @@ public class VariableGroupControllerTests
         result.Result.Should().BeOfType<OkObjectResult>();
         ((Status)((OkObjectResult)result.Result!).Value!).Should().Be(statusResult);
 
-        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
-        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Once());
-        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once);
+        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Once);
+        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once);
     }
 }

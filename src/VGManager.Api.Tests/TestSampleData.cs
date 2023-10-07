@@ -11,21 +11,6 @@ using VGManager.AzureAdapter.Entities;
 namespace VGManager.Api.Tests;
 public static class TestSampleData
 {
-    public static VariableGroupRequest GetVariableGetRequest(string organization, string pat, string project, string keyFilter)
-    {
-        return new VariableGroupRequest
-        {
-            Organization = organization,
-            PAT = pat,
-            Project = project,
-            VariableGroupFilter = "neptun",
-            KeyFilter = keyFilter,
-            ValueFilter = null!,
-            KeyIsRegex = true,
-            ContainsSecrets = false
-        };
-    }
-
     public static VariableGroupAddRequest GetVariableAddRequest(
         string organization,
         string pat,
@@ -339,6 +324,19 @@ public static class TestSampleData
             TenantId = tenantId,
             ClientId = clientId,
             ClientSecret = clientSecret
+        };
+    }
+
+    public static SecretCopyRequest GetRequest(string fromKeyVault, string toKeyVault, string tenantId, string clientId, string clientSecret, bool overrideSecret)
+    {
+        return new SecretCopyRequest
+        {
+            TenantId = tenantId,
+            ClientId = clientId,
+            ClientSecret = clientSecret,
+            FromKeyVault = fromKeyVault,
+            ToKeyVault = toKeyVault,
+            overrideSecret = overrideSecret
         };
     }
 

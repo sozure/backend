@@ -1,4 +1,5 @@
 using AutoMapper;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using VGManager.Api.Controllers;
@@ -126,5 +127,128 @@ public class SecretControllerTests
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetSecretsAsync(default), Times.Exactly(2));
         _adapter.Verify(x => x.DeleteSecretAsync(It.IsAny<string>(), default), Times.Exactly(3));
+    }
+
+    [Test]
+    public async Task DeleteInlineAsync_Works_well()
+    {
+        // Arrange
+        var keyVaultName = "KeyVaultName1";
+        var tenantId = "tenantId1";
+        var clientId = "clientId1";
+        var clientSecret = "clientSecret1";
+        var secretFilter = "SecretFilter";
+        var request = TestSampleData.GetRequest(keyVaultName, secretFilter, tenantId, clientId, clientSecret);
+        var status = Status.Success;
+
+        var secretsEntity1 = TestSampleData.GetSecretsEntity();
+        var secretsEntity2 = TestSampleData.GetEmptySecretsEntity();
+
+        _adapter.SetupSequence(x => x.GetSecretsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(secretsEntity1)
+            .ReturnsAsync(secretsEntity2);
+
+        _adapter.Setup(x => x.DeleteSecretAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Status.Success);
+        _adapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        // Act
+        var result = await _controller.DeleteInlineAsync(request, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((Status)((OkObjectResult)result.Result!).Value!).Should().Be(status);
+
+        _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
+        _adapter.Verify(x => x.GetSecretsAsync(default), Times.Once);
+        _adapter.Verify(x => x.DeleteSecretAsync(It.IsAny<string>(), default), Times.Exactly(3));
+    }
+
+    [Test]
+    public void RecoverAsync_Works_well()
+    {
+        // Arrange
+        var keyVaultName = "KeyVaultName1";
+        var tenantId = "tenantId1";
+        var clientId = "clientId1";
+        var clientSecret = "clientSecret1";
+        var secretFilter = "DeletedSecretFilter";
+        var request = TestSampleData.GetRequest(keyVaultName, secretFilter, tenantId, clientId, clientSecret);
+
+        var secretsEntity = TestSampleData.GetEmptyDeletedSecretsEntity();
+        var secretsGetResponse = TestSampleData.GetEmptySecretsGetResponse1();
+
+        _adapter.SetupSequence(x => x.GetDeletedSecrets(It.IsAny<CancellationToken>()))
+            .Returns(secretsEntity)
+            .Returns(secretsEntity);
+        _adapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        // Act
+        var result = _controller.RecoverAsync(request, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Result.Should().BeOfType<OkObjectResult>();
+        ((DeletedSecretResponses)((OkObjectResult)result.Result!.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
+
+        _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
+        _adapter.Verify(x => x.GetDeletedSecrets(default), Times.Exactly(2));
+    }
+
+    [Test]
+    public void RecoverInlineAsync_Works_well()
+    {
+        // Arrange
+        var keyVaultName = "KeyVaultName1";
+        var tenantId = "tenantId1";
+        var clientId = "clientId1";
+        var clientSecret = "clientSecret1";
+        var secretFilter = "DeletedSecretFilter";
+        var request = TestSampleData.GetRequest(keyVaultName, secretFilter, tenantId, clientId, clientSecret);
+        var secretsEntity = TestSampleData.GetEmptyDeletedSecretsEntity();
+
+        _adapter.SetupSequence(x => x.GetDeletedSecrets(It.IsAny<CancellationToken>()))
+            .Returns(secretsEntity);
+        _adapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        // Act
+        var result = _controller.RecoverInlineAsync(request, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Result.Should().BeOfType<OkObjectResult>();
+        ((Status)((OkObjectResult)result.Result!.Result!).Value!).Should().Be(Status.Success);
+
+        _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
+        _adapter.Verify(x => x.GetDeletedSecrets(default), Times.Once);
+    }
+
+    [Test]
+    public async Task CopyAsync_Works_well()
+    {
+        // Arrange
+        var fromKeyVault = "KeyVaultName1";
+        var tenantId = "tenantId1";
+        var clientId = "clientId1";
+        var clientSecret = "clientSecret1";
+        var ToKeyVault = "ToKeyVault";
+        var request = TestSampleData.GetRequest(fromKeyVault, ToKeyVault, tenantId, clientId, clientSecret, true);
+
+        _adapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        _adapter.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>())).ReturnsAsync(Enumerable.Empty<KeyVaultSecret>);
+
+        // Act
+        var result = await _controller.CopyAsync(request, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((Status)((OkObjectResult)result.Result!).Value!).Should().Be(Status.Success);
+
+        _adapter.Verify(x => x.Setup(fromKeyVault, tenantId, clientId, clientSecret), Times.Once);
+        _adapter.Verify(x => x.Setup(ToKeyVault, tenantId, clientId, clientSecret), Times.Once);
+        _adapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
+
     }
 }

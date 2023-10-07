@@ -46,6 +46,8 @@ public class ProjectControllerTests
         var organization = "Organization1";
         var url = $"https://dev.azure.com/{organization}";
         var pat = "WtxMFit1uz1k64u527mB";
+        var firstProjectName = "Project1";
+        var secondProjectName = "Project2";
 
         var request = new ProjectRequest
         {
@@ -53,21 +55,7 @@ public class ProjectControllerTests
             PAT = pat
         };
 
-        var projectEntity = new ProjectEntity
-        {
-            Status = Status.Success,
-            Projects = new List<TeamProjectReference>()
-            {
-                new TeamProjectReference()
-                {
-                    Name = "Project1"
-                },
-                new TeamProjectReference()
-                {
-                    Name = "Project2"
-                }
-            }
-        };
+        var projectEntity = TestSampleData.GetProjectEntity(firstProjectName, secondProjectName);
 
         var projectsResponse = new ProjectsResponse
         {

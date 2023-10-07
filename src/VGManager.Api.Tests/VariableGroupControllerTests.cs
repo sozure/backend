@@ -58,7 +58,7 @@ public class VariableGroupControllerTests
         var variableRequest = TestSampleData.GetVariableRequest(organization, pat, project, "key", valueFilter);
 
         var variableGroupEntity = TestSampleData.GetVariableGroupEntity();
-        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses();
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(project);
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
         _variableGroupAdapter.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
@@ -87,7 +87,7 @@ public class VariableGroupControllerTests
         var variableRequest = TestSampleData.GetVariableRequest(organization, pat, project);
 
         var variableGroupEntity = TestSampleData.GetVariableGroupEntity();
-        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses();
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(project);
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
         _variableGroupAdapter.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
@@ -106,6 +106,48 @@ public class VariableGroupControllerTests
     }
 
     [Test]
+    public async Task GetAsync__All_works_well_1()
+    {
+        // Arrange
+        var organization = "Organization1";
+        var pat = "WtxMFit1uz1k64u527mB";
+        var project = "All";
+        var valueFilter = "value";
+        var firstProjectName = "Project1";
+        var secondProjectName = "Project2";
+        var variableRequest = TestSampleData.GetVariableRequest(organization, pat, project, "key", valueFilter);
+
+        var projectEntity = TestSampleData.GetProjectEntity(firstProjectName, secondProjectName);
+
+        var variableGroupEntity = TestSampleData.GetVariableGroupEntity();
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(firstProjectName);
+        var variableGroupResponse2 = TestSampleData.GetVariableGroupGetResponses(secondProjectName);
+
+        variableGroupResponse.VariableGroups.AddRange(variableGroupResponse2.VariableGroups);
+
+        _projectAdapter.Setup(x => x.GetProjectsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(projectEntity);
+
+        _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        _variableGroupAdapter.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(variableGroupEntity);
+
+        // Act
+        var result = await _controller.GetAsync(variableRequest, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
+        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once());
+        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once());
+    }
+
+    [Test]
     public async Task UpdateAsync_Works_well()
     {
         // Arrange
@@ -116,11 +158,11 @@ public class VariableGroupControllerTests
         var newValue = "newValue";
         var statusResult = Status.Success;
 
-        var variableRequest = TestSampleData.GetVariableUpdateRequest(organization, pat, project, valueFilter, newValue);
+        var variableRequest = TestSampleData.GetVariableUpdateRequest("neptun", organization, pat, project, valueFilter, newValue);
 
         var variableGroupEntity1 = TestSampleData.GetVariableGroupEntity();
         var variableGroupEntity2 = TestSampleData.GetVariableGroupEntity(newValue);
-        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(newValue);
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(project, newValue);
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
@@ -145,6 +187,96 @@ public class VariableGroupControllerTests
     }
 
     [Test]
+    public async Task UpdateAsync_All_works_well()
+    {
+        // Arrange
+        var organization = "Organization1";
+        var pat = "WtxMFit1uz1k64u527mB";
+        var project = "All";
+        string valueFilter = null!;
+        var newValue = "newValue";
+        var statusResult = Status.Success;
+        var firstProjectName = "Project1";
+        var secondProjectName = "Project2";
+
+        var variableRequest = TestSampleData.GetVariableUpdateRequest("neptun", organization, pat, project, valueFilter, newValue);
+        var projectEntity = TestSampleData.GetProjectEntity(firstProjectName, secondProjectName);
+
+        var variableGroupEntity1 = TestSampleData.GetVariableGroupEntity();
+        var variableGroupEntity2 = TestSampleData.GetVariableGroupEntity(newValue);
+        var variableGroupEntity3 = TestSampleData.GetVariableGroupEntity();
+        var variableGroupEntity4 = TestSampleData.GetVariableGroupEntity(newValue);
+
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(firstProjectName, newValue);
+        var variableGroupResponse2 = TestSampleData.GetVariableGroupGetResponses(secondProjectName, newValue);
+
+        variableGroupResponse.VariableGroups.AddRange(variableGroupResponse2.VariableGroups);
+
+        _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        _projectAdapter.Setup(x => x.GetProjectsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(projectEntity);
+
+        _variableGroupAdapter.Setup(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(statusResult);
+
+        _variableGroupAdapter.SetupSequence(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(variableGroupEntity1)
+            .ReturnsAsync(variableGroupEntity2)
+            .ReturnsAsync(variableGroupEntity3)
+            .ReturnsAsync(variableGroupEntity4);
+
+        // Act
+        var result = await _controller.UpdateAsync(variableRequest, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(4));
+        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
+        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once());
+        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once());
+    }
+
+    [Test]
+    public async Task UpdateInlineAsync_Works_well()
+    {
+        // Arrange
+        var organization = "Organization1";
+        var pat = "WtxMFit1uz1k64u527mB";
+        var project = "Project1";
+        string valueFilter = null!;
+        var newValue = "newValue";
+        var statusResult = Status.Success;
+
+        var variableRequest = TestSampleData.GetVariableUpdateRequest("neptunadapter", organization, pat, project, valueFilter, newValue);
+        var variableGroupEntity = TestSampleData.GetVariableGroupEntity();
+
+        _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        _variableGroupAdapter.Setup(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(statusResult);
+
+        _variableGroupAdapter.SetupSequence(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(variableGroupEntity);
+
+        // Act
+        var result = await _controller.UpdateInlineAsync(variableRequest, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((Status)((OkObjectResult)result.Result!).Value!).Should().Be(statusResult);
+
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
+        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(1));
+        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
+    }
+
+    [Test]
     public async Task AddAsync_Works_well()
     {
         // Arrange
@@ -160,7 +292,7 @@ public class VariableGroupControllerTests
 
         var variableGroupEntity1 = TestSampleData.GetVariableGroupEntity();
         var variableGroupEntity2 = TestSampleData.GetVariableGroupEntity(newKey, newValue);
-        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(newKey, newValue);
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(project, newKey, newValue);
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
@@ -182,6 +314,61 @@ public class VariableGroupControllerTests
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
+    }
+
+    [Test]
+    public async Task AddAsync_All_works_well()
+    {
+        // Arrange
+        var organization = "Organization1";
+        var pat = "WtxMFit1uz1k64u527mB";
+        var project = "All";
+        string valueFilter = null!;
+        var newKey = "Test1";
+        var newValue = "Test1";
+        var statusResult = Status.Success;
+        var firstProjectName = "Project1";
+        var secondProjectName = "Project2";
+
+        var variableRequest = TestSampleData.GetVariableAddRequest(organization, pat, project, valueFilter, newKey, newValue);
+        var projectEntity = TestSampleData.GetProjectEntity(firstProjectName, secondProjectName);
+
+        var variableGroupEntity1 = TestSampleData.GetVariableGroupEntity();
+        var variableGroupEntity2 = TestSampleData.GetVariableGroupEntity(newKey, newValue);
+        var variableGroupEntity3 = TestSampleData.GetVariableGroupEntity();
+        var variableGroupEntity4 = TestSampleData.GetVariableGroupEntity(newKey, newValue);
+        var variableGroupResponse1 = TestSampleData.GetVariableGroupGetResponses(firstProjectName, newKey, newValue);
+        var variableGroupResponse2 = TestSampleData.GetVariableGroupGetResponses(secondProjectName, newKey, newValue);
+
+        variableGroupResponse1.VariableGroups.AddRange(variableGroupResponse2.VariableGroups);
+
+        _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        _projectAdapter.Setup(x => x.GetProjectsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(projectEntity);
+
+        _variableGroupAdapter.Setup(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(statusResult);
+
+        _variableGroupAdapter.SetupSequence(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(variableGroupEntity1)
+            .ReturnsAsync(variableGroupEntity2)
+            .ReturnsAsync(variableGroupEntity3)
+            .ReturnsAsync(variableGroupEntity4);
+
+        // Act
+        var result = await _controller.AddAsync(variableRequest, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse1);
+
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(4));
+        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(4));
+        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once());
+        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once());
     }
 
     [Test]
@@ -220,6 +407,94 @@ public class VariableGroupControllerTests
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
+        _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
+    }
+
+    [Test]
+    public async Task DeleteAsync_All_works_well()
+    {
+        // Arrange
+        var organization = "Organization1";
+        var pat = "WtxMFit1uz1k64u527mB";
+        var project = "All";
+        var keyFilter = "Test1";
+        var entityValue = "Value1";
+        var statusResult = Status.Success;
+        var firstProjectName = "Project1";
+        var secondProjectName = "Project2";
+
+        var variableRequest = TestSampleData.GetVariableRequest(organization, pat, project, keyFilter, null!);
+        var projectEntity = TestSampleData.GetProjectEntity(firstProjectName, secondProjectName);
+        var variableGroupEntity1 = TestSampleData.GetVariableGroupEntity(keyFilter, entityValue);
+        var variableGroupEntity2 = TestSampleData.GetVariableGroupEntityAfterDelete();
+        var variableGroupEntity3 = TestSampleData.GetVariableGroupEntity(keyFilter, entityValue);
+        var variableGroupEntity4 = TestSampleData.GetVariableGroupEntityAfterDelete();
+        var variableGroupResponse = TestSampleData.GetVariableGroupGetResponsesAfterDelete();
+
+        _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        _variableGroupAdapter.Setup(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(statusResult);
+
+        _projectAdapter.Setup(x => x.GetProjectsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(projectEntity);
+
+        _variableGroupAdapter.SetupSequence(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(variableGroupEntity1)
+            .ReturnsAsync(variableGroupEntity2)
+            .ReturnsAsync(variableGroupEntity3)
+            .ReturnsAsync(variableGroupEntity4);
+
+        // Act
+        var result = await _controller.DeleteAsync(variableRequest, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(4));
+        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(4));
+        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once());
+        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once());
+        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once());
+    }
+
+    [Test]
+    public async Task DeleteInlineAsync_Works_well()
+    {
+        // Arrange
+        var organization = "Organization1";
+        var pat = "WtxMFit1uz1k64u527mB";
+        var project = "Project1";
+        var keyFilter = "Test1";
+        var entityValue = "Value1";
+        var statusResult = Status.Success;
+
+        var variableRequest = TestSampleData.GetVariableRequest(organization, pat, project, keyFilter, null!);
+
+        variableRequest.VariableGroupFilter = "NeptunAdapter";
+
+        var variableGroupEntity1 = TestSampleData.GetVariableGroupEntity(keyFilter, entityValue);
+
+        _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        _variableGroupAdapter.Setup(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(statusResult);
+
+        _variableGroupAdapter.SetupSequence(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(variableGroupEntity1);
+
+        // Act
+        var result = await _controller.DeleteInlineAsync(variableRequest, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((Status)((OkObjectResult)result.Result!).Value!).Should().Be(statusResult);
+
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once());
+        _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Once());
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once());
     }
 }

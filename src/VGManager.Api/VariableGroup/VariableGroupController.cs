@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
@@ -40,29 +41,7 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        VariableGroupResponses? result;
-        if (request.Project == "All")
-        {
-            result = GetEmptyVariableGroupGetResponses();
-            var projectResponse = await GetProjectsAsync(request, cancellationToken);
-
-            foreach (var project in projectResponse.Projects)
-            {
-                request.Project = project.Name;
-                var subResult = await GetResultAsync(request, cancellationToken);
-                result.VariableGroups.AddRange(subResult.VariableGroups);
-
-                if (subResult.Status != Status.Success)
-                {
-                    result.Status = subResult.Status;
-                }
-            }
-        }
-        else
-        {
-            result = await GetResultAsync(request, cancellationToken);
-        }
-        return Ok(result);
+        return await GetResponse(request, "Get", cancellationToken);
     }
 
     [HttpPost("Update", Name = "UpdateVariables")]
@@ -74,29 +53,7 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        VariableGroupResponses? result;
-        if (request.Project == "All")
-        {
-            result = GetEmptyVariableGroupGetResponses();
-            var projectResponse = await GetProjectsAsync(request, cancellationToken);
-
-            foreach (var project in projectResponse.Projects)
-            {
-                request.Project = project.Name;
-                var subResult = await GetResultAsync(request, cancellationToken);
-                result.VariableGroups.AddRange(subResult.VariableGroups);
-
-                if (subResult.Status != Status.Success)
-                {
-                    result.Status = subResult.Status;
-                }
-            }
-        }
-        else
-        {
-            result = await GetResultAsync(request, cancellationToken);
-        }
-        return Ok(result);
+        return await GetResponse(request, "Update", cancellationToken);
     }
 
     [HttpPost("UpdateInline", Name = "UpdateVariableInline")]
@@ -125,6 +82,15 @@ public class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
+        return await GetResponse(request, "Add", cancellationToken);
+    }
+
+    private async Task<ActionResult<VariableGroupResponses>> GetResponse(
+        VariableGroupRequest request, 
+        string operation, 
+        CancellationToken cancellationToken
+        )
+    {
         VariableGroupResponses? result;
         if (request.Project == "All")
         {
@@ -134,7 +100,22 @@ public class VariableGroupController : ControllerBase
             foreach (var project in projectResponse.Projects)
             {
                 request.Project = project.Name;
-                var subResult = await GetResultAsync(request, cancellationToken);
+                VariableGroupResponses subResult;
+                switch (operation)
+                {
+                    case "Add":
+                        subResult = await GetResultAsync((VariableGroupAddRequest) request, cancellationToken);
+                        break;
+                    case "Get":
+                        subResult = await GetResultAsync(request, cancellationToken);
+                        break;
+                    case "Update":
+                        subResult = await GetResultAsync((VariableGroupUpdateRequest)request, cancellationToken);
+                        break;
+                    default:
+                        throw new InvalidOperationException();
+                }
+
                 result.VariableGroups.AddRange(subResult.VariableGroups);
 
                 if (subResult.Status != Status.Success)

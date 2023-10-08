@@ -1,8 +1,6 @@
 name: SonarCloud
 on:
   push:
-    branches:
-      - '*'
 
 jobs:
   build:
@@ -38,7 +36,7 @@ jobs:
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
       - name: Install Coverlet MSBuild package
         run: |
-          dotnet add package coverlet.msbuild
+          dotnet add ./src/VGManager.Api.csproj package coverlet.msbuild
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -45,6 +45,13 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"BoczV_vgmanager_backend" /o:"boczv" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build ./src
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet sonarscanner begin /k:"BoczV_vgmanager_backend"
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+            /d:sonar.cs.opencover.reportsPaths=coverage.xml
+          dotnet build --no-incremental ./src
+          coverlet .\CovExample.Tests\bin\Debug\net6.0\CovExample.Tests.dll
+            --target "dotnet" 
+            --targetargs "test --no-build"
+            -f=opencover 
+            -o="coverage.xml"
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

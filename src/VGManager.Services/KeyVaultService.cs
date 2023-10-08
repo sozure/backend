@@ -149,7 +149,7 @@ public class KeyVaultService : IKeyVaultService
         Regex regex;
         try
         {
-            regex = new Regex(filter.ToLower());
+            regex = new Regex(filter.ToLower(), RegexOptions.None, TimeSpan.FromMilliseconds(5));
         }
         catch (RegexParseException ex)
         {
@@ -164,7 +164,7 @@ public class KeyVaultService : IKeyVaultService
         Regex regex;
         try
         {
-            regex = new Regex(filter.ToLower());
+            regex = new Regex(filter.ToLower(), RegexOptions.None, TimeSpan.FromMilliseconds(5));
         }
         catch (RegexParseException ex)
         {

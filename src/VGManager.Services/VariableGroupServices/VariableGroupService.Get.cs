@@ -49,7 +49,7 @@ public partial class VariableGroupService
         {
             try
             {
-                valueRegex = new Regex(valueFilter.ToLower());
+                valueRegex = new Regex(valueFilter.ToLower(), RegexOptions.None, TimeSpan.FromMilliseconds(5));
             }
             catch (RegexParseException ex)
             {
@@ -67,7 +67,7 @@ public partial class VariableGroupService
             Regex keyRegex;
             try
             {
-                keyRegex = new Regex(keyFilter.ToLower());
+                keyRegex = new Regex(keyFilter.ToLower(), RegexOptions.None, TimeSpan.FromMilliseconds(5));
             }
             catch (RegexParseException ex)
             {

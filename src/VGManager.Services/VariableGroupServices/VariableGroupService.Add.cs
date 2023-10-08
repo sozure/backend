@@ -33,7 +33,7 @@ public partial class VariableGroupService
         {
             try
             {
-                var regex = new Regex(keyFilter.ToLower());
+                var regex = new Regex(keyFilter.ToLower(), RegexOptions.None, TimeSpan.FromMilliseconds(5));
 
                 filteredVariableGroups = FilterWithoutSecrets(true, variableGroupFilter, vgEntity.VariableGroups)
                 .Select(vg => vg)

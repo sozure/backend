@@ -28,7 +28,7 @@ public partial class VariableGroupService
             {
                 try
                 {
-                    valueRegex = new Regex(valueFilter.ToLower());
+                    valueRegex = new Regex(valueFilter.ToLower(), RegexOptions.None, TimeSpan.FromMilliseconds(5));
                 }
                 catch (RegexParseException ex)
                 {

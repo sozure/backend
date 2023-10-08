@@ -109,12 +109,12 @@ public class VariableGroupAdapter : IVariableGroupAdapter
         }
         catch (ArgumentException ex)
         {
-            _logger.LogError(ex, $"An item with the same key has already been added to {variableGroupName}.");
+            _logger.LogError(ex, "An item with the same key has already been added to {variableGroupName}.", variableGroupName);
             return Status.AlreadyContains;
         }
         catch (TeamFoundationServerInvalidRequestException ex)
         {
-            _logger.LogError(ex, $"Wasn't added to {variableGroupName} because of TeamFoundationServerInvalidRequestException.");
+            _logger.LogError(ex, "Wasn't added to {variableGroupName} because of TeamFoundationServerInvalidRequestException.", variableGroupName);
             return Status.Unknown;
         }
         catch (Exception ex)

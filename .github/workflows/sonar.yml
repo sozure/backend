@@ -3,8 +3,9 @@ on:
   push:
 
 jobs:
-  validate-changes:
-    runs-on: ubuntu-latest
+  build:
+    name: Build and analyze
+    runs-on: windows-latest
     steps:
       - name: Set up JDK 17
         uses: actions/setup-java@v3

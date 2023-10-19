@@ -16,8 +16,9 @@ jobs:
         with:
           dotnet-version: '6.0.x'
 
-      - name: Sonarqube Begin
+      - name: Sonarqube
         run: | 
+          dotnet tool install --global dotnet-sonarscanner
           dotnet sonarscanner begin /k:"boczv"
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
             /d:sonar.cs.opencover.reportsPaths=coverage.xml

@@ -22,6 +22,7 @@ jobs:
           dotnet sonarscanner begin /k:"boczv"
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
             /d:sonar.cs.opencover.reportsPaths=coverage.xml
+          echo "Hello world"
           dotnet build --no-incremental
           coverlet .\CovExample.Tests\bin\Debug\net6.0\CovExample.Tests.dll
             --target "dotnet" 

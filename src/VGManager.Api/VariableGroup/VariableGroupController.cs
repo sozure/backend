@@ -11,7 +11,6 @@ using VGManager.Services.Models.VariableGroups.Requests;
 
 namespace VGManager.Api.Controllers;
 
-[ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]

@@ -10,7 +10,6 @@ using VGManager.Services.Models.Secrets.Requests;
 
 namespace VGManager.Api.Controllers;
 
-[ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]

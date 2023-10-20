@@ -218,21 +218,12 @@ public class KeyVaultService : IKeyVaultService
 
     private static IEnumerable<SecretEntity> CollectSecrets(SecretsEntity? secretsResultModel)
     {
-        var result = new List<SecretEntity>();
         if (secretsResultModel is null)
         {
             return Enumerable.Empty<SecretEntity>();
         }
 
-        foreach (var secret in secretsResultModel.Secrets)
-        {
-            if (secret is not null)
-            {
-                result.Add(secret);
-            }
-        }
-
-        return result;
+        return secretsResultModel.Secrets.Where(secret => secret != null);
     }
 
     private void CollectSecrets(List<SecretResult> secretList, SecretEntity? filteredSecret)

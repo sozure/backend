@@ -7,7 +7,6 @@ using VGManager.Services.Models.Projects;
 
 namespace VGManager.Api.Projects;
 
-[ApiVersion("1.0")]
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]

@@ -102,7 +102,8 @@ public class KeyVaultAdapter : IKeyVaultAdapter
                 var secretValue = parameters["secretValue"];
                 var newSecret = new KeyVaultSecret(secretName, secretValue);
                 await _secretClient.SetSecretAsync(newSecret, cancellationToken);
-            } else
+            }
+            else
             {
                 _logger.LogDebug("Recover deleted secret: {secretName} in {keyVault}.", secretName, _keyVaultName);
                 await _secretClient.StartRecoverDeletedSecretAsync(secretName, cancellationToken);

@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.TeamFoundation.Core.WebApi;
 using VGManager.Api.Projects;
 using VGManager.Api.Projects.Responses;
 using VGManager.AzureAdapter.Entities;

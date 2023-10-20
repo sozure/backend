@@ -91,27 +91,22 @@ public class KeyVaultAdapter : IKeyVaultAdapter
     {
         try
         {
-            var didWeRecover = false;
-            var secretName = parameters["secretName"];
-            var secretValue = parameters["secretValue"];
-            var newSecret = new KeyVaultSecret(secretName, secretValue);
             _logger.LogInformation("Get deleted secrets from {keyVault}.", _keyVaultName);
+            var secretName = parameters["secretName"];
             var deletedSecrets = _secretClient.GetDeletedSecrets(cancellationToken).ToList();
-
-            foreach (var deletedSecret in deletedSecrets)
-            {
-                if (deletedSecret.Name.Equals(secretName))
-                {
-                    _logger.LogDebug("Recover deleted secret: {secretName} in {keyVault}.", secretName, _keyVaultName);
-                    await _secretClient.StartRecoverDeletedSecretAsync(secretName, cancellationToken);
-                    didWeRecover = true;
-                }
-            }
+            var didWeRecover = deletedSecrets.Exists(deletedSecret => deletedSecret.Name.Equals(secretName));
 
             if (!didWeRecover)
             {
                 _logger.LogDebug("Set secret: {secretName} in {keyVault}.", secretName, _keyVaultName);
+                var secretValue = parameters["secretValue"];
+                var newSecret = new KeyVaultSecret(secretName, secretValue);
                 await _secretClient.SetSecretAsync(newSecret, cancellationToken);
+            }
+            else
+            {
+                _logger.LogDebug("Recover deleted secret: {secretName} in {keyVault}.", secretName, _keyVaultName);
+                await _secretClient.StartRecoverDeletedSecretAsync(secretName, cancellationToken);
             }
 
             return Status.Success;
@@ -188,7 +183,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         };
     }
 
-    private static SecretsEntity GetSecretsResult(IEnumerable<SecretEntity?> secrets)
+    private static SecretsEntity GetSecretsResult(IEnumerable<SecretEntity> secrets)
     {
         return new()
         {

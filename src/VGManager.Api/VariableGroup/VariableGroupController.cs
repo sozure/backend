@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
@@ -149,8 +148,6 @@ public class VariableGroupController : ControllerBase
         }
         return Ok(result);
     }
-
-    
 
     [HttpPost("Delete", Name = "DeleteVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]

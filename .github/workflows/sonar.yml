@@ -42,13 +42,10 @@ jobs:
       - name: Sonarqube
         working-directory: ./src
         run: | 
-          dotnet sonarscanner begin /k:"boczv" /o:"bocz_viktor" `
-              /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
-              /d:sonar.cs.opencover.reportsPaths=coverage.xml
-          dotnet build --no-incremental
-          coverlet .\CovExample.Tests\bin\Debug\net6.0\CovExample.Tests.dll `
-              --target "dotnet" `
-              --targetargs "test --no-build" `
-              -f=opencover `
-              -o="coverage.xml"
-          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet tool install --global dotnet-sonarscanner --version 5.2.0
+          dotnet tool update dotnet-reportgenerator-globaltool -g --version 4.8.7
+          dotnet sonarscanner begin /k:"boczv" /d:sonar.host.url="http://localhost:9000"  /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.coverageReportPaths=".\sonarqubecoverage\SonarQube.xml"
+          dotnet build
+          dotnet test --no-build --collect:"XPlat Code Coverage"
+          reportgenerator "-reports:*\TestResults\*\coverage.cobertura.xml" "-targetdir:sonarqubecoverage" "-reporttypes:SonarQube"
+          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"

@@ -40,6 +40,7 @@ jobs:
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
 
       - name: Install Sonarqube-related dependencies
+        working-directory: ./src
         run: |
           dotnet tool update dotnet-reportgenerator-globaltool -g
 

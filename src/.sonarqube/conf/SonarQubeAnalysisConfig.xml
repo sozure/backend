@@ -1,0 +1,11 @@
+<SonarQubeAnalysisConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SonarQubeHostUrl>https://sonarcloud.io</SonarQubeHostUrl>
+  <ProjectKey>boczv</ProjectKey>
+  <ProjectName>bocz_viktor</ProjectName>
+  <ProjectVersion>1.0</ProjectVersion>
+  <Organization>bocz_viktor</Organization>
+  <AdditionalSettings>
+    <Property Name="sonar.exclusions">**/*.bin</Property>
+    <Property Name="sonar.test.inclusions">**/*.Tests.cs</Property>
+  </AdditionalSettings>
+</SonarQubeAnalysisConfig>

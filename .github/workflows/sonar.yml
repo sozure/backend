@@ -39,11 +39,13 @@ jobs:
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
 
+      - name: Install Sonarqube-related dependencies
+        run: |
+          dotnet tool update dotnet-reportgenerator-globaltool -g
+
       - name: Sonarqube
         working-directory: ./src
         run: | 
-          dotnet tool install --global dotnet-sonarscanner
-          dotnet tool update dotnet-reportgenerator-globaltool -g
           dotnet sonarscanner begin /k:"BoczV_vgmanager_backend" /o:"boczv" /d:sonar.host.url="https://sonarcloud.io"  /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.coverageReportPaths=".\sonarqubecoverage\SonarQube.xml"
           dotnet build
           dotnet test --no-build --collect:"XPlat Code Coverage"

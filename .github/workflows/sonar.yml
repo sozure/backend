@@ -44,7 +44,7 @@ jobs:
         run: | 
           dotnet tool install --global dotnet-sonarscanner
           dotnet tool update dotnet-reportgenerator-globaltool -g
-          dotnet sonarscanner begin /k:"boczv" /d:sonar.host.url="http://localhost:9000"  /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.coverageReportPaths=".\sonarqubecoverage\SonarQube.xml"
+          dotnet sonarscanner begin /k:"boczv" /d:sonar.host.url="https://sonarcloud.io"  /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.coverageReportPaths=".\sonarqubecoverage\SonarQube.xml"
           dotnet build
           dotnet test --no-build --collect:"XPlat Code Coverage"
           reportgenerator "-reports:*\TestResults\*\coverage.cobertura.xml" "-targetdir:sonarqubecoverage" "-reporttypes:SonarQube"

@@ -91,23 +91,30 @@ public partial class VariableGroupService
 
         foreach (var filteredVariable in filteredVariables)
         {
-            var variableValue = filteredVariable.Value.Value;
-
-            if (regex is not null)
-            {
-                if (regex.IsMatch(variableValue.ToLower()))
-                {
-                    filteredVariable.Value.Value = newValue;
-                    updateIsNeeded = true;
-                }
-            }
-            else
-            {
-                filteredVariable.Value.Value = newValue;
-                updateIsNeeded = true;
-            }
+            updateIsNeeded = IsUpdateNeeded(filteredVariable, regex, newValue);
         }
 
         return updateIsNeeded;
+    }
+
+    private static bool IsUpdateNeeded(KeyValuePair<string, VariableValue> filteredVariable, Regex? regex, string newValue)
+    {
+        var variableValue = filteredVariable.Value.Value;
+
+        if (regex is not null)
+        {
+            if (regex.IsMatch(variableValue.ToLower()))
+            {
+                filteredVariable.Value.Value = newValue;
+                return true;
+            }
+        }
+        else
+        {
+            filteredVariable.Value.Value = newValue;
+            return true;
+        }
+
+        return false;
     }
 }

@@ -15,4 +15,10 @@
         <ProjectReference Include="..\VGManager.Services\VGManager.Services.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <SonarQubeSetting Include="sonar.coverage.exclusions">
+            <Value>**/Program.cs</Value>
+        </SonarQubeSetting>
+    </ItemGroup>
+
 </Project>

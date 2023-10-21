@@ -25,7 +25,7 @@
 
     <ItemGroup>
         <SonarQubeSetting Include="sonar.coverage.exclusions">
-            <Value>**/*Adapter.cs</Value>
+            <Value>**/KeyVaultAdapter.cs,**/ProjectAdapter.cs,**/VariableGroupAdapter.cs</Value>
         </SonarQubeSetting>
     </ItemGroup>
 

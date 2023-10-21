@@ -1,3 +1,4 @@
+using Azure.Identity;
 using Microsoft.Extensions.Logging;
 using VGManager.AzureAdapter.Interfaces;
 
@@ -19,7 +20,7 @@ public class KeyVaultAdapterTests
     public async Task GetSecretAsync_Unknown_error()
     {
         // Arrange
-        var keyVaultName = "Lorem";
+        var keyVaultName = "KeyVault-BKV";
         var tenantId = "Ipsum";
         var clientId = "Novum";
         var clientSecret = "Lirum";
@@ -29,6 +30,6 @@ public class KeyVaultAdapterTests
         var call = () => _vaultAdapter.GetAllAsync(default);
 
         // Assert
-        await call.Should().ThrowAsync<AggregateException>();
+        await call.Should().ThrowAsync<AuthenticationFailedException>();
     }
 }

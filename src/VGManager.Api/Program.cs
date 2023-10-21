@@ -29,14 +29,22 @@ builder.Services.AddScoped<IVariableGroupAdapter, VariableGroupAdapter>();
 builder.Services.AddScoped<IProjectAdapter, ProjectAdapter>();
 builder.Services.AddScoped<IKeyVaultAdapter, KeyVaultAdapter>();
 
-builder.Services.AddLogging(configure => configure.AddConsole());
+builder.Services.AddLogging(
+    configure => {
+        configure.ClearProviders();
+        configure.AddConsole();
+    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHealthChecks();
-builder.Services.AddAutoMapper(typeof(Program), typeof(VariableGroupProfile), typeof(ServiceProfiles.ProjectProfile));
+builder.Services.AddAutoMapper(
+    typeof(Program), 
+    typeof(VariableGroupProfile), 
+    typeof(ServiceProfiles.ProjectProfile)
+    );
 
 var app = builder.Build();
 

@@ -29,11 +29,8 @@ builder.Services.AddScoped<IVariableGroupAdapter, VariableGroupAdapter>();
 builder.Services.AddScoped<IProjectAdapter, ProjectAdapter>();
 builder.Services.AddScoped<IKeyVaultAdapter, KeyVaultAdapter>();
 
-builder.Services.AddLogging(
-    configure => {
-        configure.ClearProviders();
-        configure.AddConsole();
-    });
+builder.Logging.ClearProviders();
+builder.Logging.AddSimpleConsole();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

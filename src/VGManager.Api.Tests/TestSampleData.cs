@@ -18,20 +18,18 @@ public static class TestSampleData
         string valueFilter,
         string newKey,
         string newValue
-        )
-    {
-        return new VariableGroupAddRequest
-        {
-            Organization = organization,
-            PAT = pat,
-            Project = project,
-            VariableGroupFilter = "neptun",
-            KeyFilter = null!,
-            ValueFilter = valueFilter,
-            Key = newKey,
-            Value = newValue
-        };
-    }
+        ) 
+        => new()
+            {
+                Organization = organization,
+                PAT = pat,
+                Project = project,
+                VariableGroupFilter = "neptun",
+                KeyFilter = null!,
+                ValueFilter = valueFilter,
+                Key = newKey,
+                Value = newValue
+            };
 
     public static VariableGroupUpdateRequest GetVariableUpdateRequest(
         string variableGroupFilter,
@@ -40,24 +38,21 @@ public static class TestSampleData
         string project,
         string valueFilter,
         string newValue
-        )
-    {
-        return new VariableGroupUpdateRequest
-        {
-            Organization = organization,
-            PAT = pat,
-            Project = project,
-            VariableGroupFilter = variableGroupFilter,
-            KeyFilter = "Key123",
-            ValueFilter = valueFilter,
-            ContainsSecrets = false,
-            NewValue = newValue
-        };
-    }
+        ) 
+        => new()
+            {
+                Organization = organization,
+                PAT = pat,
+                Project = project,
+                VariableGroupFilter = variableGroupFilter,
+                KeyFilter = "Key123",
+                ValueFilter = valueFilter,
+                ContainsSecrets = false,
+                NewValue = newValue
+            };
 
-    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project, string keyFilter, string valueFilter)
-    {
-        return new VariableGroupRequest
+    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project, string keyFilter, string valueFilter) 
+        => new()
         {
             Organization = organization,
             PAT = pat,
@@ -68,11 +63,9 @@ public static class TestSampleData
             KeyIsRegex = true,
             ContainsSecrets = false
         };
-    }
 
-    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project)
-    {
-        return new VariableGroupRequest
+    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project) 
+        => new()
         {
             Organization = organization,
             PAT = pat,
@@ -82,127 +75,125 @@ public static class TestSampleData
             ContainsSecrets = false,
             KeyIsRegex = true,
         };
-    }
 
-    public static VariableGroupEntity GetVariableGroupEntity()
-    {
-        return new VariableGroupEntity
+    public static VariableGroupEntity GetVariableGroupEntity() 
+        => new()
         {
             Status = Status.Success,
             VariableGroups = new List<VariableGroup>
-            {
-                new()
                 {
-                    Name = "NeptunAdapter",
-                    Variables = new Dictionary<string, VariableValue>
+                    new()
                     {
-                        ["Key123"] = new()
+                        Name = "NeptunAdapter",
+                        Variables = new Dictionary<string, VariableValue>
                         {
-                            Value = "Value123"
-                        },
-                        ["Key456"] = new()
-                        {
-                            Value = "Value456"
+                            ["Key123"] = new()
+                            {
+                                Value = "Value123"
+                            },
+                            ["Key456"] = new()
+                            {
+                                Value = "Value456"
+                            }
                         }
-                    }
-                },
-                new()
-                {
-                    Name = "NeptunApi",
-                    Variables = new Dictionary<string, VariableValue>
+                    },
+                    new()
                     {
-                        ["Key789"] = new()
+                        Name = "NeptunApi",
+                        Variables = new Dictionary<string, VariableValue>
                         {
-                            Value = "Value789"
-                        },
-                        ["Kec"] = new()
-                        {
-                            Value = "Valuc"
+                            ["Key789"] = new()
+                            {
+                                Value = "Value789"
+                            },
+                            ["Kec"] = new()
+                            {
+                                Value = "Valuc"
+                            }
                         }
-                    }
-                },
-            }
+                    },
+                }
         };
-    }
 
-    public static VariableGroupEntity GetVariableGroupEntityAfterDelete()
-    {
-        return new VariableGroupEntity
+    public static VariableGroupEntity GetVariableGroupEntity(Status status) 
+        => new()
+        {
+            Status = status,
+            VariableGroups = Enumerable.Empty<VariableGroup>()
+        };
+
+    public static VariableGroupEntity GetVariableGroupEntityAfterDelete() 
+        => new()
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroup>()
+            VariableGroups = Enumerable.Empty<VariableGroup>()
         };
-    }
 
-    public static VariableGroupEntity GetVariableGroupEntity(string value)
-    {
-        return new VariableGroupEntity
-        {
-            Status = Status.Success,
-            VariableGroups = new List<VariableGroup>
-            {
-                new()
-                {
-                    Name = "NeptunAdapter",
-                    Variables = new Dictionary<string, VariableValue>
-                    {
-                        ["Key123"] = new()
-                        {
-                            Value = value
-                        },
-                        ["Key456"] = new()
-                        {
-                            Value = value
-                        }
-                    }
-                },
-                new()
-                {
-                    Name = "NeptunApi",
-                    Variables = new Dictionary<string, VariableValue>
-                    {
-                        ["Key789"] = new()
-                        {
-                            Value = value
-                        }
-                    }
-                },
-            }
-        };
-    }
-
-    public static VariableGroupEntity GetVariableGroupEntity(string key, string value)
-    {
-        return new VariableGroupEntity
+    public static VariableGroupEntity GetVariableGroupEntity(string value) 
+        => new()
         {
             Status = Status.Success,
             VariableGroups = new List<VariableGroup>
-            {
-                new()
                 {
-                    Name = "NeptunAdapter",
-                    Variables = new Dictionary<string, VariableValue>
+                    new()
                     {
-                        [key] = new()
+                        Name = "NeptunAdapter",
+                        Variables = new Dictionary<string, VariableValue>
                         {
-                            Value = value
+                            ["Key123"] = new()
+                            {
+                                Value = value
+                            },
+                            ["Key456"] = new()
+                            {
+                                Value = value
+                            }
                         }
-                    }
-                },
-                new()
-                {
-                    Name = "NeptunApi",
-                    Variables = new Dictionary<string, VariableValue>
+                    },
+                    new()
                     {
-                        [key] = new()
+                        Name = "NeptunApi",
+                        Variables = new Dictionary<string, VariableValue>
                         {
-                            Value = value
+                            ["Key789"] = new()
+                            {
+                                Value = value
+                            }
                         }
-                    }
-                },
-            }
+                    },
+                }
         };
-    }
+
+    public static VariableGroupEntity GetVariableGroupEntity(string key, string value) 
+        => new ()
+        {
+            Status = Status.Success,
+            VariableGroups = new List<VariableGroup>
+                {
+                    new()
+                    {
+                        Name = "NeptunAdapter",
+                        Variables = new Dictionary<string, VariableValue>
+                        {
+                            [key] = new()
+                            {
+                                Value = value
+                            }
+                        }
+                    },
+                    new()
+                    {
+                        Name = "NeptunApi",
+                        Variables = new Dictionary<string, VariableValue>
+                        {
+                            [key] = new()
+                            {
+                                Value = value
+                            }
+                        }
+                    },
+                }
+        };
 
     public static VariableGroupResponses GetVariableGroupGetResponses(string projectName, string key, string value)
     {
@@ -306,18 +297,15 @@ public static class TestSampleData
         };
     }
 
-    public static VariableGroupResponses GetVariableGroupGetResponsesAfterDelete()
-    {
-        return new VariableGroupResponses
+    public static VariableGroupResponses GetVariableGroupGetResponsesAfterDelete() 
+        => new()
         {
             Status = Status.Success,
             VariableGroups = new List<VariableGroupResponse>()
         };
-    }
 
-    public static SecretRequest GetRequest(string keyVaultName, string secretFilter, string tenantId, string clientId, string clientSecret)
-    {
-        return new SecretRequest
+    public static SecretRequest GetRequest(string keyVaultName, string secretFilter, string tenantId, string clientId, string clientSecret) 
+        => new()
         {
             KeyVaultName = keyVaultName,
             SecretFilter = secretFilter,
@@ -325,11 +313,16 @@ public static class TestSampleData
             ClientId = clientId,
             ClientSecret = clientSecret
         };
-    }
 
-    public static SecretCopyRequest GetRequest(string fromKeyVault, string toKeyVault, string tenantId, string clientId, string clientSecret, bool overrideSecret)
-    {
-        return new SecretCopyRequest
+    public static SecretCopyRequest GetRequest(
+        string fromKeyVault, 
+        string toKeyVault, 
+        string tenantId, 
+        string clientId, 
+        string clientSecret, 
+        bool overrideSecret
+        ) 
+        => new()
         {
             TenantId = tenantId,
             ClientId = clientId,
@@ -338,116 +331,101 @@ public static class TestSampleData
             ToKeyVault = toKeyVault,
             overrideSecret = overrideSecret
         };
-    }
 
-    public static SecretResponses GetSecretsGetResponse()
-    {
-        return new SecretResponses
+    public static SecretResponses GetSecretsGetResponse() 
+        => new()
         {
             Status = Status.Success,
             Secrets = new List<SecretResponse>()
-            {
-                new()
                 {
-                    KeyVault = "KeyVaultName1",
-                    SecretName = "SecretFilter123",
-                    SecretValue = "3Kpu6gF214vAqHlzaX5G"
-                },
-                new()
-                {
-                    KeyVault = "KeyVaultName1",
-                    SecretName = "SecretFilter456",
-                    SecretValue = "KCRQJ08PdFHU9Ly2pUI2"
-                },
-                new()
-                {
-                    KeyVault = "KeyVaultName1",
-                    SecretName = "SecretFilter789",
-                    SecretValue = "ggl1oBLSiYNBliNQhsGW"
+                    new()
+                    {
+                        KeyVault = "KeyVaultName1",
+                        SecretName = "SecretFilter123",
+                        SecretValue = "3Kpu6gF214vAqHlzaX5G"
+                    },
+                    new()
+                    {
+                        KeyVault = "KeyVaultName1",
+                        SecretName = "SecretFilter456",
+                        SecretValue = "KCRQJ08PdFHU9Ly2pUI2"
+                    },
+                    new()
+                    {
+                        KeyVault = "KeyVaultName1",
+                        SecretName = "SecretFilter789",
+                        SecretValue = "ggl1oBLSiYNBliNQhsGW"
+                    }
                 }
-            }
         };
-    }
 
-    public static SecretsEntity GetSecretsEntity()
-    {
-        return new SecretsEntity
+    public static SecretsEntity GetSecretsEntity() 
+        => new ()
         {
             Status = Status.Success,
             Secrets = new List<SecretEntity>()
-            {
-                new()
                 {
-                    Status = Status.Success,
-                    Secret = new("SecretFilter123", "3Kpu6gF214vAqHlzaX5G")
-                },
-                new()
-                {
-                    Status = Status.Success,
-                    Secret = new("SecretFilter456", "KCRQJ08PdFHU9Ly2pUI2")
-                },
-                new()
-                {
-                    Status = Status.Success,
-                    Secret = new("SecretFilter789", "ggl1oBLSiYNBliNQhsGW")
+                    new()
+                    {
+                        Status = Status.Success,
+                        Secret = new("SecretFilter123", "3Kpu6gF214vAqHlzaX5G")
+                    },
+                    new()
+                    {
+                        Status = Status.Success,
+                        Secret = new("SecretFilter456", "KCRQJ08PdFHU9Ly2pUI2")
+                    },
+                    new()
+                    {
+                        Status = Status.Success,
+                        Secret = new("SecretFilter789", "ggl1oBLSiYNBliNQhsGW")
+                    }
                 }
-            }
         };
-    }
 
-    public static DeletedSecretsEntity GetEmptyDeletedSecretsEntity()
-    {
-        return new DeletedSecretsEntity
+    public static DeletedSecretsEntity GetEmptyDeletedSecretsEntity() 
+        => new ()
         {
             Status = Status.Success,
             DeletedSecrets = Enumerable.Empty<DeletedSecret>()
         };
-    }
 
-    public static SecretsEntity GetEmptySecretsEntity()
-    {
-        return new SecretsEntity
+    public static SecretsEntity GetEmptySecretsEntity() 
+        => new()
         {
             Status = Status.Success,
             Secrets = Enumerable.Empty<SecretEntity>()
         };
-    }
 
-    public static SecretResponses GetEmptySecretsGetResponse()
-    {
-        return new SecretResponses
+    public static SecretResponses GetEmptySecretsGetResponse() 
+        => new()
         {
             Status = Status.Success,
             Secrets = Enumerable.Empty<SecretResponse>()
 
         };
-    }
 
-    public static DeletedSecretResponses GetEmptySecretsGetResponse1()
-    {
-        return new DeletedSecretResponses
+    public static DeletedSecretResponses GetEmptySecretsGetResponse1() 
+        => new()
         {
             Status = Status.Success,
             DeletedSecrets = Enumerable.Empty<DeletedSecretResponse>()
         };
-    }
 
-    public static ProjectEntity GetProjectEntity(string firstProjectName, string secondProjectName)
-    {
-        return new ProjectEntity
+    public static ProjectEntity GetProjectEntity(string firstProjectName, string secondProjectName) 
+        => new()
         {
             Status = Status.Success,
             Projects = new List<TeamProjectReference>
-            {
-                new()
                 {
-                    Name = firstProjectName,
-                },
-                new()
-                {
-                    Name = secondProjectName,
+                    new()
+                    {
+                        Name = firstProjectName,
+                    },
+                    new()
+                    {
+                        Name = secondProjectName,
+                    }
                 }
-            }
         };
-    }
 }

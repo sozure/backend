@@ -1,13 +1,10 @@
 using AutoMapper;
-using Azure.Core;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models.Projects;
 using VGManager.Services.Models.VariableGroups.Requests;
 
 namespace VGManager.Api.Controllers;

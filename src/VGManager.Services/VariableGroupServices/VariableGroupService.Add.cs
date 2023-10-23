@@ -5,6 +5,7 @@ using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Models.VariableGroups.Requests;
 
 namespace VGManager.Services.VariableGroupServices;
+
 public partial class VariableGroupService
 {
     public async Task<Status> AddVariablesAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default)

@@ -106,7 +106,7 @@ public class VariableGroupControllerTests
     }
 
     [Test]
-    public async Task GetAsync__All_works_well_1()
+    public async Task GetAsync_All_works_well_1()
     {
         // Arrange
         var organization = "Organization1";
@@ -140,6 +140,45 @@ public class VariableGroupControllerTests
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
         ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+
+        _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
+        _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once);
+        _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once);
+        _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once);
+    }
+
+    [Test]
+    public async Task GetAsync_All_works_well_2()
+    {
+        // Arrange
+        var organization = "Organization1";
+        var pat = "WtxMFit1uz1k64u527mB";
+        var project = "All";
+        var valueFilter = "value";
+        var firstProjectName = "Project1";
+        var secondProjectName = "Project2";
+        var variableRequest = TestSampleData.GetVariableRequest(organization, pat, project, "key", valueFilter);
+
+        var projectEntity = TestSampleData.GetProjectEntity(firstProjectName, secondProjectName);
+
+        var variableGroupEntity = TestSampleData.GetVariableGroupEntity(Status.Unknown);
+
+        _projectAdapter.Setup(x => x.GetProjectsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(projectEntity);
+
+        _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        _variableGroupAdapter.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(variableGroupEntity);
+
+        // Act
+        var result = await _controller.GetAsync(variableRequest, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).Status.Should().Be(Status.Unknown);
+        ((VariableGroupResponses)((OkObjectResult)result.Result!).Value!).VariableGroups.Count.Should().Be(0);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once);

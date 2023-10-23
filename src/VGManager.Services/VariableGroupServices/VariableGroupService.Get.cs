@@ -6,6 +6,7 @@ using VGManager.Services.Models.VariableGroups.Requests;
 using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Services.VariableGroupServices;
+
 public partial class VariableGroupService
 {
     public async Task<VariableGroupResults> GetVariableGroupsAsync(

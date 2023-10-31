@@ -26,7 +26,7 @@ public partial class VariableGroupService
             return new()
             {
                 Status = status,
-                VariableGroups = new List<VariableResult>(),
+                Variables = new List<VariableResult>(),
             };
         }
     }
@@ -58,7 +58,7 @@ public partial class VariableGroupService
                 return new()
                 {
                     Status = status,
-                    VariableGroups = matchedVariableGroups,
+                    Variables = matchedVariableGroups,
                 };
             }
         }
@@ -76,7 +76,7 @@ public partial class VariableGroupService
                 return new()
                 {
                     Status = status,
-                    VariableGroups = matchedVariableGroups,
+                    Variables = matchedVariableGroups,
                 };
             }
 
@@ -100,7 +100,7 @@ public partial class VariableGroupService
         return new()
         {
             Status = status,
-            VariableGroups = matchedVariableGroups,
+            Variables = matchedVariableGroups,
         };
     }
 

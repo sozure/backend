@@ -7,6 +7,7 @@ using VGManager.Api.Secrets.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
+using VariableGroupEnt = Microsoft.TeamFoundation.DistributedTask.WebApi.VariableGroup;
 
 namespace VGManager.Api.Tests;
 public static class TestSampleData
@@ -80,7 +81,7 @@ public static class TestSampleData
         => new()
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroup>
+            VariableGroups = new List<VariableGroupEnt>
                 {
                     new()
                     {
@@ -119,21 +120,21 @@ public static class TestSampleData
         => new()
         {
             Status = status,
-            VariableGroups = Enumerable.Empty<VariableGroup>()
+            VariableGroups = Enumerable.Empty<VariableGroupEnt>()
         };
 
     public static VariableGroupEntity GetVariableGroupEntityAfterDelete() 
         => new()
         {
             Status = Status.Success,
-            VariableGroups = Enumerable.Empty<VariableGroup>()
+            VariableGroups = Enumerable.Empty<VariableGroupEnt>()
         };
 
     public static VariableGroupEntity GetVariableGroupEntity(string value) 
         => new()
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroup>
+            VariableGroups = new List<VariableGroupEnt>
                 {
                     new()
                     {
@@ -168,7 +169,7 @@ public static class TestSampleData
         => new ()
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroup>
+            VariableGroups = new List<VariableGroupEnt>
                 {
                     new()
                     {

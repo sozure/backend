@@ -2,8 +2,8 @@ using VGManager.AzureAdapter.Entities;
 
 namespace VGManager.Api.VariableGroups.Response;
 
-public class VariableGroupResponses
+public class VariableResponses
 {
     public Status Status { get; set; }
-    public List<VariableGroupResponse> VariableGroups { get; set; } = null!;
+    public List<VariableResponse> VariableGroups { get; set; } = null!;
 }

@@ -195,9 +195,9 @@ public static class TestSampleData
                 }
         };
 
-    public static VariableGroupResponses GetVariableGroupGetResponses(string projectName, string key, string value)
+    public static VariableResponses GetVariableGroupGetResponses(string projectName, string key, string value)
     {
-        var list = new List<VariableGroupResponse>()
+        var list = new List<VariableResponse>()
         {
                 new()
                 {
@@ -215,23 +215,23 @@ public static class TestSampleData
                 }
         };
 
-        var result = new List<VariableGroupResponse>();
+        var result = new List<VariableResponse>();
 
         foreach (var item in list)
         {
             result.Add(item);
         }
 
-        return new VariableGroupResponses
+        return new VariableResponses
         {
             Status = Status.Success,
             VariableGroups = result
         };
     }
 
-    public static VariableGroupResponses GetVariableGroupGetResponses(string projectName, string value)
+    public static VariableResponses GetVariableGroupGetResponses(string projectName, string value)
     {
-        var list = new List<VariableGroupResponse>()
+        var list = new List<VariableResponse>()
         {
                 new()
                 {
@@ -242,23 +242,23 @@ public static class TestSampleData
                 }
         };
 
-        var result = new List<VariableGroupResponse>();
+        var result = new List<VariableResponse>();
 
         foreach (var item in list)
         {
             result.Add(item);
         }
 
-        return new VariableGroupResponses
+        return new VariableResponses
         {
             Status = Status.Success,
             VariableGroups = result
         };
     }
 
-    public static VariableGroupResponses GetVariableGroupGetResponses(string projectName)
+    public static VariableResponses GetVariableGroupGetResponses(string projectName)
     {
-        var list = new List<VariableGroupResponse>()
+        var list = new List<VariableResponse>()
         {
             new()
             {
@@ -283,25 +283,25 @@ public static class TestSampleData
             }
         };
 
-        var result = new List<VariableGroupResponse>();
+        var result = new List<VariableResponse>();
 
         foreach (var item in list)
         {
             result.Add(item);
         }
 
-        return new VariableGroupResponses
+        return new VariableResponses
         {
             Status = Status.Success,
             VariableGroups = result
         };
     }
 
-    public static VariableGroupResponses GetVariableGroupGetResponsesAfterDelete() 
+    public static VariableResponses GetVariableGroupGetResponsesAfterDelete() 
         => new()
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableGroupResponse>()
+            VariableGroups = new List<VariableResponse>()
         };
 
     public static SecretRequest GetRequest(string keyVaultName, string secretFilter, string tenantId, string clientId, string clientSecret) 

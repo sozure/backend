@@ -1,7 +1,7 @@
 
 namespace VGManager.Api.VariableGroups.Response;
 
-public class VariableGroupResponse
+public class VariableResponse
 {
     public string Project { get; set; } = null!;
     public bool SecretVariableGroup { get; set; }

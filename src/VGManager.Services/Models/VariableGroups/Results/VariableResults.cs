@@ -2,8 +2,8 @@ using VGManager.AzureAdapter.Entities;
 
 namespace VGManager.Services.Models.VariableGroups.Results;
 
-public class VariableGroupResults
+public class VariableResults
 {
     public Status Status { get; set; }
-    public List<VariableGroupResult> VariableGroups { get; set; } = null!;
+    public List<VariableResult> VariableGroups { get; set; } = null!;
 }

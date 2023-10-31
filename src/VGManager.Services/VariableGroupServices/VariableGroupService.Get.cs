@@ -9,7 +9,7 @@ namespace VGManager.Services.VariableGroupServices;
 
 public partial class VariableGroupService
 {
-    public async Task<VariableGroupResults> GetVariableGroupsAsync(
+    public async Task<VariableResults> GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         )
@@ -26,18 +26,18 @@ public partial class VariableGroupService
             return new()
             {
                 Status = status,
-                VariableGroups = new List<VariableGroupResult>(),
+                VariableGroups = new List<VariableResult>(),
             };
         }
     }
 
-    private VariableGroupResults GetVariableGroupsAsync(
+    private VariableResults GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
         VariableGroupEntity vgEntity,
         Status status
         )
     {
-        var matchedVariableGroups = new List<VariableGroupResult>();
+        var matchedVariableGroups = new List<VariableResult>();
         var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
                         Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
                         FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
@@ -104,7 +104,7 @@ public partial class VariableGroupService
         };
     }
 
-    private IEnumerable<VariableGroupResult> GetVariables(
+    private IEnumerable<VariableResult> GetVariables(
         string keyFilter,
         Regex? valueRegex,
         VariableGroup filteredVariableGroup
@@ -114,7 +114,7 @@ public partial class VariableGroupService
         return CollectVariables(valueRegex, filteredVariableGroup, filteredVariables);
     }
 
-    private IEnumerable<VariableGroupResult> GetVariables(
+    private IEnumerable<VariableResult> GetVariables(
         Regex keyRegex,
         Regex? valueRegex,
         VariableGroup filteredVariableGroup
@@ -124,13 +124,13 @@ public partial class VariableGroupService
         return CollectVariables(valueRegex, filteredVariableGroup, filteredVariables);
     }
 
-    private IEnumerable<VariableGroupResult> CollectVariables(
+    private IEnumerable<VariableResult> CollectVariables(
         Regex? valueRegex,
         VariableGroup filteredVariableGroup,
         IEnumerable<KeyValuePair<string, VariableValue>> filteredVariables
         )
     {
-        var result = new List<VariableGroupResult>();
+        var result = new List<VariableResult>();
         foreach (var filteredVariable in filteredVariables)
         {
             var variableValue = filteredVariable.Value.Value ?? string.Empty;
@@ -153,17 +153,17 @@ public partial class VariableGroupService
         return result;
     }
 
-    private IEnumerable<VariableGroupResult> AddVariableGroupResult(
+    private IEnumerable<VariableResult> AddVariableGroupResult(
         VariableGroup filteredVariableGroup,
         KeyValuePair<string, VariableValue> filteredVariable,
         string variableValue
         )
     {
-        var subResult = new List<VariableGroupResult>();
+        var subResult = new List<VariableResult>();
         if (filteredVariableGroup.Type == "AzureKeyVault")
         {
             var azProviderData = filteredVariableGroup.ProviderData as AzureKeyVaultVariableGroupProviderData;
-            subResult.Add(new VariableGroupResult()
+            subResult.Add(new VariableResult()
             {
                 Project = _project ?? string.Empty,
                 SecretVariableGroup = true,
@@ -174,7 +174,7 @@ public partial class VariableGroupService
         }
         else
         {
-            subResult.Add(new VariableGroupResult()
+            subResult.Add(new VariableResult()
             {
                 Project = _project ?? string.Empty,
                 SecretVariableGroup = false,

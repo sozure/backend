@@ -1,3 +1,4 @@
+using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
@@ -140,5 +141,29 @@ public partial class VariableGroupController
         {
             return await GetBaseResultAsync(vgRequest, cancellationToken);
         }
+    }
+
+    private static VariableGroupResponses GetResult(VariableResponses variableResponses)
+    {
+        var listResult = new List<VariableGroupResponse>();
+        var result = new VariableGroupResponses
+        {
+            Status = variableResponses.Status
+        };
+
+        foreach(var  variableResponse in variableResponses.Variables)
+        {
+            if(!listResult.Exists(item => item.VariableGroupName == variableResponse.VariableGroupName && item.Project == variableResponse.Project))
+            {
+                listResult.Add(new()
+                {
+                    VariableGroupName = variableResponse.VariableGroupName,
+                    Project = variableResponse.Project
+                });
+            }
+        }
+
+        result.VariableGroups = listResult;
+        return result;
     }
 }

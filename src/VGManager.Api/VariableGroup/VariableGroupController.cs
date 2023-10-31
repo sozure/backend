@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
@@ -33,7 +34,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> GetAsync(
+    public async Task<ActionResult<VariableResponses>> GetAsync(
         [FromBody] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
@@ -42,11 +43,25 @@ public partial class VariableGroupController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("GetVariableGroups", Name = "GetVariableGroups")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<VariableGroupResponses>> GetVariableGroupsAsync(
+        [FromBody] VariableGroupRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var subResult = await GetVariableGroupResponsesAsync(request, cancellationToken);
+        var result = GetResult(subResult);
+        return Ok(result);
+    }
+
     [HttpPost("Update", Name = "UpdateVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> UpdateAsync(
+    public async Task<ActionResult<VariableResponses>> UpdateAsync(
         [FromBody] VariableGroupUpdateRequest request,
         CancellationToken cancellationToken
     )
@@ -76,7 +91,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> AddAsync(
+    public async Task<ActionResult<VariableResponses>> AddAsync(
         [FromBody] VariableGroupAddRequest request,
         CancellationToken cancellationToken
     )
@@ -89,12 +104,12 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> DeleteAsync(
+    public async Task<ActionResult<VariableResponses>> DeleteAsync(
         [FromBody] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
     {
-        VariableGroupResponses? result;
+        VariableResponses? result;
         if (request.Project == "All")
         {
             result = GetEmptyVariableGroupGetResponses();
@@ -104,7 +119,7 @@ public partial class VariableGroupController : ControllerBase
             {
                 request.Project = project.Name;
                 var subResult = await GetResultAfterDeleteAsync(request, cancellationToken);
-                result.VariableGroups.AddRange(subResult.VariableGroups);
+                result.Variables.AddRange(subResult.Variables);
 
                 if (subResult.Status != Status.Success)
                 {

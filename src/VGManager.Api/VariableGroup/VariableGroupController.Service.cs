@@ -13,7 +13,7 @@ public partial class VariableGroupController
         return new VariableResponses
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableResponse>()
+            Variables = new List<VariableResponse>()
         };
     }
 
@@ -111,7 +111,7 @@ public partial class VariableGroupController
             {
                 vgRequest.Project = project.Name;
                 var subResult = await GetResultAsync(request, vgRequest, cancellationToken);
-                result.VariableGroups.AddRange(subResult.VariableGroups);
+                result.Variables.AddRange(subResult.Variables);
 
                 if (subResult.Status != Status.Success)
                 {

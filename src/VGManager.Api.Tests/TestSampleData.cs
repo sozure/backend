@@ -225,7 +225,7 @@ public static class TestSampleData
         return new VariableResponses
         {
             Status = Status.Success,
-            VariableGroups = result
+            Variables = result
         };
     }
 
@@ -252,7 +252,7 @@ public static class TestSampleData
         return new VariableResponses
         {
             Status = Status.Success,
-            VariableGroups = result
+            Variables = result
         };
     }
 
@@ -293,7 +293,7 @@ public static class TestSampleData
         return new VariableResponses
         {
             Status = Status.Success,
-            VariableGroups = result
+            Variables = result
         };
     }
 
@@ -301,7 +301,7 @@ public static class TestSampleData
         => new()
         {
             Status = Status.Success,
-            VariableGroups = new List<VariableResponse>()
+            Variables = new List<VariableResponse>()
         };
 
     public static SecretRequest GetRequest(string keyVaultName, string secretFilter, string tenantId, string clientId, string clientSecret) 

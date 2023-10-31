@@ -123,7 +123,7 @@ public class VariableGroupControllerTests
         var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(firstProjectName);
         var variableGroupResponse2 = TestSampleData.GetVariableGroupGetResponses(secondProjectName);
 
-        variableGroupResponse.VariableGroups.AddRange(variableGroupResponse2.VariableGroups);
+        variableGroupResponse.Variables.AddRange(variableGroupResponse2.Variables);
 
         _projectAdapter.Setup(x => x.GetProjectsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(projectEntity);
@@ -178,7 +178,7 @@ public class VariableGroupControllerTests
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
         ((VariableResponses)((OkObjectResult)result.Result!).Value!).Status.Should().Be(Status.Unknown);
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).VariableGroups.Count.Should().Be(0);
+        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Variables.Count.Should().Be(0);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once);
@@ -249,7 +249,7 @@ public class VariableGroupControllerTests
         var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(firstProjectName, newValue);
         var variableGroupResponse2 = TestSampleData.GetVariableGroupGetResponses(secondProjectName, newValue);
 
-        variableGroupResponse.VariableGroups.AddRange(variableGroupResponse2.VariableGroups);
+        variableGroupResponse.Variables.AddRange(variableGroupResponse2.Variables);
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
@@ -379,7 +379,7 @@ public class VariableGroupControllerTests
         var variableGroupResponse1 = TestSampleData.GetVariableGroupGetResponses(firstProjectName, newKey, newValue);
         var variableGroupResponse2 = TestSampleData.GetVariableGroupGetResponses(secondProjectName, newKey, newValue);
 
-        variableGroupResponse1.VariableGroups.AddRange(variableGroupResponse2.VariableGroups);
+        variableGroupResponse1.Variables.AddRange(variableGroupResponse2.Variables);
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 

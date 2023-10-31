@@ -5,5 +5,5 @@ namespace VGManager.Api.VariableGroups.Response;
 public class VariableResponses
 {
     public Status Status { get; set; }
-    public List<VariableResponse> VariableGroups { get; set; } = null!;
+    public List<VariableResponse> Variables { get; set; } = null!;
 }

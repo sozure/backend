@@ -1,6 +1,6 @@
 using VGManager.AzureAdapter.Entities;
 
-namespace VGManager.Api.VariableGroups.Response;
+namespace VGManager.Api.VariableGroup.Response;
 
 public class VariableGroupResponses
 {

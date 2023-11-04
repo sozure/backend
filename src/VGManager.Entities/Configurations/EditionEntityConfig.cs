@@ -8,9 +8,10 @@ public class EditionEntityConfig : IEntityTypeConfiguration<EditionEntity>
     /// <summary>
     /// Create configurations.
     /// </summary>
-    /// <param name="builder">EntityTypeBuilder <see cref="EntityTypeBuilder{EditEntity}"/>.</param>
+    /// <param name="builder">EntityTypeBuilder <see cref="EntityTypeBuilder{EditionEntity}"/>.</param>
     public void Configure(EntityTypeBuilder<EditionEntity> builder)
     {
         builder.HasKey(editon => editon.Id);
+        builder.ToTable("Editions");
     }
 }

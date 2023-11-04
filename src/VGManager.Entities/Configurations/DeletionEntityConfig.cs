@@ -12,5 +12,6 @@ public class DeletionEntityConfig : IEntityTypeConfiguration<DeletionEntity>
     public void Configure(EntityTypeBuilder<DeletionEntity> builder)
     {
         builder.HasKey(deletion => deletion.Id);
+        builder.ToTable("Deletions");
     }
 }

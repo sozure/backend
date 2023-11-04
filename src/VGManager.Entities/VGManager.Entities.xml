@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>VGManager.Entities</name>
+    </assembly>
+    <members>
+        <member name="M:VGManager.Entities.Configurations.AdditionEntityConfig.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{VGManager.Entities.AdditionEntity})">
+            <summary>
+            
+            </summary>
+            <param name="builder">EntityTypeBuilder <see cref="T:Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder`1"/>.</param>
+        </member>
+        <member name="M:VGManager.Entities.Configurations.DeletionEntityConfig.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{VGManager.Entities.DeletionEntity})">
+            <summary>
+            Create configurations.
+            </summary>
+            <param name="builder">EntityTypeBuilder <see cref="T:Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder`1"/>.</param>
+        </member>
+        <member name="M:VGManager.Entities.Configurations.EditionEntityConfig.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{VGManager.Entities.EditionEntity})">
+            <summary>
+            Create configurations.
+            </summary>
+            <param name="builder">EntityTypeBuilder <see cref="T:Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder`1"/>.</param>
+        </member>
+    </members>
+</doc>

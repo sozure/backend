@@ -4,5 +4,23 @@
         <name>VGManager.Repositories</name>
     </assembly>
     <members>
+        <member name="M:VGManager.Repository.DbContexts.OperationDbContext.#ctor">
+            <summary>
+            Initialize a new instance of <see cref="T:VGManager.Repository.DbContexts.OperationDbContext"/> for unit testing purposes.
+            Moq needs this to construct a Mocked version
+            </summary>
+        </member>
+        <member name="M:VGManager.Repository.DbContexts.OperationDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{VGManager.Repository.DbContexts.OperationDbContext})">
+            <summary>
+            Initialize a new instance of <see cref="T:VGManager.Repository.DbContexts.OperationDbContext"/>
+            </summary>
+            <param name="options">DbContext options</param>
+        </member>
+        <member name="M:VGManager.Repository.DbContexts.OperationDbContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <summary>
+            Overriden Method to apply entity configurations
+            </summary>
+            <param name="modelBuilder">The model builder to configuration</param>
+        </member>
     </members>
 </doc>

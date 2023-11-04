@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace VGManager.Entities.Configurations;
 
-public class EditEntityConfig : IEntityTypeConfiguration<EditEntity>
+public class EditionEntityConfig : IEntityTypeConfiguration<EditionEntity>
 {
     /// <summary>
     /// Create configurations.
     /// </summary>
     /// <param name="builder">EntityTypeBuilder <see cref="EntityTypeBuilder{EditEntity}"/>.</param>
-    public void Configure(EntityTypeBuilder<EditEntity> builder)
+    public void Configure(EntityTypeBuilder<EditionEntity> builder)
     {
-        throw new NotImplementedException();
+        builder.HasKey(editon => editon.Id);
     }
 }

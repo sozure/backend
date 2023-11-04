@@ -11,6 +11,7 @@ public class AdditionEntityConfig : IEntityTypeConfiguration<AdditionEntity>
     /// <param name="builder">EntityTypeBuilder <see cref="EntityTypeBuilder{AdditionEntity}"/>.</param>
     public void Configure(EntityTypeBuilder<AdditionEntity> builder)
     {
-        throw new NotImplementedException();
+        builder.HasKey(addition => addition.Id);
+        //builder.ToTable("Additions");
     }
 }

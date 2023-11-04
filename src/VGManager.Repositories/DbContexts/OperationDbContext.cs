@@ -46,7 +46,7 @@ public class OperationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new AdditionEntityConfig());
         modelBuilder.ApplyConfiguration(new DeletionEntityConfig());
-        modelBuilder.ApplyConfiguration(new EditEntityConfig());
+        modelBuilder.ApplyConfiguration(new EditionEntityConfig());
     }
 
     #endregion

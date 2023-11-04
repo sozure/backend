@@ -11,6 +11,6 @@ public class DeletionEntityConfig : IEntityTypeConfiguration<DeletionEntity>
     /// <param name="builder">EntityTypeBuilder <see cref="EntityTypeBuilder{DeletionEntity}"/>.</param>
     public void Configure(EntityTypeBuilder<DeletionEntity> builder)
     {
-        throw new NotImplementedException();
+        builder.HasKey(deletion => deletion.Id);
     }
 }

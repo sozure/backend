@@ -1,5 +1,5 @@
 namespace VGManager.Entities;
 
-public class DeletionEntity
+public class DeletionEntity: OperationEntity
 {
 }

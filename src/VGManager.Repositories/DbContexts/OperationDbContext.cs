@@ -31,7 +31,7 @@ public class OperationDbContext : DbContext
 
     public DbSet<AdditionEntity> Additions { get; set; } = null!;
     public DbSet<DeletionEntity> Deletions { get; set; } = null!;
-    public DbSet<EditEntity> Changes { get; set; } = null!;
+    public DbSet<EditionEntity> Changes { get; set; } = null!;
 
     #endregion
 

@@ -59,6 +59,7 @@ static partial class Program
 
     private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<StartupHealthCheck>();
         AddDatabase<OperationDbContext>(
             services,
             configuration,

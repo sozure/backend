@@ -151,9 +151,9 @@ public partial class VariableGroupController
             Status = variableResponses.Status
         };
 
-        foreach(var  variableResponse in variableResponses.Variables)
+        foreach (var variableResponse in variableResponses.Variables)
         {
-            if(!listResult.Exists(item => item.VariableGroupName == variableResponse.VariableGroupName && item.Project == variableResponse.Project))
+            if (!listResult.Exists(item => item.VariableGroupName == variableResponse.VariableGroupName && item.Project == variableResponse.Project))
             {
                 listResult.Add(new()
                 {

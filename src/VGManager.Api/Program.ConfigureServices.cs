@@ -1,18 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using System.Reflection;
+using VGManager.Api;
 using VGManager.Api.HealthChecks;
 using VGManager.Api.MapperProfiles;
-using VGManager.Repository.DbContexts;
-using ServiceProfiles = VGManager.Services.MapperProfiles;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
-using VGManager.AzureAdapter.Interfaces;
 using VGManager.AzureAdapter;
+using VGManager.AzureAdapter.Interfaces;
+using VGManager.Repositories.Boilerplate;
+using VGManager.Repository.DbContexts;
+using VGManager.Services;
 using VGManager.Services.Interfaces;
 using VGManager.Services.VariableGroupServices;
-using VGManager.Services;
-using VGManager.Api;
-using VGManager.Repositories.Boilerplate;
+using ServiceProfiles = VGManager.Services.MapperProfiles;
 
 static partial class Program
 {
@@ -82,9 +82,9 @@ static partial class Program
     }
 
     private static void AddDatabase<TDbContext>(
-        IServiceCollection services, 
-        IConfiguration configuration, 
-        DatabaseConfiguration databaseConfiguration, 
+        IServiceCollection services,
+        IConfiguration configuration,
+        DatabaseConfiguration databaseConfiguration,
         ServiceLifetime scope = ServiceLifetime.Scoped
         ) where TDbContext : DbContext
     {

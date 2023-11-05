@@ -1,6 +1,5 @@
 using Azure.Identity;
 using Microsoft.Extensions.Logging;
-using VGManager.AzureAdapter.Interfaces;
 
 namespace VGManager.AzureAdapter.Tests;
 

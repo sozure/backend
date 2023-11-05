@@ -1,6 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using VGManager.Repositories.Interfaces.Boilerplate;
 

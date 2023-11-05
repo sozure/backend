@@ -43,6 +43,8 @@ static partial class Program
             c.UseOneOfForPolymorphism();
         });
 
+        services.AddAuthorization();
+        services.AddControllers();
         services.AddHealthChecks()
             .AddCheck<StartupHealthCheck>(nameof(StartupHealthCheck), tags: new[] { "startup" });
 

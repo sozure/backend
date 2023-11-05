@@ -11,7 +11,7 @@ using VGManager.Repository.DbContexts;
 namespace VGManager.Migrations.PostgreSql.Migrations
 {
     [DbContext(typeof(OperationDbContext))]
-    [Migration("20231105002805_Init")]
+    [Migration("20231105004217_Init")]
     partial class Init
     {
         /// <inheritdoc />

@@ -1,13 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+      <ProjectGuid>A22E72EE-1B1D-4630-8994-7D5AA0AD2F1E</ProjectGuid>
+      <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VGManager.Repositories\VGManager.Repositories.csproj" />
   </ItemGroup>
 
 </Project>

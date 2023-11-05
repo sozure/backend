@@ -1,4 +1,4 @@
-namespace VGManager.Repositories;
+namespace VGManager.Repositories.Boilerplate;
 
 public class DatabaseConfiguration
 {

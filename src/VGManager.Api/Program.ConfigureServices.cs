@@ -3,7 +3,6 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using VGManager.Api.HealthChecks;
 using VGManager.Api.MapperProfiles;
-using VGManager.Repositories;
 using VGManager.Repository.DbContexts;
 using ServiceProfiles = VGManager.Services.MapperProfiles;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
@@ -13,6 +12,7 @@ using VGManager.Services.Interfaces;
 using VGManager.Services.VariableGroupServices;
 using VGManager.Services;
 using VGManager.Api;
+using VGManager.Repositories.Boilerplate;
 
 static partial class Program
 {

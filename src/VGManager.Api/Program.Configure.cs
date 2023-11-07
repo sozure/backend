@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using VGManager.Api;
 using VGManager.Api.HealthChecks;
-using VGManager.Repository.DbContexts;
+using VGManager.Repositories.DbContexts;
 
 static partial class Program
 {

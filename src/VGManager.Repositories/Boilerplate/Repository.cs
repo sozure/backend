@@ -16,7 +16,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
 
     //
     // Summary:
-    //     Initialize a new instance of SMP.Repository.Core.Repository`1
+    //     Initialize a new instance of Repository.Core.Repository`1
     //
     // Parameters:
     //   dbContext:

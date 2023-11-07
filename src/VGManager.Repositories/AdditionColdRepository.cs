@@ -3,7 +3,7 @@ using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.Interfaces;
 
-namespace VGManager.Repository;
+namespace VGManager.Repositories;
 
 public class AdditionColdRepository : SqlRepository<AdditionEntity>, IAdditionColdRepository
 {

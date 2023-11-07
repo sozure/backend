@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using System.Reflection;
@@ -7,8 +8,10 @@ using VGManager.Api.HealthChecks;
 using VGManager.Api.MapperProfiles;
 using VGManager.AzureAdapter;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Repositories;
 using VGManager.Repositories.Boilerplate;
-using VGManager.Repository.DbContexts;
+using VGManager.Repositories.Interfaces;
+using VGManager.Repositories.DbContexts;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
 using VGManager.Services.VariableGroupServices;
@@ -54,14 +57,28 @@ static partial class Program
             typeof(ServiceProfiles.ProjectProfile)
         );
 
+        //services.AddDbContext<OperationDbContext>(options =>
+        //{
+        //    UseSqlServer(options, configuration);
+        //});
+
         RegisterServices(services, configuration);
 
         return self;
     }
 
+    private static void UseSqlServer(DbContextOptionsBuilder options, ConfigurationManager configuration)
+    {
+        var connectionString = configuration.GetConnectionString("ConnectionStrings__VGManager_API");
+        options.UseSqlServer(connectionString);
+    }
+
     private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<StartupHealthCheck>();
+
+        var connString = configuration.GetConnectionString("VGManager_API");
+
         AddDatabase<OperationDbContext>(
             services,
             configuration,
@@ -73,6 +90,9 @@ static partial class Program
             }
         );
 
+        services.AddScoped<IAdditionColdRepository, AdditionColdRepository>();
+        services.AddScoped<IDeletionColdRepository, DeletionColdRepository>();
+        services.AddScoped<IEditionColdRepository, EditionColdRepository>();
         services.AddScoped<IVariableGroupService, VariableGroupService>();
         services.AddScoped<IKeyVaultService, KeyVaultService>();
         services.AddScoped<IProjectService, ProjectService>();

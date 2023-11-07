@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Entities;
+using VGManager.Entities;
 using VGManager.Services.Models.VariableGroups.Requests;
 
 namespace VGManager.Services.VariableGroupServices;
@@ -21,7 +22,23 @@ public partial class VariableGroupService
             var value = variableGroupAddModel.Value;
             var filteredVariableGroups = CollectVariableGroups(vgEntity, keyFilter, variableGroupFilter);
 
-            return await AddVariablesAsync(filteredVariableGroups, key, value, cancellationToken);
+            var finalStatus = await AddVariablesAsync(filteredVariableGroups, key, value, cancellationToken);
+
+            if(finalStatus == Status.Success)
+            {
+                var entity = new AdditionEntity
+                {
+                    VariableGroupFilter = variableGroupFilter,
+                    Key = key,
+                    Value = value,
+                    Project = _project,
+                    Organization = variableGroupAddModel.Organization,
+                    User = "Viktor"
+                };
+                await _additionColdRepository.Add(entity, cancellationToken);
+            }
+
+            return finalStatus;
         }
 
         return status;

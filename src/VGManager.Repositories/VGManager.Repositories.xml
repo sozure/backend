@@ -4,19 +4,19 @@
         <name>VGManager.Repositories</name>
     </assembly>
     <members>
-        <member name="M:VGManager.Repository.DbContexts.OperationDbContext.#ctor">
+        <member name="M:VGManager.Repositories.DbContexts.OperationDbContext.#ctor">
             <summary>
-            Initialize a new instance of <see cref="T:VGManager.Repository.DbContexts.OperationDbContext"/> for unit testing purposes.
+            Initialize a new instance of <see cref="T:VGManager.Repositories.DbContexts.OperationDbContext"/> for unit testing purposes.
             Moq needs this to construct a Mocked version
             </summary>
         </member>
-        <member name="M:VGManager.Repository.DbContexts.OperationDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{VGManager.Repository.DbContexts.OperationDbContext})">
+        <member name="M:VGManager.Repositories.DbContexts.OperationDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{VGManager.Repositories.DbContexts.OperationDbContext})">
             <summary>
-            Initialize a new instance of <see cref="T:VGManager.Repository.DbContexts.OperationDbContext"/>
+            Initialize a new instance of <see cref="T:VGManager.Repositories.DbContexts.OperationDbContext"/>
             </summary>
             <param name="options">DbContext options</param>
         </member>
-        <member name="M:VGManager.Repository.DbContexts.OperationDbContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:VGManager.Repositories.DbContexts.OperationDbContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <summary>
             Overriden Method to apply entity configurations
             </summary>

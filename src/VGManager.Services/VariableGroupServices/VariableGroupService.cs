@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Repositories.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups.Requests;
 
@@ -10,12 +11,18 @@ namespace VGManager.Services.VariableGroupServices;
 public partial class VariableGroupService : IVariableGroupService
 {
     private readonly IVariableGroupAdapter _variableGroupConnectionRepository;
+    private readonly IAdditionColdRepository _additionColdRepository;
     private string _project = null!;
     private readonly ILogger _logger;
 
-    public VariableGroupService(IVariableGroupAdapter variableGroupConnectionRepository, ILogger<VariableGroupService> logger)
+    public VariableGroupService(
+        IVariableGroupAdapter variableGroupConnectionRepository,
+        IAdditionColdRepository additionColdRepository,
+        ILogger<VariableGroupService> logger
+        )
     {
         _variableGroupConnectionRepository = variableGroupConnectionRepository;
+        _additionColdRepository = additionColdRepository;
         _logger = logger;
     }
 

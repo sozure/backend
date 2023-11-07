@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using VGManager.Entities;
 using VGManager.Entities.Configurations;
 
-namespace VGManager.Repository.DbContexts;
+namespace VGManager.Repositories.DbContexts;
 
 public class OperationDbContext : DbContext
 {

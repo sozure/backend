@@ -4,29 +4,5 @@
         <name>VGManager.Migrations.PostgreSql</name>
     </assembly>
     <members>
-        <member name="T:VGManager.Migrations.PostgreSql.Migrations.Init">
-            <inheritdoc />
-        </member>
-        <member name="M:VGManager.Migrations.PostgreSql.Migrations.Init.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:VGManager.Migrations.PostgreSql.Migrations.Init.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:VGManager.Migrations.PostgreSql.Migrations.Init.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:VGManager.Migrations.PostgreSql.Migrations.RefactoredEntities">
-            <inheritdoc />
-        </member>
-        <member name="M:VGManager.Migrations.PostgreSql.Migrations.RefactoredEntities.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:VGManager.Migrations.PostgreSql.Migrations.RefactoredEntities.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:VGManager.Migrations.PostgreSql.Migrations.RefactoredEntities.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
     </members>
 </doc>

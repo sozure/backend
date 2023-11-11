@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -15,12 +16,13 @@ namespace VGManager.Migrations.PostgreSql.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    Key = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: false),
                     User = table.Column<string>(type: "text", nullable: false),
                     Organization = table.Column<string>(type: "text", nullable: false),
                     Project = table.Column<string>(type: "text", nullable: false),
-                    VariableGroupFilter = table.Column<string>(type: "text", nullable: false),
-                    Key = table.Column<string>(type: "text", nullable: false),
-                    Value = table.Column<string>(type: "text", nullable: false)
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    VariableGroupFilter = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,11 +34,12 @@ namespace VGManager.Migrations.PostgreSql.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    Key = table.Column<string>(type: "text", nullable: false),
                     User = table.Column<string>(type: "text", nullable: false),
                     Organization = table.Column<string>(type: "text", nullable: false),
                     Project = table.Column<string>(type: "text", nullable: false),
-                    VariableGroupFilter = table.Column<string>(type: "text", nullable: false),
-                    Key = table.Column<string>(type: "text", nullable: false)
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    VariableGroupFilter = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,12 +51,13 @@ namespace VGManager.Migrations.PostgreSql.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    Key = table.Column<string>(type: "text", nullable: false),
+                    NewValue = table.Column<string>(type: "text", nullable: false),
                     User = table.Column<string>(type: "text", nullable: false),
                     Organization = table.Column<string>(type: "text", nullable: false),
                     Project = table.Column<string>(type: "text", nullable: false),
-                    VariableGroupFilter = table.Column<string>(type: "text", nullable: false),
-                    Key = table.Column<string>(type: "text", nullable: false),
-                    NewValue = table.Column<string>(type: "text", nullable: false)
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    VariableGroupFilter = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

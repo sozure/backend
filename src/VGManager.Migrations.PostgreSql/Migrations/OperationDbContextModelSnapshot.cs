@@ -108,10 +108,6 @@ namespace VGManager.Migrations.PostgreSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("OldValue")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Organization")
                         .IsRequired()
                         .HasColumnType("text");

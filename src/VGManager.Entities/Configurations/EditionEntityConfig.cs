@@ -12,6 +12,7 @@ public class EditionEntityConfig : IEntityTypeConfiguration<EditionEntity>
     public void Configure(EntityTypeBuilder<EditionEntity> builder)
     {
         builder.HasKey(editon => editon.Id);
+        builder.Property(editon => editon.Id).ValueGeneratedOnAdd();
         builder.ToTable("Editions");
     }
 }

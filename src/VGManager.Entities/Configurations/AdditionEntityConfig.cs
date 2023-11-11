@@ -12,6 +12,7 @@ public class AdditionEntityConfig : IEntityTypeConfiguration<AdditionEntity>
     public void Configure(EntityTypeBuilder<AdditionEntity> builder)
     {
         builder.HasKey(addition => addition.Id);
+        builder.Property(addition => addition.Id).ValueGeneratedOnAdd();
         builder.ToTable("Additions");
     }
 }

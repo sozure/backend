@@ -1,5 +1,6 @@
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using VGManager.AzureAdapter.Entities;
+using VGManager.Entities;
 using VGManager.Services.Models.VariableGroups.Requests;
 
 namespace VGManager.Services.VariableGroupServices;
@@ -17,8 +18,23 @@ public partial class VariableGroupService
 
         if (status == Status.Success)
         {
-            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
-            return await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
+            var variableGroupFilter = variableGroupModel.VariableGroupFilter;
+            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
+            var finalStatus = await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
+            if(finalStatus == Status.Success)
+            {
+                var entity = new DeletionEntity
+                {
+                    VariableGroupFilter = variableGroupFilter,
+                    Key = variableGroupModel.KeyFilter,
+                    Project = _project,
+                    Organization = variableGroupModel.Organization,
+                    User = "Viktor",
+                    Date = DateTime.UtcNow
+                };
+                await _deletionColdRepository.Add(entity, cancellationToken);
+            }
+            return finalStatus;
         }
 
         return status;

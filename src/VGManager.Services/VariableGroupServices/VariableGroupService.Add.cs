@@ -33,7 +33,8 @@ public partial class VariableGroupService
                     Value = value,
                     Project = _project,
                     Organization = variableGroupAddModel.Organization,
-                    User = "Viktor"
+                    User = "Viktor",
+                    Date = DateTime.UtcNow
                 };
                 await _additionColdRepository.Add(entity, cancellationToken);
             }

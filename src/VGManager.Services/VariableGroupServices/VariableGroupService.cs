@@ -12,17 +12,23 @@ public partial class VariableGroupService : IVariableGroupService
 {
     private readonly IVariableGroupAdapter _variableGroupConnectionRepository;
     private readonly IAdditionColdRepository _additionColdRepository;
+    private readonly IDeletionColdRepository _deletionColdRepository;
+    private readonly IEditionColdRepository _editionColdRepository;
     private string _project = null!;
     private readonly ILogger _logger;
 
     public VariableGroupService(
         IVariableGroupAdapter variableGroupConnectionRepository,
         IAdditionColdRepository additionColdRepository,
+        IDeletionColdRepository deletedColdRepository,
+        IEditionColdRepository editionColdRepository,
         ILogger<VariableGroupService> logger
         )
     {
         _variableGroupConnectionRepository = variableGroupConnectionRepository;
         _additionColdRepository = additionColdRepository;
+        _deletionColdRepository = deletedColdRepository;
+        _editionColdRepository = editionColdRepository;
         _logger = logger;
     }
 

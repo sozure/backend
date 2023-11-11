@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Entities;
+using VGManager.Entities;
 using VGManager.Services.Models.VariableGroups.Requests;
 
 namespace VGManager.Services.VariableGroupServices;
@@ -19,7 +20,8 @@ public partial class VariableGroupService
 
         if (status == Status.Success)
         {
-            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupUpdateModel.VariableGroupFilter, vgEntity.VariableGroups);
+            var variableGroupFilter = variableGroupUpdateModel.VariableGroupFilter;
+            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
             var keyFilter = variableGroupUpdateModel.KeyFilter;
             var valueFilter = variableGroupUpdateModel.ValueFilter;
             var newValue = variableGroupUpdateModel.NewValue;
@@ -37,8 +39,24 @@ public partial class VariableGroupService
                 }
             }
 
-            return await UpdateVariableGroupsAsync(newValue, filteredVariableGroups, keyFilter, valueRegex, cancellationToken);
+            var finalStatus = await UpdateVariableGroupsAsync(newValue, filteredVariableGroups, keyFilter, valueRegex, cancellationToken);
 
+            if (finalStatus == Status.Success)
+            {
+                var entity = new EditionEntity
+                {
+                    VariableGroupFilter = variableGroupFilter,
+                    Key = keyFilter,
+                    Project = _project,
+                    Organization = variableGroupUpdateModel.Organization,
+                    User = "Viktor",
+                    Date = DateTime.UtcNow,
+                    NewValue = variableGroupUpdateModel.NewValue
+                };
+                await _editionColdRepository.Add(entity, cancellationToken);
+            }
+
+            return finalStatus;
         }
         return status;
     }

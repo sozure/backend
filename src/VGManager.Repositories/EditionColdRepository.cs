@@ -1,13 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
+using VGManager.Repositories.DbContexts;
 using VGManager.Repositories.Interfaces;
 
 namespace VGManager.Repositories;
 
 public class EditionColdRepository : SqlRepository<EditionEntity>, IEditionColdRepository
 {
-    public EditionColdRepository(DbContext dbContext) : base(dbContext)
+    public EditionColdRepository(OperationDbContext dbContext) : base(dbContext)
     {
     }
 

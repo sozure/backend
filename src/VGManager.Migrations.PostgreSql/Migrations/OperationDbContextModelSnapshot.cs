@@ -25,6 +25,7 @@ namespace VGManager.Migrations.PostgreSql.Migrations
             modelBuilder.Entity("VGManager.Entities.AdditionEntity", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Date")
@@ -62,6 +63,7 @@ namespace VGManager.Migrations.PostgreSql.Migrations
             modelBuilder.Entity("VGManager.Entities.DeletionEntity", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Date")
@@ -95,6 +97,7 @@ namespace VGManager.Migrations.PostgreSql.Migrations
             modelBuilder.Entity("VGManager.Entities.EditionEntity", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Date")

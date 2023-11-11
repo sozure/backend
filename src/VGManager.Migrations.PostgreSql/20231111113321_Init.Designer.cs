@@ -12,7 +12,7 @@ using VGManager.Repositories.DbContexts;
 namespace VGManager.Migrations.PostgreSql.Migrations
 {
     [DbContext(typeof(OperationDbContext))]
-    [Migration("20231111112107_Init")]
+    [Migration("20231111113321_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -28,6 +28,7 @@ namespace VGManager.Migrations.PostgreSql.Migrations
             modelBuilder.Entity("VGManager.Entities.AdditionEntity", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Date")
@@ -65,6 +66,7 @@ namespace VGManager.Migrations.PostgreSql.Migrations
             modelBuilder.Entity("VGManager.Entities.DeletionEntity", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Date")
@@ -98,6 +100,7 @@ namespace VGManager.Migrations.PostgreSql.Migrations
             modelBuilder.Entity("VGManager.Entities.EditionEntity", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Date")

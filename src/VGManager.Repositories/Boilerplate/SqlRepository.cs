@@ -25,7 +25,7 @@ public abstract class SqlRepository<TEntity> : Repository<TEntity>, ISqlReposito
     //     The System.Threading.CancellationToken.
     public ValueTask<EntityEntry<TEntity>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        return dbSet.AddAsync(entity, cancellationToken);
+        return _dbSet.AddAsync(entity, cancellationToken);
     }
 
     public async Task<TEntity[]> GetAllAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
@@ -46,7 +46,7 @@ public abstract class SqlRepository<TEntity> : Repository<TEntity>, ISqlReposito
     //     The Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy
     public virtual IExecutionStrategy GetExecutionStrategy()
     {
-        return dbContext.Database.CreateExecutionStrategy();
+        return _dbContext.Database.CreateExecutionStrategy();
     }
 
     //
@@ -58,7 +58,7 @@ public abstract class SqlRepository<TEntity> : Repository<TEntity>, ISqlReposito
     //     The System.Threading.CancellationToken
     public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return dbContext.SaveChangesAsync(cancellationToken);
+        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     //
@@ -70,12 +70,13 @@ public abstract class SqlRepository<TEntity> : Repository<TEntity>, ISqlReposito
     //     The entity to update in database.
     public EntityEntry<TEntity> Update(TEntity entity)
     {
-        return dbSet.Update(entity);
+        return _dbSet.Update(entity);
     }
 
     private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> specification)
     {
-        IQueryable<TEntity> seed = specification.Includes.Aggregate(dbSet.AsQueryable(), (IQueryable<TEntity> current, Expression<Func<TEntity, object>> include) => current.Include(include));
+        IQueryable<TEntity> seed = specification.Includes
+            .Aggregate(_dbSet.AsQueryable(), (IQueryable<TEntity> current, Expression<Func<TEntity, object>> include) => current.Include(include));
         return specification.IncludeStrings.Aggregate(seed, (IQueryable<TEntity> current, string include) => current.Include(include));
     }
 }

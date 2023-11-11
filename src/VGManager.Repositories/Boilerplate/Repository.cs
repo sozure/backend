@@ -2,17 +2,18 @@ using Microsoft.EntityFrameworkCore;
 using VGManager.Repositories.Interfaces.Boilerplate;
 
 namespace VGManager.Repositories.Boilerplate;
+
 public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 {
     //
     // Summary:
     //     The DbContext
-    protected DbContext dbContext;
+    protected DbContext _dbContext;
 
     //
     // Summary:
     //     The Entity
-    protected DbSet<TEntity> dbSet;
+    protected DbSet<TEntity> _dbSet;
 
     //
     // Summary:
@@ -23,32 +24,32 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
     //     The current DbContext
     protected Repository(DbContext dbContext)
     {
-        this.dbContext = dbContext;
-        dbSet = this.dbContext.Set<TEntity>();
+        _dbContext = dbContext;
+        _dbSet = _dbContext.Set<TEntity>();
     }
 
     public virtual Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
-        return dbSet.AddRangeAsync(entities, cancellationToken);
+        return _dbSet.AddRangeAsync(entities, cancellationToken);
     }
 
     public virtual ValueTask<TEntity?> FindAsync(object[] keys, CancellationToken cancellationToken = default)
     {
-        return dbSet.FindAsync(keys, cancellationToken);
+        return _dbSet.FindAsync(keys, cancellationToken);
     }
 
     public virtual void Remove(TEntity entity)
     {
-        dbSet.Remove(entity);
+        _dbSet.Remove(entity);
     }
 
     public virtual void RemoveRange(IEnumerable<TEntity> entities)
     {
-        dbSet.RemoveRange(entities);
+        _dbSet.RemoveRange(entities);
     }
 
     public virtual void UpdateRange(IEnumerable<TEntity> entities)
     {
-        dbSet.UpdateRange(entities);
+        _dbSet.UpdateRange(entities);
     }
 }

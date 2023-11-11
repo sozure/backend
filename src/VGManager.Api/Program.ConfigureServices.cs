@@ -1,17 +1,15 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using System.Reflection;
 using VGManager.Api;
 using VGManager.Api.HealthChecks;
-using VGManager.Api.MapperProfiles;
 using VGManager.AzureAdapter;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Repositories;
 using VGManager.Repositories.Boilerplate;
-using VGManager.Repositories.Interfaces;
 using VGManager.Repositories.DbContexts;
+using VGManager.Repositories.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
 using VGManager.Services.VariableGroupServices;
@@ -53,42 +51,36 @@ static partial class Program
 
         services.AddAutoMapper(
             typeof(Program),
-            typeof(VariableGroupProfile),
             typeof(ServiceProfiles.ProjectProfile)
         );
-
-        //services.AddDbContext<OperationDbContext>(options =>
-        //{
-        //    UseSqlServer(options, configuration);
-        //});
 
         RegisterServices(services, configuration);
 
         return self;
     }
 
-    private static void UseSqlServer(DbContextOptionsBuilder options, ConfigurationManager configuration)
-    {
-        var connectionString = configuration.GetConnectionString("ConnectionStrings__VGManager_API");
-        options.UseSqlServer(connectionString);
-    }
-
     private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
+        var databaseProviderKey = "DatabaseProvider";
         services.AddSingleton<StartupHealthCheck>();
+        
+        var dbConfig = new DatabaseConfiguration
+        {
+            ProviderKey = databaseProviderKey,
+            PostgreConnectionStringKey = Constants.ConnectionStringKeys.PostgreSql,
+            PostgreMigrationsAssemblyKey = Constants.MigrationAssemblyNames.PostgreSql,
+        };
 
-        var connString = configuration.GetConnectionString("VGManager_API");
-
-        AddDatabase<OperationDbContext>(
-            services,
-            configuration,
-            new DatabaseConfiguration
-            {
-                ProviderKey = "DatabaseProvider",
-                PostgreConnectionStringKey = Constants.ConnectionStringKeys.PostgreSql,
-                PostgreMigrationsAssemblyKey = Constants.MigrationAssemblyNames.PostgreSql,
-            }
-        );
+        services.AddDbContext<OperationDbContext>(delegate (DbContextOptionsBuilder options)
+        {
+            options.UseNpgsql(
+                configuration.GetConnectionString(dbConfig.PostgreConnectionStringKey),
+                delegate (NpgsqlDbContextOptionsBuilder options)
+                {
+                    options.MigrationsAssembly(dbConfig.PostgreMigrationsAssemblyKey);
+                }
+            );
+        }, ServiceLifetime.Scoped);
 
         services.AddScoped<IAdditionColdRepository, AdditionColdRepository>();
         services.AddScoped<IDeletionColdRepository, DeletionColdRepository>();
@@ -99,23 +91,5 @@ static partial class Program
         services.AddScoped<IVariableGroupAdapter, VariableGroupAdapter>();
         services.AddScoped<IProjectAdapter, ProjectAdapter>();
         services.AddScoped<IKeyVaultAdapter, KeyVaultAdapter>();
-    }
-
-    private static void AddDatabase<TDbContext>(
-        IServiceCollection services,
-        IConfiguration configuration,
-        DatabaseConfiguration databaseConfiguration,
-        ServiceLifetime scope = ServiceLifetime.Scoped
-        ) where TDbContext : DbContext
-    {
-        var configuration2 = configuration;
-        var databaseConfiguration2 = databaseConfiguration;
-        services.AddDbContext<TDbContext>(delegate (DbContextOptionsBuilder options)
-        {
-            options.UseNpgsql(configuration2.GetConnectionString(databaseConfiguration2.PostgreConnectionStringKey), delegate (NpgsqlDbContextOptionsBuilder options)
-            {
-                options.MigrationsAssembly(databaseConfiguration2.PostgreMigrationsAssemblyKey);
-            });
-        }, scope);
     }
 }

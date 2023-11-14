@@ -6,6 +6,7 @@ using VGManager.Api.Projects;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Projects;
+using VGManager.AzureAdapter.Entities;
 
 namespace VGManager.Api.UserProfile;
 
@@ -32,7 +33,31 @@ public class ProfileController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var profile = await _profileService.GetProfile(request.Organization, request.PAT, cancellationToken);
-        return Ok(profile);
+        try
+        {
+            var profile = await _profileService.GetProfileAsync(request.Organization, request.PAT, cancellationToken);
+            if(profile is null)
+            {
+                return Ok(new ProfileResponse()
+                {
+                    Profile = null!,
+                    Status = Status.Unknown
+                });
+            }
+            return Ok(new ProfileResponse()
+            {
+                Profile = profile,
+                Status = Status.Success 
+            });
+        } 
+        catch (Exception)
+        {
+            return Ok(new ProfileResponse()
+            {
+                Profile = null!,
+                Status = Status.Unknown
+            });
+        }
+        
     }
 }

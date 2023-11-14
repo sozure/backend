@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using VGManager.Api.Controllers;
 using VGManager.Api.MapperProfiles;
@@ -8,9 +9,9 @@ using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Entities;
-using VGManager.Repositories;
 using VGManager.Repositories.Interfaces;
 using VGManager.Services;
+using VGManager.Services.Settings;
 using VGManager.Services.VariableGroupServices;
 using ProjectProfile = VGManager.Services.MapperProfiles.ProjectProfile;
 
@@ -50,11 +51,17 @@ public class VariableGroupControllerTests
 
         var loggerMock = new Mock<ILogger<VariableGroupService>>();
 
+        var settings = Options.Create(new OrganizationSettings
+        {
+            Organizations = new string[] { "Organization1" }
+        });
+
         var vgService = new VariableGroupService(
             _variableGroupAdapter.Object, 
             _additionColdRepository.Object, 
             _deletionColdRepository.Object, 
-            _editionColdRepository.Object, 
+            _editionColdRepository.Object,
+            settings,
             loggerMock.Object
             );
 

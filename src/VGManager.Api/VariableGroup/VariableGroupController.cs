@@ -39,7 +39,7 @@ public partial class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = await GetVariableGroupResponsesAsync(request, cancellationToken);
+        var result = await GetVariableGroupResponsesAsync(request.UserName, request, cancellationToken);
         return Ok(result);
     }
 
@@ -52,7 +52,7 @@ public partial class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var subResult = await GetVariableGroupResponsesAsync(request, cancellationToken);
+        var subResult = await GetVariableGroupResponsesAsync(request.UserName, request, cancellationToken);
         var result = GetResult(subResult);
         return Ok(result);
     }
@@ -66,7 +66,7 @@ public partial class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = await GetVariableGroupResponsesAsync(request, cancellationToken);
+        var result = await GetVariableGroupResponsesAsync(request.UserName, request, cancellationToken);
         return Ok(result);
     }
 
@@ -80,9 +80,8 @@ public partial class VariableGroupController : ControllerBase
     )
     {
         var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
-
         _vgService.SetupConnectionRepository(vgServiceModel);
-        var status = await _vgService.UpdateVariableGroupsAsync(vgServiceModel, false, cancellationToken);
+        var status = await _vgService.UpdateVariableGroupsAsync(request.UserName, vgServiceModel, false, cancellationToken);
 
         return Ok(status);
     }
@@ -96,7 +95,7 @@ public partial class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var result = await GetVariableGroupResponsesAsync(request, cancellationToken);
+        var result = await GetVariableGroupResponsesAsync(request.UserName, request, cancellationToken);
         return Ok(result);
     }
 
@@ -118,7 +117,7 @@ public partial class VariableGroupController : ControllerBase
             foreach (var project in projectResponse.Projects)
             {
                 request.Project = project.Name;
-                var subResult = await GetResultAfterDeleteAsync(request, cancellationToken);
+                var subResult = await GetResultAfterDeleteAsync(request.UserName, request, cancellationToken);
                 result.Variables.AddRange(subResult.Variables);
 
                 if (subResult.Status != Status.Success)
@@ -129,7 +128,7 @@ public partial class VariableGroupController : ControllerBase
         }
         else
         {
-            result = await GetResultAfterDeleteAsync(request, cancellationToken);
+            result = await GetResultAfterDeleteAsync(request.UserName, request, cancellationToken);
         }
         return Ok(result);
     }
@@ -144,9 +143,8 @@ public partial class VariableGroupController : ControllerBase
     )
     {
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
-
         _vgService.SetupConnectionRepository(vgServiceModel);
-        var status = await _vgService.DeleteVariablesAsync(vgServiceModel, false, cancellationToken);
+        var status = await _vgService.DeleteVariablesAsync(request.UserName, vgServiceModel, false, cancellationToken);
 
         return Ok(status);
     }

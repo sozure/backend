@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;

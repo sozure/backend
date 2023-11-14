@@ -57,9 +57,9 @@ public class VariableGroupControllerTests
         });
 
         var vgService = new VariableGroupService(
-            _variableGroupAdapter.Object, 
-            _additionColdRepository.Object, 
-            _deletionColdRepository.Object, 
+            _variableGroupAdapter.Object,
+            _additionColdRepository.Object,
+            _deletionColdRepository.Object,
             _editionColdRepository.Object,
             settings,
             loggerMock.Object
@@ -329,7 +329,7 @@ public class VariableGroupControllerTests
 
         _variableGroupAdapter.SetupSequence(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(variableGroupEntity);
-        
+
         _editionColdRepository.Setup(x => x.Add(It.IsAny<EditionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act

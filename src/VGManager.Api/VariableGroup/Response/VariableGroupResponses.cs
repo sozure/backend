@@ -7,7 +7,7 @@ public class VariableGroupResponses
 {
     [Required]
     public Status Status { get; set; }
-    
+
     [Required]
     public List<VariableGroupResponse> VariableGroups { get; set; } = null!;
 }

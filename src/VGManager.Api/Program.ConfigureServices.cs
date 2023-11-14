@@ -68,7 +68,7 @@ static partial class Program
     {
         var databaseProviderKey = "DatabaseProvider";
         services.AddSingleton<StartupHealthCheck>();
-        
+
         var dbConfig = new DatabaseConfiguration
         {
             ProviderKey = databaseProviderKey,

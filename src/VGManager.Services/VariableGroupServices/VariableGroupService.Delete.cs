@@ -21,7 +21,7 @@ public partial class VariableGroupService
             var variableGroupFilter = variableGroupModel.VariableGroupFilter;
             var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
             var finalStatus = await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
-            if(finalStatus == Status.Success)
+            if (finalStatus == Status.Success)
             {
                 var org = variableGroupModel.Organization;
                 var entity = new DeletionEntity

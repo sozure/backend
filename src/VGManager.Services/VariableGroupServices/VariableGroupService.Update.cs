@@ -43,17 +43,23 @@ public partial class VariableGroupService
 
             if (finalStatus == Status.Success)
             {
+                var org = variableGroupUpdateModel.Organization;
+
                 var entity = new EditionEntity
                 {
                     VariableGroupFilter = variableGroupFilter,
                     Key = keyFilter,
                     Project = _project,
-                    Organization = variableGroupUpdateModel.Organization,
+                    Organization = org,
                     User = "Viktor",
                     Date = DateTime.UtcNow,
                     NewValue = variableGroupUpdateModel.NewValue
                 };
-                await _editionColdRepository.Add(entity, cancellationToken);
+
+                if (_organizationSettings.Organizations.Contains(org))
+                {
+                    await _editionColdRepository.Add(entity, cancellationToken);
+                }
             }
 
             return finalStatus;

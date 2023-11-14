@@ -23,16 +23,21 @@ public partial class VariableGroupService
             var finalStatus = await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
             if(finalStatus == Status.Success)
             {
+                var org = variableGroupModel.Organization;
                 var entity = new DeletionEntity
                 {
                     VariableGroupFilter = variableGroupFilter,
                     Key = variableGroupModel.KeyFilter,
                     Project = _project,
-                    Organization = variableGroupModel.Organization,
+                    Organization = org,
                     User = "Viktor",
                     Date = DateTime.UtcNow
                 };
-                await _deletionColdRepository.Add(entity, cancellationToken);
+
+                if (_organizationSettings.Organizations.Contains(org))
+                {
+                    await _deletionColdRepository.Add(entity, cancellationToken);
+                }
             }
             return finalStatus;
         }

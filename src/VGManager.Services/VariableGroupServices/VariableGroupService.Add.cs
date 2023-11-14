@@ -24,19 +24,24 @@ public partial class VariableGroupService
 
             var finalStatus = await AddVariablesAsync(filteredVariableGroups, key, value, cancellationToken);
 
-            if(finalStatus == Status.Success)
+            if (finalStatus == Status.Success)
             {
+                var org = variableGroupAddModel.Organization;
                 var entity = new AdditionEntity
                 {
                     VariableGroupFilter = variableGroupFilter,
                     Key = key,
                     Value = value,
                     Project = _project,
-                    Organization = variableGroupAddModel.Organization,
+                    Organization = org,
                     User = "Viktor",
                     Date = DateTime.UtcNow
                 };
-                await _additionColdRepository.Add(entity, cancellationToken);
+
+                if (_organizationSettings.Organizations.Contains(org))
+                {
+                    await _additionColdRepository.Add(entity, cancellationToken);
+                }
             }
 
             return finalStatus;

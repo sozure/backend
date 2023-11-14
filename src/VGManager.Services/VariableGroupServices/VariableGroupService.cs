@@ -1,10 +1,12 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Repositories.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups.Requests;
+using VGManager.Services.Settings;
 
 namespace VGManager.Services.VariableGroupServices;
 
@@ -14,6 +16,7 @@ public partial class VariableGroupService : IVariableGroupService
     private readonly IAdditionColdRepository _additionColdRepository;
     private readonly IDeletionColdRepository _deletionColdRepository;
     private readonly IEditionColdRepository _editionColdRepository;
+    private readonly OrganizationSettings _organizationSettings;
     private string _project = null!;
     private readonly ILogger _logger;
 
@@ -22,6 +25,7 @@ public partial class VariableGroupService : IVariableGroupService
         IAdditionColdRepository additionColdRepository,
         IDeletionColdRepository deletedColdRepository,
         IEditionColdRepository editionColdRepository,
+        IOptions<OrganizationSettings> organizationSettings,
         ILogger<VariableGroupService> logger
         )
     {
@@ -29,6 +33,7 @@ public partial class VariableGroupService : IVariableGroupService
         _additionColdRepository = additionColdRepository;
         _deletionColdRepository = deletedColdRepository;
         _editionColdRepository = editionColdRepository;
+        _organizationSettings = organizationSettings.Value;
         _logger = logger;
     }
 

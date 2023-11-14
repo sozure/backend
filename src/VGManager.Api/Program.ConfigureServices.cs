@@ -12,6 +12,7 @@ using VGManager.Repositories.DbContexts;
 using VGManager.Repositories.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
+using VGManager.Services.Settings;
 using VGManager.Services.VariableGroupServices;
 using ServiceProfiles = VGManager.Services.MapperProfiles;
 
@@ -53,6 +54,10 @@ static partial class Program
             typeof(Program),
             typeof(ServiceProfiles.ProjectProfile)
         );
+
+        services.AddOptions<OrganizationSettings>()
+            .Bind(configuration.GetSection(Constants.SettingKeys.OrganizationSettings))
+            .ValidateDataAnnotations();
 
         RegisterServices(services, configuration);
 

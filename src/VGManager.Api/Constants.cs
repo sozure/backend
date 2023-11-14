@@ -4,7 +4,8 @@ public static class Constants
 {
     public static class SettingKeys
     {
-        public const string HealthChecksSettings = "HealthChecksSettings";
+        public const string HealthChecksSettings = nameof(HealthChecksSettings);
+        public const string OrganizationSettings = nameof(OrganizationSettings);
     }
 
     public static class Cors

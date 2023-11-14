@@ -28,7 +28,7 @@ public class ProfileController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ProjectsResponse>> GetAsync(
+    public async Task<ActionResult<ProfileResponse>> GetAsync(
         [FromBody] ProfileRequest request,
         CancellationToken cancellationToken
     )

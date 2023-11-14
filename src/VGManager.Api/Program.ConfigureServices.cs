@@ -18,14 +18,14 @@ using ServiceProfiles = VGManager.Services.MapperProfiles;
 
 static partial class Program
 {
-    public static WebApplicationBuilder ConfigureServices(WebApplicationBuilder self, string myAllowSpecificOrigins)
+    public static WebApplicationBuilder ConfigureServices(WebApplicationBuilder self, string specificOrigins)
     {
         var configuration = self.Configuration;
         var services = self.Services;
 
         services.AddCors(options =>
         {
-            options.AddPolicy(name: myAllowSpecificOrigins,
+            options.AddPolicy(name: specificOrigins,
                                 policy =>
                                 {
                                     policy.WithOrigins("http://localhost:3000")

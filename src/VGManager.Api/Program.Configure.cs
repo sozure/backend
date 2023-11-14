@@ -7,7 +7,7 @@ using VGManager.Repositories.DbContexts;
 
 static partial class Program
 {
-    internal static async Task<WebApplication> ConfigureAsync(WebApplication app, string myAllowSpecificOrigins)
+    internal static async Task<WebApplication> ConfigureAsync(WebApplication app, string specificOrigins)
     {
         var configuration = app.Configuration;
 
@@ -37,7 +37,7 @@ static partial class Program
         app.UseSwagger();
         app.UseSwaggerUI();
         app.UseHttpsRedirection();
-        app.UseCors(myAllowSpecificOrigins);
+        app.UseCors(specificOrigins);
         app.UseAuthorization();
         app.MapControllers();
 

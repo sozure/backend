@@ -1,15 +1,15 @@
 using VGManager.Api;
 
-var myAllowSpecificOrigins = Constants.Cors.AllowSpecificOrigins;
+var specificOrigins = Constants.Cors.AllowSpecificOrigins;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddSimpleConsole();
 
-ConfigureServices(builder, myAllowSpecificOrigins);
+ConfigureServices(builder, specificOrigins);
 
 var app = builder.Build();
 
-await ConfigureAsync(app, myAllowSpecificOrigins);
+await ConfigureAsync(app, specificOrigins);
 await app.RunAsync();

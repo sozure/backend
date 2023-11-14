@@ -5,5 +5,5 @@ namespace VGManager.AzureAdapter.Interfaces;
 public interface IProfileAdapter
 {
     void Setup(string organization, string pat);
-    Task<Profile?> GetProfile(CancellationToken cancellationToken = default);
+    Task<Profile?> GetProfileAsync(CancellationToken cancellationToken = default);
 }

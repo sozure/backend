@@ -27,7 +27,7 @@ public class ProfileAdapter: IProfileAdapter
         _connection = new VssConnection(uri, credentials);
     }
 
-    public async Task<Profile?> GetProfile(CancellationToken cancellationToken = default)
+    public async Task<Profile?> GetProfileAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Request profile from Azure DevOps.");
         var client = await _connection.GetClientAsync<ProfileHttpClient>(cancellationToken);

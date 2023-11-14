@@ -9,7 +9,11 @@ namespace VGManager.Services.VariableGroupServices;
 
 public partial class VariableGroupService
 {
-    public async Task<Status> AddVariablesAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default)
+    public async Task<Status> AddVariablesAsync(
+        string userName, 
+        VariableGroupAddModel variableGroupAddModel, 
+        CancellationToken cancellationToken = default
+        )
     {
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
@@ -34,7 +38,7 @@ public partial class VariableGroupService
                     Value = value,
                     Project = _project,
                     Organization = org,
-                    User = "Viktor",
+                    User = userName,
                     Date = DateTime.UtcNow
                 };
 

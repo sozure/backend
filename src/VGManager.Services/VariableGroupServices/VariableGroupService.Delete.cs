@@ -8,6 +8,7 @@ namespace VGManager.Services.VariableGroupServices;
 public partial class VariableGroupService
 {
     public async Task<Status> DeleteVariablesAsync(
+        string userName,
         VariableGroupModel variableGroupModel,
         bool filterAsRegex,
         CancellationToken cancellationToken = default
@@ -30,7 +31,7 @@ public partial class VariableGroupService
                     Key = variableGroupModel.KeyFilter,
                     Project = _project,
                     Organization = org,
-                    User = "Viktor",
+                    User = userName,
                     Date = DateTime.UtcNow
                 };
 

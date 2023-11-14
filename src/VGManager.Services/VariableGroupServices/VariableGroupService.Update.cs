@@ -10,6 +10,7 @@ namespace VGManager.Services.VariableGroupServices;
 public partial class VariableGroupService
 {
     public async Task<Status> UpdateVariableGroupsAsync(
+        string userName,
         VariableGroupUpdateModel variableGroupUpdateModel,
         bool filterAsRegex,
         CancellationToken cancellationToken = default
@@ -51,7 +52,7 @@ public partial class VariableGroupService
                     Key = keyFilter,
                     Project = _project,
                     Organization = org,
-                    User = "Viktor",
+                    User = userName,
                     Date = DateTime.UtcNow,
                     NewValue = variableGroupUpdateModel.NewValue
                 };

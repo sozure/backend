@@ -13,9 +13,9 @@ public class ProfileService: IProfileService
         _profileAdapter = profileAdapter;
     }
 
-    public async Task<Profile?> GetProfile(string organization, string pat, CancellationToken cancellationToken = default)
+    public async Task<Profile?> GetProfileAsync(string organization, string pat, CancellationToken cancellationToken = default)
     {
         _profileAdapter.Setup(organization, pat);
-        return await _profileAdapter.GetProfile(cancellationToken);
+        return await _profileAdapter.GetProfileAsync(cancellationToken);
     }
 }

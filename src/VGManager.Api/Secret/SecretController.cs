@@ -82,7 +82,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Status>> DeleteInlineAsync(
+    public async Task<ActionResult<AdapterStatus>> DeleteInlineAsync(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -118,7 +118,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Status>> RecoverInlineAsync(
+    public async Task<ActionResult<AdapterStatus>> RecoverInlineAsync(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -135,7 +135,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Status>> CopyAsync(
+    public async Task<ActionResult<AdapterStatus>> CopyAsync(
         [FromBody] SecretCopyRequest request,
         CancellationToken cancellationToken
         )

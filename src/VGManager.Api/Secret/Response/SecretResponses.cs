@@ -6,7 +6,7 @@ namespace VGManager.Api.Secrets.Response;
 public class SecretResponses
 {
     [Required]
-    public Status Status { get; set; }
+    public AdapterStatus Status { get; set; }
 
     [Required]
     public IEnumerable<SecretResponse> Secrets { get; set; } = null!;

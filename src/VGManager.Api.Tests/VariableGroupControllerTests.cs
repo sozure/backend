@@ -185,7 +185,7 @@ public class VariableGroupControllerTests
 
         var projectEntity = TestSampleData.GetProjectEntity(firstProjectName, secondProjectName);
 
-        var variableGroupEntity = TestSampleData.GetVariableGroupEntity(Status.Unknown);
+        var variableGroupEntity = TestSampleData.GetVariableGroupEntity(AdapterStatus.Unknown);
 
         _projectAdapter.Setup(x => x.GetProjectsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(projectEntity);
@@ -201,7 +201,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Status.Should().Be(Status.Unknown);
+        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Status.Should().Be(AdapterStatus.Unknown);
         ((VariableResponses)((OkObjectResult)result.Result!).Value!).Variables.Count.Should().Be(0);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
@@ -219,7 +219,7 @@ public class VariableGroupControllerTests
         var project = "Project1";
         string valueFilter = null!;
         var newValue = "newValue";
-        var statusResult = Status.Success;
+        var statusResult = AdapterStatus.Success;
 
         var variableRequest = TestSampleData.GetVariableUpdateRequest("neptun", organization, pat, project, valueFilter, newValue);
 
@@ -236,7 +236,7 @@ public class VariableGroupControllerTests
             .ReturnsAsync(variableGroupEntity1)
             .ReturnsAsync(variableGroupEntity2);
 
-        _editionColdRepository.Setup(x => x.Add(It.IsAny<EditionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        _editionColdRepository.Setup(x => x.AddEntityAsync(It.IsAny<EditionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _controller.UpdateAsync(variableRequest, default);
@@ -260,7 +260,7 @@ public class VariableGroupControllerTests
         var project = "All";
         string valueFilter = null!;
         var newValue = "newValue";
-        var statusResult = Status.Success;
+        var statusResult = AdapterStatus.Success;
         var firstProjectName = "Project1";
         var secondProjectName = "Project2";
 
@@ -291,7 +291,7 @@ public class VariableGroupControllerTests
             .ReturnsAsync(variableGroupEntity3)
             .ReturnsAsync(variableGroupEntity4);
 
-        _editionColdRepository.Setup(x => x.Add(It.IsAny<EditionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        _editionColdRepository.Setup(x => x.AddEntityAsync(It.IsAny<EditionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _controller.UpdateAsync(variableRequest, default);
@@ -317,7 +317,7 @@ public class VariableGroupControllerTests
         var project = "Project1";
         string valueFilter = null!;
         var newValue = "newValue";
-        var statusResult = Status.Success;
+        var statusResult = AdapterStatus.Success;
 
         var variableRequest = TestSampleData.GetVariableUpdateRequest("neptunadapter", organization, pat, project, valueFilter, newValue);
         var variableGroupEntity = TestSampleData.GetVariableGroupEntity();
@@ -330,7 +330,7 @@ public class VariableGroupControllerTests
         _variableGroupAdapter.SetupSequence(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(variableGroupEntity);
 
-        _editionColdRepository.Setup(x => x.Add(It.IsAny<EditionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        _editionColdRepository.Setup(x => x.AddEntityAsync(It.IsAny<EditionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _controller.UpdateInlineAsync(variableRequest, default);
@@ -338,7 +338,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((Status)((OkObjectResult)result.Result!).Value!).Should().Be(statusResult);
+        ((AdapterStatus)((OkObjectResult)result.Result!).Value!).Should().Be(statusResult);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once);
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(1));
@@ -355,7 +355,7 @@ public class VariableGroupControllerTests
         string valueFilter = null!;
         var newKey = "Test1";
         var newValue = "Test1";
-        var statusResult = Status.Success;
+        var statusResult = AdapterStatus.Success;
 
         var variableRequest = TestSampleData.GetVariableAddRequest(organization, pat, project, valueFilter, newKey, newValue);
 
@@ -372,7 +372,7 @@ public class VariableGroupControllerTests
             .ReturnsAsync(variableGroupEntity1)
             .ReturnsAsync(variableGroupEntity2);
 
-        _additionColdRepository.Setup(x => x.Add(It.IsAny<AdditionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        _additionColdRepository.Setup(x => x.AddEntityAsync(It.IsAny<AdditionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _controller.AddAsync(variableRequest, default);
@@ -385,7 +385,7 @@ public class VariableGroupControllerTests
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once);
-        _additionColdRepository.Verify(x => x.Add(It.IsAny<AdditionEntity>(), default), Times.Once);
+        _additionColdRepository.Verify(x => x.AddEntityAsync(It.IsAny<AdditionEntity>(), default), Times.Once);
     }
 
     [Test]
@@ -398,7 +398,7 @@ public class VariableGroupControllerTests
         string valueFilter = null!;
         var newKey = "Test1";
         var newValue = "Test1";
-        var statusResult = Status.Success;
+        var statusResult = AdapterStatus.Success;
         var firstProjectName = "Project1";
         var secondProjectName = "Project2";
 
@@ -428,7 +428,7 @@ public class VariableGroupControllerTests
             .ReturnsAsync(variableGroupEntity3)
             .ReturnsAsync(variableGroupEntity4);
 
-        _additionColdRepository.Setup(x => x.Add(It.IsAny<AdditionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        _additionColdRepository.Setup(x => x.AddEntityAsync(It.IsAny<AdditionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _controller.AddAsync(variableRequest, default);
@@ -443,7 +443,7 @@ public class VariableGroupControllerTests
         _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once);
         _variableGroupAdapter.Verify(x => x.Setup(organization, secondProjectName, pat), Times.Once);
         _projectAdapter.Verify(x => x.GetProjectsAsync($"https://dev.azure.com/{organization}", pat, default), Times.Once);
-        _additionColdRepository.Verify(x => x.Add(It.IsAny<AdditionEntity>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+        _additionColdRepository.Verify(x => x.AddEntityAsync(It.IsAny<AdditionEntity>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
     }
 
     [Test]
@@ -455,7 +455,7 @@ public class VariableGroupControllerTests
         var project = "Project1";
         var keyFilter = "Test1";
         var entityValue = "Value1";
-        var statusResult = Status.Success;
+        var statusResult = AdapterStatus.Success;
 
         var variableRequest = TestSampleData.GetVariableRequest(organization, pat, project, keyFilter, null!);
 
@@ -472,7 +472,7 @@ public class VariableGroupControllerTests
             .ReturnsAsync(variableGroupEntity1)
             .ReturnsAsync(variableGroupEntity2);
 
-        _deletionColdRepository.Setup(x => x.Add(It.IsAny<DeletionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        _deletionColdRepository.Setup(x => x.AddEntityAsync(It.IsAny<DeletionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _controller.DeleteAsync(variableRequest, default);
@@ -496,7 +496,7 @@ public class VariableGroupControllerTests
         var project = "All";
         var keyFilter = "Test1";
         var entityValue = "Value1";
-        var statusResult = Status.Success;
+        var statusResult = AdapterStatus.Success;
         var firstProjectName = "Project1";
         var secondProjectName = "Project2";
 
@@ -522,7 +522,7 @@ public class VariableGroupControllerTests
             .ReturnsAsync(variableGroupEntity3)
             .ReturnsAsync(variableGroupEntity4);
 
-        _deletionColdRepository.Setup(x => x.Add(It.IsAny<DeletionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        _deletionColdRepository.Setup(x => x.AddEntityAsync(It.IsAny<DeletionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _controller.DeleteAsync(variableRequest, default);
@@ -548,7 +548,7 @@ public class VariableGroupControllerTests
         var project = "Project1";
         var keyFilter = "Test1";
         var entityValue = "Value1";
-        var statusResult = Status.Success;
+        var statusResult = AdapterStatus.Success;
 
         var variableRequest = TestSampleData.GetVariableRequest(organization, pat, project, keyFilter, null!);
 
@@ -564,7 +564,7 @@ public class VariableGroupControllerTests
         _variableGroupAdapter.SetupSequence(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(variableGroupEntity1);
 
-        _deletionColdRepository.Setup(x => x.Add(It.IsAny<DeletionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        _deletionColdRepository.Setup(x => x.AddEntityAsync(It.IsAny<DeletionEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _controller.DeleteInlineAsync(variableRequest, default);
@@ -572,7 +572,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((Status)((OkObjectResult)result.Result!).Value!).Should().Be(statusResult);
+        ((AdapterStatus)((OkObjectResult)result.Result!).Value!).Should().Be(statusResult);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once);
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Once);

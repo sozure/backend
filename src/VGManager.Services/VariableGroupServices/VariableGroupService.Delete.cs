@@ -7,7 +7,7 @@ namespace VGManager.Services.VariableGroupServices;
 
 public partial class VariableGroupService
 {
-    public async Task<Status> DeleteVariablesAsync(
+    public async Task<AdapterStatus> DeleteVariablesAsync(
         string userName,
         VariableGroupModel variableGroupModel,
         bool filterAsRegex,
@@ -17,12 +17,12 @@ public partial class VariableGroupService
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
             var variableGroupFilter = variableGroupModel.VariableGroupFilter;
             var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
             var finalStatus = await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
-            if (finalStatus == Status.Success)
+            if (finalStatus == AdapterStatus.Success)
             {
                 var org = variableGroupModel.Organization;
                 var entity = new DeletionEntity
@@ -37,7 +37,7 @@ public partial class VariableGroupService
 
                 if (_organizationSettings.Organizations.Contains(org))
                 {
-                    await _deletionColdRepository.Add(entity, cancellationToken);
+                    await _deletionColdRepository.AddEntityAsync(entity, cancellationToken);
                 }
             }
             return finalStatus;
@@ -46,7 +46,7 @@ public partial class VariableGroupService
         return status;
     }
 
-    private async Task<Status> DeleteVariablesAsync(
+    private async Task<AdapterStatus> DeleteVariablesAsync(
         VariableGroupModel variableGroupModel,
         IEnumerable<VariableGroup> filteredVariableGroups,
         CancellationToken cancellationToken
@@ -77,13 +77,13 @@ public partial class VariableGroupService
                     cancellationToken
                     );
 
-                if (updateStatus == Status.Success)
+                if (updateStatus == AdapterStatus.Success)
                 {
                     deletionCounter2++;
                 }
             }
         }
-        return deletionCounter1 == deletionCounter2 ? Status.Success : Status.Unknown;
+        return deletionCounter1 == deletionCounter2 ? AdapterStatus.Success : AdapterStatus.Unknown;
     }
 
     private static bool DeleteVariables(VariableGroup filteredVariableGroup, string keyFilter, string? valueCondition)

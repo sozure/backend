@@ -24,23 +24,23 @@ public class ProjectAdapter : IProjectAdapter
             await GetConnectionAsync(baseUrl, pat);
             var teamProjectReferences = await _projectHttpClient!.GetProjects();
             _projectHttpClient.Dispose();
-            return GetResult(Status.Success, teamProjectReferences);
+            return GetResult(AdapterStatus.Success, teamProjectReferences);
         }
         catch (VssUnauthorizedException ex)
         {
-            var status = Status.Unauthorized;
+            var status = AdapterStatus.Unauthorized;
             _logger.LogError(ex, "Couldn't get projects. Status: {status}.", status);
             return GetResult(status);
         }
         catch (VssServiceResponseException ex)
         {
-            var status = Status.ResourceNotFound;
+            var status = AdapterStatus.ResourceNotFound;
             _logger.LogError(ex, "Couldn't get projects. Status: {status}.", status);
             return GetResult(status);
         }
         catch (Exception ex)
         {
-            var status = Status.Unknown;
+            var status = AdapterStatus.Unknown;
             _logger.LogError(ex, "Couldn't get projects. Status: {status}.", status);
             return GetResult(status);
         }
@@ -63,7 +63,7 @@ public class ProjectAdapter : IProjectAdapter
         }
     }
 
-    private static ProjectEntity GetResult(Status status, IEnumerable<TeamProjectReference> projects)
+    private static ProjectEntity GetResult(AdapterStatus status, IEnumerable<TeamProjectReference> projects)
     {
         return new()
         {
@@ -72,7 +72,7 @@ public class ProjectAdapter : IProjectAdapter
         };
     }
 
-    private static ProjectEntity GetResult(Status status)
+    private static ProjectEntity GetResult(AdapterStatus status)
     {
         return new()
         {

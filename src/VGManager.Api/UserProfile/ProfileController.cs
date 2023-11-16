@@ -41,13 +41,13 @@ public class ProfileController : ControllerBase
                 return Ok(new ProfileResponse()
                 {
                     Profile = null!,
-                    Status = Status.Unknown
+                    Status = AdapterStatus.Unknown
                 });
             }
             return Ok(new ProfileResponse()
             {
                 Profile = profile,
-                Status = Status.Success 
+                Status = AdapterStatus.Success 
             });
         } 
         catch (Exception)
@@ -55,7 +55,7 @@ public class ProfileController : ControllerBase
             return Ok(new ProfileResponse()
             {
                 Profile = null!,
-                Status = Status.Unknown
+                Status = AdapterStatus.Unknown
             });
         }
         

@@ -1,6 +1,6 @@
 namespace VGManager.AzureAdapter.Entities;
 
-public enum Status
+public enum AdapterStatus
 {
     Success, AlreadyContains, Unauthorized, ResourceNotFound, ProjectDoesNotExist, Unknown
 }

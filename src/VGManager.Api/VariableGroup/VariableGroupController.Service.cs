@@ -13,7 +13,7 @@ public partial class VariableGroupController
     {
         return new VariableResponses
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Variables = new List<VariableResponse>()
         };
     }
@@ -44,7 +44,7 @@ public partial class VariableGroupController
 
         var result = _mapper.Map<VariableResponses>(variableGroupResultModel);
 
-        if (status != Status.Success)
+        if (status != AdapterStatus.Success)
         {
             result.Status = status;
         }
@@ -75,7 +75,7 @@ public partial class VariableGroupController
 
         var result = _mapper.Map<VariableResponses>(variableGroupResultModel);
 
-        if (status != Status.Success)
+        if (status != AdapterStatus.Success)
         {
             result.Status = status;
         }
@@ -99,7 +99,7 @@ public partial class VariableGroupController
 
         var result = _mapper.Map<VariableResponses>(variableGroupResultModel);
 
-        if (status != Status.Success)
+        if (status != AdapterStatus.Success)
         {
             result.Status = status;
         }
@@ -126,7 +126,7 @@ public partial class VariableGroupController
                 var subResult = await GetResultAsync(userName, request, vgRequest, cancellationToken);
                 result.Variables.AddRange(subResult.Variables);
 
-                if (subResult.Status != Status.Success)
+                if (subResult.Status != AdapterStatus.Success)
                 {
                     result.Status = subResult.Status;
                 }

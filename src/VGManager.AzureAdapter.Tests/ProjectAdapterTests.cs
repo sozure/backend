@@ -26,7 +26,7 @@ public class ProjectAdapterTests
         var result = await _projectAdapter.GetProjectsAsync(baseUrl, pat, default);
 
         // Assert
-        result.Status.Should().Be(Entities.Status.Unknown);
+        result.Status.Should().Be(Entities.AdapterStatus.Unknown);
     }
 
     [Test]
@@ -40,6 +40,6 @@ public class ProjectAdapterTests
         var result = await _projectAdapter.GetProjectsAsync(baseUrl, pat, default);
 
         // Assert
-        result.Status.Should().Be(Entities.Status.Unauthorized);
+        result.Status.Should().Be(Entities.AdapterStatus.Unauthorized);
     }
 }

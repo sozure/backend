@@ -58,7 +58,7 @@ public class ProjectControllerTests
 
         var projectsResponse = new ProjectsResponse
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Projects = new List<ProjectResponse>()
             {
                 new ProjectResponse()

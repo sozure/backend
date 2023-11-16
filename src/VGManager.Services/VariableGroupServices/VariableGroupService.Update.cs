@@ -9,7 +9,7 @@ namespace VGManager.Services.VariableGroupServices;
 
 public partial class VariableGroupService
 {
-    public async Task<Status> UpdateVariableGroupsAsync(
+    public async Task<AdapterStatus> UpdateVariableGroupsAsync(
         string userName,
         VariableGroupUpdateModel variableGroupUpdateModel,
         bool filterAsRegex,
@@ -19,7 +19,7 @@ public partial class VariableGroupService
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
             var variableGroupFilter = variableGroupUpdateModel.VariableGroupFilter;
             var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
@@ -42,7 +42,7 @@ public partial class VariableGroupService
 
             var finalStatus = await UpdateVariableGroupsAsync(newValue, filteredVariableGroups, keyFilter, valueRegex, cancellationToken);
 
-            if (finalStatus == Status.Success)
+            if (finalStatus == AdapterStatus.Success)
             {
                 var org = variableGroupUpdateModel.Organization;
 
@@ -59,7 +59,7 @@ public partial class VariableGroupService
 
                 if (_organizationSettings.Organizations.Contains(org))
                 {
-                    await _editionColdRepository.Add(entity, cancellationToken);
+                    await _editionColdRepository.AddEntityAsync(entity, cancellationToken);
                 }
             }
 
@@ -68,7 +68,7 @@ public partial class VariableGroupService
         return status;
     }
 
-    private async Task<Status> UpdateVariableGroupsAsync(
+    private async Task<AdapterStatus> UpdateVariableGroupsAsync(
         string newValue,
         IEnumerable<VariableGroup> filteredVariableGroups,
         string keyFilter,
@@ -95,14 +95,14 @@ public partial class VariableGroupService
                     cancellationToken
                     );
 
-                if (updateStatus == Status.Success)
+                if (updateStatus == AdapterStatus.Success)
                 {
                     updateCounter1++;
                     _logger.LogDebug("{variableGroupName} updated.", variableGroupName);
                 }
             }
         }
-        return updateCounter1 == updateCounter2 ? Status.Success : Status.Unknown;
+        return updateCounter1 == updateCounter2 ? AdapterStatus.Success : AdapterStatus.Unknown;
     }
 
     private static bool UpdateVariables(

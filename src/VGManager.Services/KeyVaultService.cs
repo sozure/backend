@@ -35,7 +35,7 @@ public class KeyVaultService : IKeyVaultService
         var status = secretsEntity.Status;
         var secrets = CollectSecrets(secretsEntity);
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
             var filteredSecrets = Filter(secrets, secretFilter);
 
@@ -49,7 +49,7 @@ public class KeyVaultService : IKeyVaultService
         return GetResult(status, secretList);
     }
 
-    public async Task<Status> CopySecretsAsync(SecretCopyModel secretCopyModel, CancellationToken cancellationToken = default)
+    public async Task<AdapterStatus> CopySecretsAsync(SecretCopyModel secretCopyModel, CancellationToken cancellationToken = default)
     {
         _keyVaultConnectionRepository.Setup(
             secretCopyModel.FromKeyVault,
@@ -74,13 +74,13 @@ public class KeyVaultService : IKeyVaultService
             var parameters = ParametersBuilder(secret, toSecrets, secretCopyModel.OverrideSecret);
             var partialStatus = await _keyVaultConnectionRepository.AddKeyVaultSecretAsync(parameters, cancellationToken);
 
-            if (partialStatus != Status.Success)
+            if (partialStatus != AdapterStatus.Success)
             {
                 return partialStatus;
             }
         }
 
-        return Status.Success;
+        return AdapterStatus.Success;
     }
 
     public DeletedSecretResults GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default)
@@ -89,7 +89,7 @@ public class KeyVaultService : IKeyVaultService
         var secretsEntity = _keyVaultConnectionRepository.GetDeletedSecrets(cancellationToken);
         var status = secretsEntity.Status;
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
             var filteredSecrets = Filter(secretsEntity!.DeletedSecrets, secretFilter);
 
@@ -109,12 +109,12 @@ public class KeyVaultService : IKeyVaultService
     }
 
 
-    public async Task<Status> DeleteAsync(string secretFilter, CancellationToken cancellationToken = default)
+    public async Task<AdapterStatus> DeleteAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
         var secretsResultModel = await _keyVaultConnectionRepository.GetSecretsAsync(cancellationToken);
         var status = secretsResultModel.Status;
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
             return await DeleteAsync(secretFilter, secretsResultModel, cancellationToken);
         }
@@ -122,24 +122,24 @@ public class KeyVaultService : IKeyVaultService
         return status;
     }
 
-    public async Task<Status> RecoverSecretAsync(string secretFilter, CancellationToken cancellationToken = default)
+    public async Task<AdapterStatus> RecoverSecretAsync(string secretFilter, CancellationToken cancellationToken = default)
     {
         var deletedSecretsEntity = _keyVaultConnectionRepository.GetDeletedSecrets(cancellationToken);
         var status = deletedSecretsEntity.Status;
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
             var filteredSecrets = Filter(deletedSecretsEntity.DeletedSecrets, secretFilter);
             var recoverCounter = 0;
             foreach (var secret in filteredSecrets)
             {
                 var recoverStatus = await _keyVaultConnectionRepository.RecoverSecretAsync(secret.Name, cancellationToken);
-                if (recoverStatus == Status.Success)
+                if (recoverStatus == AdapterStatus.Success)
                 {
                     recoverCounter++;
                 }
             }
-            return recoverCounter == filteredSecrets.Count() ? Status.Success : Status.Unknown;
+            return recoverCounter == filteredSecrets.Count() ? AdapterStatus.Success : AdapterStatus.Unknown;
         }
         return status;
     }
@@ -191,7 +191,7 @@ public class KeyVaultService : IKeyVaultService
         return parameters;
     }
 
-    private async Task<Status> DeleteAsync(string secretFilter, SecretsEntity? secretsResultModel, CancellationToken cancellationToken)
+    private async Task<AdapterStatus> DeleteAsync(string secretFilter, SecretsEntity? secretsResultModel, CancellationToken cancellationToken)
     {
         var secrets = CollectSecrets(secretsResultModel);
         var filteredSecrets = Filter(secrets, secretFilter);
@@ -207,13 +207,13 @@ public class KeyVaultService : IKeyVaultService
                 deletionCounter1++;
                 var deletionStatus = await _keyVaultConnectionRepository.DeleteSecretAsync(secretName, cancellationToken);
 
-                if (deletionStatus == Status.Success)
+                if (deletionStatus == AdapterStatus.Success)
                 {
                     deletionCounter2++;
                 }
             }
         }
-        return deletionCounter1 == deletionCounter2 ? Status.Success : Status.Unknown;
+        return deletionCounter1 == deletionCounter2 ? AdapterStatus.Success : AdapterStatus.Unknown;
     }
 
     private static IEnumerable<SecretEntity> CollectSecrets(SecretsEntity? secretsResultModel)
@@ -245,7 +245,7 @@ public class KeyVaultService : IKeyVaultService
         }
     }
 
-    private static DeletedSecretResults GetResult(Status status)
+    private static DeletedSecretResults GetResult(AdapterStatus status)
     {
         return new()
         {
@@ -254,7 +254,7 @@ public class KeyVaultService : IKeyVaultService
         };
     }
 
-    private static DeletedSecretResults GetResult(Status status, IEnumerable<DeletedSecretResult> secretList)
+    private static DeletedSecretResults GetResult(AdapterStatus status, IEnumerable<DeletedSecretResult> secretList)
     {
         return new()
         {
@@ -263,7 +263,7 @@ public class KeyVaultService : IKeyVaultService
         };
     }
 
-    private static SecretResults GetResult(Status status, IEnumerable<SecretResult> secretList)
+    private static SecretResults GetResult(AdapterStatus status, IEnumerable<SecretResult> secretList)
     {
         return new()
         {

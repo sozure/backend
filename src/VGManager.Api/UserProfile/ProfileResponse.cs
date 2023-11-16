@@ -8,7 +8,7 @@ namespace VGManager.Api.UserProfile;
 public class ProfileResponse
 {
     [Required]
-    public Status Status { get; set; }
+    public AdapterStatus Status { get; set; }
     [Required]
     public Profile Profile { get; set; } = null!;
 }

@@ -74,7 +74,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Status>> UpdateInlineAsync(
+    public async Task<ActionResult<AdapterStatus>> UpdateInlineAsync(
         [FromBody] VariableGroupUpdateRequest request,
         CancellationToken cancellationToken
     )
@@ -120,7 +120,7 @@ public partial class VariableGroupController : ControllerBase
                 var subResult = await GetResultAfterDeleteAsync(request.UserName, request, cancellationToken);
                 result.Variables.AddRange(subResult.Variables);
 
-                if (subResult.Status != Status.Success)
+                if (subResult.Status != AdapterStatus.Success)
                 {
                     result.Status = subResult.Status;
                 }
@@ -137,7 +137,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Status>> DeleteInlineAsync(
+    public async Task<ActionResult<AdapterStatus>> DeleteInlineAsync(
         [FromBody] VariableGroupRequest request,
         CancellationToken cancellationToken
     )

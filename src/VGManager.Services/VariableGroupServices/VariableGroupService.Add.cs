@@ -9,7 +9,7 @@ namespace VGManager.Services.VariableGroupServices;
 
 public partial class VariableGroupService
 {
-    public async Task<Status> AddVariablesAsync(
+    public async Task<AdapterStatus> AddVariablesAsync(
         string userName, 
         VariableGroupAddModel variableGroupAddModel, 
         CancellationToken cancellationToken = default
@@ -18,7 +18,7 @@ public partial class VariableGroupService
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
             var keyFilter = variableGroupAddModel.KeyFilter;
             var variableGroupFilter = variableGroupAddModel.VariableGroupFilter;
@@ -28,7 +28,7 @@ public partial class VariableGroupService
 
             var finalStatus = await AddVariablesAsync(filteredVariableGroups, key, value, cancellationToken);
 
-            if (finalStatus == Status.Success)
+            if (finalStatus == AdapterStatus.Success)
             {
                 var org = variableGroupAddModel.Organization;
                 var entity = new AdditionEntity
@@ -44,7 +44,7 @@ public partial class VariableGroupService
 
                 if (_organizationSettings.Organizations.Contains(org))
                 {
-                    await _additionColdRepository.Add(entity, cancellationToken);
+                    await _additionColdRepository.AddEntityAsync(entity, cancellationToken);
                 }
             }
 
@@ -83,7 +83,7 @@ public partial class VariableGroupService
         return filteredVariableGroups;
     }
 
-    private async Task<Status> AddVariablesAsync(IEnumerable<VariableGroup> filteredVariableGroups, string key, string value, CancellationToken cancellationToken)
+    private async Task<AdapterStatus> AddVariablesAsync(IEnumerable<VariableGroup> filteredVariableGroups, string key, string value, CancellationToken cancellationToken)
     {
         var updateCounter = 0;
 
@@ -120,7 +120,7 @@ public partial class VariableGroupService
                     );
             }
         }
-        return updateCounter == filteredVariableGroups.Count() ? Status.Success : Status.Unknown;
+        return updateCounter == filteredVariableGroups.Count() ? AdapterStatus.Success : AdapterStatus.Unknown;
     }
 
     private async Task<bool> AddVariableAsync(string key, string value, VariableGroup filteredVariableGroup, CancellationToken cancellationToken)
@@ -135,7 +135,7 @@ public partial class VariableGroupService
             cancellationToken
             );
 
-        if (updateStatus == Status.Success)
+        if (updateStatus == AdapterStatus.Success)
         {
             return true;
         }

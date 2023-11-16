@@ -6,7 +6,7 @@ namespace VGManager.Api.VariableGroup.Response;
 public class VariableGroupResponses
 {
     [Required]
-    public Status Status { get; set; }
+    public AdapterStatus Status { get; set; }
 
     [Required]
     public List<VariableGroupResponse> VariableGroups { get; set; } = null!;

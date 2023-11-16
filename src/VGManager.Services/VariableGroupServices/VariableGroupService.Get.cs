@@ -17,7 +17,7 @@ public partial class VariableGroupService
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
             return GetVariableGroupsAsync(variableGroupModel, vgEntity, status);
         }
@@ -34,7 +34,7 @@ public partial class VariableGroupService
     private VariableResults GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
         VariableGroupEntity vgEntity,
-        Status status
+        AdapterStatus status
         )
     {
         var matchedVariableGroups = new List<VariableResult>();

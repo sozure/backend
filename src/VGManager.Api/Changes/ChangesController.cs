@@ -4,6 +4,7 @@ using VGManager.Api.Changes.Request;
 using VGManager.Api.Changes.Response;
 using VGManager.Entities;
 using VGManager.Services.Interfaces;
+using VGManager.Services.Models.Changes;
 
 namespace VGManager.Api.Changes;
 
@@ -29,11 +30,24 @@ public class ChangesController: ControllerBase
         CancellationToken cancellationToken
         )
     {
-        var result = _changesService.GetByDateAsync(request.From, request.To, request.ChangeTypes, cancellationToken);
-        return Ok(new ChangesResponse
+        try
         {
-            Status = RepositoryStatus.Success
-        });
+            var result = await _changesService.GetByDateAsync(request.From, request.To, request.ChangeTypes, cancellationToken);
+            return Ok(new ChangesResponse
+            {
+                Status = RepositoryStatus.Success,
+                Operations = result
+            });
+        } 
+        catch(Exception)
+        {
+            return Ok(new ChangesResponse
+            {
+                Status = RepositoryStatus.Unknown,
+                Operations = Array.Empty<OperationModel>()
+            });
+        }
+        
     }
 
     [HttpPost("GetByMaxLimit", Name = "GetByMaxLimit")]
@@ -45,6 +59,22 @@ public class ChangesController: ControllerBase
         CancellationToken cancellationToken
         )
     {
-        return Ok();
+        try
+        {
+            var result = await _changesService.GetByMaxLimitAsync(request.Limit, request.ChangeTypes, cancellationToken);
+            return Ok(new ChangesResponse
+            {
+                Status = RepositoryStatus.Success,
+                Operations = result
+            });
+        } 
+        catch(Exception)
+        {
+            return Ok(new ChangesResponse
+            {
+                Status = RepositoryStatus.Unknown,
+                Operations = Array.Empty<OperationModel>()
+            });
+        }
     }
 }

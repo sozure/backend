@@ -1,4 +1,5 @@
 using AutoMapper;
+using Humanizer;
 using VGManager.Repositories.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Changes;
@@ -68,6 +69,34 @@ public class ChangesService: IChangesService
         CancellationToken cancellationToken = default
         )
     {
-        throw new NotImplementedException();
+        var result = new List<OperationModel>();
+        foreach (var changeType in changeTypes)
+        {
+            switch (changeType)
+            {
+                case ChangeType.Addition:
+                    var additions = _mapper.Map<IEnumerable<AdditionModel>>(
+                        await _additionColdRepository.GetAllAsync(cancellationToken)
+                        );
+                    result.AddRange(additions);
+                    break;
+                case ChangeType.Edition:
+                    var editions = _mapper.Map<IEnumerable<EditionModel>>(
+                        await _editionColdRepository.GetAllAsync(cancellationToken)
+                        );
+                    result.AddRange(editions);
+                    break;
+                case ChangeType.Deletion:
+                    var deletions = _mapper.Map<IEnumerable<DeletionModel>>(
+                        await _deletionColdRepository.GetAllAsync(cancellationToken)
+                        );
+                    result.AddRange(deletions);
+                    break;
+                default:
+                    throw new InvalidOperationException($"ChangeType does not exist: {nameof(changeType)}");
+            }
+        }
+        var sortedResult = result.OrderBy(entity => entity.Date);
+        return sortedResult.Take(limit);
     }
 }

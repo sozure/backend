@@ -1,12 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using VGManager.Api.Projects.Responses;
-using VGManager.Api.Projects;
-using VGManager.Services;
-using VGManager.Services.Interfaces;
-using VGManager.Services.Models.Projects;
 using VGManager.AzureAdapter.Entities;
+using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.UserProfile;
 
@@ -36,7 +32,7 @@ public class ProfileController : ControllerBase
         try
         {
             var profile = await _profileService.GetProfileAsync(request.Organization, request.PAT, cancellationToken);
-            if(profile is null)
+            if (profile is null)
             {
                 return Ok(new ProfileResponse()
                 {
@@ -47,9 +43,9 @@ public class ProfileController : ControllerBase
             return Ok(new ProfileResponse()
             {
                 Profile = profile,
-                Status = AdapterStatus.Success 
+                Status = AdapterStatus.Success
             });
-        } 
+        }
         catch (Exception)
         {
             return Ok(new ProfileResponse()
@@ -58,6 +54,6 @@ public class ProfileController : ControllerBase
                 Status = AdapterStatus.Unknown
             });
         }
-        
+
     }
 }

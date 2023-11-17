@@ -10,8 +10,8 @@ namespace VGManager.Services.VariableGroupServices;
 public partial class VariableGroupService
 {
     public async Task<AdapterStatus> AddVariablesAsync(
-        string userName, 
-        VariableGroupAddModel variableGroupAddModel, 
+        string userName,
+        VariableGroupAddModel variableGroupAddModel,
         CancellationToken cancellationToken = default
         )
     {

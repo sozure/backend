@@ -1,4 +1,3 @@
-using Humanizer;
 using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;

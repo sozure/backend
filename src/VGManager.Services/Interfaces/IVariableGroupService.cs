@@ -21,8 +21,8 @@ public interface IVariableGroupService
         );
 
     Task<AdapterStatus> AddVariablesAsync(
-        string userName, 
-        VariableGroupAddModel variableGroupAddModel, 
+        string userName,
+        VariableGroupAddModel variableGroupAddModel,
         CancellationToken cancellationToken = default
         );
 

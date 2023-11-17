@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VGManager.Api.Changes.Request;
 
-public class ChangesRequestByDate: ChangesRequest
+public class ChangesRequestByDate : ChangesRequest
 {
     [Required]
     public DateTime From { get; set; }

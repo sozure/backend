@@ -7,7 +7,7 @@ using VGManager.AzureAdapter.Interfaces;
 
 namespace VGManager.AzureAdapter;
 
-public class ProfileAdapter: IProfileAdapter
+public class ProfileAdapter : IProfileAdapter
 {
     private VssConnection _connection = null!;
     private readonly ILogger _logger;

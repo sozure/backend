@@ -2,7 +2,6 @@ using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
 using VGManager.Repositories.Interfaces;
-using static VGManager.Repositories.DeletionColdRepository;
 
 namespace VGManager.Repositories;
 

@@ -4,7 +4,7 @@ using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
-public class ProfileService: IProfileService
+public class ProfileService : IProfileService
 {
     private readonly IProfileAdapter _profileAdapter;
 

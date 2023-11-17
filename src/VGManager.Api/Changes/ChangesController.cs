@@ -11,7 +11,7 @@ namespace VGManager.Api.Changes;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class ChangesController: ControllerBase
+public class ChangesController : ControllerBase
 {
 
     private readonly IChangesService _changesService;
@@ -26,7 +26,7 @@ public class ChangesController: ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ChangesResponse>> GetByDateAsync(
-        [FromBody] ChangesRequestByDate request, 
+        [FromBody] ChangesRequestByDate request,
         CancellationToken cancellationToken
         )
     {
@@ -38,8 +38,8 @@ public class ChangesController: ControllerBase
                 Status = RepositoryStatus.Success,
                 Operations = result
             });
-        } 
-        catch(Exception)
+        }
+        catch (Exception)
         {
             return Ok(new ChangesResponse
             {
@@ -47,7 +47,7 @@ public class ChangesController: ControllerBase
                 Operations = Array.Empty<OperationModel>()
             });
         }
-        
+
     }
 
     [HttpPost("GetByMaxLimit", Name = "GetByMaxLimit")]
@@ -67,8 +67,8 @@ public class ChangesController: ControllerBase
                 Status = RepositoryStatus.Success,
                 Operations = result
             });
-        } 
-        catch(Exception)
+        }
+        catch (Exception)
         {
             return Ok(new ChangesResponse
             {

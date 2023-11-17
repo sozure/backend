@@ -31,8 +31,8 @@ public partial class VariableGroupController
     }
 
     private async Task<VariableResponses> GetResultAfterDeleteAsync(
-        string userName, 
-        VariableGroupRequest request, 
+        string userName,
+        VariableGroupRequest request,
         CancellationToken cancellationToken
         )
     {
@@ -84,8 +84,8 @@ public partial class VariableGroupController
     }
 
     private async Task<VariableResponses> GetUpdateResultAsync(
-        string userName, 
-        VariableGroupUpdateRequest request, 
+        string userName,
+        VariableGroupUpdateRequest request,
         CancellationToken cancellationToken
         )
     {
@@ -108,8 +108,8 @@ public partial class VariableGroupController
     }
 
     private async Task<VariableResponses> GetVariableGroupResponsesAsync<T>(
-        string userName, 
-        T request, 
+        string userName,
+        T request,
         CancellationToken cancellationToken
         )
     {
@@ -140,9 +140,9 @@ public partial class VariableGroupController
     }
 
     private async Task<VariableResponses> GetResultAsync<T>(
-        string userName, 
-        T request, 
-        VariableGroupRequest vgRequest, 
+        string userName,
+        T request,
+        VariableGroupRequest vgRequest,
         CancellationToken cancellationToken
         )
     {

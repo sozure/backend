@@ -2,7 +2,6 @@ using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
 using VGManager.Repositories.Interfaces;
-using static VGManager.Repositories.DeletionColdRepository;
 
 namespace VGManager.Repositories;
 
@@ -25,8 +24,8 @@ public class AdditionColdRepository : SqlRepository<AdditionEntity>, IAdditionCo
     }
 
     public async Task<IEnumerable<AdditionEntity>> GetByDateAsync(
-        DateTime from, 
-        DateTime to, 
+        DateTime from,
+        DateTime to,
         CancellationToken cancellationToken = default
         )
     {

@@ -5,7 +5,7 @@ using VGManager.Services.Models.Changes;
 
 namespace VGManager.Services;
 
-public class ChangesService: IChangesService
+public class ChangesService : IChangesService
 {
     private readonly IAdditionColdRepository _additionColdRepository;
     private readonly IEditionColdRepository _editionColdRepository;
@@ -26,16 +26,16 @@ public class ChangesService: IChangesService
     }
 
     public async Task<IEnumerable<OperationModel>> GetByDateAsync(
-        DateTime from, 
+        DateTime from,
         DateTime to,
-        IEnumerable<ChangeType> changeTypes, 
+        IEnumerable<ChangeType> changeTypes,
         CancellationToken cancellationToken = default
         )
     {
         var result = new List<OperationModel>();
-        foreach(var changeType in changeTypes)
+        foreach (var changeType in changeTypes)
         {
-            switch(changeType)
+            switch (changeType)
             {
                 case ChangeType.Addition:
                     var additions = _mapper.Map<IEnumerable<OperationModel>>(
@@ -64,7 +64,7 @@ public class ChangesService: IChangesService
 
     public async Task<IEnumerable<OperationModel>> GetByMaxLimitAsync(
         int limit,
-        IEnumerable<ChangeType> changeTypes, 
+        IEnumerable<ChangeType> changeTypes,
         CancellationToken cancellationToken = default
         )
     {

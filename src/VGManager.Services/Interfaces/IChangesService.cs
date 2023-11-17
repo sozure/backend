@@ -7,14 +7,14 @@ public interface IChangesService
 {
     Task<IEnumerable<OperationModel>> GetByDateAsync(
         DateTime from, 
-        DateTime to, 
-        ChangeType[] changeTypes, 
+        DateTime to,
+        IEnumerable<ChangeType> changeTypes, 
         CancellationToken cancellationToken = default
         );
     
     Task<IEnumerable<OperationModel>> GetByMaxLimitAsync(
-        int limit, 
-        ChangeType[] changeTypes, 
+        int limit,
+        IEnumerable<ChangeType> changeTypes, 
         CancellationToken cancellationToken = default
         );
 }

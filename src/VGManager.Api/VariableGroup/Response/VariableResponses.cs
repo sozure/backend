@@ -9,5 +9,5 @@ public class VariableResponses
     public AdapterStatus Status { get; set; }
 
     [Required]
-    public List<VariableResponse> Variables { get; set; } = null!;
+    public IEnumerable<VariableResponse> Variables { get; set; } = null!;
 }

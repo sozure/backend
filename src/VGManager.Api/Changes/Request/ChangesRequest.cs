@@ -6,5 +6,5 @@ namespace VGManager.Api.Changes.Request;
 public class ChangesRequest
 {
     [Required]
-    public ChangeType[] ChangeTypes { get; set; } = Array.Empty<ChangeType>();
+    public IEnumerable<ChangeType> ChangeTypes { get; set; } = Array.Empty<ChangeType>();
 }

@@ -2,6 +2,7 @@ using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
 using VGManager.Repositories.Interfaces;
+using static VGManager.Repositories.DeletionColdRepository;
 
 namespace VGManager.Repositories;
 
@@ -17,18 +18,20 @@ public class AdditionColdRepository : SqlRepository<AdditionEntity>, IAdditionCo
         await SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<AdditionEntity[]> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<AdditionEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await GetAllAsync(new AdditionSpecification(), cancellationToken);
+        var result = await GetAllAsync(new AdditionSpecification(), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<AdditionEntity>();
     }
 
-    public async Task<AdditionEntity[]> GetByDateAsync(
+    public async Task<IEnumerable<AdditionEntity>> GetByDateAsync(
         DateTime from, 
         DateTime to, 
         CancellationToken cancellationToken = default
         )
     {
-        return await GetAllAsync(new AdditionSpecification(from, to), cancellationToken);
+        var result = await GetAllAsync(new AdditionSpecification(from, to), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<AdditionEntity>();
     }
 
     public class AdditionSpecification : SpecificationBase<AdditionEntity>

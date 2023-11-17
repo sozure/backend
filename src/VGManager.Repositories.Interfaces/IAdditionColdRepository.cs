@@ -6,8 +6,8 @@ namespace VGManager.Repositories.Interfaces;
 public interface IAdditionColdRepository : ISqlRepository<AdditionEntity>
 {
     Task AddEntityAsync(AdditionEntity entity, CancellationToken cancellationToken = default);
-    Task<AdditionEntity[]> GetAllAsync(CancellationToken cancellationToken = default);
-    Task<AdditionEntity[]> GetByDateAsync(
+    Task<IEnumerable<AdditionEntity>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IEnumerable<AdditionEntity>> GetByDateAsync(
         DateTime from,
         DateTime to,
         CancellationToken cancellationToken = default

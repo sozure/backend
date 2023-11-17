@@ -6,8 +6,8 @@ namespace VGManager.Repositories.Interfaces;
 public interface IDeletionColdRepository : ISqlRepository<DeletionEntity>
 {
     Task AddEntityAsync(DeletionEntity entity, CancellationToken cancellationToken = default);
-    Task<DeletionEntity[]> GetAllAsync(CancellationToken cancellationToken = default);
-    Task<DeletionEntity[]> GetByDateAsync(
+    Task<IEnumerable<DeletionEntity>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IEnumerable<DeletionEntity>> GetByDateAsync(
         DateTime from,
         DateTime to,
         CancellationToken cancellationToken = default

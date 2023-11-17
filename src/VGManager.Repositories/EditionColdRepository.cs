@@ -2,6 +2,7 @@ using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
 using VGManager.Repositories.Interfaces;
+using static VGManager.Repositories.DeletionColdRepository;
 
 namespace VGManager.Repositories;
 
@@ -17,18 +18,20 @@ public class EditionColdRepository : SqlRepository<EditionEntity>, IEditionColdR
         await SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<EditionEntity[]> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<EditionEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await GetAllAsync(new EditionSpecification(), cancellationToken);
+        var result = await GetAllAsync(new EditionSpecification(), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<EditionEntity>();
     }
 
-    public async Task<EditionEntity[]> GetByDateAsync(
+    public async Task<IEnumerable<EditionEntity>> GetByDateAsync(
         DateTime from,
         DateTime to,
         CancellationToken cancellationToken = default
         )
     {
-        return await GetAllAsync(new EditionSpecification(from, to), cancellationToken);
+        var result = await GetAllAsync(new EditionSpecification(from, to), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<EditionEntity>();
     }
 
     public class EditionSpecification : SpecificationBase<EditionEntity>

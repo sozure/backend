@@ -1,3 +1,4 @@
+using Humanizer;
 using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
@@ -17,18 +18,20 @@ public class DeletionColdRepository : SqlRepository<DeletionEntity>, IDeletionCo
         await SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<DeletionEntity[]> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<DeletionEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await GetAllAsync(new DeletionSpecification(), cancellationToken);
+        var result = await GetAllAsync(new DeletionSpecification(), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<DeletionEntity>();
     }
 
-    public async Task<DeletionEntity[]> GetByDateAsync(
+    public async Task<IEnumerable<DeletionEntity>> GetByDateAsync(
         DateTime from,
         DateTime to,
         CancellationToken cancellationToken = default
         )
     {
-        return await GetAllAsync(new DeletionSpecification(from, to), cancellationToken);
+        var result = await GetAllAsync(new DeletionSpecification(from, to), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<DeletionEntity>();
     }
 
     public class DeletionSpecification : SpecificationBase<DeletionEntity>

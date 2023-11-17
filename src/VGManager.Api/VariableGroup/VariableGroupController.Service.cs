@@ -124,7 +124,7 @@ public partial class VariableGroupController
             {
                 vgRequest.Project = project.Name;
                 var subResult = await GetResultAsync(userName, request, vgRequest, cancellationToken);
-                result.Variables.AddRange(subResult.Variables);
+                result.Variables.ToList().AddRange(subResult.Variables);
 
                 if (subResult.Status != AdapterStatus.Success)
                 {

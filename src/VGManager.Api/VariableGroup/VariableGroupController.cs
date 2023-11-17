@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Services.Common;
 using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
@@ -118,7 +119,7 @@ public partial class VariableGroupController : ControllerBase
             {
                 request.Project = project.Name;
                 var subResult = await GetResultAfterDeleteAsync(request.UserName, request, cancellationToken);
-                result.Variables.AddRange(subResult.Variables);
+                result.Variables.ToList().AddRange(subResult.Variables);
 
                 if (subResult.Status != AdapterStatus.Success)
                 {

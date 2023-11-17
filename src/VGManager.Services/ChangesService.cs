@@ -1,5 +1,4 @@
 using AutoMapper;
-using Humanizer;
 using VGManager.Repositories.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Changes;
@@ -28,8 +27,8 @@ public class ChangesService: IChangesService
 
     public async Task<IEnumerable<OperationModel>> GetByDateAsync(
         DateTime from, 
-        DateTime to, 
-        ChangeType[] changeTypes, 
+        DateTime to,
+        IEnumerable<ChangeType> changeTypes, 
         CancellationToken cancellationToken = default
         )
     {
@@ -39,19 +38,19 @@ public class ChangesService: IChangesService
             switch(changeType)
             {
                 case ChangeType.Addition:
-                    var additions = _mapper.Map<IEnumerable<AdditionModel>>(
+                    var additions = _mapper.Map<IEnumerable<OperationModel>>(
                         await _additionColdRepository.GetByDateAsync(from, to, cancellationToken)
                         );
                     result.AddRange(additions);
                     break;
                 case ChangeType.Edition:
-                    var editions = _mapper.Map<IEnumerable<EditionModel>>(
+                    var editions = _mapper.Map<IEnumerable<OperationModel>>(
                         await _editionColdRepository.GetByDateAsync(from, to, cancellationToken)
                         );
                     result.AddRange(editions);
                     break;
                 case ChangeType.Deletion:
-                    var deletions = _mapper.Map<IEnumerable<DeletionModel>>(
+                    var deletions = _mapper.Map<IEnumerable<OperationModel>>(
                         await _deletionColdRepository.GetByDateAsync(from, to, cancellationToken)
                         );
                     result.AddRange(deletions);
@@ -60,12 +59,12 @@ public class ChangesService: IChangesService
                     throw new InvalidOperationException($"ChangeType does not exist: {nameof(changeType)}");
             }
         }
-        return result;
+        return result.OrderBy(entity => entity.Date);
     }
 
     public async Task<IEnumerable<OperationModel>> GetByMaxLimitAsync(
-        int limit, 
-        ChangeType[] changeTypes, 
+        int limit,
+        IEnumerable<ChangeType> changeTypes, 
         CancellationToken cancellationToken = default
         )
     {
@@ -75,19 +74,19 @@ public class ChangesService: IChangesService
             switch (changeType)
             {
                 case ChangeType.Addition:
-                    var additions = _mapper.Map<IEnumerable<AdditionModel>>(
+                    var additions = _mapper.Map<IEnumerable<OperationModel>>(
                         await _additionColdRepository.GetAllAsync(cancellationToken)
                         );
                     result.AddRange(additions);
                     break;
                 case ChangeType.Edition:
-                    var editions = _mapper.Map<IEnumerable<EditionModel>>(
+                    var editions = _mapper.Map<IEnumerable<OperationModel>>(
                         await _editionColdRepository.GetAllAsync(cancellationToken)
                         );
                     result.AddRange(editions);
                     break;
                 case ChangeType.Deletion:
-                    var deletions = _mapper.Map<IEnumerable<DeletionModel>>(
+                    var deletions = _mapper.Map<IEnumerable<OperationModel>>(
                         await _deletionColdRepository.GetAllAsync(cancellationToken)
                         );
                     result.AddRange(deletions);

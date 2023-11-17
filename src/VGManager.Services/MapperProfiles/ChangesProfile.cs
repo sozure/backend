@@ -8,9 +8,13 @@ public class ChangesProfile : Profile
 {
     public ChangesProfile()
     {
-        CreateMap<OperationEntity, OperationModel>();
-        CreateMap<EditionEntity, EditionModel>();
-        CreateMap<DeletionEntity, DeletionModel>();
-        CreateMap<AdditionEntity, AdditionModel>();
+        CreateMap<OperationEntity, OperationModel>()
+            .ForMember(src => src.Type, o => o.MapFrom(x => ChangeType.None.ToString()));
+        CreateMap<EditionEntity, OperationModel>()
+            .ForMember(src => src.Type, o => o.MapFrom(x => ChangeType.Edition.ToString()));
+        CreateMap<AdditionEntity, OperationModel>()
+            .ForMember(src => src.Type, o => o.MapFrom(x => ChangeType.Addition.ToString()));
+        CreateMap<DeletionEntity, OperationModel>()
+            .ForMember(src => src.Type, o => o.MapFrom(x => ChangeType.Deletion.ToString()));
     }
 }

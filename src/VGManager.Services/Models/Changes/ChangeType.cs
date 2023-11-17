@@ -4,5 +4,6 @@ public enum ChangeType
 {
     Addition,
     Edition,
-    Deletion
+    Deletion,
+    None
 }

@@ -26,7 +26,7 @@ public class ChangesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ChangesResponse>> GetByDateAsync(
-        [FromBody] ChangesRequestByDate request,
+        [FromBody] ChangesRequest request,
         CancellationToken cancellationToken
         )
     {

@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Changes.Request;
@@ -15,10 +16,12 @@ public class ChangesController : ControllerBase
 {
 
     private readonly IChangesService _changesService;
+    private readonly IMapper _mapper;
 
-    public ChangesController(IChangesService changesService)
+    public ChangesController(IChangesService changesService, IMapper mapper)
     {
         _changesService = changesService;
+        _mapper = mapper;
     }
 
     [HttpPost("Get", Name = "getchanges")]
@@ -32,7 +35,7 @@ public class ChangesController : ControllerBase
     {
         try
         {
-            var result = await _changesService.GetAsync(request.Limit, request.ChangeTypes, cancellationToken);
+            var result = await _changesService.GetAsync(_mapper.Map<RequestModel>(request), cancellationToken);
             return Ok(new ChangesResponse
             {
                 Status = RepositoryStatus.Success,

@@ -59,7 +59,7 @@ public class DeletionColdRepository : SqlRepository<DeletionEntity>, IDeletionCo
             deletionEntity.Date <= to &&
             deletionEntity.Organization == organization &&
             deletionEntity.Project == project &&
-            deletionEntity.User == user
+            deletionEntity.User.Contains(user)
             )
         {
         }

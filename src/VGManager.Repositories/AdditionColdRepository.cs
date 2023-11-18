@@ -59,7 +59,7 @@ public class AdditionColdRepository : SqlRepository<AdditionEntity>, IAdditionCo
             additionEntity.Date <= to &&
             additionEntity.Organization == organization &&
             additionEntity.Project == project &&
-            additionEntity.User == user
+            additionEntity.User.Contains(user)
             )
         {
         }

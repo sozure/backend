@@ -59,7 +59,7 @@ public class EditionColdRepository : SqlRepository<EditionEntity>, IEditionColdR
             editionEntity.Date <= to &&
             editionEntity.Organization == organization &&
             editionEntity.Project == project &&
-            editionEntity.User == user
+            editionEntity.User.Contains(user)
             )
         {
         }

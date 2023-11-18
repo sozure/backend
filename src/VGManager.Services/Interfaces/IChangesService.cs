@@ -5,8 +5,7 @@ namespace VGManager.Services.Interfaces;
 public interface IChangesService
 {
     Task<IEnumerable<OperationModel>> GetAsync(
-        int limit,
-        IEnumerable<ChangeType> changeTypes,
+        RequestModel model,
         CancellationToken cancellationToken = default
         );
 }

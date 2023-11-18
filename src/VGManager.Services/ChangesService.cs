@@ -26,39 +26,43 @@ public class ChangesService : IChangesService
     }
 
     public async Task<IEnumerable<OperationModel>> GetAsync(
-        int limit,
-        IEnumerable<ChangeType> changeTypes,
+        RequestModel model,
         CancellationToken cancellationToken = default
         )
     {
         var result = new List<OperationModel>();
-        foreach (var changeType in changeTypes)
+        var organization = model.Organization;
+        var project = model.Project;
+        var user = model.User;
+        var from = model.From;
+        var to = model.To;
+        foreach (var changeType in model.ChangeTypes)
         {
             switch (changeType)
             {
                 case ChangeType.Add:
-                    var additions = _mapper.Map<IEnumerable<OperationModel>>(
-                        await _additionColdRepository.GetAllAsync(cancellationToken)
-                        );
-                    result.AddRange(additions);
+                    var addEntities = user is null ? 
+                        await _additionColdRepository.GetAsync(organization, project, from, to, cancellationToken) :
+                        await _additionColdRepository.GetAsync(organization, project, user, from, to, cancellationToken);
+                    result.AddRange(_mapper.Map<IEnumerable<OperationModel>>(addEntities));
                     break;
                 case ChangeType.Update:
-                    var editions = _mapper.Map<IEnumerable<OperationModel>>(
-                        await _editionColdRepository.GetAllAsync(cancellationToken)
-                        );
-                    result.AddRange(editions);
+                    var updateEntities = user is null ? 
+                        await _editionColdRepository.GetAsync(organization, project, from, to, cancellationToken) :
+                        await _editionColdRepository.GetAsync(organization, project, user, from, to, cancellationToken);
+                    result.AddRange(_mapper.Map<IEnumerable<OperationModel>>(updateEntities));
                     break;
                 case ChangeType.Delete:
-                    var deletions = _mapper.Map<IEnumerable<OperationModel>>(
-                        await _deletionColdRepository.GetAllAsync(cancellationToken)
-                        );
-                    result.AddRange(deletions);
+                    var deleteEntities = user is null ? 
+                        await _deletionColdRepository.GetAsync(organization, project, from, to, cancellationToken) :
+                        await _deletionColdRepository.GetAsync(organization, project, user, from, to, cancellationToken);
+                    result.AddRange(_mapper.Map<IEnumerable<OperationModel>>(deleteEntities));
                     break;
                 default:
                     throw new InvalidOperationException($"ChangeType does not exist: {nameof(changeType)}");
             }
         }
         var sortedResult = result.OrderByDescending(entity => entity.Date);
-        return sortedResult.Take(limit);
+        return sortedResult.Take(model.Limit);
     }
 }

@@ -21,47 +21,18 @@ public class ChangesController : ControllerBase
         _changesService = changesService;
     }
 
-    [HttpPost("GetByDate", Name = "GetByDate")]
+    [HttpPost("Get", Name = "getchanges")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ChangesResponse>> GetByDateAsync(
+    public async Task<ActionResult<ChangesResponse>> GetAsync(
         [FromBody] ChangesRequest request,
         CancellationToken cancellationToken
         )
     {
         try
         {
-            var result = await _changesService.GetByDateAsync(request.From, request.To, request.ChangeTypes, cancellationToken);
-            return Ok(new ChangesResponse
-            {
-                Status = RepositoryStatus.Success,
-                Operations = result
-            });
-        }
-        catch (Exception)
-        {
-            return Ok(new ChangesResponse
-            {
-                Status = RepositoryStatus.Unknown,
-                Operations = Array.Empty<OperationModel>()
-            });
-        }
-
-    }
-
-    [HttpPost("GetByMaxLimit", Name = "GetByMaxLimit")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ChangesResponse>> GetByMaxLimitAsync(
-        [FromBody] ChangesRequestByLimit request,
-        CancellationToken cancellationToken
-        )
-    {
-        try
-        {
-            var result = await _changesService.GetByMaxLimitAsync(request.Limit, request.ChangeTypes, cancellationToken);
+            var result = await _changesService.GetAsync(request.Limit, request.ChangeTypes, cancellationToken);
             return Ok(new ChangesResponse
             {
                 Status = RepositoryStatus.Success,

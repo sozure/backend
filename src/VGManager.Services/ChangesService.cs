@@ -25,44 +25,7 @@ public class ChangesService : IChangesService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<OperationModel>> GetByDateAsync(
-        DateTime from,
-        DateTime to,
-        IEnumerable<ChangeType> changeTypes,
-        CancellationToken cancellationToken = default
-        )
-    {
-        var result = new List<OperationModel>();
-        foreach (var changeType in changeTypes)
-        {
-            switch (changeType)
-            {
-                case ChangeType.Addition:
-                    var additions = _mapper.Map<IEnumerable<OperationModel>>(
-                        await _additionColdRepository.GetByDateAsync(from, to, cancellationToken)
-                        );
-                    result.AddRange(additions);
-                    break;
-                case ChangeType.Edition:
-                    var editions = _mapper.Map<IEnumerable<OperationModel>>(
-                        await _editionColdRepository.GetByDateAsync(from, to, cancellationToken)
-                        );
-                    result.AddRange(editions);
-                    break;
-                case ChangeType.Deletion:
-                    var deletions = _mapper.Map<IEnumerable<OperationModel>>(
-                        await _deletionColdRepository.GetByDateAsync(from, to, cancellationToken)
-                        );
-                    result.AddRange(deletions);
-                    break;
-                default:
-                    throw new InvalidOperationException($"ChangeType does not exist: {nameof(changeType)}");
-            }
-        }
-        return result.OrderBy(entity => entity.Date);
-    }
-
-    public async Task<IEnumerable<OperationModel>> GetByMaxLimitAsync(
+    public async Task<IEnumerable<OperationModel>> GetAsync(
         int limit,
         IEnumerable<ChangeType> changeTypes,
         CancellationToken cancellationToken = default

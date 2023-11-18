@@ -10,5 +10,7 @@ public class ChangesRequest
     [Required]
     public DateTime To { get; set; }
     [Required]
+    public int Limit { get; set; }
+    [Required]
     public IEnumerable<ChangeType> ChangeTypes { get; set; } = Array.Empty<ChangeType>();
 }

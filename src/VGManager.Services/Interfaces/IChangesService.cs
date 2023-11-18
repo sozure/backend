@@ -4,14 +4,7 @@ namespace VGManager.Services.Interfaces;
 
 public interface IChangesService
 {
-    Task<IEnumerable<OperationModel>> GetByDateAsync(
-        DateTime from,
-        DateTime to,
-        IEnumerable<ChangeType> changeTypes,
-        CancellationToken cancellationToken = default
-        );
-
-    Task<IEnumerable<OperationModel>> GetByMaxLimitAsync(
+    Task<IEnumerable<OperationModel>> GetAsync(
         int limit,
         IEnumerable<ChangeType> changeTypes,
         CancellationToken cancellationToken = default

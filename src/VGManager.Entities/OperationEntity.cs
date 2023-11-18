@@ -8,4 +8,5 @@ public abstract class OperationEntity
     public string Project { get; set; } = null!;
     public DateTime Date { get; set; }
     public string VariableGroupFilter { get; set; } = null!;
+    public string Key { get; set; } = null!;
 }

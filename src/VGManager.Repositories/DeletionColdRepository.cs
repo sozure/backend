@@ -23,13 +23,28 @@ public class DeletionColdRepository : SqlRepository<DeletionEntity>, IDeletionCo
         return result?.ToList() ?? Enumerable.Empty<DeletionEntity>();
     }
 
-    public async Task<IEnumerable<DeletionEntity>> GetByDateAsync(
+    public async Task<IEnumerable<DeletionEntity>> GetAsync(
+        string organization,
+        string project,
+        string user,
         DateTime from,
         DateTime to,
         CancellationToken cancellationToken = default
         )
     {
-        var result = await GetAllAsync(new DeletionSpecification(from, to), cancellationToken);
+        var result = await GetAllAsync(new DeletionSpecification(organization, project, user, from, to), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<DeletionEntity>();
+    }
+
+    public async Task<IEnumerable<DeletionEntity>> GetAsync(
+        string organization,
+        string project,
+        DateTime from,
+        DateTime to,
+        CancellationToken cancellationToken = default
+        )
+    {
+        var result = await GetAllAsync(new DeletionSpecification(organization, project, from, to), cancellationToken);
         return result?.ToList() ?? Enumerable.Empty<DeletionEntity>();
     }
 
@@ -39,8 +54,21 @@ public class DeletionColdRepository : SqlRepository<DeletionEntity>, IDeletionCo
         {
         }
 
-        public DeletionSpecification(DateTime from, DateTime to) : base(
-            deletionEntity => deletionEntity.Date >= from && deletionEntity.Date <= to
+        public DeletionSpecification(string organization, string project, string user, DateTime from, DateTime to) : base(
+            deletionEntity => deletionEntity.Date >= from && 
+            deletionEntity.Date <= to &&
+            deletionEntity.Organization == organization &&
+            deletionEntity.Project == project &&
+            deletionEntity.User == user
+            )
+        {
+        }
+
+        public DeletionSpecification(string organization, string project, DateTime from, DateTime to) : base(
+            deletionEntity => deletionEntity.Date >= from &&
+            deletionEntity.Date <= to &&
+            deletionEntity.Organization == organization &&
+            deletionEntity.Project == project
             )
         {
         }

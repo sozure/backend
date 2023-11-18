@@ -7,7 +7,17 @@ public interface IEditionColdRepository : ISqlRepository<EditionEntity>
 {
     Task AddEntityAsync(EditionEntity entity, CancellationToken cancellationToken = default);
     Task<IEnumerable<EditionEntity>> GetAllAsync(CancellationToken cancellationToken = default);
-    Task<IEnumerable<EditionEntity>> GetByDateAsync(
+    Task<IEnumerable<EditionEntity>> GetAsync(
+        string organization,
+        string project,
+        string user,
+        DateTime from,
+        DateTime to,
+        CancellationToken cancellationToken = default
+        );
+    Task<IEnumerable<EditionEntity>> GetAsync(
+        string organization,
+        string project,
         DateTime from,
         DateTime to,
         CancellationToken cancellationToken = default

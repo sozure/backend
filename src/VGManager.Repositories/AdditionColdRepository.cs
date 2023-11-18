@@ -23,13 +23,28 @@ public class AdditionColdRepository : SqlRepository<AdditionEntity>, IAdditionCo
         return result?.ToList() ?? Enumerable.Empty<AdditionEntity>();
     }
 
-    public async Task<IEnumerable<AdditionEntity>> GetByDateAsync(
+    public async Task<IEnumerable<AdditionEntity>> GetAsync(
+        string organization,
+        string project,
+        string user,
         DateTime from,
         DateTime to,
         CancellationToken cancellationToken = default
         )
     {
-        var result = await GetAllAsync(new AdditionSpecification(from, to), cancellationToken);
+        var result = await GetAllAsync(new AdditionSpecification(organization, project, user, from, to), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<AdditionEntity>();
+    }
+
+    public async Task<IEnumerable<AdditionEntity>> GetAsync(
+        string organization,
+        string project,
+        DateTime from,
+        DateTime to,
+        CancellationToken cancellationToken = default
+        )
+    {
+        var result = await GetAllAsync(new AdditionSpecification(organization, project, from, to), cancellationToken);
         return result?.ToList() ?? Enumerable.Empty<AdditionEntity>();
     }
 
@@ -39,8 +54,21 @@ public class AdditionColdRepository : SqlRepository<AdditionEntity>, IAdditionCo
         {
         }
 
-        public AdditionSpecification(DateTime from, DateTime to) : base(
-            additionEntity => additionEntity.Date >= from && additionEntity.Date <= to
+        public AdditionSpecification(string organization, string project, string user, DateTime from, DateTime to) : base(
+            additionEntity => additionEntity.Date >= from &&
+            additionEntity.Date <= to &&
+            additionEntity.Organization == organization &&
+            additionEntity.Project == project &&
+            additionEntity.User == user
+            )
+        {
+        }
+
+        public AdditionSpecification(string organization, string project, DateTime from, DateTime to) : base(
+            additionEntity => additionEntity.Date >= from &&
+            additionEntity.Date <= to &&
+            additionEntity.Organization == organization &&
+            additionEntity.Project == project
             )
         {
         }

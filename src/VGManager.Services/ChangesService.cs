@@ -36,19 +36,19 @@ public class ChangesService : IChangesService
         {
             switch (changeType)
             {
-                case ChangeType.Addition:
+                case ChangeType.Add:
                     var additions = _mapper.Map<IEnumerable<OperationModel>>(
                         await _additionColdRepository.GetAllAsync(cancellationToken)
                         );
                     result.AddRange(additions);
                     break;
-                case ChangeType.Edition:
+                case ChangeType.Update:
                     var editions = _mapper.Map<IEnumerable<OperationModel>>(
                         await _editionColdRepository.GetAllAsync(cancellationToken)
                         );
                     result.AddRange(editions);
                     break;
-                case ChangeType.Deletion:
+                case ChangeType.Delete:
                     var deletions = _mapper.Map<IEnumerable<OperationModel>>(
                         await _deletionColdRepository.GetAllAsync(cancellationToken)
                         );
@@ -58,7 +58,7 @@ public class ChangesService : IChangesService
                     throw new InvalidOperationException($"ChangeType does not exist: {nameof(changeType)}");
             }
         }
-        var sortedResult = result.OrderBy(entity => entity.Date);
+        var sortedResult = result.OrderByDescending(entity => entity.Date);
         return sortedResult.Take(limit);
     }
 }

@@ -8,7 +8,9 @@ using VGManager.AzureAdapter;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
+using VGManager.Repositories.Interfaces.SecretRepositories;
 using VGManager.Repositories.Interfaces.VGRepositories;
+using VGManager.Repositories.SecretRepositories;
 using VGManager.Repositories.VGRepositories;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
@@ -90,6 +92,8 @@ static partial class Program
         services.AddScoped<IVGAddColdRepository, VGAddColdRepository>();
         services.AddScoped<IVGDeleteColdRepository, VGDeleteColdRepository>();
         services.AddScoped<IVGUpdateColdRepository, VGUpdateColdRepository>();
+        services.AddScoped<IKeyVaultCopyColdRepository, KeyVaultCopyColdRepository>();
+        services.AddScoped<ISecretChangeColdRepository, SecretChangeColdRepository>();
         services.AddScoped<IVariableGroupService, VariableGroupService>();
         services.AddScoped<IKeyVaultService, KeyVaultService>();
         services.AddScoped<IProjectService, ProjectService>();

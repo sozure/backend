@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secret.Request;
+using VGManager.Api.Secret.Response;
 using VGManager.Api.Secrets.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Interfaces;
@@ -28,19 +29,33 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<string>>> GetKeyVaults(
+    public async Task<ActionResult<KeyVaultResponses>> GetKeyVaults(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
     {
-        var keyVaults = await _keyVaultService.GetKeyVaultsAsync(
-            request.TenantId,
-            request.ClientId,
-            request.ClientSecret,
-            cancellationToken
+        try
+        {
+            var keyVaults = await _keyVaultService.GetKeyVaultsAsync(
+                request.TenantId,
+                request.ClientId,
+                request.ClientSecret,
+                cancellationToken
             );
 
-        return Ok(keyVaults);
+            return Ok(new KeyVaultResponses
+            {
+                Status = AdapterStatus.Success,
+                KeyVaults = keyVaults
+            });
+        } catch (Exception)
+        {
+            return Ok(new KeyVaultResponses
+            {
+                Status = AdapterStatus.Unknown,
+                KeyVaults = Enumerable.Empty<string>()
+            });
+        }
     }
 
     [HttpPost("Get", Name = "GetSecrets")]

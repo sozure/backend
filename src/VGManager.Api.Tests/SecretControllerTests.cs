@@ -7,6 +7,7 @@ using VGManager.Api.MapperProfiles;
 using VGManager.Api.Secrets.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Repositories.Interfaces.SecretRepositories;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
 
@@ -18,6 +19,8 @@ public class SecretControllerTests
     private SecretController _controller;
     private IKeyVaultService _keyVaultService;
     private Mock<IKeyVaultAdapter> _adapter;
+    private Mock<ISecretChangeColdRepository> _secretRepository;
+    private Mock<IKeyVaultCopyColdRepository> _keyVaultRepository;
 
     [SetUp]
     public void Setup()
@@ -32,7 +35,10 @@ public class SecretControllerTests
         _adapter = new(MockBehavior.Strict);
         var loggerMock = new Mock<ILogger<KeyVaultService>>();
 
-        _keyVaultService = new KeyVaultService(_adapter.Object, loggerMock.Object);
+        _keyVaultRepository = new(MockBehavior.Strict);
+        _secretRepository = new(MockBehavior.Strict);
+
+        _keyVaultService = new KeyVaultService(_adapter.Object, _secretRepository.Object, _keyVaultRepository.Object, loggerMock.Object);
         _controller = new(_keyVaultService, mapper);
     }
 

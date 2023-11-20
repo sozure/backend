@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Entities.SecretEntities;
+using VGManager.Repositories.Interfaces.SecretRepositories;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Secrets.Requests;
 using VGManager.Services.Models.Secrets.Results;
@@ -12,12 +14,21 @@ namespace VGManager.Services;
 public class KeyVaultService : IKeyVaultService
 {
     private readonly IKeyVaultAdapter _keyVaultConnectionRepository;
+    private readonly ISecretChangeColdRepository _secretChangeColdRepository;
+    private readonly IKeyVaultCopyColdRepository _keyVaultCopyColdRepository;
     private string _keyVault = null!;
     private readonly ILogger _logger;
 
-    public KeyVaultService(IKeyVaultAdapter keyVaultConnectionRepository, ILogger<KeyVaultService> logger)
+    public KeyVaultService(
+        IKeyVaultAdapter keyVaultConnectionRepository, 
+        ISecretChangeColdRepository secretChangeColdRepository,
+        IKeyVaultCopyColdRepository keyVaultCopyColdRepository,
+        ILogger<KeyVaultService> logger
+        )
     {
         _keyVaultConnectionRepository = keyVaultConnectionRepository;
+        _secretChangeColdRepository = secretChangeColdRepository;
+        _keyVaultCopyColdRepository = keyVaultCopyColdRepository;
         _logger = logger;
     }
 
@@ -80,6 +91,16 @@ public class KeyVaultService : IKeyVaultService
             }
         }
 
+        var entity = new KeyVaultCopyEntity 
+        {
+            Date = DateTime.UtcNow,
+            OriginalKeyVault = secretCopyModel.FromKeyVault,
+            DestinationKeyVault = secretCopyModel.ToKeyVault,
+            User = "Viktor"
+        };
+        
+        await _keyVaultCopyColdRepository.AddEntityAsync(entity, cancellationToken);
+
         return AdapterStatus.Success;
     }
 
@@ -139,7 +160,22 @@ public class KeyVaultService : IKeyVaultService
                     recoverCounter++;
                 }
             }
-            return recoverCounter == filteredSecrets.Count() ? AdapterStatus.Success : AdapterStatus.Unknown;
+
+            if(recoverCounter == filteredSecrets.Count())
+            {
+                var entity = new SecretChangeEntity
+                {
+                    ChangeType = SecretChangeType.Recover,
+                    Date = DateTime.UtcNow,
+                    KeyVaultName = _keyVault,
+                    SecretNameRegex = secretFilter,
+                    User = "Viktor"
+
+                };
+                await _secretChangeColdRepository.AddEntityAsync(entity, cancellationToken);
+                return AdapterStatus.Success;
+            }
+            return AdapterStatus.Unknown;
         }
         return status;
     }
@@ -213,7 +249,23 @@ public class KeyVaultService : IKeyVaultService
                 }
             }
         }
-        return deletionCounter1 == deletionCounter2 ? AdapterStatus.Success : AdapterStatus.Unknown;
+
+        if(deletionCounter1 == deletionCounter2)
+        {
+            var entity = new SecretChangeEntity
+            {
+                ChangeType = SecretChangeType.Delete,
+                Date = DateTime.UtcNow,
+                KeyVaultName = _keyVault,
+                SecretNameRegex = secretFilter,
+                User = "Viktor"
+
+            };
+            await _secretChangeColdRepository.AddEntityAsync(entity, cancellationToken);
+            return AdapterStatus.Success;
+        }
+
+        return AdapterStatus.Unknown;
     }
 
     private static IEnumerable<SecretEntity> CollectSecrets(SecretsEntity? secretsResultModel)

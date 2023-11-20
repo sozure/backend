@@ -23,9 +23,9 @@ public class VariableGroupControllerTests
     private VariableGroupController _controller;
     private Mock<IVariableGroupAdapter> _variableGroupAdapter;
     private Mock<IProjectAdapter> _projectAdapter;
-    private Mock<IAdditionColdRepository> _additionColdRepository;
-    private Mock<IDeletionColdRepository> _deletionColdRepository;
-    private Mock<IEditionColdRepository> _editionColdRepository;
+    private Mock<IVGAddColdRepository> _additionColdRepository;
+    private Mock<IVGDeleteColdRepository> _deletionColdRepository;
+    private Mock<IVGUpdateColdRepository> _editionColdRepository;
 
     [SetUp]
     public void Setup()

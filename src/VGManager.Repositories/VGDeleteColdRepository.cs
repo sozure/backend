@@ -5,9 +5,9 @@ using VGManager.Repositories.Interfaces;
 
 namespace VGManager.Repositories;
 
-public class DeletionColdRepository : SqlRepository<DeletionEntity>, IDeletionColdRepository
+public class VGDeleteColdRepository : SqlRepository<DeletionEntity>, IVGDeleteColdRepository
 {
-    public DeletionColdRepository(OperationDbContext dbContext) : base(dbContext)
+    public VGDeleteColdRepository(OperationDbContext dbContext) : base(dbContext)
     {
     }
 

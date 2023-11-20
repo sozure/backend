@@ -87,9 +87,9 @@ static partial class Program
             );
         }, ServiceLifetime.Scoped);
 
-        services.AddScoped<IAdditionColdRepository, AdditionColdRepository>();
-        services.AddScoped<IDeletionColdRepository, DeletionColdRepository>();
-        services.AddScoped<IEditionColdRepository, EditionColdRepository>();
+        services.AddScoped<IVGAddColdRepository, VGAddColdRepository>();
+        services.AddScoped<IVGDeleteColdRepository, VGDeleteColdRepository>();
+        services.AddScoped<IVGUpdateColdRepository, VGUpdateColdRepository>();
         services.AddScoped<IVariableGroupService, VariableGroupService>();
         services.AddScoped<IKeyVaultService, KeyVaultService>();
         services.AddScoped<IProjectService, ProjectService>();

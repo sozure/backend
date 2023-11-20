@@ -13,18 +13,18 @@ namespace VGManager.Services.VariableGroupServices;
 public partial class VariableGroupService : IVariableGroupService
 {
     private readonly IVariableGroupAdapter _variableGroupConnectionRepository;
-    private readonly IAdditionColdRepository _additionColdRepository;
-    private readonly IDeletionColdRepository _deletionColdRepository;
-    private readonly IEditionColdRepository _editionColdRepository;
+    private readonly IVGAddColdRepository _additionColdRepository;
+    private readonly IVGDeleteColdRepository _deletionColdRepository;
+    private readonly IVGUpdateColdRepository _editionColdRepository;
     private readonly OrganizationSettings _organizationSettings;
     private string _project = null!;
     private readonly ILogger _logger;
 
     public VariableGroupService(
         IVariableGroupAdapter variableGroupConnectionRepository,
-        IAdditionColdRepository additionColdRepository,
-        IDeletionColdRepository deletedColdRepository,
-        IEditionColdRepository editionColdRepository,
+        IVGAddColdRepository additionColdRepository,
+        IVGDeleteColdRepository deletedColdRepository,
+        IVGUpdateColdRepository editionColdRepository,
         IOptions<OrganizationSettings> organizationSettings,
         ILogger<VariableGroupService> logger
         )

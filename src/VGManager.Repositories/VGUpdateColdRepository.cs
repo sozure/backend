@@ -5,9 +5,9 @@ using VGManager.Repositories.Interfaces;
 
 namespace VGManager.Repositories;
 
-public class EditionColdRepository : SqlRepository<EditionEntity>, IEditionColdRepository
+public class VGUpdateColdRepository : SqlRepository<EditionEntity>, IVGUpdateColdRepository
 {
-    public EditionColdRepository(OperationDbContext dbContext) : base(dbContext)
+    public VGUpdateColdRepository(OperationDbContext dbContext) : base(dbContext)
     {
     }
 

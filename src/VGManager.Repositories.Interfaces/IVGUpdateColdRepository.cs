@@ -3,7 +3,7 @@ using VGManager.Repositories.Interfaces.Boilerplate;
 
 namespace VGManager.Repositories.Interfaces;
 
-public interface IEditionColdRepository : ISqlRepository<EditionEntity>
+public interface IVGUpdateColdRepository : ISqlRepository<EditionEntity>
 {
     Task AddEntityAsync(EditionEntity entity, CancellationToken cancellationToken = default);
     Task<IEnumerable<EditionEntity>> GetAllAsync(CancellationToken cancellationToken = default);

@@ -7,15 +7,15 @@ namespace VGManager.Services;
 
 public class ChangesService : IChangesService
 {
-    private readonly IAdditionColdRepository _additionColdRepository;
-    private readonly IEditionColdRepository _editionColdRepository;
-    private readonly IDeletionColdRepository _deletionColdRepository;
+    private readonly IVGAddColdRepository _additionColdRepository;
+    private readonly IVGUpdateColdRepository _editionColdRepository;
+    private readonly IVGDeleteColdRepository _deletionColdRepository;
     private readonly IMapper _mapper;
 
     public ChangesService(
-        IAdditionColdRepository additionColdRepository,
-        IEditionColdRepository editionColdRepository,
-        IDeletionColdRepository deletionColdRepository,
+        IVGAddColdRepository additionColdRepository,
+        IVGUpdateColdRepository editionColdRepository,
+        IVGDeleteColdRepository deletionColdRepository,
         IMapper mapper
     )
     {

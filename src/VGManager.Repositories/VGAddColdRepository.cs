@@ -5,9 +5,9 @@ using VGManager.Repositories.Interfaces;
 
 namespace VGManager.Repositories;
 
-public class AdditionColdRepository : SqlRepository<AdditionEntity>, IAdditionColdRepository
+public class VGAddColdRepository : SqlRepository<AdditionEntity>, IVGAddColdRepository
 {
-    public AdditionColdRepository(OperationDbContext dbContext) : base(dbContext)
+    public VGAddColdRepository(OperationDbContext dbContext) : base(dbContext)
     {
     }
 

@@ -20,7 +20,7 @@ public class KeyVaultService : IKeyVaultService
     private readonly ILogger _logger;
 
     public KeyVaultService(
-        IKeyVaultAdapter keyVaultConnectionRepository, 
+        IKeyVaultAdapter keyVaultConnectionRepository,
         ISecretChangeColdRepository secretChangeColdRepository,
         IKeyVaultCopyColdRepository keyVaultCopyColdRepository,
         ILogger<KeyVaultService> logger
@@ -37,6 +37,11 @@ public class KeyVaultService : IKeyVaultService
         var keyVault = secretModel.KeyVaultName;
         _keyVaultConnectionRepository.Setup(keyVault, secretModel.TenantId, secretModel.ClientId, secretModel.ClientSecret);
         _keyVault = keyVault;
+    }
+
+    public async Task<IEnumerable<string>> GetKeyVaultsAsync(string tenantId, string clientId, string clientSecret, CancellationToken cancellationToken = default)
+    {
+        return await _keyVaultConnectionRepository.GetKeyVaultsAsync(tenantId, clientId, clientSecret, cancellationToken);
     }
 
     public async Task<SecretResults> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default)
@@ -91,14 +96,14 @@ public class KeyVaultService : IKeyVaultService
             }
         }
 
-        var entity = new KeyVaultCopyEntity 
+        var entity = new KeyVaultCopyEntity
         {
             Date = DateTime.UtcNow,
             OriginalKeyVault = secretCopyModel.FromKeyVault,
             DestinationKeyVault = secretCopyModel.ToKeyVault,
             User = "Viktor"
         };
-        
+
         await _keyVaultCopyColdRepository.AddEntityAsync(entity, cancellationToken);
 
         return AdapterStatus.Success;
@@ -161,7 +166,7 @@ public class KeyVaultService : IKeyVaultService
                 }
             }
 
-            if(recoverCounter == filteredSecrets.Count())
+            if (recoverCounter == filteredSecrets.Count())
             {
                 var entity = new SecretChangeEntity
                 {
@@ -250,7 +255,7 @@ public class KeyVaultService : IKeyVaultService
             }
         }
 
-        if(deletionCounter1 == deletionCounter2)
+        if (deletionCounter1 == deletionCounter2)
         {
             var entity = new SecretChangeEntity
             {

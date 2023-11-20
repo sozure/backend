@@ -1,4 +1,6 @@
 using Azure.Identity;
+using Azure.ResourceManager;
+using Azure.ResourceManager.KeyVault;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Logging;
 using VGManager.AzureAdapter.Entities;
@@ -24,6 +26,20 @@ public class KeyVaultAdapter : IKeyVaultAdapter
 
         _secretClient = new SecretClient(uri, clientSecretCredential);
         _keyVaultName = keyVaultName;
+    }
+
+    public async Task<IEnumerable<string>> GetKeyVaultsAsync(string tenantId, string clientId, string clientSecret, CancellationToken cancellationToken = default)
+    {
+        var result = new List<string>();
+        var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+        var client = new ArmClient(clientSecretCredential);
+        var sub = await client.GetDefaultSubscriptionAsync(cancellationToken);
+        var keyVaults = sub.GetKeyVaults(top: null, cancellationToken);
+        foreach (var keyVault in keyVaults)
+        {
+            result.Add(keyVault.Data.Name);
+        }
+        return result;
     }
 
     public async Task<SecretEntity> GetSecretAsync(string name, CancellationToken cancellationToken = default)

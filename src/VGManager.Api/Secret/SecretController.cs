@@ -24,6 +24,25 @@ public class SecretController : ControllerBase
         _mapper = mapper;
     }
 
+    [HttpPost("GetKeyVaults", Name = "GetKeyVaults")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<string>>> GetKeyVaults(
+        [FromBody] SecretRequest request,
+        CancellationToken cancellationToken
+        )
+    {
+        var keyVaults = await _keyVaultService.GetKeyVaultsAsync(
+            request.TenantId,
+            request.ClientId,
+            request.ClientSecret,
+            cancellationToken
+            );
+
+        return Ok(keyVaults);
+    }
+
     [HttpPost("Get", Name = "GetSecrets")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

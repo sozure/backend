@@ -1,6 +1,6 @@
 namespace VGManager.Entities.SecretEntities;
 
-public  enum SecretChangeType
+public enum SecretChangeType
 {
     Recover, Delete
 }

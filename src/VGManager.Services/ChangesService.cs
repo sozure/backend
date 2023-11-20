@@ -41,19 +41,19 @@ public class ChangesService : IChangesService
             switch (changeType)
             {
                 case ChangeType.Add:
-                    var addEntities = user is null ? 
+                    var addEntities = user is null ?
                         await _additionColdRepository.GetAsync(organization, project, from, to, cancellationToken) :
                         await _additionColdRepository.GetAsync(organization, project, user, from, to, cancellationToken);
                     result.AddRange(_mapper.Map<IEnumerable<OperationModel>>(addEntities));
                     break;
                 case ChangeType.Update:
-                    var updateEntities = user is null ? 
+                    var updateEntities = user is null ?
                         await _editionColdRepository.GetAsync(organization, project, from, to, cancellationToken) :
                         await _editionColdRepository.GetAsync(organization, project, user, from, to, cancellationToken);
                     result.AddRange(_mapper.Map<IEnumerable<OperationModel>>(updateEntities));
                     break;
                 case ChangeType.Delete:
-                    var deleteEntities = user is null ? 
+                    var deleteEntities = user is null ?
                         await _deletionColdRepository.GetAsync(organization, project, from, to, cancellationToken) :
                         await _deletionColdRepository.GetAsync(organization, project, user, from, to, cancellationToken);
                     result.AddRange(_mapper.Map<IEnumerable<OperationModel>>(deleteEntities));

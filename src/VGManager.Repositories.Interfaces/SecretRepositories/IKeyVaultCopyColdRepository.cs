@@ -1,5 +1,4 @@
 using VGManager.Entities.SecretEntities;
-using VGManager.Entities.VGEntities;
 using VGManager.Repositories.Interfaces.Boilerplate;
 
 namespace VGManager.Repositories.Interfaces.SecretRepositories;

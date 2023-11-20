@@ -4,7 +4,7 @@ using VGManager.Entities.SecretEntities;
 
 namespace VGManager.Entities.Configurations;
 
-public  class KeyVaultCopyEntityConfig : IEntityTypeConfiguration<KeyVaultCopyEntity>
+public class KeyVaultCopyEntityConfig : IEntityTypeConfiguration<KeyVaultCopyEntity>
 {
     /// <summary>
     /// 

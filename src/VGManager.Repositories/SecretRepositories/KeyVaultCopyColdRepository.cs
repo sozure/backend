@@ -5,7 +5,7 @@ using VGManager.Repositories.Interfaces.SecretRepositories;
 
 namespace VGManager.Repositories.SecretRepositories;
 
-public class KeyVaultCopyColdRepository: SqlRepository<KeyVaultCopyEntity>, IKeyVaultCopyColdRepository
+public class KeyVaultCopyColdRepository : SqlRepository<KeyVaultCopyEntity>, IKeyVaultCopyColdRepository
 {
     public KeyVaultCopyColdRepository(OperationsDbContext dbContext) : base(dbContext)
     {

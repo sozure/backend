@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VGManager.Entities.Configurations;
+using VGManager.Entities.SecretEntities;
 using VGManager.Entities.VGEntities;
 
 namespace VGManager.Repositories.DbContexts;
@@ -32,6 +33,8 @@ public class OperationsDbContext : DbContext
     public DbSet<VGAddEntity> VGAdditions { get; set; } = null!;
     public DbSet<VGDeleteEntity> VGDeletions { get; set; } = null!;
     public DbSet<VGUpdateEntity> VGEditions { get; set; } = null!;
+    public DbSet<SecretChangeEntity> SecretChanges { get; set; } = null!;
+    public DbSet<KeyVaultCopyEntity> KeyVaultCopies { get; set; } = null!;
 
     #endregion
 

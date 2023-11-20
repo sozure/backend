@@ -48,9 +48,10 @@ public class SecretController : ControllerBase
                 Status = AdapterStatus.Success,
                 KeyVaults = keyVaults
             });
-        } catch(InvalidOperationException ex)
+        }
+        catch (InvalidOperationException ex)
         {
-            if(ex.Message == "No subscriptions found for the given credentials")
+            if (ex.Message == "No subscriptions found for the given credentials")
             {
                 return Ok(new KeyVaultResponses
                 {
@@ -64,7 +65,8 @@ public class SecretController : ControllerBase
                 Status = AdapterStatus.Unknown,
                 KeyVaults = Enumerable.Empty<string>()
             });
-        } catch (Exception)
+        }
+        catch (Exception)
         {
             return Ok(new KeyVaultResponses
             {

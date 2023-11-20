@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using VGManager.Api.Secrets.Response;
 using VGManager.AzureAdapter.Entities;
 
 namespace VGManager.Api.Secret.Response;

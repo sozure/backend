@@ -50,6 +50,8 @@ public class OperationsDbContext : DbContext
         modelBuilder.ApplyConfiguration(new VGAddEntityConfig());
         modelBuilder.ApplyConfiguration(new VGDeleteEntityConfig());
         modelBuilder.ApplyConfiguration(new VGUpdateEntityConfig());
+        modelBuilder.ApplyConfiguration(new SecretChangeEntityConfig());
+        modelBuilder.ApplyConfiguration(new KeyVaultCopyEntityConfig());
     }
 
     #endregion

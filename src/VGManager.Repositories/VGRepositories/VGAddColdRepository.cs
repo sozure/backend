@@ -7,7 +7,7 @@ namespace VGManager.Repositories.VGRepositories;
 
 public class VGAddColdRepository : SqlRepository<VGAddEntity>, IVGAddColdRepository
 {
-    public VGAddColdRepository(OperationDbContext dbContext) : base(dbContext)
+    public VGAddColdRepository(OperationsDbContext dbContext) : base(dbContext)
     {
     }
 

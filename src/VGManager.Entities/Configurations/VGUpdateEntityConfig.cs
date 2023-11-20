@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace VGManager.Entities.Configurations;
 
-public class EditionEntityConfig : IEntityTypeConfiguration<VGUpdateEntity>
+public class VGUpdateEntityConfig : IEntityTypeConfiguration<VGUpdateEntity>
 {
     /// <summary>
     /// Create configurations.
@@ -13,6 +13,6 @@ public class EditionEntityConfig : IEntityTypeConfiguration<VGUpdateEntity>
     {
         builder.HasKey(editon => editon.Id);
         builder.Property(editon => editon.Id).ValueGeneratedOnAdd();
-        builder.ToTable("Editions");
+        builder.ToTable("Variable_editions");
     }
 }

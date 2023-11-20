@@ -47,7 +47,7 @@ static partial class Program
     private static async Task ApplyDbMigrationsAsync(IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.CreateScope();
-        var operationDbContext = scope.ServiceProvider.GetRequiredService<OperationDbContext>();
+        var operationDbContext = scope.ServiceProvider.GetRequiredService<OperationsDbContext>();
         await operationDbContext.Database.MigrateAsync();
     }
 

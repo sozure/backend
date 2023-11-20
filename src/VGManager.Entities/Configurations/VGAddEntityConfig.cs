@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace VGManager.Entities.Configurations;
 
-public class AdditionEntityConfig : IEntityTypeConfiguration<VGAddEntity>
+public class VGAddEntityConfig : IEntityTypeConfiguration<VGAddEntity>
 {
     /// <summary>
     /// 
@@ -13,6 +13,6 @@ public class AdditionEntityConfig : IEntityTypeConfiguration<VGAddEntity>
     {
         builder.HasKey(addition => addition.Id);
         builder.Property(addition => addition.Id).ValueGeneratedOnAdd();
-        builder.ToTable("Additions");
+        builder.ToTable("Variable_additions");
     }
 }

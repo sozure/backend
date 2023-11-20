@@ -7,7 +7,7 @@ namespace VGManager.Repositories.VGRepositories;
 
 public class VGDeleteColdRepository : SqlRepository<VGDeleteEntity>, IVGDeleteColdRepository
 {
-    public VGDeleteColdRepository(OperationDbContext dbContext) : base(dbContext)
+    public VGDeleteColdRepository(OperationsDbContext dbContext) : base(dbContext)
     {
     }
 

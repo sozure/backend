@@ -7,7 +7,7 @@ namespace VGManager.Repositories.VGRepositories;
 
 public class VGUpdateColdRepository : SqlRepository<VGUpdateEntity>, IVGUpdateColdRepository
 {
-    public VGUpdateColdRepository(OperationDbContext dbContext) : base(dbContext)
+    public VGUpdateColdRepository(OperationsDbContext dbContext) : base(dbContext)
     {
     }
 

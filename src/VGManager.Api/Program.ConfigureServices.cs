@@ -76,7 +76,7 @@ static partial class Program
             PostgreMigrationsAssemblyKey = Constants.MigrationAssemblyNames.PostgreSql,
         };
 
-        services.AddDbContext<OperationDbContext>(delegate (DbContextOptionsBuilder options)
+        services.AddDbContext<OperationsDbContext>(delegate (DbContextOptionsBuilder options)
         {
             options.UseNpgsql(
                 configuration.GetConnectionString(dbConfig.PostgreConnectionStringKey),

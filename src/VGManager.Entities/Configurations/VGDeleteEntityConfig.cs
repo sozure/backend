@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace VGManager.Entities.Configurations;
 
-public class DeletionEntityConfig : IEntityTypeConfiguration<VGDeleteEntity>
+public class VGDeleteEntityConfig : IEntityTypeConfiguration<VGDeleteEntity>
 {
     /// <summary>
     /// Create configurations.
@@ -13,6 +13,6 @@ public class DeletionEntityConfig : IEntityTypeConfiguration<VGDeleteEntity>
     {
         builder.HasKey(deletion => deletion.Id);
         builder.Property(deletion => deletion.Id).ValueGeneratedOnAdd();
-        builder.ToTable("Deletions");
+        builder.ToTable("Variable_deletions");
     }
 }

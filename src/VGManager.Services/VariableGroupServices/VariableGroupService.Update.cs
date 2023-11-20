@@ -3,6 +3,7 @@ using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Entities;
 using VGManager.Entities;
+using VGManager.Entities.VGEntities;
 using VGManager.Services.Models.VariableGroups.Requests;
 
 namespace VGManager.Services.VariableGroupServices;

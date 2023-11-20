@@ -4,19 +4,31 @@
         <name>VGManager.Entities</name>
     </assembly>
     <members>
-        <member name="M:VGManager.Entities.Configurations.AdditionEntityConfig.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{VGManager.Entities.AdditionEntity})">
+        <member name="M:VGManager.Entities.Configurations.KeyVaultCopyEntityConfig.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{VGManager.Entities.SecretEntities.KeyVaultCopyEntity})">
             <summary>
             
             </summary>
             <param name="builder">EntityTypeBuilder <see cref="T:Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder`1"/>.</param>
         </member>
-        <member name="M:VGManager.Entities.Configurations.DeletionEntityConfig.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{VGManager.Entities.DeletionEntity})">
+        <member name="M:VGManager.Entities.Configurations.SecretChangeEntityConfig.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{VGManager.Entities.SecretEntities.SecretChangeEntity})">
+            <summary>
+            
+            </summary>
+            <param name="builder">EntityTypeBuilder <see cref="T:Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder`1"/>.</param>
+        </member>
+        <member name="M:VGManager.Entities.Configurations.VGAddEntityConfig.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{VGManager.Entities.VGEntities.VGAddEntity})">
+            <summary>
+            
+            </summary>
+            <param name="builder">EntityTypeBuilder <see cref="T:Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder`1"/>.</param>
+        </member>
+        <member name="M:VGManager.Entities.Configurations.VGDeleteEntityConfig.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{VGManager.Entities.VGEntities.VGDeleteEntity})">
             <summary>
             Create configurations.
             </summary>
             <param name="builder">EntityTypeBuilder <see cref="T:Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder`1"/>.</param>
         </member>
-        <member name="M:VGManager.Entities.Configurations.EditionEntityConfig.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{VGManager.Entities.EditionEntity})">
+        <member name="M:VGManager.Entities.Configurations.VGUpdateEntityConfig.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{VGManager.Entities.VGEntities.VGUpdateEntity})">
             <summary>
             Create configurations.
             </summary>

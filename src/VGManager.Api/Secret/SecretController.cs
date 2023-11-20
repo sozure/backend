@@ -30,7 +30,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<KeyVaultResponses>> GetKeyVaults(
-        [FromBody] SecretRequest request,
+        [FromBody] SecretBaseRequest request,
         CancellationToken cancellationToken
         )
     {
@@ -47,6 +47,22 @@ public class SecretController : ControllerBase
             {
                 Status = AdapterStatus.Success,
                 KeyVaults = keyVaults
+            });
+        } catch(InvalidOperationException ex)
+        {
+            if(ex.Message == "No subscriptions found for the given credentials")
+            {
+                return Ok(new KeyVaultResponses
+                {
+                    Status = AdapterStatus.NoSubscriptionsFound,
+                    KeyVaults = Enumerable.Empty<string>()
+                });
+            }
+
+            return Ok(new KeyVaultResponses
+            {
+                Status = AdapterStatus.Unknown,
+                KeyVaults = Enumerable.Empty<string>()
             });
         } catch (Exception)
         {

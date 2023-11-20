@@ -35,10 +35,12 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         var client = new ArmClient(clientSecretCredential);
         var sub = await client.GetDefaultSubscriptionAsync(cancellationToken);
         var keyVaults = sub.GetKeyVaults(top: null, cancellationToken);
+
         foreach (var keyVault in keyVaults)
         {
             result.Add(keyVault.Data.Name);
         }
+
         return result;
     }
 

@@ -1,5 +1,5 @@
 namespace VGManager.Entities;
-public class AdditionEntity : OperationEntity
+public class VGAddEntity : VGEntity
 {
     public string Value { get; set; } = null!;
 }

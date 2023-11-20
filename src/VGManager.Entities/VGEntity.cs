@@ -1,6 +1,6 @@
 namespace VGManager.Entities;
 
-public abstract class OperationEntity
+public abstract class VGEntity
 {
     public string Id { get; set; } = null!;
     public string User { get; set; } = null!;

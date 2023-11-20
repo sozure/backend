@@ -25,7 +25,7 @@ public partial class VariableGroupService
             if (finalStatus == AdapterStatus.Success)
             {
                 var org = variableGroupModel.Organization;
-                var entity = new DeletionEntity
+                var entity = new VGDeleteEntity
                 {
                     VariableGroupFilter = variableGroupFilter,
                     Key = variableGroupModel.KeyFilter,

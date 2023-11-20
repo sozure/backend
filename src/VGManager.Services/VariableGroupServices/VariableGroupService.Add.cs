@@ -31,7 +31,7 @@ public partial class VariableGroupService
             if (finalStatus == AdapterStatus.Success)
             {
                 var org = variableGroupAddModel.Organization;
-                var entity = new AdditionEntity
+                var entity = new VGAddEntity
                 {
                     VariableGroupFilter = variableGroupFilter,
                     Key = key,

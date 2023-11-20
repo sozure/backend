@@ -8,13 +8,13 @@ public class ChangesProfile : Profile
 {
     public ChangesProfile()
     {
-        CreateMap<OperationEntity, OperationModel>()
+        CreateMap<VGEntity, OperationModel>()
             .ForMember(src => src.Type, o => o.MapFrom(x => ChangeType.None.ToString()));
-        CreateMap<EditionEntity, OperationModel>()
+        CreateMap<VGUpdateEntity, OperationModel>()
             .ForMember(src => src.Type, o => o.MapFrom(x => ChangeType.Update.ToString()));
-        CreateMap<AdditionEntity, OperationModel>()
+        CreateMap<VGAddEntity, OperationModel>()
             .ForMember(src => src.Type, o => o.MapFrom(x => ChangeType.Add.ToString()));
-        CreateMap<DeletionEntity, OperationModel>()
+        CreateMap<VGDeleteEntity, OperationModel>()
             .ForMember(src => src.Type, o => o.MapFrom(x => ChangeType.Delete.ToString()));
     }
 }

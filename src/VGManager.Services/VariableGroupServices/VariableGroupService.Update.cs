@@ -46,7 +46,7 @@ public partial class VariableGroupService
             {
                 var org = variableGroupUpdateModel.Organization;
 
-                var entity = new EditionEntity
+                var entity = new VGUpdateEntity
                 {
                     VariableGroupFilter = variableGroupFilter,
                     Key = keyFilter,

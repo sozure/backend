@@ -4,11 +4,11 @@ using VGManager.Repositories.Interfaces.Boilerplate;
 
 namespace VGManager.Repositories.Interfaces.VGRepositories;
 
-public interface IVGDeleteColdRepository : ISqlRepository<DeletionEntity>
+public interface IVGDeleteColdRepository : ISqlRepository<VGDeleteEntity>
 {
-    Task AddEntityAsync(DeletionEntity entity, CancellationToken cancellationToken = default);
-    Task<IEnumerable<DeletionEntity>> GetAllAsync(CancellationToken cancellationToken = default);
-    Task<IEnumerable<DeletionEntity>> GetAsync(
+    Task AddEntityAsync(VGDeleteEntity entity, CancellationToken cancellationToken = default);
+    Task<IEnumerable<VGDeleteEntity>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IEnumerable<VGDeleteEntity>> GetAsync(
         string organization,
         string project,
         string user,
@@ -16,7 +16,7 @@ public interface IVGDeleteColdRepository : ISqlRepository<DeletionEntity>
         DateTime to,
         CancellationToken cancellationToken = default
         );
-    Task<IEnumerable<DeletionEntity>> GetAsync(
+    Task<IEnumerable<VGDeleteEntity>> GetAsync(
         string organization,
         string project,
         DateTime from,

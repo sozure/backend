@@ -29,9 +29,9 @@ public class OperationDbContext : DbContext
 
     #region DbSets
 
-    public DbSet<AdditionEntity> Additions { get; set; } = null!;
-    public DbSet<DeletionEntity> Deletions { get; set; } = null!;
-    public DbSet<EditionEntity> Editions { get; set; } = null!;
+    public DbSet<VGAddEntity> Additions { get; set; } = null!;
+    public DbSet<VGDeleteEntity> Deletions { get; set; } = null!;
+    public DbSet<VGUpdateEntity> Editions { get; set; } = null!;
 
     #endregion
 

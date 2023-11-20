@@ -5,25 +5,25 @@ using VGManager.Repositories.Interfaces.VGRepositories;
 
 namespace VGManager.Repositories.VGRepositories;
 
-public class VGUpdateColdRepository : SqlRepository<EditionEntity>, IVGUpdateColdRepository
+public class VGUpdateColdRepository : SqlRepository<VGUpdateEntity>, IVGUpdateColdRepository
 {
     public VGUpdateColdRepository(OperationDbContext dbContext) : base(dbContext)
     {
     }
 
-    public async Task AddEntityAsync(EditionEntity entity, CancellationToken cancellationToken = default)
+    public async Task AddEntityAsync(VGUpdateEntity entity, CancellationToken cancellationToken = default)
     {
         await AddAsync(entity, cancellationToken);
         await SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<EditionEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<VGUpdateEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var result = await GetAllAsync(new EditionSpecification(), cancellationToken);
-        return result?.ToList() ?? Enumerable.Empty<EditionEntity>();
+        return result?.ToList() ?? Enumerable.Empty<VGUpdateEntity>();
     }
 
-    public async Task<IEnumerable<EditionEntity>> GetAsync(
+    public async Task<IEnumerable<VGUpdateEntity>> GetAsync(
         string organization,
         string project,
         string user,
@@ -33,10 +33,10 @@ public class VGUpdateColdRepository : SqlRepository<EditionEntity>, IVGUpdateCol
         )
     {
         var result = await GetAllAsync(new EditionSpecification(organization, project, user, from, to), cancellationToken);
-        return result?.ToList() ?? Enumerable.Empty<EditionEntity>();
+        return result?.ToList() ?? Enumerable.Empty<VGUpdateEntity>();
     }
 
-    public async Task<IEnumerable<EditionEntity>> GetAsync(
+    public async Task<IEnumerable<VGUpdateEntity>> GetAsync(
         string organization,
         string project,
         DateTime from,
@@ -45,10 +45,10 @@ public class VGUpdateColdRepository : SqlRepository<EditionEntity>, IVGUpdateCol
         )
     {
         var result = await GetAllAsync(new EditionSpecification(organization, project, from, to), cancellationToken);
-        return result?.ToList() ?? Enumerable.Empty<EditionEntity>();
+        return result?.ToList() ?? Enumerable.Empty<VGUpdateEntity>();
     }
 
-    public class EditionSpecification : SpecificationBase<EditionEntity>
+    public class EditionSpecification : SpecificationBase<VGUpdateEntity>
     {
         public EditionSpecification() : base(editionEntity => !string.IsNullOrEmpty(editionEntity.Id))
         {

@@ -5,25 +5,25 @@ using VGManager.Repositories.Interfaces.VGRepositories;
 
 namespace VGManager.Repositories.VGRepositories;
 
-public class VGAddColdRepository : SqlRepository<AdditionEntity>, IVGAddColdRepository
+public class VGAddColdRepository : SqlRepository<VGAddEntity>, IVGAddColdRepository
 {
     public VGAddColdRepository(OperationDbContext dbContext) : base(dbContext)
     {
     }
 
-    public async Task AddEntityAsync(AdditionEntity entity, CancellationToken cancellationToken = default)
+    public async Task AddEntityAsync(VGAddEntity entity, CancellationToken cancellationToken = default)
     {
         await AddAsync(entity, cancellationToken);
         await SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<AdditionEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<VGAddEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var result = await GetAllAsync(new AdditionSpecification(), cancellationToken);
-        return result?.ToList() ?? Enumerable.Empty<AdditionEntity>();
+        return result?.ToList() ?? Enumerable.Empty<VGAddEntity>();
     }
 
-    public async Task<IEnumerable<AdditionEntity>> GetAsync(
+    public async Task<IEnumerable<VGAddEntity>> GetAsync(
         string organization,
         string project,
         string user,
@@ -33,10 +33,10 @@ public class VGAddColdRepository : SqlRepository<AdditionEntity>, IVGAddColdRepo
         )
     {
         var result = await GetAllAsync(new AdditionSpecification(organization, project, user, from, to), cancellationToken);
-        return result?.ToList() ?? Enumerable.Empty<AdditionEntity>();
+        return result?.ToList() ?? Enumerable.Empty<VGAddEntity>();
     }
 
-    public async Task<IEnumerable<AdditionEntity>> GetAsync(
+    public async Task<IEnumerable<VGAddEntity>> GetAsync(
         string organization,
         string project,
         DateTime from,
@@ -45,10 +45,10 @@ public class VGAddColdRepository : SqlRepository<AdditionEntity>, IVGAddColdRepo
         )
     {
         var result = await GetAllAsync(new AdditionSpecification(organization, project, from, to), cancellationToken);
-        return result?.ToList() ?? Enumerable.Empty<AdditionEntity>();
+        return result?.ToList() ?? Enumerable.Empty<VGAddEntity>();
     }
 
-    public class AdditionSpecification : SpecificationBase<AdditionEntity>
+    public class AdditionSpecification : SpecificationBase<VGAddEntity>
     {
         public AdditionSpecification() : base(additionEntity => !string.IsNullOrEmpty(additionEntity.Id))
         {

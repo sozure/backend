@@ -3,11 +3,11 @@ using VGManager.Repositories.Interfaces.Boilerplate;
 
 namespace VGManager.Repositories.Interfaces.VGRepositories;
 
-public interface IVGAddColdRepository : ISqlRepository<AdditionEntity>
+public interface IVGAddColdRepository : ISqlRepository<VGAddEntity>
 {
-    Task AddEntityAsync(AdditionEntity entity, CancellationToken cancellationToken = default);
-    Task<IEnumerable<AdditionEntity>> GetAllAsync(CancellationToken cancellationToken = default);
-    Task<IEnumerable<AdditionEntity>> GetAsync(
+    Task AddEntityAsync(VGAddEntity entity, CancellationToken cancellationToken = default);
+    Task<IEnumerable<VGAddEntity>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IEnumerable<VGAddEntity>> GetAsync(
         string organization,
         string project,
         string user,
@@ -15,7 +15,7 @@ public interface IVGAddColdRepository : ISqlRepository<AdditionEntity>
         DateTime to,
         CancellationToken cancellationToken = default
         );
-    Task<IEnumerable<AdditionEntity>> GetAsync(
+    Task<IEnumerable<VGAddEntity>> GetAsync(
         string organization,
         string project,
         DateTime from,

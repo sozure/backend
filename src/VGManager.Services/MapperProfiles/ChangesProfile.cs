@@ -1,5 +1,5 @@
 using AutoMapper;
-using VGManager.Entities;
+using VGManager.Entities.VGEntities;
 using VGManager.Services.Models.Changes;
 
 namespace VGManager.Services.MapperProfiles;

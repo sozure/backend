@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using VGManager.Entities.VGEntities;
 
 namespace VGManager.Entities.Configurations;
 

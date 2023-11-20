@@ -8,7 +8,7 @@ using VGManager.Api.MapperProfiles;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
-using VGManager.Entities;
+using VGManager.Entities.VGEntities;
 using VGManager.Repositories.Interfaces.VGRepositories;
 using VGManager.Services;
 using VGManager.Services.Settings;

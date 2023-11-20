@@ -1,4 +1,4 @@
-namespace VGManager.Entities;
+namespace VGManager.Entities.VGEntities;
 
 public class VGUpdateEntity : VGEntity
 {

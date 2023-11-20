@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using VGManager.Entities;
 using VGManager.Entities.Configurations;
+using VGManager.Entities.VGEntities;
 
 namespace VGManager.Repositories.DbContexts;
 

@@ -1,4 +1,4 @@
-using VGManager.Entities;
+using VGManager.Entities.VGEntities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
 using VGManager.Repositories.Interfaces.VGRepositories;

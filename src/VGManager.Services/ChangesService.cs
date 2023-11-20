@@ -1,5 +1,5 @@
 using AutoMapper;
-using VGManager.Repositories.Interfaces;
+using VGManager.Repositories.Interfaces.VGRepositories;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Changes;
 

@@ -1,9 +1,9 @@
 using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
-using VGManager.Repositories.Interfaces;
+using VGManager.Repositories.Interfaces.VGRepositories;
 
-namespace VGManager.Repositories;
+namespace VGManager.Repositories.VGRepositories;
 
 public class VGUpdateColdRepository : SqlRepository<EditionEntity>, IVGUpdateColdRepository
 {
@@ -55,7 +55,7 @@ public class VGUpdateColdRepository : SqlRepository<EditionEntity>, IVGUpdateCol
         }
 
         public EditionSpecification(string organization, string project, string user, DateTime from, DateTime to) : base(
-            editionEntity => editionEntity.Date >= from && 
+            editionEntity => editionEntity.Date >= from &&
             editionEntity.Date <= to &&
             editionEntity.Organization == organization &&
             editionEntity.Project == project &&

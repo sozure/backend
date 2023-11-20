@@ -1,9 +1,9 @@
 using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
-using VGManager.Repositories.Interfaces;
+using VGManager.Repositories.Interfaces.VGRepositories;
 
-namespace VGManager.Repositories;
+namespace VGManager.Repositories.VGRepositories;
 
 public class VGAddColdRepository : SqlRepository<AdditionEntity>, IVGAddColdRepository
 {

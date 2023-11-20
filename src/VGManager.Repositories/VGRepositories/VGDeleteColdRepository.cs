@@ -1,9 +1,9 @@
 using VGManager.Entities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
-using VGManager.Repositories.Interfaces;
+using VGManager.Repositories.Interfaces.VGRepositories;
 
-namespace VGManager.Repositories;
+namespace VGManager.Repositories.VGRepositories;
 
 public class VGDeleteColdRepository : SqlRepository<DeletionEntity>, IVGDeleteColdRepository
 {
@@ -55,7 +55,7 @@ public class VGDeleteColdRepository : SqlRepository<DeletionEntity>, IVGDeleteCo
         }
 
         public DeletionSpecification(string organization, string project, string user, DateTime from, DateTime to) : base(
-            deletionEntity => deletionEntity.Date >= from && 
+            deletionEntity => deletionEntity.Date >= from &&
             deletionEntity.Date <= to &&
             deletionEntity.Organization == organization &&
             deletionEntity.Project == project &&

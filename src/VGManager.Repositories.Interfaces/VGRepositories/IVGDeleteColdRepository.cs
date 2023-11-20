@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using VGManager.Entities;
 using VGManager.Repositories.Interfaces.Boilerplate;
 
-namespace VGManager.Repositories.Interfaces;
+namespace VGManager.Repositories.Interfaces.VGRepositories;
 
 public interface IVGDeleteColdRepository : ISqlRepository<DeletionEntity>
 {

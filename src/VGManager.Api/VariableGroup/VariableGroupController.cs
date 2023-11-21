@@ -118,7 +118,7 @@ public partial class VariableGroupController : ControllerBase
             {
                 request.Project = project.Name;
                 var subResult = await GetResultAfterDeleteAsync(request.UserName, request, cancellationToken);
-                result.Variables.ToList().AddRange(subResult.Variables);
+                result.Variables.AddRange(subResult.Variables);
 
                 if (subResult.Status != AdapterStatus.Success)
                 {

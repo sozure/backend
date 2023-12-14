@@ -1,3 +1,4 @@
+using Humanizer;
 using VGManager.Entities.SecretEntities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
@@ -23,9 +24,49 @@ public class SecretChangeColdRepository : SqlRepository<SecretChangeEntity>, ISe
         return result?.ToList() ?? Enumerable.Empty<SecretChangeEntity>();
     }
 
+    public async Task<IEnumerable<SecretChangeEntity>> GetAsync(
+        DateTime from, 
+        DateTime to, 
+        string user, 
+        string keyVaultName, 
+        CancellationToken cancellationToken = default
+        )
+    {
+        var result = await GetAllAsync(new SecretChangeSpecification(from, to, user, keyVaultName), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<SecretChangeEntity>();
+    }
+
+    public async Task<IEnumerable<SecretChangeEntity>> GetAsync(
+        DateTime from,
+        DateTime to,
+        string keyVaultName,
+        CancellationToken cancellationToken = default
+        )
+    {
+        var result = await GetAllAsync(new SecretChangeSpecification(from, to, keyVaultName), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<SecretChangeEntity>();
+    }
+
     public class SecretChangeSpecification : SpecificationBase<SecretChangeEntity>
     {
         public SecretChangeSpecification() : base(entity => !string.IsNullOrEmpty(entity.Id))
+        {
+        }
+
+        public SecretChangeSpecification(DateTime from, DateTime to, string user, string keyVaultName) : base(
+            secretChange => secretChange.Date >= from &&
+            secretChange.Date <= to &&
+            secretChange.User == user &&
+            secretChange.KeyVaultName == keyVaultName
+            )
+        {
+        }
+
+        public SecretChangeSpecification(DateTime from, DateTime to, string keyVaultName) : base(
+            secretChange => secretChange.Date >= from &&
+            secretChange.Date <= to &&
+            secretChange.KeyVaultName == keyVaultName
+            )
         {
         }
     }

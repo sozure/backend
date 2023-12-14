@@ -1,3 +1,4 @@
+using System.Threading;
 using VGManager.Entities.SecretEntities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
@@ -23,9 +24,45 @@ public class KeyVaultCopyColdRepository : SqlRepository<KeyVaultCopyEntity>, IKe
         return result?.ToList() ?? Enumerable.Empty<KeyVaultCopyEntity>();
     }
 
+    public async Task<IEnumerable<KeyVaultCopyEntity>> GetAsync(
+        DateTime from, 
+        DateTime to, 
+        string user, 
+        CancellationToken cancellationToken = default
+        )
+    {
+        var result = await GetAllAsync(new KeyVaultCopySpecification(from, to, user), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<KeyVaultCopyEntity>();
+    }
+
+    public async Task<IEnumerable<KeyVaultCopyEntity>> GetAsync(
+        DateTime from,
+        DateTime to,
+        CancellationToken cancellationToken = default
+        )
+    {
+        var result = await GetAllAsync(new KeyVaultCopySpecification(from, to), cancellationToken);
+        return result?.ToList() ?? Enumerable.Empty<KeyVaultCopyEntity>();
+    }
+
     public class KeyVaultCopySpecification : SpecificationBase<KeyVaultCopyEntity>
     {
         public KeyVaultCopySpecification() : base(entity => !string.IsNullOrEmpty(entity.Id))
+        {
+        }
+
+        public KeyVaultCopySpecification(DateTime from, DateTime to, string user) : base(
+            entity => entity.Date >= from &&
+            entity.Date <= to &&
+            entity.User == user
+            )
+        {
+        }
+
+        public KeyVaultCopySpecification(DateTime from, DateTime to) : base(
+            entity => entity.Date >= from &&
+            entity.Date <= to
+            )
         {
         }
     }

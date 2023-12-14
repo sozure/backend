@@ -3,7 +3,7 @@ using VGManager.Services.Models.Changes;
 
 namespace VGManager.Api.Changes.Request;
 
-public class ChangesRequest
+public class KVChangesRequest
 {
     [Required]
     public string Organization { get; set; } = null!;

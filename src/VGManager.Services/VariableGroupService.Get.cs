@@ -5,7 +5,7 @@ using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Models.VariableGroups.Requests;
 using VGManager.Services.Models.VariableGroups.Results;
 
-namespace VGManager.Services.VariableGroupServices;
+namespace VGManager.Services;
 
 public partial class VariableGroupService
 {

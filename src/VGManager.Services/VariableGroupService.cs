@@ -8,7 +8,7 @@ using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups.Requests;
 using VGManager.Services.Settings;
 
-namespace VGManager.Services.VariableGroupServices;
+namespace VGManager.Services;
 
 public partial class VariableGroupService : IVariableGroupService
 {

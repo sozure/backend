@@ -15,7 +15,6 @@ using VGManager.Repositories.VGRepositories;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Settings;
-using VGManager.Services.VariableGroupServices;
 using ServiceProfiles = VGManager.Services.MapperProfiles;
 
 static partial class Program

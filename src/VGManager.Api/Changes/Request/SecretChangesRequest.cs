@@ -6,9 +6,7 @@ namespace VGManager.Api.Changes.Request;
 public class SecretChangesRequest
 {
     [Required]
-    public string Organization { get; set; } = null!;
-    [Required]
-    public string Project { get; set; } = null!;
+    public string KeyVaultName { get; set; } = null!;
     [Required]
     public DateTime From { get; set; }
     [Required]

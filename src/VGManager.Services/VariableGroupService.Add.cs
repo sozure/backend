@@ -10,7 +10,6 @@ namespace VGManager.Services;
 public partial class VariableGroupService
 {
     public async Task<AdapterStatus> AddVariablesAsync(
-        string userName,
         VariableGroupAddModel variableGroupAddModel,
         CancellationToken cancellationToken = default
         )
@@ -38,7 +37,7 @@ public partial class VariableGroupService
                     Value = value,
                     Project = _project,
                     Organization = org,
-                    User = userName,
+                    User = variableGroupAddModel.UserName,
                     Date = DateTime.UtcNow
                 };
 

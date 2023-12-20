@@ -12,7 +12,6 @@ using VGManager.Entities.VGEntities;
 using VGManager.Repositories.Interfaces.VGRepositories;
 using VGManager.Services;
 using VGManager.Services.Settings;
-using VGManager.Services.VariableGroupServices;
 using ProjectProfile = VGManager.Services.MapperProfiles.ProjectProfile;
 
 namespace VGManager.Api.Tests;

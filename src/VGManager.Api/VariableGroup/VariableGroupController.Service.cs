@@ -9,12 +9,21 @@ namespace VGManager.Api.Controllers;
 
 public partial class VariableGroupController
 {
-    private static VariableResponses GetEmptyVariableGroupGetResponses()
+    private static VariableResponses GetEmptyVariablesGetResponses()
     {
         return new VariableResponses
         {
             Status = AdapterStatus.Success,
             Variables = new List<VariableResponse>()
+        };
+    }
+
+    private static VariableGroupResponses GetEmptyVariableGroupGetResponses()
+    {
+        return new VariableGroupResponses
+        {
+            Status = AdapterStatus.Success,
+            VariableGroups = new List<VariableGroupResponse>()
         };
     }
 
@@ -60,6 +69,31 @@ public partial class VariableGroupController
 
         var result = _mapper.Map<VariableResponses>(variableGroupResultsModel);
         return result;
+    }
+
+    private async Task<VariableGroupResponses> GetVGResultAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    {
+        var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
+
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        var variableGroupResultsModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
+
+        var result = new List<VariableGroupResponse>();
+
+        foreach(var variableGroup in variableGroupResultsModel.VariableGroups)
+        {
+            result.Add(new()
+            {
+                Project = request.Project,
+                VariableGroupName = variableGroup.Name
+            });
+        }
+
+        return new VariableGroupResponses
+        {
+            Status = variableGroupResultsModel.Status,
+            VariableGroups = result
+        };
     }
 
     private async Task<VariableResponses> GetAddResultAsync(VariableGroupAddRequest request, CancellationToken cancellationToken)
@@ -114,7 +148,7 @@ public partial class VariableGroupController
         var vgRequest = request as VariableGroupRequest ?? new VariableGroupRequest();
         if (vgRequest.Project == "All")
         {
-            result = GetEmptyVariableGroupGetResponses();
+            result = GetEmptyVariablesGetResponses();
             var projectResponse = await GetProjectsAsync(vgRequest, cancellationToken);
 
             foreach (var project in projectResponse.Projects)

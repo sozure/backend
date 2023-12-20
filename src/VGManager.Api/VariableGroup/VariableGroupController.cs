@@ -52,9 +52,29 @@ public partial class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var subResult = await GetVariableGroupResponsesAsync(request, cancellationToken);
-        var result = GetResult(subResult);
-        return Ok(result);
+        if(request.Project == "All")
+        {
+            var result = GetEmptyVariableGroupGetResponses();
+            var projectResponse = await GetProjectsAsync(request, cancellationToken);
+
+            foreach (var project in projectResponse.Projects)
+            {
+                request.Project = project.Name;
+                var subResult = await GetVGResultAsync(request, cancellationToken);
+                result.VariableGroups.AddRange(subResult.VariableGroups);
+
+                if (subResult.Status != AdapterStatus.Success)
+                {
+                    result.Status = subResult.Status;
+                }
+            }
+            return Ok(result);
+        }
+        else
+        {
+            var result = await GetVGResultAsync(request, cancellationToken);
+            return Ok(result);
+        }
     }
 
     [HttpPost("Update", Name = "UpdateVariables")]
@@ -111,7 +131,7 @@ public partial class VariableGroupController : ControllerBase
         VariableResponses? result;
         if (request.Project == "All")
         {
-            result = GetEmptyVariableGroupGetResponses();
+            result = GetEmptyVariablesGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
             foreach (var project in projectResponse.Projects)

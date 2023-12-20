@@ -64,14 +64,14 @@ public partial class VariableGroupService
 
                 filteredVariableGroups = FilterWithoutSecrets(true, variableGroupFilter, vgEntity.VariableGroups)
                 .Select(vg => vg)
-                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key.ToLower())).Count > 0);
+                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key.ToLower())).Count == 0);
             }
             catch (RegexParseException ex)
             {
                 _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", keyFilter);
                 filteredVariableGroups = FilterWithoutSecrets(true, variableGroupFilter, vgEntity.VariableGroups)
                 .Select(vg => vg)
-                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => keyFilter.ToLower() == key.ToLower()).Count > 0);
+                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => keyFilter.ToLower() == key.ToLower()).Count == 0);
             }
         }
         else
@@ -85,9 +85,10 @@ public partial class VariableGroupService
     private async Task<AdapterStatus> AddVariablesAsync(IEnumerable<VariableGroup> filteredVariableGroups, string key, string value, CancellationToken cancellationToken)
     {
         var updateCounter = 0;
-
+        var counter = 0;
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
+            counter++;
             try
             {
                 var success = await AddVariableAsync(key, value, filteredVariableGroup, cancellationToken);
@@ -119,7 +120,7 @@ public partial class VariableGroupService
                     );
             }
         }
-        return updateCounter == filteredVariableGroups.Count() ? AdapterStatus.Success : AdapterStatus.Unknown;
+        return updateCounter == counter ? AdapterStatus.Success : AdapterStatus.Unknown;
     }
 
     private async Task<bool> AddVariableAsync(string key, string value, VariableGroup filteredVariableGroup, CancellationToken cancellationToken)

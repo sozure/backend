@@ -9,7 +9,7 @@ namespace VGManager.Services;
 
 public partial class VariableGroupService
 {
-    public async Task<VariableResults> GetVariableGroupsAsync(
+    public async Task<VariableResults> GetVariablesAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         )
@@ -19,7 +19,7 @@ public partial class VariableGroupService
 
         if (status == AdapterStatus.Success)
         {
-            return GetVariableGroupsAsync(variableGroupModel, vgEntity, status);
+            return GetVariablesAsync(variableGroupModel, vgEntity, status);
         }
         else
         {
@@ -31,7 +31,7 @@ public partial class VariableGroupService
         }
     }
 
-    private VariableResults GetVariableGroupsAsync(
+    private VariableResults GetVariablesAsync(
         VariableGroupModel variableGroupModel,
         VariableGroupEntity vgEntity,
         AdapterStatus status
@@ -139,21 +139,21 @@ public partial class VariableGroupService
                 if (valueRegex.IsMatch(variableValue.ToLower()))
                 {
                     result.AddRange(
-                        AddVariableGroupResult(filteredVariableGroup, filteredVariable, variableValue)
+                        AddVariableResult(filteredVariableGroup, filteredVariable, variableValue)
                         );
                 }
             }
             else
             {
                 result.AddRange(
-                    AddVariableGroupResult(filteredVariableGroup, filteredVariable, variableValue)
+                    AddVariableResult(filteredVariableGroup, filteredVariable, variableValue)
                     );
             }
         }
         return result;
     }
 
-    private IEnumerable<VariableResult> AddVariableGroupResult(
+    private IEnumerable<VariableResult> AddVariableResult(
         VariableGroup filteredVariableGroup,
         KeyValuePair<string, VariableValue> filteredVariable,
         string variableValue

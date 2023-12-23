@@ -101,7 +101,7 @@ public class KeyVaultService : IKeyVaultService
             Date = DateTime.UtcNow,
             OriginalKeyVault = secretCopyModel.FromKeyVault,
             DestinationKeyVault = secretCopyModel.ToKeyVault,
-            User = "Viktor"
+            User = secretCopyModel.UserName
         };
 
         await _keyVaultCopyColdRepository.AddEntityAsync(entity, cancellationToken);
@@ -135,20 +135,20 @@ public class KeyVaultService : IKeyVaultService
     }
 
 
-    public async Task<AdapterStatus> DeleteAsync(string secretFilter, CancellationToken cancellationToken = default)
+    public async Task<AdapterStatus> DeleteAsync(string secretFilter, string userName, CancellationToken cancellationToken = default)
     {
         var secretsResultModel = await _keyVaultConnectionRepository.GetSecretsAsync(cancellationToken);
         var status = secretsResultModel.Status;
 
         if (status == AdapterStatus.Success)
         {
-            return await DeleteAsync(secretFilter, secretsResultModel, cancellationToken);
+            return await DeleteAsync(secretFilter, userName, secretsResultModel, cancellationToken);
         }
 
         return status;
     }
 
-    public async Task<AdapterStatus> RecoverSecretAsync(string secretFilter, CancellationToken cancellationToken = default)
+    public async Task<AdapterStatus> RecoverSecretAsync(string secretFilter, string userName, CancellationToken cancellationToken = default)
     {
         var deletedSecretsEntity = _keyVaultConnectionRepository.GetDeletedSecrets(cancellationToken);
         var status = deletedSecretsEntity.Status;
@@ -174,7 +174,7 @@ public class KeyVaultService : IKeyVaultService
                     Date = DateTime.UtcNow,
                     KeyVaultName = _keyVault,
                     SecretNameRegex = secretFilter,
-                    User = "Viktor"
+                    User = userName
 
                 };
                 await _secretChangeColdRepository.AddEntityAsync(entity, cancellationToken);
@@ -232,7 +232,7 @@ public class KeyVaultService : IKeyVaultService
         return parameters;
     }
 
-    private async Task<AdapterStatus> DeleteAsync(string secretFilter, SecretsEntity? secretsResultModel, CancellationToken cancellationToken)
+    private async Task<AdapterStatus> DeleteAsync(string secretFilter, string userName, SecretsEntity? secretsResultModel, CancellationToken cancellationToken)
     {
         var secrets = CollectSecrets(secretsResultModel);
         var filteredSecrets = Filter(secrets, secretFilter);
@@ -263,7 +263,7 @@ public class KeyVaultService : IKeyVaultService
                 Date = DateTime.UtcNow,
                 KeyVaultName = _keyVault,
                 SecretNameRegex = secretFilter,
-                User = "Viktor"
+                User = userName
 
             };
             await _secretChangeColdRepository.AddEntityAsync(entity, cancellationToken);

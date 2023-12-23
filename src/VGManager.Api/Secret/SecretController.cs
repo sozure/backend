@@ -123,7 +123,7 @@ public class SecretController : ControllerBase
         var secretModel = _mapper.Map<SecretModel>(request);
 
         _keyVaultService.SetupConnectionRepository(secretModel);
-        await _keyVaultService.DeleteAsync(secretModel.SecretFilter, cancellationToken);
+        await _keyVaultService.DeleteAsync(secretModel.SecretFilter, secretModel.UserName, cancellationToken);
         var matchedSecrets = await _keyVaultService.GetSecretsAsync(secretModel.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<SecretResponses>(matchedSecrets);
@@ -142,7 +142,7 @@ public class SecretController : ControllerBase
         var secretModel = _mapper.Map<SecretModel>(request);
 
         _keyVaultService.SetupConnectionRepository(secretModel);
-        var status = await _keyVaultService.DeleteAsync(secretModel.SecretFilter, cancellationToken);
+        var status = await _keyVaultService.DeleteAsync(secretModel.SecretFilter, secretModel.UserName, cancellationToken);
 
         return Ok(status);
     }
@@ -159,7 +159,7 @@ public class SecretController : ControllerBase
         var secretModel = _mapper.Map<SecretModel>(request);
 
         _keyVaultService.SetupConnectionRepository(secretModel);
-        await _keyVaultService.RecoverSecretAsync(secretModel.SecretFilter, cancellationToken);
+        await _keyVaultService.RecoverSecretAsync(secretModel.SecretFilter, secretModel.UserName, cancellationToken);
         var matchedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
 
         var result = _mapper.Map<DeletedSecretResponses>(matchedSecrets);
@@ -178,7 +178,7 @@ public class SecretController : ControllerBase
         var secretModel = _mapper.Map<SecretModel>(request);
 
         _keyVaultService.SetupConnectionRepository(secretModel);
-        var status = await _keyVaultService.RecoverSecretAsync(secretModel.SecretFilter, cancellationToken);
+        var status = await _keyVaultService.RecoverSecretAsync(secretModel.SecretFilter, secretModel.UserName, cancellationToken);
 
         return Ok(status);
     }

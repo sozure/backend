@@ -12,4 +12,7 @@ public class SecretBaseRequest
 
     [Required]
     public string ClientSecret { get; set; } = null!;
+
+    [Required]
+    public string UserName { get; set; } = null!;
 }

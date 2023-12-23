@@ -9,5 +9,8 @@ public class KeyVaultResponses
     public AdapterStatus Status { get; set; }
 
     [Required]
+    public string SubscriptionId { get; set; } = null!;
+
+    [Required]
     public IEnumerable<string> KeyVaults { get; set; } = null!;
 }

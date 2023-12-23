@@ -36,18 +36,19 @@ public class SecretController : ControllerBase
     {
         try
         {
-            var keyVaults = await _keyVaultService.GetKeyVaultsAsync(
+            (var subscriptionId, var keyVaults) = await _keyVaultService.GetKeyVaultsAsync(
                 request.TenantId,
                 request.ClientId,
                 request.ClientSecret,
                 cancellationToken
             );
-
-            return Ok(new KeyVaultResponses
+            var result = new KeyVaultResponses
             {
                 Status = AdapterStatus.Success,
+                SubscriptionId = subscriptionId ?? string.Empty,
                 KeyVaults = keyVaults
-            });
+            };
+            return Ok(result);
         }
         catch (InvalidOperationException ex)
         {

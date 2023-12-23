@@ -5,7 +5,12 @@ namespace VGManager.AzureAdapter.Interfaces;
 
 public interface IKeyVaultAdapter
 {
-    Task<IEnumerable<string>> GetKeyVaultsAsync(string tenantId, string clientId, string clientSecret, CancellationToken cancellationToken = default);
+    Task<(string?, IEnumerable<string>)> GetKeyVaultsAsync(
+        string tenantId, 
+        string clientId, 
+        string clientSecret, 
+        CancellationToken cancellationToken = default
+        );
     Task<AdapterStatus> AddKeyVaultSecretAsync(Dictionary<string, string> parameters, CancellationToken cancellationToken = default);
     Task<AdapterStatus> DeleteSecretAsync(string name, CancellationToken cancellationToken = default);
     Task<SecretEntity> GetSecretAsync(string name, CancellationToken cancellationToken = default);

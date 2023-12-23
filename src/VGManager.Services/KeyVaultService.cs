@@ -39,7 +39,12 @@ public class KeyVaultService : IKeyVaultService
         _keyVault = keyVault;
     }
 
-    public async Task<IEnumerable<string>> GetKeyVaultsAsync(string tenantId, string clientId, string clientSecret, CancellationToken cancellationToken = default)
+    public async Task<(string?, IEnumerable<string>)> GetKeyVaultsAsync(
+        string tenantId, 
+        string clientId, 
+        string clientSecret, 
+        CancellationToken cancellationToken = default
+        )
     {
         return await _keyVaultConnectionRepository.GetKeyVaultsAsync(tenantId, clientId, clientSecret, cancellationToken);
     }

@@ -28,7 +28,12 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         _keyVaultName = keyVaultName;
     }
 
-    public async Task<IEnumerable<string>> GetKeyVaultsAsync(string tenantId, string clientId, string clientSecret, CancellationToken cancellationToken = default)
+    public async Task<(string?, IEnumerable<string>)> GetKeyVaultsAsync(
+        string tenantId, 
+        string clientId, 
+        string clientSecret, 
+        CancellationToken cancellationToken = default
+        )
     {
         var result = new List<string>();
         var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
@@ -41,7 +46,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
             result.Add(keyVault.Data.Name);
         }
 
-        return result;
+        return (sub?.Id ?? string.Empty, result);
     }
 
     public async Task<SecretEntity> GetSecretAsync(string name, CancellationToken cancellationToken = default)

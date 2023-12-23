@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.TeamFoundation.Core.WebApi;
 using VGManager.Api.Projects;
 using VGManager.Api.Projects.Responses;
@@ -10,9 +10,9 @@ public class ProjectProfile : Profile
 {
     public ProjectProfile()
     {
-        CreateMap<ProjectResult, ProjectsResponse>();
-        CreateMap<TeamProjectReference, ProjectResponse>()
-            .ForMember(x => x.Name, opt => opt.MapFrom(src => src.Name));
+        CreateMap<ProjectsResult, ProjectsResponse>();
+        CreateMap<ProjectResult, ProjectResponse>()
+            .ForMember(x => x.Name, opt => opt.MapFrom(src => src.Project.Name));
         CreateMap<ProjectRequest, ProjectModel>();
     }
 }

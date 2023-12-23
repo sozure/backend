@@ -59,7 +59,7 @@ public partial class VariableGroupController : ControllerBase
 
             foreach (var project in projectResponse.Projects)
             {
-                request.Project = project.Name;
+                request.Project = project.Project.Name;
                 var subResult = await GetVGResultAsync(request, cancellationToken);
                 result.VariableGroups.AddRange(subResult.VariableGroups);
 
@@ -136,7 +136,7 @@ public partial class VariableGroupController : ControllerBase
 
             foreach (var project in projectResponse.Projects)
             {
-                request.Project = project.Name;
+                request.Project = project.Project.Name;
                 var subResult = await GetResultAfterDeleteAsync(request, cancellationToken);
                 result.Variables.AddRange(subResult.Variables);
 

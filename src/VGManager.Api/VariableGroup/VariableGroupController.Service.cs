@@ -27,7 +27,7 @@ public partial class VariableGroupController
         };
     }
 
-    private async Task<ProjectResult> GetProjectsAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    private async Task<ProjectsResult> GetProjectsAsync(VariableGroupRequest request, CancellationToken cancellationToken)
     {
         var projectModel = new ProjectModel
         {
@@ -153,7 +153,7 @@ public partial class VariableGroupController
 
             foreach (var project in projectResponse.Projects)
             {
-                vgRequest.Project = project.Name;
+                vgRequest.Project = project.Project.Name;
                 var subResult = await GetResultAsync(request, vgRequest, cancellationToken);
                 result.Variables.AddRange(subResult.Variables);
 

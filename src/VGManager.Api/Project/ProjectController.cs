@@ -31,9 +31,9 @@ public class ProjectController : ControllerBase
     )
     {
         var projectModel = _mapper.Map<ProjectModel>(request);
-        var project = await _projectService.GetProjectsAsync(projectModel, cancellationToken);
+        var projects = await _projectService.GetProjectsAsync(projectModel, cancellationToken);
 
-        var result = _mapper.Map<ProjectsResponse>(project);
+        var result = _mapper.Map<ProjectsResponse>(projects);
         return Ok(result);
     }
 }

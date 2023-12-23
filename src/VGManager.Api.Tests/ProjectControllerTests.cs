@@ -63,11 +63,13 @@ public class ProjectControllerTests
             {
                 new ProjectResponse()
                 {
-                    Name = "Project1"
+                    Name = "Project1",
+                    SubscriptionIds = Enumerable.Empty<string>()
                 },
                 new ProjectResponse()
                 {
-                    Name = "Project2"
+                    Name = "Project2",
+                    SubscriptionIds = Enumerable.Empty<string>()
                 }
             }
         };

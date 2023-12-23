@@ -413,19 +413,25 @@ public static class TestSampleData
             DeletedSecrets = Enumerable.Empty<DeletedSecretResponse>()
         };
 
-    public static ProjectEntity GetProjectEntity(string firstProjectName, string secondProjectName)
+    public static ProjectsEntity GetProjectEntity(string firstProjectName, string secondProjectName)
         => new()
         {
             Status = AdapterStatus.Success,
-            Projects = new List<TeamProjectReference>
+            Projects = new List<ProjectEntity>
                 {
                     new()
                     {
-                        Name = firstProjectName,
+                        Project = new TeamProjectReference()
+                        {
+                            Name = firstProjectName
+                        },
                     },
                     new()
                     {
-                        Name = secondProjectName,
+                        Project = new TeamProjectReference()
+                        {
+                            Name = secondProjectName
+                        },
                     }
                 }
         };

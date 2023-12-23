@@ -45,7 +45,7 @@ public class SecretController : ControllerBase
             var result = new KeyVaultResponses
             {
                 Status = AdapterStatus.Success,
-                SubscriptionId = subscriptionId ?? string.Empty,
+                SubscriptionId = subscriptionId?.Replace("/subscriptions/", string.Empty) ?? string.Empty,
                 KeyVaults = keyVaults
             };
             return Ok(result);

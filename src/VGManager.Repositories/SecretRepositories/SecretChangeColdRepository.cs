@@ -32,7 +32,7 @@ public class SecretChangeColdRepository : SqlRepository<SecretChangeEntity>, ISe
         CancellationToken cancellationToken = default
         )
     {
-        var result = await GetAllAsync(new SecretChangeSpecification(from, to, user, keyVaultName), cancellationToken);
+        var result = await GetAllAsync(new SecretChangeSpecification(from, to.AddDays(1), user, keyVaultName), cancellationToken);
         return result?.ToList() ?? Enumerable.Empty<SecretChangeEntity>();
     }
 
@@ -43,7 +43,7 @@ public class SecretChangeColdRepository : SqlRepository<SecretChangeEntity>, ISe
         CancellationToken cancellationToken = default
         )
     {
-        var result = await GetAllAsync(new SecretChangeSpecification(from, to, keyVaultName), cancellationToken);
+        var result = await GetAllAsync(new SecretChangeSpecification(from, to.AddDays(1), keyVaultName), cancellationToken);
         return result?.ToList() ?? Enumerable.Empty<SecretChangeEntity>();
     }
 

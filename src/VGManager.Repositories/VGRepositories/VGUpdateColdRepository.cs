@@ -32,7 +32,7 @@ public class VGUpdateColdRepository : SqlRepository<VGUpdateEntity>, IVGUpdateCo
         CancellationToken cancellationToken = default
         )
     {
-        var result = await GetAllAsync(new EditionSpecification(organization, project, user, from, to), cancellationToken);
+        var result = await GetAllAsync(new EditionSpecification(organization, project, user, from, to.AddDays(1)), cancellationToken);
         return result?.ToList() ?? Enumerable.Empty<VGUpdateEntity>();
     }
 
@@ -44,7 +44,7 @@ public class VGUpdateColdRepository : SqlRepository<VGUpdateEntity>, IVGUpdateCo
         CancellationToken cancellationToken = default
         )
     {
-        var result = await GetAllAsync(new EditionSpecification(organization, project, from, to), cancellationToken);
+        var result = await GetAllAsync(new EditionSpecification(organization, project, from, to.AddDays(1)), cancellationToken);
         return result?.ToList() ?? Enumerable.Empty<VGUpdateEntity>();
     }
 

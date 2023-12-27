@@ -32,7 +32,7 @@ public class VGAddColdRepository : SqlRepository<VGAddEntity>, IVGAddColdReposit
         CancellationToken cancellationToken = default
         )
     {
-        var result = await GetAllAsync(new AdditionSpecification(organization, project, user, from, to), cancellationToken);
+        var result = await GetAllAsync(new AdditionSpecification(organization, project, user, from, to.AddDays(1)), cancellationToken);
         return result?.ToList() ?? Enumerable.Empty<VGAddEntity>();
     }
 
@@ -44,7 +44,7 @@ public class VGAddColdRepository : SqlRepository<VGAddEntity>, IVGAddColdReposit
         CancellationToken cancellationToken = default
         )
     {
-        var result = await GetAllAsync(new AdditionSpecification(organization, project, from, to), cancellationToken);
+        var result = await GetAllAsync(new AdditionSpecification(organization, project, from, to.AddDays(1)), cancellationToken);
         return result?.ToList() ?? Enumerable.Empty<VGAddEntity>();
     }
 

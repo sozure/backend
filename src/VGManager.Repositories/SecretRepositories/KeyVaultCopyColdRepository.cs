@@ -31,7 +31,7 @@ public class KeyVaultCopyColdRepository : SqlRepository<KeyVaultCopyEntity>, IKe
         CancellationToken cancellationToken = default
         )
     {
-        var result = await GetAllAsync(new KeyVaultCopySpecification(from, to, user), cancellationToken);
+        var result = await GetAllAsync(new KeyVaultCopySpecification(from, to.AddDays(1), user), cancellationToken);
         return result?.ToList() ?? Enumerable.Empty<KeyVaultCopyEntity>();
     }
 
@@ -41,7 +41,7 @@ public class KeyVaultCopyColdRepository : SqlRepository<KeyVaultCopyEntity>, IKe
         CancellationToken cancellationToken = default
         )
     {
-        var result = await GetAllAsync(new KeyVaultCopySpecification(from, to), cancellationToken);
+        var result = await GetAllAsync(new KeyVaultCopySpecification(from, to.AddDays(1)), cancellationToken);
         return result?.ToList() ?? Enumerable.Empty<KeyVaultCopyEntity>();
     }
 

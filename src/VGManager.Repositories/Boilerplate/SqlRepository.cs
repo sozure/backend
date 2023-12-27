@@ -6,7 +6,7 @@ using VGManager.Repositories.Interfaces.Boilerplate;
 
 namespace VGManager.Repositories.Boilerplate;
 
-public abstract class SqlRepository<TEntity> : Repository<TEntity>, ISqlRepository<TEntity>, IRepository<TEntity> where TEntity : class
+public abstract class SqlRepository<TEntity> : Repository<TEntity>, ISqlRepository<TEntity> where TEntity : class
 {
     protected SqlRepository(DbContext dbContext)
         : base(dbContext)

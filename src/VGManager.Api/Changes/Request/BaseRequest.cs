@@ -11,6 +11,5 @@ public abstract class BaseRequest
     public DateTime To { get; set; }
     [Required]
     public int Limit { get; set; }
-    [Required]
     public string? User { get; set; } = null!;
 }

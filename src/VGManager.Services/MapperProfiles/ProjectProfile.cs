@@ -7,6 +7,7 @@ public class ProjectProfile : Profile
 {
     public ProjectProfile()
     {
+        CreateMap<ProjectsEntity, ProjectsResult>();
         CreateMap<ProjectEntity, ProjectResult>();
     }
 }

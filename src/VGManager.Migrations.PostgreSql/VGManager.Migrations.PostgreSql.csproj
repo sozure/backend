@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <ProjectGuid>A22E72EE-1B1D-4630-8994-7D5AA0AD2F1E</ProjectGuid>
+      <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VGManager.Repositories\VGManager.Repositories.csproj" />
+  </ItemGroup>
+
+</Project>

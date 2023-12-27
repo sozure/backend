@@ -4,25 +4,34 @@ using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Services.Interfaces;
 
-public interface IVariableGroupService
+public interface IVariableService
 {
     void SetupConnectionRepository(VariableGroupModel variableGroupModel);
 
-    Task<Status> UpdateVariableGroupsAsync(
+    Task<VariableGroupResults> GetVariableGroupsAsync(
+        VariableGroupModel variableGroupModel,
+        CancellationToken cancellationToken = default
+        );
+
+    Task<AdapterStatus> UpdateVariableGroupsAsync(
         VariableGroupUpdateModel variableGroupUpdateModel,
         bool filterAsRegex,
         CancellationToken cancellationToken = default
         );
 
-    Task<VariableResults> GetVariableGroupsAsync(
+    Task<VariableResults> GetVariablesAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         );
 
-    Task<Status> AddVariablesAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default);
+    Task<AdapterStatus> AddVariablesAsync(
+        VariableGroupAddModel variableGroupAddModel,
+        CancellationToken cancellationToken = default
+        );
 
-    Task<Status> DeleteVariablesAsync(
+    Task<AdapterStatus> DeleteVariablesAsync(
         VariableGroupModel variableGroupModel,
         bool filterAsRegex,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default
+        );
 }

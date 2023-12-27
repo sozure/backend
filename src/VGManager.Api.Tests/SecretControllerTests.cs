@@ -7,6 +7,8 @@ using VGManager.Api.MapperProfiles;
 using VGManager.Api.Secrets.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Entities.SecretEntities;
+using VGManager.Repositories.Interfaces.SecretRepositories;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
 
@@ -18,6 +20,8 @@ public class SecretControllerTests
     private SecretController _controller;
     private IKeyVaultService _keyVaultService;
     private Mock<IKeyVaultAdapter> _adapter;
+    private Mock<ISecretChangeColdRepository> _secretRepository;
+    private Mock<IKeyVaultCopyColdRepository> _keyVaultRepository;
 
     [SetUp]
     public void Setup()
@@ -32,7 +36,10 @@ public class SecretControllerTests
         _adapter = new(MockBehavior.Strict);
         var loggerMock = new Mock<ILogger<KeyVaultService>>();
 
-        _keyVaultService = new KeyVaultService(_adapter.Object, loggerMock.Object);
+        _keyVaultRepository = new(MockBehavior.Strict);
+        _secretRepository = new(MockBehavior.Strict);
+
+        _keyVaultService = new KeyVaultService(_adapter.Object, _secretRepository.Object, _keyVaultRepository.Object, loggerMock.Object);
         _controller = new(_keyVaultService, mapper);
     }
 
@@ -113,8 +120,10 @@ public class SecretControllerTests
             .ReturnsAsync(secretsEntity1)
             .ReturnsAsync(secretsEntity2);
 
-        _adapter.Setup(x => x.DeleteSecretAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Status.Success);
+        _adapter.Setup(x => x.DeleteSecretAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(AdapterStatus.Success);
         _adapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        _secretRepository.Setup(x => x.AddEntityAsync(It.IsAny<SecretChangeEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _controller.DeleteAsync(request, default);
@@ -127,6 +136,7 @@ public class SecretControllerTests
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetSecretsAsync(default), Times.Exactly(2));
         _adapter.Verify(x => x.DeleteSecretAsync(It.IsAny<string>(), default), Times.Exactly(3));
+        _secretRepository.Verify(x => x.AddEntityAsync(It.IsAny<SecretChangeEntity>(), default), Times.Once);
     }
 
     [Test]
@@ -139,7 +149,7 @@ public class SecretControllerTests
         var clientSecret = "clientSecret1";
         var secretFilter = "SecretFilter";
         var request = TestSampleData.GetRequest(keyVaultName, secretFilter, tenantId, clientId, clientSecret);
-        var status = Status.Success;
+        var status = AdapterStatus.Success;
 
         var secretsEntity1 = TestSampleData.GetSecretsEntity();
         var secretsEntity2 = TestSampleData.GetEmptySecretsEntity();
@@ -148,8 +158,9 @@ public class SecretControllerTests
             .ReturnsAsync(secretsEntity1)
             .ReturnsAsync(secretsEntity2);
 
-        _adapter.Setup(x => x.DeleteSecretAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Status.Success);
+        _adapter.Setup(x => x.DeleteSecretAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(AdapterStatus.Success);
         _adapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+        _secretRepository.Setup(x => x.AddEntityAsync(It.IsAny<SecretChangeEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = await _controller.DeleteInlineAsync(request, default);
@@ -157,11 +168,12 @@ public class SecretControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((Status)((OkObjectResult)result.Result!).Value!).Should().Be(status);
+        ((AdapterStatus)((OkObjectResult)result.Result!).Value!).Should().Be(status);
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetSecretsAsync(default), Times.Once);
         _adapter.Verify(x => x.DeleteSecretAsync(It.IsAny<string>(), default), Times.Exactly(3));
+        _secretRepository.Verify(x => x.AddEntityAsync(It.IsAny<SecretChangeEntity>(), default), Times.Once);
     }
 
     [Test]
@@ -182,6 +194,7 @@ public class SecretControllerTests
             .Returns(secretsEntity)
             .Returns(secretsEntity);
         _adapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+        _secretRepository.Setup(x => x.AddEntityAsync(It.IsAny<SecretChangeEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = _controller.RecoverAsync(request, default);
@@ -193,6 +206,7 @@ public class SecretControllerTests
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetDeletedSecrets(default), Times.Exactly(2));
+        _secretRepository.Verify(x => x.AddEntityAsync(It.IsAny<SecretChangeEntity>(), default), Times.Once);
     }
 
     [Test]
@@ -210,6 +224,7 @@ public class SecretControllerTests
         _adapter.SetupSequence(x => x.GetDeletedSecrets(It.IsAny<CancellationToken>()))
             .Returns(secretsEntity);
         _adapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+        _secretRepository.Setup(x => x.AddEntityAsync(It.IsAny<SecretChangeEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
         // Act
         var result = _controller.RecoverInlineAsync(request, default);
@@ -217,10 +232,11 @@ public class SecretControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Result.Should().BeOfType<OkObjectResult>();
-        ((Status)((OkObjectResult)result.Result!.Result!).Value!).Should().Be(Status.Success);
+        ((AdapterStatus)((OkObjectResult)result.Result!.Result!).Value!).Should().Be(AdapterStatus.Success);
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetDeletedSecrets(default), Times.Once);
+        _secretRepository.Verify(x => x.AddEntityAsync(It.IsAny<SecretChangeEntity>(), default), Times.Once);
     }
 
     [Test]
@@ -238,14 +254,19 @@ public class SecretControllerTests
 
         _adapter.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>())).ReturnsAsync(Enumerable.Empty<KeyVaultSecret>);
 
+        _keyVaultRepository.Setup(
+            x => x.AddEntityAsync(It.IsAny<KeyVaultCopyEntity>(), It.IsAny<CancellationToken>())
+            ).Returns(Task.CompletedTask);
+
         // Act
         var result = await _controller.CopyAsync(request, default);
 
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((Status)((OkObjectResult)result.Result!).Value!).Should().Be(Status.Success);
+        ((AdapterStatus)((OkObjectResult)result.Result!).Value!).Should().Be(AdapterStatus.Success);
 
+        _keyVaultRepository.Verify(x => x.AddEntityAsync(It.IsAny<KeyVaultCopyEntity>(), default), Times.Once);
         _adapter.Verify(x => x.Setup(fromKeyVault, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.Setup(ToKeyVault, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));

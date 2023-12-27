@@ -1,8 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace VGManager.Services.Models.VariableGroups.Requests;
 
 public class VariableGroupModel
 {
     public string Organization { get; set; } = null!;
+
+    public string UserName { get; set; } = null!;
 
     public string Project { get; set; } = null!;
 

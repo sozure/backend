@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\VGManager.AzureAdapter\VGManager.AzureAdapter.csproj" />
+      <ProjectReference Include="..\VGManager.Repositories\VGManager.Repositories.csproj" />
     </ItemGroup>
 
     <ItemGroup>

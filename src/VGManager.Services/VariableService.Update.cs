@@ -2,13 +2,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Entities;
+using VGManager.Entities.VGEntities;
 using VGManager.Services.Models.VariableGroups.Requests;
 
-namespace VGManager.Services.VariableGroupServices;
+namespace VGManager.Services;
 
-public partial class VariableGroupService
+public partial class VariableService
 {
-    public async Task<Status> UpdateVariableGroupsAsync(
+    public async Task<AdapterStatus> UpdateVariableGroupsAsync(
         VariableGroupUpdateModel variableGroupUpdateModel,
         bool filterAsRegex,
         CancellationToken cancellationToken = default
@@ -17,9 +18,10 @@ public partial class VariableGroupService
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
-            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupUpdateModel.VariableGroupFilter, vgEntity.VariableGroups);
+            var variableGroupFilter = variableGroupUpdateModel.VariableGroupFilter;
+            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
             var keyFilter = variableGroupUpdateModel.KeyFilter;
             var valueFilter = variableGroupUpdateModel.ValueFilter;
             var newValue = variableGroupUpdateModel.NewValue;
@@ -37,13 +39,35 @@ public partial class VariableGroupService
                 }
             }
 
-            return await UpdateVariableGroupsAsync(newValue, filteredVariableGroups, keyFilter, valueRegex, cancellationToken);
+            var finalStatus = await UpdateVariableGroupsAsync(newValue, filteredVariableGroups, keyFilter, valueRegex, cancellationToken);
 
+            if (finalStatus == AdapterStatus.Success)
+            {
+                var org = variableGroupUpdateModel.Organization;
+
+                var entity = new VGUpdateEntity
+                {
+                    VariableGroupFilter = variableGroupFilter,
+                    Key = keyFilter,
+                    Project = _project,
+                    Organization = org,
+                    User = variableGroupUpdateModel.UserName,
+                    Date = DateTime.UtcNow,
+                    NewValue = variableGroupUpdateModel.NewValue
+                };
+
+                if (_organizationSettings.Organizations.Contains(org))
+                {
+                    await _editionColdRepository.AddEntityAsync(entity, cancellationToken);
+                }
+            }
+
+            return finalStatus;
         }
         return status;
     }
 
-    private async Task<Status> UpdateVariableGroupsAsync(
+    private async Task<AdapterStatus> UpdateVariableGroupsAsync(
         string newValue,
         IEnumerable<VariableGroup> filteredVariableGroups,
         string keyFilter,
@@ -70,14 +94,14 @@ public partial class VariableGroupService
                     cancellationToken
                     );
 
-                if (updateStatus == Status.Success)
+                if (updateStatus == AdapterStatus.Success)
                 {
                     updateCounter1++;
                     _logger.LogDebug("{variableGroupName} updated.", variableGroupName);
                 }
             }
         }
-        return updateCounter1 == updateCounter2 ? Status.Success : Status.Unknown;
+        return updateCounter1 == updateCounter2 ? AdapterStatus.Success : AdapterStatus.Unknown;
     }
 
     private static bool UpdateVariables(

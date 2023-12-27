@@ -39,35 +39,35 @@ public class VariableGroupAdapter : IVariableGroupAdapter
             _logger.LogInformation("Request variable groups from {project} Azure project.", _project);
             var httpClient = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
             var variableGroups = await httpClient.GetVariableGroupsAsync(_project, cancellationToken: cancellationToken);
-            return GetResult(Status.Success, variableGroups);
+            return GetResult(AdapterStatus.Success, variableGroups);
         }
         catch (VssUnauthorizedException ex)
         {
-            var status = Status.Unauthorized;
+            var status = AdapterStatus.Unauthorized;
             _logger.LogError(ex, "Couldn't get variable groups. Status: {status}.", status);
             return GetResult(status);
         }
         catch (VssServiceResponseException ex)
         {
-            var status = Status.ResourceNotFound;
+            var status = AdapterStatus.ResourceNotFound;
             _logger.LogError(ex, "Couldn't get variable groups. Status: {status}.", status);
             return GetResult(status);
         }
         catch (ProjectDoesNotExistWithNameException ex)
         {
-            var status = Status.ProjectDoesNotExist;
+            var status = AdapterStatus.ProjectDoesNotExist;
             _logger.LogError(ex, "Couldn't get variable groups. Status: {status}.", status);
             return GetResult(status);
         }
         catch (Exception ex)
         {
-            var status = Status.Unknown;
+            var status = AdapterStatus.Unknown;
             _logger.LogError(ex, "Couldn't get variable groups. Status: {status}.", status);
             return GetResult(status);
         }
     }
 
-    public async Task<Status> UpdateAsync(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default)
+    public async Task<AdapterStatus> UpdateAsync(VariableGroupParameters variableGroupParameters, int variableGroupId, CancellationToken cancellationToken = default)
     {
         var variableGroupName = variableGroupParameters.Name;
         variableGroupParameters.VariableGroupProjectReferences = new List<VariableGroupProjectReference>()
@@ -87,45 +87,45 @@ public class VariableGroupAdapter : IVariableGroupAdapter
             _logger.LogDebug("Update variable group with name: {variableGroupName} in {project} Azure project.", variableGroupName, _project);
             var httpClient = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
             await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
-            return Status.Success;
+            return AdapterStatus.Success;
         }
         catch (VssUnauthorizedException ex)
         {
-            var status = Status.Unauthorized;
+            var status = AdapterStatus.Unauthorized;
             _logger.LogError(ex, "Couldn't update variable groups. Status: {status}.", status);
             return status;
         }
         catch (VssServiceResponseException ex)
         {
-            var status = Status.ResourceNotFound;
+            var status = AdapterStatus.ResourceNotFound;
             _logger.LogError(ex, "Couldn't update variable groups. Status: {status}.", status);
             return status;
         }
         catch (ProjectDoesNotExistWithNameException ex)
         {
-            var status = Status.ProjectDoesNotExist;
+            var status = AdapterStatus.ProjectDoesNotExist;
             _logger.LogError(ex, "Couldn't update variable groups. Status: {status}.", status);
             return status;
         }
         catch (ArgumentException ex)
         {
             _logger.LogError(ex, "An item with the same key has already been added to {variableGroupName}.", variableGroupName);
-            return Status.AlreadyContains;
+            return AdapterStatus.AlreadyContains;
         }
         catch (TeamFoundationServerInvalidRequestException ex)
         {
             _logger.LogError(ex, "Wasn't added to {variableGroupName} because of TeamFoundationServerInvalidRequestException.", variableGroupName);
-            return Status.Unknown;
+            return AdapterStatus.Unknown;
         }
         catch (Exception ex)
         {
-            var status = Status.Unknown;
+            var status = AdapterStatus.Unknown;
             _logger.LogError(ex, "Couldn't update variable groups. Status: {status}.", status);
             return status;
         }
     }
 
-    private static VariableGroupEntity GetResult(Status status, IEnumerable<VariableGroup> variableGroups)
+    private static VariableGroupEntity GetResult(AdapterStatus status, IEnumerable<VariableGroup> variableGroups)
     {
         return new()
         {
@@ -134,7 +134,7 @@ public class VariableGroupAdapter : IVariableGroupAdapter
         };
     }
 
-    private static VariableGroupEntity GetResult(Status status)
+    private static VariableGroupEntity GetResult(AdapterStatus status)
     {
         return new()
         {

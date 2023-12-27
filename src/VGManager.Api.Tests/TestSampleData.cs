@@ -19,18 +19,18 @@ public static class TestSampleData
         string valueFilter,
         string newKey,
         string newValue
-        ) 
+        )
         => new()
-            {
-                Organization = organization,
-                PAT = pat,
-                Project = project,
-                VariableGroupFilter = "neptun",
-                KeyFilter = null!,
-                ValueFilter = valueFilter,
-                Key = newKey,
-                Value = newValue
-            };
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project,
+            VariableGroupFilter = "neptun",
+            KeyFilter = null!,
+            ValueFilter = valueFilter,
+            Key = newKey,
+            Value = newValue
+        };
 
     public static VariableGroupUpdateRequest GetVariableUpdateRequest(
         string variableGroupFilter,
@@ -39,20 +39,20 @@ public static class TestSampleData
         string project,
         string valueFilter,
         string newValue
-        ) 
+        )
         => new()
-            {
-                Organization = organization,
-                PAT = pat,
-                Project = project,
-                VariableGroupFilter = variableGroupFilter,
-                KeyFilter = "Key123",
-                ValueFilter = valueFilter,
-                ContainsSecrets = false,
-                NewValue = newValue
-            };
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project,
+            VariableGroupFilter = variableGroupFilter,
+            KeyFilter = "Key123",
+            ValueFilter = valueFilter,
+            ContainsSecrets = false,
+            NewValue = newValue
+        };
 
-    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project, string keyFilter, string valueFilter) 
+    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project, string keyFilter, string valueFilter)
         => new()
         {
             Organization = organization,
@@ -65,7 +65,7 @@ public static class TestSampleData
             ContainsSecrets = false
         };
 
-    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project) 
+    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project)
         => new()
         {
             Organization = organization,
@@ -77,10 +77,10 @@ public static class TestSampleData
             KeyIsRegex = true,
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity() 
+    public static VariableGroupEntity GetVariableGroupEntity()
         => new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             VariableGroups = new List<VariableGroupEnt>
                 {
                     new()
@@ -116,24 +116,24 @@ public static class TestSampleData
                 }
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity(Status status) 
+    public static VariableGroupEntity GetVariableGroupEntity(AdapterStatus status)
         => new()
         {
             Status = status,
             VariableGroups = Enumerable.Empty<VariableGroupEnt>()
         };
 
-    public static VariableGroupEntity GetVariableGroupEntityAfterDelete() 
+    public static VariableGroupEntity GetVariableGroupEntityAfterDelete()
         => new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             VariableGroups = Enumerable.Empty<VariableGroupEnt>()
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity(string value) 
+    public static VariableGroupEntity GetVariableGroupEntity(string value)
         => new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             VariableGroups = new List<VariableGroupEnt>
                 {
                     new()
@@ -165,10 +165,10 @@ public static class TestSampleData
                 }
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity(string key, string value) 
-        => new ()
+    public static VariableGroupEntity GetVariableGroupEntity(string key, string value)
+        => new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             VariableGroups = new List<VariableGroupEnt>
                 {
                     new()
@@ -225,7 +225,7 @@ public static class TestSampleData
 
         return new VariableResponses
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Variables = result
         };
     }
@@ -252,7 +252,7 @@ public static class TestSampleData
 
         return new VariableResponses
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Variables = result
         };
     }
@@ -293,19 +293,19 @@ public static class TestSampleData
 
         return new VariableResponses
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Variables = result
         };
     }
 
-    public static VariableResponses GetVariableGroupGetResponsesAfterDelete() 
+    public static VariableResponses GetVariableGroupGetResponsesAfterDelete()
         => new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Variables = new List<VariableResponse>()
         };
 
-    public static SecretRequest GetRequest(string keyVaultName, string secretFilter, string tenantId, string clientId, string clientSecret) 
+    public static SecretRequest GetRequest(string keyVaultName, string secretFilter, string tenantId, string clientId, string clientSecret)
         => new()
         {
             KeyVaultName = keyVaultName,
@@ -316,13 +316,13 @@ public static class TestSampleData
         };
 
     public static SecretCopyRequest GetRequest(
-        string fromKeyVault, 
-        string toKeyVault, 
-        string tenantId, 
-        string clientId, 
-        string clientSecret, 
+        string fromKeyVault,
+        string toKeyVault,
+        string tenantId,
+        string clientId,
+        string clientSecret,
         bool overrideSecret
-        ) 
+        )
         => new()
         {
             TenantId = tenantId,
@@ -333,10 +333,10 @@ public static class TestSampleData
             overrideSecret = overrideSecret
         };
 
-    public static SecretResponses GetSecretsGetResponse() 
+    public static SecretResponses GetSecretsGetResponse()
         => new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Secrets = new List<SecretResponse>()
                 {
                     new()
@@ -360,72 +360,78 @@ public static class TestSampleData
                 }
         };
 
-    public static SecretsEntity GetSecretsEntity() 
-        => new ()
+    public static SecretsEntity GetSecretsEntity()
+        => new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Secrets = new List<SecretEntity>()
                 {
                     new()
                     {
-                        Status = Status.Success,
+                        Status = AdapterStatus.Success,
                         Secret = new("SecretFilter123", "3Kpu6gF214vAqHlzaX5G")
                     },
                     new()
                     {
-                        Status = Status.Success,
+                        Status = AdapterStatus.Success,
                         Secret = new("SecretFilter456", "KCRQJ08PdFHU9Ly2pUI2")
                     },
                     new()
                     {
-                        Status = Status.Success,
+                        Status = AdapterStatus.Success,
                         Secret = new("SecretFilter789", "ggl1oBLSiYNBliNQhsGW")
                     }
                 }
         };
 
-    public static DeletedSecretsEntity GetEmptyDeletedSecretsEntity() 
-        => new ()
+    public static DeletedSecretsEntity GetEmptyDeletedSecretsEntity()
+        => new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             DeletedSecrets = Enumerable.Empty<DeletedSecret>()
         };
 
-    public static SecretsEntity GetEmptySecretsEntity() 
+    public static SecretsEntity GetEmptySecretsEntity()
         => new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Secrets = Enumerable.Empty<SecretEntity>()
         };
 
-    public static SecretResponses GetEmptySecretsGetResponse() 
+    public static SecretResponses GetEmptySecretsGetResponse()
         => new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Secrets = Enumerable.Empty<SecretResponse>()
 
         };
 
-    public static DeletedSecretResponses GetEmptySecretsGetResponse1() 
+    public static DeletedSecretResponses GetEmptySecretsGetResponse1()
         => new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             DeletedSecrets = Enumerable.Empty<DeletedSecretResponse>()
         };
 
-    public static ProjectEntity GetProjectEntity(string firstProjectName, string secondProjectName) 
+    public static ProjectsEntity GetProjectEntity(string firstProjectName, string secondProjectName)
         => new()
         {
-            Status = Status.Success,
-            Projects = new List<TeamProjectReference>
+            Status = AdapterStatus.Success,
+            Projects = new List<ProjectEntity>
                 {
                     new()
                     {
-                        Name = firstProjectName,
+                        Project = new TeamProjectReference()
+                        {
+                            Name = firstProjectName
+                        },
                     },
                     new()
                     {
-                        Name = secondProjectName,
+                        Project = new TeamProjectReference()
+                        {
+                            Name = secondProjectName
+                        },
                     }
                 }
         };

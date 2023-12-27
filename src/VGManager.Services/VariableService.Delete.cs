@@ -1,12 +1,13 @@
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using VGManager.AzureAdapter.Entities;
+using VGManager.Entities.VGEntities;
 using VGManager.Services.Models.VariableGroups.Requests;
 
-namespace VGManager.Services.VariableGroupServices;
+namespace VGManager.Services;
 
-public partial class VariableGroupService
+public partial class VariableService
 {
-    public async Task<Status> DeleteVariablesAsync(
+    public async Task<AdapterStatus> DeleteVariablesAsync(
         VariableGroupModel variableGroupModel,
         bool filterAsRegex,
         CancellationToken cancellationToken = default
@@ -15,16 +16,36 @@ public partial class VariableGroupService
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
-            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
-            return await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
+            var variableGroupFilter = variableGroupModel.VariableGroupFilter;
+            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
+            var finalStatus = await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
+            if (finalStatus == AdapterStatus.Success)
+            {
+                var org = variableGroupModel.Organization;
+                var entity = new VGDeleteEntity
+                {
+                    VariableGroupFilter = variableGroupFilter,
+                    Key = variableGroupModel.KeyFilter,
+                    Project = _project,
+                    Organization = org,
+                    User = variableGroupModel.UserName,
+                    Date = DateTime.UtcNow
+                };
+
+                if (_organizationSettings.Organizations.Contains(org))
+                {
+                    await _deletionColdRepository.AddEntityAsync(entity, cancellationToken);
+                }
+            }
+            return finalStatus;
         }
 
         return status;
     }
 
-    private async Task<Status> DeleteVariablesAsync(
+    private async Task<AdapterStatus> DeleteVariablesAsync(
         VariableGroupModel variableGroupModel,
         IEnumerable<VariableGroup> filteredVariableGroups,
         CancellationToken cancellationToken
@@ -55,13 +76,13 @@ public partial class VariableGroupService
                     cancellationToken
                     );
 
-                if (updateStatus == Status.Success)
+                if (updateStatus == AdapterStatus.Success)
                 {
                     deletionCounter2++;
                 }
             }
         }
-        return deletionCounter1 == deletionCounter2 ? Status.Success : Status.Unknown;
+        return deletionCounter1 == deletionCounter2 ? AdapterStatus.Success : AdapterStatus.Unknown;
     }
 
     private static bool DeleteVariables(VariableGroup filteredVariableGroup, string keyFilter, string? valueCondition)

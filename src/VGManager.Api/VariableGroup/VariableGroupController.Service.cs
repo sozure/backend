@@ -9,16 +9,25 @@ namespace VGManager.Api.Controllers;
 
 public partial class VariableGroupController
 {
-    private static VariableResponses GetEmptyVariableGroupGetResponses()
+    private static VariableResponses GetEmptyVariablesGetResponses()
     {
         return new VariableResponses
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Variables = new List<VariableResponse>()
         };
     }
 
-    private async Task<ProjectResult> GetProjectsAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    private static VariableGroupResponses GetEmptyVariableGroupGetResponses()
+    {
+        return new VariableGroupResponses
+        {
+            Status = AdapterStatus.Success,
+            VariableGroups = new List<VariableGroupResponse>()
+        };
+    }
+
+    private async Task<ProjectsResult> GetProjectsAsync(VariableGroupRequest request, CancellationToken cancellationToken)
     {
         var projectModel = new ProjectModel
         {
@@ -30,17 +39,20 @@ public partial class VariableGroupController
         return projectResponse;
     }
 
-    private async Task<VariableResponses> GetResultAfterDeleteAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    private async Task<VariableResponses> GetResultAfterDeleteAsync(
+        VariableGroupRequest request,
+        CancellationToken cancellationToken
+        )
     {
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
         var status = await _vgService.DeleteVariablesAsync(vgServiceModel, true, cancellationToken);
-        var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
+        var variableGroupResultModel = await _vgService.GetVariablesAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableResponses>(variableGroupResultModel);
 
-        if (status != Status.Success)
+        if (status != AdapterStatus.Success)
         {
             result.Status = status;
         }
@@ -53,10 +65,35 @@ public partial class VariableGroupController
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
 
         _vgService.SetupConnectionRepository(vgServiceModel);
-        var variableGroupResultsModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
+        var variableGroupResultsModel = await _vgService.GetVariablesAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableResponses>(variableGroupResultsModel);
         return result;
+    }
+
+    private async Task<VariableGroupResponses> GetVGResultAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    {
+        var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
+
+        _vgService.SetupConnectionRepository(vgServiceModel);
+        var variableGroupResultsModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
+
+        var result = new List<VariableGroupResponse>();
+
+        foreach(var variableGroup in variableGroupResultsModel.VariableGroups)
+        {
+            result.Add(new()
+            {
+                Project = request.Project,
+                VariableGroupName = variableGroup.Name
+            });
+        }
+
+        return new VariableGroupResponses
+        {
+            Status = variableGroupResultsModel.Status,
+            VariableGroups = result
+        };
     }
 
     private async Task<VariableResponses> GetAddResultAsync(VariableGroupAddRequest request, CancellationToken cancellationToken)
@@ -67,11 +104,11 @@ public partial class VariableGroupController
         var status = await _vgService.AddVariablesAsync(vgServiceModel, cancellationToken);
         vgServiceModel.KeyFilter = vgServiceModel.Key;
         vgServiceModel.ValueFilter = vgServiceModel.Value;
-        var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
+        var variableGroupResultModel = await _vgService.GetVariablesAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableResponses>(variableGroupResultModel);
 
-        if (status != Status.Success)
+        if (status != AdapterStatus.Success)
         {
             result.Status = status;
         }
@@ -79,7 +116,10 @@ public partial class VariableGroupController
         return result;
     }
 
-    private async Task<VariableResponses> GetUpdateResultAsync(VariableGroupUpdateRequest request, CancellationToken cancellationToken)
+    private async Task<VariableResponses> GetUpdateResultAsync(
+        VariableGroupUpdateRequest request,
+        CancellationToken cancellationToken
+        )
     {
         var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
 
@@ -87,11 +127,11 @@ public partial class VariableGroupController
         var status = await _vgService.UpdateVariableGroupsAsync(vgServiceModel, true, cancellationToken);
 
         vgServiceModel.ValueFilter = vgServiceModel.NewValue;
-        var variableGroupResultModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
+        var variableGroupResultModel = await _vgService.GetVariablesAsync(vgServiceModel, cancellationToken);
 
         var result = _mapper.Map<VariableResponses>(variableGroupResultModel);
 
-        if (status != Status.Success)
+        if (status != AdapterStatus.Success)
         {
             result.Status = status;
         }
@@ -99,22 +139,25 @@ public partial class VariableGroupController
         return result;
     }
 
-    private async Task<VariableResponses> GetVariableGroupResponsesAsync<T>(T request, CancellationToken cancellationToken)
+    private async Task<VariableResponses> GetVariableGroupResponsesAsync<T>(
+        T request,
+        CancellationToken cancellationToken
+        )
     {
         VariableResponses? result;
         var vgRequest = request as VariableGroupRequest ?? new VariableGroupRequest();
         if (vgRequest.Project == "All")
         {
-            result = GetEmptyVariableGroupGetResponses();
+            result = GetEmptyVariablesGetResponses();
             var projectResponse = await GetProjectsAsync(vgRequest, cancellationToken);
 
             foreach (var project in projectResponse.Projects)
             {
-                vgRequest.Project = project.Name;
+                vgRequest.Project = project.Project.Name;
                 var subResult = await GetResultAsync(request, vgRequest, cancellationToken);
                 result.Variables.AddRange(subResult.Variables);
 
-                if (subResult.Status != Status.Success)
+                if (subResult.Status != AdapterStatus.Success)
                 {
                     result.Status = subResult.Status;
                 }
@@ -127,7 +170,11 @@ public partial class VariableGroupController
         return result;
     }
 
-    private async Task<VariableResponses> GetResultAsync<T>(T request, VariableGroupRequest vgRequest, CancellationToken cancellationToken)
+    private async Task<VariableResponses> GetResultAsync<T>(
+        T request,
+        VariableGroupRequest vgRequest,
+        CancellationToken cancellationToken
+        )
     {
         if (request is VariableGroupUpdateRequest updateRequest)
         {
@@ -151,9 +198,11 @@ public partial class VariableGroupController
             Status = variableResponses.Status
         };
 
-        foreach(var  variableResponse in variableResponses.Variables)
+        foreach (var variableResponse in variableResponses.Variables)
         {
-            if(!listResult.Exists(item => item.VariableGroupName == variableResponse.VariableGroupName && item.Project == variableResponse.Project))
+            if (!listResult.Exists(
+                item => item.VariableGroupName == variableResponse.VariableGroupName && item.Project == variableResponse.Project
+                ))
             {
                 listResult.Add(new()
                 {

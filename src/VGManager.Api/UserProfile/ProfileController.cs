@@ -12,12 +12,10 @@ namespace VGManager.Api.UserProfile;
 public class ProfileController : ControllerBase
 {
     private readonly IProfileService _profileService;
-    private readonly IMapper _mapper;
 
-    public ProfileController(IProfileService profileService, IMapper mapper)
+    public ProfileController(IProfileService profileService)
     {
         _profileService = profileService;
-        _mapper = mapper;
     }
 
     [HttpPost("Get", Name = "getprofile")]

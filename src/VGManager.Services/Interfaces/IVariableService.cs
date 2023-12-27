@@ -4,7 +4,7 @@ using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Services.Interfaces;
 
-public interface IVariableGroupService
+public interface IVariableService
 {
     void SetupConnectionRepository(VariableGroupModel variableGroupModel);
 

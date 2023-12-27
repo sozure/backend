@@ -10,7 +10,7 @@ using VGManager.Services.Settings;
 
 namespace VGManager.Services;
 
-public partial class VariableGroupService : IVariableGroupService
+public partial class VariableService : IVariableService
 {
     private readonly IVariableGroupAdapter _variableGroupConnectionRepository;
     private readonly IVGAddColdRepository _additionColdRepository;
@@ -20,13 +20,13 @@ public partial class VariableGroupService : IVariableGroupService
     private string _project = null!;
     private readonly ILogger _logger;
 
-    public VariableGroupService(
+    public VariableService(
         IVariableGroupAdapter variableGroupConnectionRepository,
         IVGAddColdRepository additionColdRepository,
         IVGDeleteColdRepository deletedColdRepository,
         IVGUpdateColdRepository editionColdRepository,
         IOptions<OrganizationSettings> organizationSettings,
-        ILogger<VariableGroupService> logger
+        ILogger<VariableService> logger
         )
     {
         _variableGroupConnectionRepository = variableGroupConnectionRepository;

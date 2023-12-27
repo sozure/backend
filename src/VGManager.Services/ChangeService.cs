@@ -13,7 +13,7 @@ using static Microsoft.VisualStudio.Services.Graph.GraphResourceIds;
 
 namespace VGManager.Services;
 
-public class ChangesService : IChangesService
+public class ChangeService : IChangeService
 {
     private readonly IVGAddColdRepository _additionColdRepository;
     private readonly IVGUpdateColdRepository _editionColdRepository;
@@ -22,7 +22,7 @@ public class ChangesService : IChangesService
     private readonly ISecretChangeColdRepository _secretChangeColdRepository;
     private readonly IMapper _mapper;
 
-    public ChangesService(
+    public ChangeService(
         IVGAddColdRepository additionColdRepository,
         IVGUpdateColdRepository editionColdRepository,
         IVGDeleteColdRepository deletionColdRepository,

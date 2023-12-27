@@ -3,7 +3,7 @@ using VGManager.Services.Models.Changes.Responses;
 
 namespace VGManager.Services.Interfaces;
 
-public interface IChangesService
+public interface IChangeService
 {
     Task<IEnumerable<VGOperationModel>> GetAsync(
         VGRequestModel model,

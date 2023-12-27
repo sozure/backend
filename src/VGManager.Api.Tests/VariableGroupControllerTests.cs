@@ -48,14 +48,14 @@ public class VariableGroupControllerTests
         _deletionColdRepository = new(MockBehavior.Strict);
         _editionColdRepository = new(MockBehavior.Strict);
 
-        var loggerMock = new Mock<ILogger<VariableGroupService>>();
+        var loggerMock = new Mock<ILogger<VariableService>>();
 
         var settings = Options.Create(new OrganizationSettings
         {
             Organizations = new string[] { "Organization1" }
         });
 
-        var vgService = new VariableGroupService(
+        var vgService = new VariableService(
             _variableGroupAdapter.Object,
             _additionColdRepository.Object,
             _deletionColdRepository.Object,

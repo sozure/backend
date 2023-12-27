@@ -7,7 +7,7 @@ using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Services;
 
-public partial class VariableGroupService
+public partial class VariableService
 {
 
     public async Task<VariableGroupResults> GetVariableGroupsAsync(

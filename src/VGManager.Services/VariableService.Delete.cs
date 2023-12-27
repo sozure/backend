@@ -5,7 +5,7 @@ using VGManager.Services.Models.VariableGroups.Requests;
 
 namespace VGManager.Services;
 
-public partial class VariableGroupService
+public partial class VariableService
 {
     public async Task<AdapterStatus> DeleteVariablesAsync(
         VariableGroupModel variableGroupModel,

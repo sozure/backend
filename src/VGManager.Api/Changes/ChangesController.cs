@@ -16,10 +16,10 @@ namespace VGManager.Api.Changes;
 public class ChangesController : ControllerBase
 {
 
-    private readonly IChangesService _changesService;
+    private readonly IChangeService _changesService;
     private readonly IMapper _mapper;
 
-    public ChangesController(IChangesService changesService, IMapper mapper)
+    public ChangesController(IChangeService changesService, IMapper mapper)
     {
         _changesService = changesService;
         _mapper = mapper;

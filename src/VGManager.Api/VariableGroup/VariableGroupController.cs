@@ -15,12 +15,12 @@ namespace VGManager.Api.Controllers;
 [EnableCors("_allowSpecificOrigins")]
 public partial class VariableGroupController : ControllerBase
 {
-    private readonly IVariableGroupService _vgService;
+    private readonly IVariableService _vgService;
     private readonly IProjectService _projectService;
     private readonly IMapper _mapper;
 
     public VariableGroupController(
-        IVariableGroupService vgService,
+        IVariableService vgService,
         IProjectService projectService,
         IMapper mapper
         )

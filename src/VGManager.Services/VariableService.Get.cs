@@ -5,11 +5,52 @@ using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Models.VariableGroups.Requests;
 using VGManager.Services.Models.VariableGroups.Results;
 
-namespace VGManager.Services.VariableGroupServices;
+namespace VGManager.Services;
 
-public partial class VariableGroupService
+public partial class VariableService
 {
-    public async Task<VariableResults> GetVariableGroupsAsync(
+
+    public async Task<VariableGroupResults> GetVariableGroupsAsync(
+        VariableGroupModel variableGroupModel,
+        CancellationToken cancellationToken = default
+        )
+    {
+        var result = new List<VariableGroup>();
+        var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
+        var status = vgEntity.Status;
+
+        if (status == AdapterStatus.Success)
+        {
+            var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
+                        Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
+                        FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
+            foreach (var variableGroup in filteredVariableGroups)
+            {
+
+                if (!variableGroup.Variables.ContainsKey(variableGroupModel.KeyFilter))
+                {
+                    result.Add(variableGroup);
+                }
+            }
+
+            return new()
+            {
+                Status = status,
+                VariableGroups = result,
+            };
+        }
+        else
+        {
+            return new()
+            {
+                Status = status,
+                VariableGroups = Enumerable.Empty<VariableGroup>(),
+            };
+        }
+        
+    }
+
+    public async Task<VariableResults> GetVariablesAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         )
@@ -17,9 +58,9 @@ public partial class VariableGroupService
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
-            return GetVariableGroupsAsync(variableGroupModel, vgEntity, status);
+            return GetVariablesAsync(variableGroupModel, vgEntity, status);
         }
         else
         {
@@ -31,13 +72,13 @@ public partial class VariableGroupService
         }
     }
 
-    private VariableResults GetVariableGroupsAsync(
+    private VariableResults GetVariablesAsync(
         VariableGroupModel variableGroupModel,
         VariableGroupEntity vgEntity,
-        Status status
+        AdapterStatus status
         )
     {
-        var matchedVariableGroups = new List<VariableResult>();
+        var matchedVariables = new List<VariableResult>();
         var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
                         Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
                         FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
@@ -58,7 +99,7 @@ public partial class VariableGroupService
                 return new()
                 {
                     Status = status,
-                    Variables = matchedVariableGroups,
+                    Variables = matchedVariables,
                 };
             }
         }
@@ -76,13 +117,13 @@ public partial class VariableGroupService
                 return new()
                 {
                     Status = status,
-                    Variables = matchedVariableGroups,
+                    Variables = matchedVariables,
                 };
             }
 
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
-                matchedVariableGroups.AddRange(
+                matchedVariables.AddRange(
                     GetVariables(keyRegex, valueRegex, filteredVariableGroup)
                     );
             }
@@ -91,7 +132,7 @@ public partial class VariableGroupService
         {
             foreach (var filteredVariableGroup in filteredVariableGroups)
             {
-                matchedVariableGroups.AddRange(
+                matchedVariables.AddRange(
                     GetVariables(keyFilter, valueRegex, filteredVariableGroup)
                     );
             }
@@ -100,7 +141,7 @@ public partial class VariableGroupService
         return new()
         {
             Status = status,
-            Variables = matchedVariableGroups,
+            Variables = matchedVariables,
         };
     }
 
@@ -139,21 +180,21 @@ public partial class VariableGroupService
                 if (valueRegex.IsMatch(variableValue.ToLower()))
                 {
                     result.AddRange(
-                        AddVariableGroupResult(filteredVariableGroup, filteredVariable, variableValue)
+                        AddVariableResult(filteredVariableGroup, filteredVariable, variableValue)
                         );
                 }
             }
             else
             {
                 result.AddRange(
-                    AddVariableGroupResult(filteredVariableGroup, filteredVariable, variableValue)
+                    AddVariableResult(filteredVariableGroup, filteredVariable, variableValue)
                     );
             }
         }
         return result;
     }
 
-    private IEnumerable<VariableResult> AddVariableGroupResult(
+    private IEnumerable<VariableResult> AddVariableResult(
         VariableGroup filteredVariableGroup,
         KeyValuePair<string, VariableValue> filteredVariable,
         string variableValue

@@ -7,9 +7,15 @@ namespace VGManager.Services.Interfaces;
 public interface IKeyVaultService
 {
     void SetupConnectionRepository(SecretModel secretModel);
+    Task<(string?, IEnumerable<string>)> GetKeyVaultsAsync(
+        string tenantId,
+        string clientId,
+        string clientSecret,
+        CancellationToken cancellationToken = default
+        );
     Task<SecretResults> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default);
     DeletedSecretResults GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default);
-    Task<Status> RecoverSecretAsync(string secretFilter, CancellationToken cancellationToken = default);
-    Task<Status> DeleteAsync(string secretFilter, CancellationToken cancellationToken = default);
-    Task<Status> CopySecretsAsync(SecretCopyModel secretCopyModel, CancellationToken cancellationToken = default);
+    Task<AdapterStatus> RecoverSecretAsync(string secretFilter, string userName, CancellationToken cancellationToken = default);
+    Task<AdapterStatus> DeleteAsync(string secretFilter, string userName, CancellationToken cancellationToken = default);
+    Task<AdapterStatus> CopySecretsAsync(SecretCopyModel secretCopyModel, CancellationToken cancellationToken = default);
 }

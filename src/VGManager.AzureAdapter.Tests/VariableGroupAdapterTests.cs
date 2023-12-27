@@ -28,7 +28,7 @@ public class VariableGroupAdapterTests
         var result = await _variableGroupAdapter.GetAllAsync(default);
 
         // Assert
-        result.Status.Should().Be(Status.Unauthorized);
+        result.Status.Should().Be(AdapterStatus.Unauthorized);
     }
 
     [Test]
@@ -49,6 +49,6 @@ public class VariableGroupAdapterTests
         var result = await _variableGroupAdapter.UpdateAsync(variableGroupParameters, 0, default);
 
         // Assert
-        result.Should().Be(Status.Unauthorized);
+        result.Should().Be(AdapterStatus.Unauthorized);
     }
 }

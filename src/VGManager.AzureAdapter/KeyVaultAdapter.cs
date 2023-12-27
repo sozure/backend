@@ -1,4 +1,6 @@
 using Azure.Identity;
+using Azure.ResourceManager;
+using Azure.ResourceManager.KeyVault;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Logging;
 using VGManager.AzureAdapter.Entities;
@@ -26,6 +28,27 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         _keyVaultName = keyVaultName;
     }
 
+    public async Task<(string?, IEnumerable<string>)> GetKeyVaultsAsync(
+        string tenantId, 
+        string clientId, 
+        string clientSecret, 
+        CancellationToken cancellationToken = default
+        )
+    {
+        var result = new List<string>();
+        var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+        var client = new ArmClient(clientSecretCredential);
+        var sub = await client.GetDefaultSubscriptionAsync(cancellationToken);
+        var keyVaults = sub.GetKeyVaults(top: null, cancellationToken);
+
+        foreach (var keyVault in keyVaults)
+        {
+            result.Add(keyVault.Data.Name);
+        }
+
+        return (sub?.Id ?? string.Empty, result);
+    }
+
     public async Task<SecretEntity> GetSecretAsync(string name, CancellationToken cancellationToken = default)
     {
         KeyVaultSecret result;
@@ -36,29 +59,29 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         }
         catch (Azure.RequestFailedException ex)
         {
-            var status = Status.Unknown;
+            var status = AdapterStatus.Unknown;
             _logger.LogError(ex, "Couldn't get secret. Status: {status}.", status);
             return GetSecretResult(status);
         }
         catch (Exception ex)
         {
-            var status = Status.Unknown;
+            var status = AdapterStatus.Unknown;
             _logger.LogError(ex, "Couldn't get secret. Status: {status}.", status);
             return GetSecretResult(status);
         }
     }
 
-    public async Task<Status> DeleteSecretAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<AdapterStatus> DeleteSecretAsync(string name, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogDebug("Delete secret {name} in {keyVault}.", name, _keyVaultName);
             await _secretClient.StartDeleteSecretAsync(name, cancellationToken);
-            return Status.Success;
+            return AdapterStatus.Success;
         }
         catch (Exception ex)
         {
-            var status = Status.Unknown;
+            var status = AdapterStatus.Unknown;
             _logger.LogError(ex, "Couldn't delete secret. Status: {status}.", status);
             return status;
         }
@@ -74,20 +97,20 @@ public class KeyVaultAdapter : IKeyVaultAdapter
 
             if (results is null)
             {
-                return GetSecretsResult(Status.Unknown);
+                return GetSecretsResult(AdapterStatus.Unknown);
             }
             return GetSecretsResult(results.ToList());
 
         }
         catch (Exception ex)
         {
-            var status = Status.Unknown;
+            var status = AdapterStatus.Unknown;
             _logger.LogError(ex, "Couldn't get secrets. Status: {status}.", status);
             return GetSecretsResult(status);
         }
     }
 
-    public async Task<Status> AddKeyVaultSecretAsync(Dictionary<string, string> parameters, CancellationToken cancellationToken = default)
+    public async Task<AdapterStatus> AddKeyVaultSecretAsync(Dictionary<string, string> parameters, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -109,27 +132,27 @@ public class KeyVaultAdapter : IKeyVaultAdapter
                 await _secretClient.StartRecoverDeletedSecretAsync(secretName, cancellationToken);
             }
 
-            return Status.Success;
+            return AdapterStatus.Success;
         }
         catch (Exception ex)
         {
-            var status = Status.Unknown;
+            var status = AdapterStatus.Unknown;
             _logger.LogError(ex, "Couldn't add secret. Status: {status}.", status);
             return status;
         }
     }
 
-    public async Task<Status> RecoverSecretAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<AdapterStatus> RecoverSecretAsync(string name, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogDebug("Recover deleted secret: {secretName} in {keyVault}.", name, _keyVaultName);
             await _secretClient.StartRecoverDeletedSecretAsync(name, cancellationToken);
-            return Status.Success;
+            return AdapterStatus.Success;
         }
         catch (Exception ex)
         {
-            var status = Status.Unknown;
+            var status = AdapterStatus.Unknown;
             _logger.LogError(ex, "Couldn't recover secret. Status: {status}.", status);
             return status;
         }
@@ -145,7 +168,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         }
         catch (Exception ex)
         {
-            var status = Status.Unknown;
+            var status = AdapterStatus.Unknown;
             _logger.LogError(ex, "Couldn't get deleted secrets. Status: {status}.", status);
             return GetDeletedSecretsResult(status);
         }
@@ -165,7 +188,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         return results;
     }
 
-    private static DeletedSecretsEntity GetDeletedSecretsResult(Status status)
+    private static DeletedSecretsEntity GetDeletedSecretsResult(AdapterStatus status)
     {
         return new()
         {
@@ -178,7 +201,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
     {
         return new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             DeletedSecrets = deletedSecrets
         };
     }
@@ -187,12 +210,12 @@ public class KeyVaultAdapter : IKeyVaultAdapter
     {
         return new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Secrets = secrets
         };
     }
 
-    private static SecretsEntity GetSecretsResult(Status status)
+    private static SecretsEntity GetSecretsResult(AdapterStatus status)
     {
         return new()
         {
@@ -205,12 +228,12 @@ public class KeyVaultAdapter : IKeyVaultAdapter
     {
         return new()
         {
-            Status = Status.Success,
+            Status = AdapterStatus.Success,
             Secret = result
         };
     }
 
-    private static SecretEntity GetSecretResult(Status status)
+    private static SecretEntity GetSecretResult(AdapterStatus status)
     {
         return new()
         {

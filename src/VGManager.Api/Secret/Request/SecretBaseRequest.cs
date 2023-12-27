@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VGManager.Api.Secret.Request;
 
-public abstract class SecretBaseRequest
+public class SecretBaseRequest
 {
     [Required]
     public string TenantId { get; set; } = null!;
@@ -12,4 +12,7 @@ public abstract class SecretBaseRequest
 
     [Required]
     public string ClientSecret { get; set; } = null!;
+
+    [Required]
+    public string UserName { get; set; } = null!;
 }

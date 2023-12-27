@@ -14,6 +14,9 @@ public class VariableGroupRequest
     public string PAT { get; set; } = null!;
 
     [Required]
+    public string UserName { get; set; } = null!;
+
+    [Required]
     public string VariableGroupFilter { get; set; } = null!;
 
     [Required]

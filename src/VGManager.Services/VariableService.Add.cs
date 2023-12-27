@@ -2,18 +2,22 @@ using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Entities;
+using VGManager.Entities.VGEntities;
 using VGManager.Services.Models.VariableGroups.Requests;
 
-namespace VGManager.Services.VariableGroupServices;
+namespace VGManager.Services;
 
-public partial class VariableGroupService
+public partial class VariableService
 {
-    public async Task<Status> AddVariablesAsync(VariableGroupAddModel variableGroupAddModel, CancellationToken cancellationToken = default)
+    public async Task<AdapterStatus> AddVariablesAsync(
+        VariableGroupAddModel variableGroupAddModel,
+        CancellationToken cancellationToken = default
+        )
     {
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
-        if (status == Status.Success)
+        if (status == AdapterStatus.Success)
         {
             var keyFilter = variableGroupAddModel.KeyFilter;
             var variableGroupFilter = variableGroupAddModel.VariableGroupFilter;
@@ -21,7 +25,29 @@ public partial class VariableGroupService
             var value = variableGroupAddModel.Value;
             var filteredVariableGroups = CollectVariableGroups(vgEntity, keyFilter, variableGroupFilter);
 
-            return await AddVariablesAsync(filteredVariableGroups, key, value, cancellationToken);
+            var finalStatus = await AddVariablesAsync(filteredVariableGroups, key, value, cancellationToken);
+
+            if (finalStatus == AdapterStatus.Success)
+            {
+                var org = variableGroupAddModel.Organization;
+                var entity = new VGAddEntity
+                {
+                    VariableGroupFilter = variableGroupFilter,
+                    Key = key,
+                    Value = value,
+                    Project = _project,
+                    Organization = org,
+                    User = variableGroupAddModel.UserName,
+                    Date = DateTime.UtcNow
+                };
+
+                if (_organizationSettings.Organizations.Contains(org))
+                {
+                    await _additionColdRepository.AddEntityAsync(entity, cancellationToken);
+                }
+            }
+
+            return finalStatus;
         }
 
         return status;
@@ -38,14 +64,14 @@ public partial class VariableGroupService
 
                 filteredVariableGroups = FilterWithoutSecrets(true, variableGroupFilter, vgEntity.VariableGroups)
                 .Select(vg => vg)
-                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key.ToLower())).Count > 0);
+                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key.ToLower())).Count == 0);
             }
             catch (RegexParseException ex)
             {
                 _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", keyFilter);
                 filteredVariableGroups = FilterWithoutSecrets(true, variableGroupFilter, vgEntity.VariableGroups)
                 .Select(vg => vg)
-                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => keyFilter.ToLower() == key.ToLower()).Count > 0);
+                .Where(vg => vg.Variables.Keys.ToList().FindAll(key => keyFilter.ToLower() == key.ToLower()).Count == 0);
             }
         }
         else
@@ -56,12 +82,13 @@ public partial class VariableGroupService
         return filteredVariableGroups;
     }
 
-    private async Task<Status> AddVariablesAsync(IEnumerable<VariableGroup> filteredVariableGroups, string key, string value, CancellationToken cancellationToken)
+    private async Task<AdapterStatus> AddVariablesAsync(IEnumerable<VariableGroup> filteredVariableGroups, string key, string value, CancellationToken cancellationToken)
     {
         var updateCounter = 0;
-
+        var counter = 0;
         foreach (var filteredVariableGroup in filteredVariableGroups)
         {
+            counter++;
             try
             {
                 var success = await AddVariableAsync(key, value, filteredVariableGroup, cancellationToken);
@@ -93,7 +120,7 @@ public partial class VariableGroupService
                     );
             }
         }
-        return updateCounter == filteredVariableGroups.Count() ? Status.Success : Status.Unknown;
+        return updateCounter == counter ? AdapterStatus.Success : AdapterStatus.Unknown;
     }
 
     private async Task<bool> AddVariableAsync(string key, string value, VariableGroup filteredVariableGroup, CancellationToken cancellationToken)
@@ -108,7 +135,7 @@ public partial class VariableGroupService
             cancellationToken
             );
 
-        if (updateStatus == Status.Success)
+        if (updateStatus == AdapterStatus.Success)
         {
             return true;
         }

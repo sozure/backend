@@ -11,5 +11,5 @@ public class SecretCopyRequest : SecretBaseRequest
     public string ToKeyVault { get; set; } = null!;
 
     [Required]
-    public bool overrideSecret { get; set; }
+    public bool OverrideSecret { get; set; }
 }

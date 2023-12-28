@@ -40,9 +40,9 @@ public class KeyVaultService : IKeyVaultService
     }
 
     public async Task<(string?, IEnumerable<string>)> GetKeyVaultsAsync(
-        string tenantId, 
-        string clientId, 
-        string clientSecret, 
+        string tenantId,
+        string clientId,
+        string clientSecret,
         CancellationToken cancellationToken = default
         )
     {
@@ -72,46 +72,54 @@ public class KeyVaultService : IKeyVaultService
 
     public async Task<AdapterStatus> CopySecretsAsync(SecretCopyModel secretCopyModel, CancellationToken cancellationToken = default)
     {
-        _keyVaultConnectionRepository.Setup(
+        try
+        {
+            _keyVaultConnectionRepository.Setup(
             secretCopyModel.FromKeyVault,
             secretCopyModel.TenantId,
             secretCopyModel.ClientId,
             secretCopyModel.ClientSecret
             );
 
-        var fromSecrets = await _keyVaultConnectionRepository.GetAllAsync(cancellationToken);
+            var fromSecrets = await _keyVaultConnectionRepository.GetAllAsync(cancellationToken);
 
-        _keyVaultConnectionRepository.Setup(
-            secretCopyModel.ToKeyVault,
-            secretCopyModel.TenantId,
-            secretCopyModel.ClientId,
-            secretCopyModel.ClientSecret
-            );
+            _keyVaultConnectionRepository.Setup(
+                secretCopyModel.ToKeyVault,
+                secretCopyModel.TenantId,
+                secretCopyModel.ClientId,
+                secretCopyModel.ClientSecret
+                );
 
-        var toSecrets = await _keyVaultConnectionRepository.GetAllAsync(cancellationToken);
+            var toSecrets = await _keyVaultConnectionRepository.GetAllAsync(cancellationToken);
 
-        foreach (var secret in fromSecrets)
-        {
-            var parameters = ParametersBuilder(secret, toSecrets, secretCopyModel.OverrideSecret);
-            var partialStatus = await _keyVaultConnectionRepository.AddKeyVaultSecretAsync(parameters, cancellationToken);
-
-            if (partialStatus != AdapterStatus.Success)
+            foreach (var secret in fromSecrets)
             {
-                return partialStatus;
+                var parameters = ParametersBuilder(secret, toSecrets, secretCopyModel.OverrideSecret);
+                var partialStatus = await _keyVaultConnectionRepository.AddKeyVaultSecretAsync(parameters, cancellationToken);
+
+                if (partialStatus != AdapterStatus.Success)
+                {
+                    return partialStatus;
+                }
             }
+
+            var entity = new KeyVaultCopyEntity
+            {
+                Date = DateTime.UtcNow,
+                OriginalKeyVault = secretCopyModel.FromKeyVault,
+                DestinationKeyVault = secretCopyModel.ToKeyVault,
+                User = secretCopyModel.UserName
+            };
+
+            await _keyVaultCopyColdRepository.AddEntityAsync(entity, cancellationToken);
+
+            return AdapterStatus.Success;
         }
-
-        var entity = new KeyVaultCopyEntity
+        catch (Azure.RequestFailedException ex)
         {
-            Date = DateTime.UtcNow,
-            OriginalKeyVault = secretCopyModel.FromKeyVault,
-            DestinationKeyVault = secretCopyModel.ToKeyVault,
-            User = secretCopyModel.UserName
-        };
-
-        await _keyVaultCopyColdRepository.AddEntityAsync(entity, cancellationToken);
-
-        return AdapterStatus.Success;
+            _logger.LogError(ex, "Couldn't copy secrets from {fromKeyVault} to {toKeyVault}.", secretCopyModel.FromKeyVault, secretCopyModel.ToKeyVault);
+            return AdapterStatus.Unauthorized;
+        }
     }
 
     public DeletedSecretResults GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default)

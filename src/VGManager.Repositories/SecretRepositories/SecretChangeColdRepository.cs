@@ -1,4 +1,3 @@
-using Humanizer;
 using VGManager.Entities.SecretEntities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
@@ -25,10 +24,10 @@ public class SecretChangeColdRepository : SqlRepository<SecretChangeEntity>, ISe
     }
 
     public async Task<IEnumerable<SecretChangeEntity>> GetAsync(
-        DateTime from, 
-        DateTime to, 
-        string user, 
-        string keyVaultName, 
+        DateTime from,
+        DateTime to,
+        string user,
+        string keyVaultName,
         CancellationToken cancellationToken = default
         )
     {

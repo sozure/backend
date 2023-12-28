@@ -27,10 +27,10 @@ public class ProjectAdapter : IProjectAdapter
             await GetConnectionAsync(baseUrl, pat);
             var teamProjectReferences = await _projectHttpClient!.GetProjects();
             _projectHttpClient.Dispose();
-            
+
             var projects = new List<ProjectEntity>();
 
-            foreach(var project in teamProjectReferences)
+            foreach (var project in teamProjectReferences)
             {
                 var subscriptionIds = await GetSubscriptionIds(baseUrl, project.Name, pat);
                 projects.Add(new()
@@ -38,7 +38,7 @@ public class ProjectAdapter : IProjectAdapter
                     Project = project,
                     SubscriptionIds = subscriptionIds
                 });
-            }   
+            }
 
             return GetResult(AdapterStatus.Success, projects);
         }
@@ -71,7 +71,7 @@ public class ProjectAdapter : IProjectAdapter
 
         // Set authorization header with the personal access token
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            "Basic", 
+            "Basic",
             Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($":{personalAccessToken}"))
             );
 
@@ -84,7 +84,7 @@ public class ProjectAdapter : IProjectAdapter
             var responseBody = await response.Content.ReadAsStringAsync();
             var json = JsonSerializer.Deserialize<JsonObject>(responseBody) ?? new JsonObject();
             var jsonArray = json["value"]?.AsArray() ?? new JsonArray();
-            foreach(var item in jsonArray)
+            foreach (var item in jsonArray)
             {
                 var subscriptionId = item?["data"]?["subscriptionId"] ?? string.Empty;
                 result.Add(subscriptionId.ToString());

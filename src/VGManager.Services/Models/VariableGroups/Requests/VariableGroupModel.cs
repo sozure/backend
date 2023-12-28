@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace VGManager.Services.Models.VariableGroups.Requests;
 
 public class VariableGroupModel

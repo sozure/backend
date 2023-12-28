@@ -80,7 +80,7 @@ public partial class VariableGroupController
 
         var result = new List<VariableGroupResponse>();
 
-        foreach(var variableGroup in variableGroupResultsModel.VariableGroups)
+        foreach (var variableGroup in variableGroupResultsModel.VariableGroups)
         {
             result.Add(new()
             {
@@ -188,5 +188,31 @@ public partial class VariableGroupController
         {
             return await GetBaseResultAsync(vgRequest, cancellationToken);
         }
+    }
+
+    private static VariableGroupResponses GetResult(VariableResponses variableResponses)
+    {
+        var listResult = new List<VariableGroupResponse>();
+        var result = new VariableGroupResponses
+        {
+            Status = variableResponses.Status
+        };
+
+        foreach (var variableResponse in variableResponses.Variables)
+        {
+            if (!listResult.Exists(
+                item => item.VariableGroupName == variableResponse.VariableGroupName && item.Project == variableResponse.Project
+                ))
+            {
+                listResult.Add(new()
+                {
+                    VariableGroupName = variableResponse.VariableGroupName,
+                    Project = variableResponse.Project
+                });
+            }
+        }
+
+        result.VariableGroups = listResult;
+        return result;
     }
 }

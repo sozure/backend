@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace VGManager.Api.GitRepository;
+namespace VGManager.Api.GitRepository.Request;
 
-public class GitRepositoryRequest
+public class GitRepositoryBaseRequest
 {
     [Required]
     public string Organization { get; set; } = null!;

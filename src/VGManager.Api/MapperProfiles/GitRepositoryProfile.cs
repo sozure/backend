@@ -9,5 +9,6 @@ public class GitRepositoryProfile : Profile
     public GitRepositoryProfile()
     {
         CreateMap<GitRepositoryResult, GitRepositoryResponse>();
+        CreateMap<GitRepositoryResults, GitRepositoryResponses>();
     }
 }

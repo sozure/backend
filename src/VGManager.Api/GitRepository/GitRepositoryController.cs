@@ -1,11 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using VGManager.Api.Projects.Responses;
-using VGManager.Api.Projects;
-using VGManager.Services;
+using VGManager.Api.GitRepository.Request;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models.Projects;
 
 namespace VGManager.Api.GitRepository;
 
@@ -23,12 +20,12 @@ public class GitRepositoryController: ControllerBase
         _mapper = mapper;
     }
 
-    [HttpPost("Get", Name = "getgitrepositories")]
+    [HttpPost(Name = "repositories")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GitRepositoryResponse>> GetAsync(
-        [FromBody] GitRepositoryRequest request,
+    public async Task<ActionResult<GitRepositoryResponses>> GetAsync(
+        [FromBody] GitRepositoryBaseRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -39,7 +36,31 @@ public class GitRepositoryController: ControllerBase
             cancellationToken
             );
 
-        var result = _mapper.Map<GitRepositoryResponse>(gitRepositories);
+        var result = _mapper.Map<GitRepositoryResponses>(gitRepositories);
         return Ok(result);
+    }
+
+    [HttpPost("Variables", Name = "Variables")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<GitRepositoryResponses>> GetVariablesAsync(
+        [FromBody] GitRepositoryVariablesRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var variablesFromConfigs = await _gitRepositoryService.GetVariablesFromConfigAsync(
+            request.Organization,
+            request.Project,
+            request.PAT,
+            request.GitRepositoryId,
+            request.FilePath,
+            request.Delimiter,
+            cancellationToken
+            );
+
+        //var result = _mapper.Map<GitRepositoryResponse>(variablesFromConfigs);
+        //return Ok(result);
+        return Ok(variablesFromConfigs);
     }
 }

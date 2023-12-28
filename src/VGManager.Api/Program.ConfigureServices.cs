@@ -96,11 +96,13 @@ static partial class Program
         services.AddScoped<IVariableService, VariableService>();
         services.AddScoped<IKeyVaultService, KeyVaultService>();
         services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<IGitRepositoryService, GitRepositoryService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<IChangeService, ChangeService>();
         services.AddScoped<IProfileAdapter, ProfileAdapter>();
         services.AddScoped<IVariableGroupAdapter, VariableGroupAdapter>();
         services.AddScoped<IProjectAdapter, ProjectAdapter>();
         services.AddScoped<IKeyVaultAdapter, KeyVaultAdapter>();
+        services.AddScoped<IGitRepositoryAdapter, GitRepositoryAdapter>();
     }
 }

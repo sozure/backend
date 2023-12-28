@@ -52,7 +52,7 @@ public partial class VariableGroupController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        if(request.Project == "All")
+        if (request.Project == "All")
         {
             var result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);

@@ -40,9 +40,9 @@ public class KeyVaultService : IKeyVaultService
     }
 
     public async Task<(string?, IEnumerable<string>)> GetKeyVaultsAsync(
-        string tenantId, 
-        string clientId, 
-        string clientSecret, 
+        string tenantId,
+        string clientId,
+        string clientSecret,
         CancellationToken cancellationToken = default
         )
     {
@@ -114,7 +114,8 @@ public class KeyVaultService : IKeyVaultService
             await _keyVaultCopyColdRepository.AddEntityAsync(entity, cancellationToken);
 
             return AdapterStatus.Success;
-        } catch(Azure.RequestFailedException ex)
+        }
+        catch (Azure.RequestFailedException ex)
         {
             _logger.LogError(ex, "Couldn't copy secrets from {fromKeyVault} to {toKeyVault}.", secretCopyModel.FromKeyVault, secretCopyModel.ToKeyVault);
             return AdapterStatus.Unauthorized;

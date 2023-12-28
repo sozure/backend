@@ -29,9 +29,9 @@ public class KeyVaultAdapter : IKeyVaultAdapter
     }
 
     public async Task<(string?, IEnumerable<string>)> GetKeyVaultsAsync(
-        string tenantId, 
-        string clientId, 
-        string clientSecret, 
+        string tenantId,
+        string clientId,
+        string clientSecret,
         CancellationToken cancellationToken = default
         )
     {

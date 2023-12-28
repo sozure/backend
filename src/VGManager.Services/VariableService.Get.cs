@@ -47,7 +47,7 @@ public partial class VariableService
                 VariableGroups = Enumerable.Empty<VariableGroup>(),
             };
         }
-        
+
     }
 
     public async Task<VariableResults> GetVariablesAsync(

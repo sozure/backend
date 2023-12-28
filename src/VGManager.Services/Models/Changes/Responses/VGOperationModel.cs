@@ -1,6 +1,6 @@
 namespace VGManager.Services.Models.Changes.Responses;
 
-public class VGOperationModel: BaseOperationModel
+public class VGOperationModel : BaseOperationModel
 {
     public string Type { get; set; } = null!;
     public string Organization { get; set; } = null!;

@@ -330,7 +330,7 @@ public static class TestSampleData
             ClientSecret = clientSecret,
             FromKeyVault = fromKeyVault,
             ToKeyVault = toKeyVault,
-            overrideSecret = overrideSecret
+            OverrideSecret = overrideSecret
         };
 
     public static SecretResponses GetSecretsGetResponse()

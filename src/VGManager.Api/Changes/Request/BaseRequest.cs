@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using VGManager.Services.Models.Changes;
 
 namespace VGManager.Api.Changes.Request;
 

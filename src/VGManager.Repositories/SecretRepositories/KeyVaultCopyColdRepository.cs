@@ -1,4 +1,3 @@
-using System.Threading;
 using VGManager.Entities.SecretEntities;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
@@ -25,9 +24,9 @@ public class KeyVaultCopyColdRepository : SqlRepository<KeyVaultCopyEntity>, IKe
     }
 
     public async Task<IEnumerable<KeyVaultCopyEntity>> GetAsync(
-        DateTime from, 
-        DateTime to, 
-        string user, 
+        DateTime from,
+        DateTime to,
+        string user,
         CancellationToken cancellationToken = default
         )
     {

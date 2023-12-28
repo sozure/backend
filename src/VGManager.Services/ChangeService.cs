@@ -1,15 +1,10 @@
 using AutoMapper;
-using Humanizer;
-using Microsoft.VisualStudio.Services.Organization.Client;
-using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
-using Microsoft.VisualStudio.Services.Users;
 using VGManager.Repositories.Interfaces.SecretRepositories;
 using VGManager.Repositories.Interfaces.VGRepositories;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Changes;
 using VGManager.Services.Models.Changes.Requests;
 using VGManager.Services.Models.Changes.Responses;
-using static Microsoft.VisualStudio.Services.Graph.GraphResourceIds;
 
 namespace VGManager.Services;
 
@@ -50,7 +45,7 @@ public class ChangeService : IChangeService
         var user = model.User;
         var from = model.From;
         var to = model.To;
-        foreach(var changeType in model.ChangeTypes)
+        foreach (var changeType in model.ChangeTypes)
         {
             switch (changeType)
             {

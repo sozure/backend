@@ -1,5 +1,4 @@
 using AutoMapper;
-using Microsoft.TeamFoundation.Core.WebApi;
 using VGManager.Api.Projects;
 using VGManager.Api.Projects.Responses;
 using VGManager.Services.Models.Projects;

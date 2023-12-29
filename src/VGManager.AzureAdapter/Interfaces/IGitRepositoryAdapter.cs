@@ -1,9 +1,12 @@
 using Microsoft.TeamFoundation.SourceControl.WebApi;
+using VGManager.AzureAdapter.Entities;
 
 namespace VGManager.AzureAdapter.Interfaces;
 
 public interface IGitRepositoryAdapter
 {
+    void Setup(string organization, string pat);
+
     Task<IEnumerable<GitRepository>> GetAllAsync(
         string organization,
         string project,
@@ -11,13 +14,8 @@ public interface IGitRepositoryAdapter
         CancellationToken cancellationToken = default
         );
 
-    Task<IEnumerable<string>> GetVariablesFromConfigAsync(
-        string organization,
-        string project,
-        string pat,
-        string gitRepositoryId,
-        string filePath,
-        string delimiter,
+    Task<List<string>> GetVariablesFromConfigAsync(
+        GitRepositoryEntity gitRepositoryEntity,
         CancellationToken cancellationToken = default
         );
 }

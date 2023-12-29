@@ -4,8 +4,7 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Threading;
+using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 
 namespace VGManager.AzureAdapter;
@@ -34,42 +33,54 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
         return repositories.Where(repo => (!repo.IsDisabled ?? false) && repo.ProjectReference.Name == project).ToList();
     }
 
-    public async Task<IEnumerable<string>> GetVariablesFromConfigAsync(
-        string organization,
-        string project,
-        string pat,
-        string gitRepositoryId,
-        string filePath,
-        string delimiter,
+    public async Task<List<string>> GetVariablesFromConfigAsync(
+        GitRepositoryEntity gitRepositoryEntity,
         CancellationToken cancellationToken = default
         )
     {
+        var project = gitRepositoryEntity.Project;
+        var gitRepositoryId = gitRepositoryEntity.GitRepositoryId;
+
         _logger.LogInformation(
-            "Requesting configurations from {project} azure project, {gitRepositoryId} git repository.", 
-            project, 
+            "Requesting configurations from {project} azure project, {gitRepositoryId} git repository.",
+            project,
             gitRepositoryId
             );
-        Setup(organization, pat);
+
         var gitClient = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
+        var gitVersionDescriptor = new GitVersionDescriptor
+        {
+            VersionType = GitVersionType.Branch, 
+            Version = "develop" 
+        };
+
         var item = await gitClient.GetItemTextAsync(
-            project: project, 
-            repositoryId: gitRepositoryId, 
-            path: filePath, 
+            project: project,
+            repositoryId: gitRepositoryId,
+            path: gitRepositoryEntity.FilePath,
+            versionDescriptor: gitVersionDescriptor,
             cancellationToken: cancellationToken
             );
+        
         var json = await GetJsonObjectAsync(item, cancellationToken);
-        var result = GetJsonKeys(json, delimiter);
+        var result = GetJsonKeys(json, gitRepositoryEntity.Exceptions ?? Enumerable.Empty<string>(), gitRepositoryEntity.Delimiter);
         return result;
     }
 
-    public static List<string> GetJsonKeys(JsonElement jsonObject, string delimiter)
+    private static List<string> GetJsonKeys(JsonElement jsonObject, IEnumerable<string> exceptions, string delimiter)
     {
         var keys = new List<string>();
-        GetJsonKeysHelper(jsonObject, delimiter, string.Empty, keys);
+        GetJsonKeysHelper(jsonObject, delimiter, string.Empty, exceptions, keys);
         return keys;
     }
 
-    private static void GetJsonKeysHelper(JsonElement jsonObject, string delimiter, string prefix, List<string> keys)
+    private static void GetJsonKeysHelper(
+        JsonElement jsonObject, 
+        string delimiter, 
+        string prefix, 
+        IEnumerable<string> exceptions, 
+        List<string> keys
+        )
     {
         if (jsonObject.ValueKind == JsonValueKind.Object)
         {
@@ -78,12 +89,15 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
                 var name = property.Name;
                 var key = prefix + name + delimiter;
 
-                if (property.Value.ValueKind != JsonValueKind.Object)
+                if (property.Value.ValueKind != JsonValueKind.Object || exceptions.Contains(property.Name))
                 {
                     keys.Add(key.Remove(key.Length - delimiter.Length));
                 }
 
-                GetJsonKeysHelper(property.Value, delimiter, key, keys);
+                if (!exceptions.Contains(property.Name))
+                {
+                    GetJsonKeysHelper(property.Value, delimiter, key, exceptions, keys);
+                }
             }
         }
     }
@@ -91,19 +105,18 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
     private static async Task<JsonElement> GetJsonObjectAsync(Stream item, CancellationToken cancellationToken)
     {
         using var stream = new MemoryStream();
-        byte[] buffer = new byte[2048]; // read in chunks of 2KB
+        var buffer = new byte[2048];
         int bytesRead;
-        while ((bytesRead = await item.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
+        while ((bytesRead = await item.ReadAsync(buffer, cancellationToken)) > 0)
         {
-            await stream.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+            await stream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
         }
         var result = stream.ToArray();
         var itemText = Encoding.UTF8.GetString(result);
-        var json = JsonSerializer.Deserialize<JsonElement>(itemText);
-        return json;
+        return JsonSerializer.Deserialize<JsonElement>(itemText);
     }
 
-    private void Setup(string organization, string pat)
+    public void Setup(string organization, string pat)
     {
         var uriString = $"https://dev.azure.com/{organization}";
         Uri uri;

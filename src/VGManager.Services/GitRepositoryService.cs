@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
@@ -6,31 +7,33 @@ using VGManager.Services.Models.GitRepositories;
 
 namespace VGManager.Services;
 
-public class GitRepositoryService: IGitRepositoryService
+public class GitRepositoryService : IGitRepositoryService
 {
-    private readonly ILogger _logger;
     private readonly IGitRepositoryAdapter _gitRepositoryAdapter;
+    private readonly IMapper _mapper;
+    private readonly ILogger _logger;
 
-    public GitRepositoryService(ILogger<GitRepositoryService> logger, IGitRepositoryAdapter gitRepositoryAdapter)
+    public GitRepositoryService(IGitRepositoryAdapter gitRepositoryAdapter, IMapper mapper, ILogger<GitRepositoryService> logger)
     {
-        _logger = logger;
         _gitRepositoryAdapter = gitRepositoryAdapter;
+        _mapper = mapper;
+        _logger = logger;
     }
 
     public async Task<GitRepositoryResults> GetAllAsync(
-        string organization, 
-        string project, 
-        string pat, 
+        string organization,
+        string project,
+        string pat,
         CancellationToken cancellationToken = default)
     {
         try
         {
             var repositoryNames = new List<GitRepositoryResult>();
             var repositories = await _gitRepositoryAdapter.GetAllAsync(organization, project, pat, cancellationToken);
-            
+
             foreach (var repository in repositories)
             {
-                repositoryNames.Add(new() 
+                repositoryNames.Add(new()
                 {
                     RepositoryId = repository.Id.ToString(),
                     RepositoryName = repository.Name
@@ -42,7 +45,8 @@ public class GitRepositoryService: IGitRepositoryService
                 Repositories = repositoryNames,
                 Status = AdapterStatus.Success
             };
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting git repositories from {project} azure project.", project);
             return new()
@@ -53,24 +57,37 @@ public class GitRepositoryService: IGitRepositoryService
         }
     }
 
-    public async Task<IEnumerable<string>> GetVariablesFromConfigAsync(
-        string organization, 
-        string project, 
-        string pat, 
-        string gitRepositoryId,
-        string filePath,
-        string delimiter,
+    public async Task<GitRepositoryVariablesResult> GetVariablesFromConfigAsync(
+        GitRepositoryModel gitRepositoryModel,
         CancellationToken cancellationToken = default
         )
     {
-        return await _gitRepositoryAdapter.GetVariablesFromConfigAsync(
-            organization, 
-            project, 
-            pat, 
-            gitRepositoryId, 
-            filePath, 
-            delimiter, 
-            cancellationToken
-            );
+        var pat = gitRepositoryModel.PAT;
+        _gitRepositoryAdapter.Setup(gitRepositoryModel.Organization, pat);
+        List<string> variables;
+        try
+        {
+            var entity = _mapper.Map<GitRepositoryEntity>(gitRepositoryModel);
+            variables = await _gitRepositoryAdapter.GetVariablesFromConfigAsync(
+                entity,
+                cancellationToken
+                );
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting variables from {project} azure project.", gitRepositoryModel.Project);
+            return new()
+            {
+                Status = AdapterStatus.Unknown,
+                Variables = Enumerable.Empty<string>()
+            };
+        }
+
+
+        return new()
+        {
+            Status = AdapterStatus.Success,
+            Variables = variables
+        };
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.GitRepository.Request;
 using VGManager.Services.Interfaces;
+using VGManager.Services.Models.GitRepositories;
 
 namespace VGManager.Api.GitRepository;
 
@@ -49,18 +50,9 @@ public class GitRepositoryController: ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var variablesFromConfigs = await _gitRepositoryService.GetVariablesFromConfigAsync(
-            request.Organization,
-            request.Project,
-            request.PAT,
-            request.GitRepositoryId,
-            request.FilePath,
-            request.Delimiter,
-            cancellationToken
-            );
-
-        //var result = _mapper.Map<GitRepositoryResponse>(variablesFromConfigs);
-        //return Ok(result);
-        return Ok(variablesFromConfigs);
+        var model = _mapper.Map<GitRepositoryModel>(request);
+        var variablesResult = await _gitRepositoryService.GetVariablesFromConfigAsync(model, cancellationToken);
+        var result = _mapper.Map<GitRepositoryVariablesResponse>(variablesResult);
+        return Ok(result);
     }
 }

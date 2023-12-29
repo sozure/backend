@@ -1,16 +1,19 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace VGManager.Api.GitRepository.Request;
+namespace VGManager.Services.Models.GitRepositories;
 
-public class GitRepositoryVariablesRequest: GitRepositoryBaseRequest
+public class GitRepositoryModel
 {
-    [Required]
+    public string Organization { get; set; } = null!;
+
+    public string Project { get; set; } = null!;
+
+    public string PAT { get; set; } = null!;
+
     public string GitRepositoryId { get; set; } = null!;
 
-    [Required]
     public string FilePath { get; set; } = null!;
 
-    [Required]
     public string Delimiter { get; set; } = null!;
 
     public IEnumerable<string>? Exceptions { get; set; } = null!;

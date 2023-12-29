@@ -1,16 +1,17 @@
-using System.ComponentModel.DataAnnotations;
+namespace VGManager.AzureAdapter.Entities;
 
-namespace VGManager.Api.GitRepository.Request;
-
-public class GitRepositoryVariablesRequest: GitRepositoryBaseRequest
+public class GitRepositoryEntity
 {
-    [Required]
+    public string Organization { get; set; } = null!;
+
+    public string Project { get; set; } = null!;
+
+    public string PAT { get; set; } = null!;
+
     public string GitRepositoryId { get; set; } = null!;
 
-    [Required]
     public string FilePath { get; set; } = null!;
 
-    [Required]
     public string Delimiter { get; set; } = null!;
 
     public IEnumerable<string>? Exceptions { get; set; } = null!;

@@ -10,13 +10,8 @@ public interface IGitRepositoryService
         string pat,
         CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<string>> GetVariablesFromConfigAsync(
-        string organization,
-        string project,
-        string pat,
-        string gitRepositoryId,
-        string filePath,
-        string delimiter,
+    Task<GitRepositoryVariablesResult> GetVariablesFromConfigAsync(
+        GitRepositoryModel gitRepositoryModel,
         CancellationToken cancellationToken = default
         );
 }

@@ -23,9 +23,6 @@ public class VariableRequest
     public string KeyFilter { get; set; } = null!;
 
     [Required]
-    public bool ContainsKey { get; set; }
-
-    [Required]
     public bool ContainsSecrets { get; set; }
 
     public bool? KeyIsRegex { get; set; }

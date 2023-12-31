@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using VGManager.Api.VariableGroup.Request;
 using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
@@ -51,7 +52,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<VariableGroupResponses>> GetVariableGroupsAsync(
-        [FromBody] VariableRequest request,
+        [FromBody] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
     {

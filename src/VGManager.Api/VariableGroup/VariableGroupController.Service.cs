@@ -1,3 +1,4 @@
+using VGManager.Api.VariableGroup.Request;
 using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
@@ -72,7 +73,7 @@ public partial class VariableGroupController
     }
 
     private async Task<VariableGroupResponses> GetVGResultAsync(
-        VariableRequest request,
+        VariableGroupRequest request,
         CancellationToken cancellationToken
         )
     {

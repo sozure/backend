@@ -61,7 +61,7 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
         var gitVersionDescriptor = new GitVersionDescriptor
         {
             VersionType = GitVersionType.Branch, 
-            Version = "develop" 
+            Version = gitRepositoryEntity.Branch
         };
 
         var item = await gitClient.GetItemTextAsync(

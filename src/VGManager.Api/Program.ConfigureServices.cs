@@ -97,6 +97,7 @@ static partial class Program
         services.AddScoped<IKeyVaultService, KeyVaultService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IGitRepositoryService, GitRepositoryService>();
+        services.AddScoped<IGitBranchService, GitBranchService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<IChangeService, ChangeService>();
         services.AddScoped<IProfileAdapter, ProfileAdapter>();
@@ -104,5 +105,6 @@ static partial class Program
         services.AddScoped<IProjectAdapter, ProjectAdapter>();
         services.AddScoped<IKeyVaultAdapter, KeyVaultAdapter>();
         services.AddScoped<IGitRepositoryAdapter, GitRepositoryAdapter>();
+        services.AddScoped<IGitBranchAdapter, GitBranchAdapter>();
     }
 }

@@ -94,6 +94,8 @@ static partial class Program
         services.AddScoped<IKeyVaultCopyColdRepository, KeyVaultCopyColdRepository>();
         services.AddScoped<ISecretChangeColdRepository, SecretChangeColdRepository>();
         services.AddScoped<IVariableService, VariableService>();
+        services.AddScoped<IVariableFilterService, VariableFilterService>();
+        services.AddScoped<IVariableGroupService, VariableGroupService>();
         services.AddScoped<IKeyVaultService, KeyVaultService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IGitRepositoryService, GitRepositoryService>();

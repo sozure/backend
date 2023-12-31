@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.GitRepository.Request;
+using VGManager.Api.GitRepository.Response;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.GitRepositories;
 

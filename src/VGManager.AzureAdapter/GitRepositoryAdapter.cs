@@ -19,6 +19,16 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
         _logger = logger;
     }
 
+    public void Setup(string organization, string pat)
+    {
+        var uriString = $"https://dev.azure.com/{organization}";
+        Uri uri;
+        Uri.TryCreate(uriString, UriKind.Absolute, out uri!);
+
+        var credentials = new VssBasicCredential(string.Empty, pat);
+        _connection = new VssConnection(uri, credentials);
+    }
+
     public async Task<IEnumerable<GitRepository>> GetAllAsync(
         string organization, 
         string project, 
@@ -114,15 +124,5 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
         var result = stream.ToArray();
         var itemText = Encoding.UTF8.GetString(result);
         return JsonSerializer.Deserialize<JsonElement>(itemText);
-    }
-
-    public void Setup(string organization, string pat)
-    {
-        var uriString = $"https://dev.azure.com/{organization}";
-        Uri uri;
-        Uri.TryCreate(uriString, UriKind.Absolute, out uri!);
-
-        var credentials = new VssBasicCredential(string.Empty, pat);
-        _connection = new VssConnection(uri, credentials);
     }
 }

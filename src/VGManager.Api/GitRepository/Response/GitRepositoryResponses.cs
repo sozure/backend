@@ -1,6 +1,6 @@
 using VGManager.AzureAdapter.Entities;
 
-namespace VGManager.Api.GitRepository;
+namespace VGManager.Api.GitRepository.Response;
 
 public class GitRepositoryResponses
 {

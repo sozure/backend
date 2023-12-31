@@ -1,4 +1,4 @@
-namespace VGManager.Api.GitRepository;
+namespace VGManager.Api.GitRepository.Response;
 
 public class GitRepositoryResponse
 {

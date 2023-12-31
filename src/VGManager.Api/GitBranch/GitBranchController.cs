@@ -34,7 +34,7 @@ public class GitBranchController: ControllerBase
             (var status, var branches) = await _gitBranchService.GetAllAsync(
                 request.Organization,
                 request.PAT,
-                request.GitProject,
+                request.RepositoryId,
                 cancellationToken
                 );
             return Ok(new GitBranchResponse

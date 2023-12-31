@@ -8,7 +8,7 @@ public class GitBranchRequest
     public string Organization { get; set; } = null!;
 
     [Required]
-    public string GitProject { get; set; } = null!;
+    public string RepositoryId { get; set; } = null!;
 
     [Required]
     public string PAT { get; set; } = null!;

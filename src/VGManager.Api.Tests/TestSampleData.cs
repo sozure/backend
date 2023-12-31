@@ -12,7 +12,7 @@ using VariableGroupEnt = Microsoft.TeamFoundation.DistributedTask.WebApi.Variabl
 namespace VGManager.Api.Tests;
 public static class TestSampleData
 {
-    public static VariableGroupAddRequest GetVariableAddRequest(
+    public static VariableAddRequest GetVariableAddRequest(
         string organization,
         string pat,
         string project,
@@ -32,7 +32,7 @@ public static class TestSampleData
             Value = newValue
         };
 
-    public static VariableGroupUpdateRequest GetVariableUpdateRequest(
+    public static VariableUpdateRequest GetVariableUpdateRequest(
         string variableGroupFilter,
         string organization,
         string pat,
@@ -52,7 +52,7 @@ public static class TestSampleData
             NewValue = newValue
         };
 
-    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project, string keyFilter, string valueFilter)
+    public static VariableRequest GetVariableRequest(string organization, string pat, string project, string keyFilter, string valueFilter)
         => new()
         {
             Organization = organization,
@@ -65,7 +65,7 @@ public static class TestSampleData
             ContainsSecrets = false
         };
 
-    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project)
+    public static VariableRequest GetVariableRequest(string organization, string pat, string project)
         => new()
         {
             Organization = organization,

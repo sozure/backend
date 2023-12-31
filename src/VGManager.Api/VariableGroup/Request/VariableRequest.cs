@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VGManager.Api.VariableGroups.Request;
 
-public class VariableGroupRequest
+public class VariableRequest
 {
     [Required]
     public string Organization { get; set; } = null!;

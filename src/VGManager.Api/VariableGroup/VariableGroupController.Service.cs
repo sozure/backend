@@ -27,7 +27,7 @@ public partial class VariableGroupController
         };
     }
 
-    private async Task<ProjectsResult> GetProjectsAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    private async Task<ProjectsResult> GetProjectsAsync(VariableRequest request, CancellationToken cancellationToken)
     {
         var projectModel = new ProjectModel
         {
@@ -40,7 +40,7 @@ public partial class VariableGroupController
     }
 
     private async Task<VariableResponses> GetResultAfterDeleteAsync(
-        VariableGroupRequest request,
+        VariableRequest request,
         CancellationToken cancellationToken
         )
     {
@@ -60,7 +60,7 @@ public partial class VariableGroupController
         return result;
     }
 
-    private async Task<VariableResponses> GetBaseResultAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    private async Task<VariableResponses> GetBaseResultAsync(VariableRequest request, CancellationToken cancellationToken)
     {
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
 
@@ -72,7 +72,7 @@ public partial class VariableGroupController
     }
 
     private async Task<VariableGroupResponses> GetVGResultAsync(
-        VariableGroupRequest request,
+        VariableRequest request,
         CancellationToken cancellationToken
         )
     {
@@ -99,7 +99,7 @@ public partial class VariableGroupController
         };
     }
 
-    private async Task<VariableResponses> GetAddResultAsync(VariableGroupAddRequest request, CancellationToken cancellationToken)
+    private async Task<VariableResponses> GetAddResultAsync(VariableAddRequest request, CancellationToken cancellationToken)
     {
         var vgServiceModel = _mapper.Map<VariableGroupAddModel>(request);
 
@@ -120,7 +120,7 @@ public partial class VariableGroupController
     }
 
     private async Task<VariableResponses> GetUpdateResultAsync(
-        VariableGroupUpdateRequest request,
+        VariableUpdateRequest request,
         CancellationToken cancellationToken
         )
     {
@@ -148,7 +148,7 @@ public partial class VariableGroupController
         )
     {
         VariableResponses? result;
-        var vgRequest = request as VariableGroupRequest ?? new VariableGroupRequest();
+        var vgRequest = request as VariableRequest ?? new VariableRequest();
         if (vgRequest.Project == "All")
         {
             result = GetEmptyVariablesGetResponses();
@@ -175,15 +175,15 @@ public partial class VariableGroupController
 
     private async Task<VariableResponses> GetResultAsync<T>(
         T request,
-        VariableGroupRequest vgRequest,
+        VariableRequest vgRequest,
         CancellationToken cancellationToken
         )
     {
-        if (request is VariableGroupUpdateRequest updateRequest)
+        if (request is VariableUpdateRequest updateRequest)
         {
             return await GetUpdateResultAsync(updateRequest, cancellationToken);
         }
-        else if (request is VariableGroupAddRequest addRequest)
+        else if (request is VariableAddRequest addRequest)
         {
             return await GetAddResultAsync(addRequest, cancellationToken);
         }

@@ -38,7 +38,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<VariableResponses>> GetAsync(
-        [FromBody] VariableGroupRequest request,
+        [FromBody] VariableRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -51,7 +51,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<VariableGroupResponses>> GetVariableGroupsAsync(
-        [FromBody] VariableGroupRequest request,
+        [FromBody] VariableRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -85,7 +85,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<VariableResponses>> UpdateAsync(
-        [FromBody] VariableGroupUpdateRequest request,
+        [FromBody] VariableUpdateRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -98,7 +98,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AdapterStatus>> UpdateInlineAsync(
-        [FromBody] VariableGroupUpdateRequest request,
+        [FromBody] VariableUpdateRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -114,7 +114,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<VariableResponses>> AddAsync(
-        [FromBody] VariableGroupAddRequest request,
+        [FromBody] VariableAddRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -127,7 +127,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<VariableResponses>> DeleteAsync(
-        [FromBody] VariableGroupRequest request,
+        [FromBody] VariableRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -161,7 +161,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AdapterStatus>> DeleteInlineAsync(
-        [FromBody] VariableGroupRequest request,
+        [FromBody] VariableRequest request,
         CancellationToken cancellationToken
     )
     {

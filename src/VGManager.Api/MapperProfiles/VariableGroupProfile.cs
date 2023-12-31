@@ -10,9 +10,9 @@ public class VariableGroupProfile : Profile
 {
     public VariableGroupProfile()
     {
-        CreateMap<VariableGroupUpdateRequest, VariableGroupUpdateModel>();
-        CreateMap<VariableGroupAddRequest, VariableGroupAddModel>();
-        CreateMap<VariableGroupRequest, VariableGroupModel>();
+        CreateMap<VariableUpdateRequest, VariableGroupUpdateModel>();
+        CreateMap<VariableAddRequest, VariableGroupAddModel>();
+        CreateMap<VariableRequest, VariableGroupModel>();
 
         CreateMap<VariableResult, VariableResponse>();
         CreateMap<VariableResults, VariableResponses>();

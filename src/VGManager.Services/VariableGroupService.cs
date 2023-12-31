@@ -28,6 +28,7 @@ public class VariableGroupService: IVariableGroupService
 
     public async Task<VariableGroupResults> GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
+        bool containsKey,
         CancellationToken cancellationToken = default
         )
     {
@@ -42,10 +43,18 @@ public class VariableGroupService: IVariableGroupService
                         _variableFilterService.FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
             foreach (var variableGroup in filteredVariableGroups)
             {
-
-                if (!variableGroup.Variables.ContainsKey(variableGroupModel.KeyFilter))
+                if (containsKey)
                 {
-                    result.Add(variableGroup);
+                    if (variableGroup.Variables.ContainsKey(variableGroupModel.KeyFilter))
+                    {
+                        result.Add(variableGroup);
+                    }
+                } else
+                {
+                    if (!variableGroup.Variables.ContainsKey(variableGroupModel.KeyFilter))
+                    {
+                        result.Add(variableGroup);
+                    }
                 }
             }
 

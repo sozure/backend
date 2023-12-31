@@ -7,6 +7,7 @@ public interface IVariableGroupService
 {
     Task<VariableGroupResults> GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
+        bool containsKey,
         CancellationToken cancellationToken = default
         );
 }

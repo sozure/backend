@@ -71,12 +71,15 @@ public partial class VariableGroupController
         return result;
     }
 
-    private async Task<VariableGroupResponses> GetVGResultAsync(VariableGroupRequest request, CancellationToken cancellationToken)
+    private async Task<VariableGroupResponses> GetVGResultAsync(
+        VariableGroupRequest request,
+        CancellationToken cancellationToken
+        )
     {
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
 
         _variableService.SetupConnectionRepository(vgServiceModel);
-        var variableGroupResultsModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, cancellationToken);
+        var variableGroupResultsModel = await _vgService.GetVariableGroupsAsync(vgServiceModel, request.ContainsKey, cancellationToken);
 
         var result = new List<VariableGroupResponse>();
 

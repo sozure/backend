@@ -6,10 +6,10 @@ namespace VGManager.AzureAdapter.Interfaces;
 public interface IGitBranchAdapter
 {
     void Setup(string organization, string pat);
-    Task<(AdapterStatus, IEnumerable<TfvcBranch>)> GetAllAsync(
+    Task<(AdapterStatus, IEnumerable<string>)> GetAllAsync(
         string organization,
         string pat,
-        string project,
+        string repositoryId,
         CancellationToken cancellationToken = default
         );
 }

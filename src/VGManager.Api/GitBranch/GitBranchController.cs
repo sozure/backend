@@ -29,10 +29,9 @@ public class GitBranchController: ControllerBase
         CancellationToken cancellationToken
     )
     {
-        (AdapterStatus status, IEnumerable<TfvcBranch> branches) = (AdapterStatus.None, null!);
         try
         {
-            (status, branches) = await _gitBranchService.GetAllAsync(
+            (var status, var branches) = await _gitBranchService.GetAllAsync(
                 request.Organization,
                 request.PAT,
                 request.GitProject,
@@ -41,14 +40,13 @@ public class GitBranchController: ControllerBase
             return Ok(new GitBranchResponse
             {
                 Status = status,
-                Branches = Enumerable.Empty<string>()
+                Branches = branches
             });
         } catch (Exception)
         {
-            status = AdapterStatus.Unknown;
             return Ok(new GitBranchResponse
             {
-                Status = status,
+                Status = AdapterStatus.Unknown,
                 Branches = Enumerable.Empty<string>()
             });
         }

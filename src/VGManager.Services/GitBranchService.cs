@@ -14,13 +14,13 @@ public class GitBranchService: IGitBranchService
         _gitBranchAdapter = gitBranchAdapter;
     }
 
-    public async Task<(AdapterStatus, IEnumerable<TfvcBranch>)> GetAllAsync(
+    public async Task<(AdapterStatus, IEnumerable<string>)> GetAllAsync(
         string organization,
         string pat,
-        string project,
+        string repositoryId,
         CancellationToken cancellationToken = default
         )
     {
-        return await _gitBranchAdapter.GetAllAsync(organization, pat, project, cancellationToken);
+        return await _gitBranchAdapter.GetAllAsync(organization, pat, repositoryId, cancellationToken);
     }
 }

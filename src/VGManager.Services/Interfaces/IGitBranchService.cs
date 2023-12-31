@@ -5,10 +5,10 @@ namespace VGManager.Services.Interfaces;
 
 public interface IGitBranchService
 {
-    Task<(AdapterStatus, IEnumerable<TfvcBranch>)> GetAllAsync(
+    Task<(AdapterStatus, IEnumerable<string>)> GetAllAsync(
         string organization,
         string pat,
-        string project,
+        string repositoryId,
         CancellationToken cancellationToken = default
         );
 }

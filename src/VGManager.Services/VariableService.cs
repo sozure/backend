@@ -16,6 +16,7 @@ public partial class VariableService : IVariableService
     private readonly IVGAddColdRepository _additionColdRepository;
     private readonly IVGDeleteColdRepository _deletionColdRepository;
     private readonly IVGUpdateColdRepository _editionColdRepository;
+    private readonly IVariableFilterService _variableFilterService;
     private readonly OrganizationSettings _organizationSettings;
     private string _project = null!;
     private readonly ILogger _logger;
@@ -25,6 +26,7 @@ public partial class VariableService : IVariableService
         IVGAddColdRepository additionColdRepository,
         IVGDeleteColdRepository deletedColdRepository,
         IVGUpdateColdRepository editionColdRepository,
+        IVariableFilterService variableFilterService,
         IOptions<OrganizationSettings> organizationSettings,
         ILogger<VariableService> logger
         )
@@ -33,6 +35,7 @@ public partial class VariableService : IVariableService
         _additionColdRepository = additionColdRepository;
         _deletionColdRepository = deletedColdRepository;
         _editionColdRepository = editionColdRepository;
+        _variableFilterService = variableFilterService;
         _organizationSettings = organizationSettings.Value;
         _logger = logger;
     }
@@ -46,50 +49,6 @@ public partial class VariableService : IVariableService
             variableGroupModel.PAT
             );
         _project = project;
-    }
-
-    private IEnumerable<VariableGroup> FilterWithoutSecrets(bool filterAsRegex, string filter, IEnumerable<VariableGroup> variableGroups)
-    {
-        if (filterAsRegex)
-        {
-            Regex regex;
-            try
-            {
-                regex = new Regex(filter.ToLower(), RegexOptions.None, TimeSpan.FromMilliseconds(5));
-            }
-            catch (RegexParseException ex)
-            {
-                _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
-                return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower() && vg.Type != "AzureKeyVault").ToList();
-            }
-            return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower()) && vg.Type != "AzureKeyVault").ToList();
-        }
-        return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower() && vg.Type != "AzureKeyVault").ToList();
-    }
-
-    private IEnumerable<VariableGroup> Filter(IEnumerable<VariableGroup> variableGroups, string filter)
-    {
-        Regex regex;
-        try
-        {
-            regex = new Regex(filter.ToLower(), RegexOptions.None, TimeSpan.FromMilliseconds(5));
-        }
-        catch (RegexParseException ex)
-        {
-            _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
-            return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower()).ToList();
-        }
-        return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower())).ToList();
-    }
-
-    private static IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, Regex regex)
-    {
-        return variables.Where(v => regex.IsMatch(v.Key.ToLower())).ToList();
-    }
-
-    private static IEnumerable<KeyValuePair<string, VariableValue>> Filter(IDictionary<string, VariableValue> variables, string filter)
-    {
-        return variables.Where(v => filter.ToLower() == v.Key.ToLower()).ToList();
     }
 
     private static VariableGroupParameters GetVariableGroupParameters(VariableGroup filteredVariableGroup, string variableGroupName)

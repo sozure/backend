@@ -21,7 +21,7 @@ public partial class VariableService
         if (status == AdapterStatus.Success)
         {
             var variableGroupFilter = variableGroupUpdateModel.VariableGroupFilter;
-            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
+            var filteredVariableGroups = _variableFilterService.FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
             var keyFilter = variableGroupUpdateModel.KeyFilter;
             var valueFilter = variableGroupUpdateModel.ValueFilter;
             var newValue = variableGroupUpdateModel.NewValue;
@@ -104,14 +104,14 @@ public partial class VariableService
         return updateCounter1 == updateCounter2 ? AdapterStatus.Success : AdapterStatus.Unknown;
     }
 
-    private static bool UpdateVariables(
+    private bool UpdateVariables(
         string newValue,
         string keyFilter,
         Regex? regex,
         VariableGroup filteredVariableGroup
         )
     {
-        var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
+        var filteredVariables = _variableFilterService.Filter(filteredVariableGroup.Variables, keyFilter);
         var updateIsNeeded = false;
 
         foreach (var filteredVariable in filteredVariables)

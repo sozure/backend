@@ -9,47 +9,6 @@ namespace VGManager.Services;
 
 public partial class VariableService
 {
-
-    public async Task<VariableGroupResults> GetVariableGroupsAsync(
-        VariableGroupModel variableGroupModel,
-        CancellationToken cancellationToken = default
-        )
-    {
-        var result = new List<VariableGroup>();
-        var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
-        var status = vgEntity.Status;
-
-        if (status == AdapterStatus.Success)
-        {
-            var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
-                        Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
-                        FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
-            foreach (var variableGroup in filteredVariableGroups)
-            {
-
-                if (!variableGroup.Variables.ContainsKey(variableGroupModel.KeyFilter))
-                {
-                    result.Add(variableGroup);
-                }
-            }
-
-            return new()
-            {
-                Status = status,
-                VariableGroups = result,
-            };
-        }
-        else
-        {
-            return new()
-            {
-                Status = status,
-                VariableGroups = Enumerable.Empty<VariableGroup>(),
-            };
-        }
-
-    }
-
     public async Task<VariableResults> GetVariablesAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
@@ -80,8 +39,8 @@ public partial class VariableService
     {
         var matchedVariables = new List<VariableResult>();
         var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
-                        Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
-                        FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
+                        _variableFilterService.Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
+                        _variableFilterService.FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
 
         var valueFilter = variableGroupModel.ValueFilter;
         var keyFilter = variableGroupModel.KeyFilter;
@@ -151,7 +110,7 @@ public partial class VariableService
         VariableGroup filteredVariableGroup
         )
     {
-        var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
+        var filteredVariables = _variableFilterService.Filter(filteredVariableGroup.Variables, keyFilter);
         return CollectVariables(valueRegex, filteredVariableGroup, filteredVariables);
     }
 
@@ -161,7 +120,7 @@ public partial class VariableService
         VariableGroup filteredVariableGroup
         )
     {
-        var filteredVariables = Filter(filteredVariableGroup.Variables, keyRegex);
+        var filteredVariables = _variableFilterService.Filter(filteredVariableGroup.Variables, keyRegex);
         return CollectVariables(valueRegex, filteredVariableGroup, filteredVariables);
     }
 

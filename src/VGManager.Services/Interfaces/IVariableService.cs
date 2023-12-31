@@ -8,11 +8,6 @@ public interface IVariableService
 {
     void SetupConnectionRepository(VariableGroupModel variableGroupModel);
 
-    Task<VariableGroupResults> GetVariableGroupsAsync(
-        VariableGroupModel variableGroupModel,
-        CancellationToken cancellationToken = default
-        );
-
     Task<AdapterStatus> UpdateVariableGroupsAsync(
         VariableGroupUpdateModel variableGroupUpdateModel,
         bool filterAsRegex,

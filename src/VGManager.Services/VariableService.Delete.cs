@@ -19,7 +19,7 @@ public partial class VariableService
         if (status == AdapterStatus.Success)
         {
             var variableGroupFilter = variableGroupModel.VariableGroupFilter;
-            var filteredVariableGroups = FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
+            var filteredVariableGroups = _variableFilterService.FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
             var finalStatus = await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
             if (finalStatus == AdapterStatus.Success)
             {
@@ -85,10 +85,10 @@ public partial class VariableService
         return deletionCounter1 == deletionCounter2 ? AdapterStatus.Success : AdapterStatus.Unknown;
     }
 
-    private static bool DeleteVariables(VariableGroup filteredVariableGroup, string keyFilter, string? valueCondition)
+    private bool DeleteVariables(VariableGroup filteredVariableGroup, string keyFilter, string? valueCondition)
     {
         var deleteIsNeeded = false;
-        var filteredVariables = Filter(filteredVariableGroup.Variables, keyFilter);
+        var filteredVariables = _variableFilterService.Filter(filteredVariableGroup.Variables, keyFilter);
         foreach (var filteredVariable in filteredVariables)
         {
             var variableValue = filteredVariable.Value.Value;

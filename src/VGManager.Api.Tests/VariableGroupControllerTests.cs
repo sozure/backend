@@ -48,25 +48,36 @@ public class VariableGroupControllerTests
         _deletionColdRepository = new(MockBehavior.Strict);
         _editionColdRepository = new(MockBehavior.Strict);
 
-        var loggerMock = new Mock<ILogger<VariableService>>();
+        var variableServiceLoggerMock = new Mock<ILogger<VariableService>>();
+        var variableGroupServiceLoggerMock = new Mock<ILogger<VariableGroupService>>();
+        var variableFilterLoggerMock = new Mock<ILogger<VariableFilterService>>();
 
         var settings = Options.Create(new OrganizationSettings
         {
             Organizations = new string[] { "Organization1" }
         });
 
-        var vgService = new VariableService(
+        var variableFilterService = new VariableFilterService(variableFilterLoggerMock.Object);
+
+        var variableService = new VariableService(
             _variableGroupAdapter.Object,
             _additionColdRepository.Object,
             _deletionColdRepository.Object,
             _editionColdRepository.Object,
+            variableFilterService,
             settings,
-            loggerMock.Object
+            variableServiceLoggerMock.Object
+            );
+
+        var vgService = new VariableGroupService(
+            variableFilterService,
+            _variableGroupAdapter.Object,
+            variableGroupServiceLoggerMock.Object
             );
 
         var projectService = new ProjectService(_projectAdapter.Object, serviceMapper);
 
-        _controller = new(vgService, projectService, mapper);
+        _controller = new(variableService, vgService, projectService, mapper);
     }
 
     [Test]

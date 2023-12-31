@@ -15,16 +15,19 @@ namespace VGManager.Api.Controllers;
 [EnableCors("_allowSpecificOrigins")]
 public partial class VariableGroupController : ControllerBase
 {
-    private readonly IVariableService _vgService;
+    private readonly IVariableService _variableService;
+    private readonly IVariableGroupService _vgService;
     private readonly IProjectService _projectService;
     private readonly IMapper _mapper;
 
     public VariableGroupController(
-        IVariableService vgService,
+        IVariableService variableService,
+        IVariableGroupService vgService,
         IProjectService projectService,
         IMapper mapper
         )
     {
+        _variableService = variableService;
         _vgService = vgService;
         _projectService = projectService;
         _mapper = mapper;
@@ -100,8 +103,8 @@ public partial class VariableGroupController : ControllerBase
     )
     {
         var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
-        _vgService.SetupConnectionRepository(vgServiceModel);
-        var status = await _vgService.UpdateVariableGroupsAsync(vgServiceModel, false, cancellationToken);
+        _variableService.SetupConnectionRepository(vgServiceModel);
+        var status = await _variableService.UpdateVariableGroupsAsync(vgServiceModel, false, cancellationToken);
 
         return Ok(status);
     }
@@ -163,8 +166,8 @@ public partial class VariableGroupController : ControllerBase
     )
     {
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
-        _vgService.SetupConnectionRepository(vgServiceModel);
-        var status = await _vgService.DeleteVariablesAsync(vgServiceModel, false, cancellationToken);
+        _variableService.SetupConnectionRepository(vgServiceModel);
+        var status = await _variableService.DeleteVariablesAsync(vgServiceModel, false, cancellationToken);
 
         return Ok(status);
     }

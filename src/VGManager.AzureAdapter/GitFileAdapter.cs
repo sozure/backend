@@ -1,18 +1,14 @@
-using Microsoft.Azure.Pipelines.WebApi;
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.VisualStudio.Services.Common;
-using Microsoft.VisualStudio.Services.Organization.Client;
 using Microsoft.VisualStudio.Services.WebApi;
-using System.IO;
-using System.Threading;
 using VGManager.AzureAdapter.Entities;
-using System.Linq;
+using VGManager.AzureAdapter.Interfaces;
 
 namespace VGManager.AzureAdapter;
 
-public class GitFileAdapter
+public class GitFileAdapter: IGitFileAdapter
 {
     private VssConnection _connection = null!;
     private readonly ILogger _logger;
@@ -21,17 +17,7 @@ public class GitFileAdapter
     {
         _logger = logger;
     }
-
-    public void Setup(string organization, string pat)
-    {
-        var uriString = $"https://dev.azure.com/{organization}";
-        Uri uri;
-        Uri.TryCreate(uriString, UriKind.Absolute, out uri!);
-
-        var credentials = new VssBasicCredential(string.Empty, pat);
-        _connection = new VssConnection(uri, credentials);
-    }
-
+    
     public async Task<(AdapterStatus, IEnumerable<string>)> GetFilePathAsync(
         string organization,
         string pat,
@@ -57,6 +43,16 @@ public class GitFileAdapter
             _logger.LogError(ex, "Error getting file path from {project} git project.", repositoryId);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
+    }
+
+    private void Setup(string organization, string pat)
+    {
+        var uriString = $"https://dev.azure.com/{organization}";
+        Uri uri;
+        Uri.TryCreate(uriString, UriKind.Absolute, out uri!);
+
+        var credentials = new VssBasicCredential(string.Empty, pat);
+        _connection = new VssConnection(uri, credentials);
     }
 
     private async Task<(AdapterStatus, IEnumerable<string>)> GetFilePathAsync(

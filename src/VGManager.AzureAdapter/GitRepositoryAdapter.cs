@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
+using YamlDotNet.RepresentationModel;
 
 namespace VGManager.AzureAdapter;
 
@@ -13,6 +15,14 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
 {
     private VssConnection _connection = null!;
     private readonly ILogger _logger;
+
+    private readonly char[] _notAllowedCharacters = {'{', '}', ' ', '(', ')', '$' };
+    private readonly char _startingChar = '$';
+    private readonly char _endingChar = '}';
+    private readonly string _secretYamlKind = "Secret";
+    private readonly string _secretYamlElement = "stringData";
+    private readonly string _variableYamlKind = "ConfigMap";
+    private readonly string _variableYamlElement = "data";
 
     public GitRepositoryAdapter(ILogger<GitRepositoryAdapter> logger)
     {
@@ -71,20 +81,30 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
             versionDescriptor: gitVersionDescriptor,
             cancellationToken: cancellationToken
             );
-        
-        var json = await GetJsonObjectAsync(item, cancellationToken);
-        var result = GetJsonKeys(json, gitRepositoryEntity.Exceptions ?? Enumerable.Empty<string>(), gitRepositoryEntity.Delimiter);
-        return result;
+
+        if (gitRepositoryEntity.FilePath.EndsWith(".json"))
+        {
+            var json = await GetJsonObjectAsync(item, cancellationToken);
+            var result = GetKeysFromJson(json, gitRepositoryEntity.Exceptions ?? Enumerable.Empty<string>(), gitRepositoryEntity.Delimiter);
+            return result;
+        } else if(gitRepositoryEntity.FilePath.EndsWith(".yaml"))
+        {
+            return GetKeysFromYaml(item);
+        }
+        else
+        {
+            return Enumerable.Empty<string>().ToList();
+        }
     }
 
-    private static List<string> GetJsonKeys(JsonElement jsonObject, IEnumerable<string> exceptions, string delimiter)
+    private static List<string> GetKeysFromJson(JsonElement jsonObject, IEnumerable<string> exceptions, string delimiter)
     {
         var keys = new List<string>();
-        GetJsonKeysHelper(jsonObject, delimiter, string.Empty, exceptions, keys);
+        GetKeysFromJsonHelper(jsonObject, delimiter, string.Empty, exceptions, keys);
         return keys;
     }
 
-    private static void GetJsonKeysHelper(
+    private static void GetKeysFromJsonHelper(
         JsonElement jsonObject, 
         string delimiter, 
         string prefix, 
@@ -106,7 +126,7 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
 
                 if (!exceptions.Contains(property.Name))
                 {
-                    GetJsonKeysHelper(property.Value, delimiter, key, exceptions, keys);
+                    GetKeysFromJsonHelper(property.Value, delimiter, key, exceptions, keys);
                 }
             }
         }
@@ -124,5 +144,75 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
         var result = stream.ToArray();
         var itemText = Encoding.UTF8.GetString(result);
         return JsonSerializer.Deserialize<JsonElement>(itemText);
+    }
+
+    private List<string> GetKeysFromYaml(Stream item)
+    {
+        var yamls = GetYamlDocuments(item);
+        var result = new List<string>();
+        var counter = 0;
+        foreach (var yaml in yamls)
+        {
+            var subResult = CollectKeysFromYaml(yaml, counter == 0 ? _variableYamlElement : _secretYamlElement);
+            result.AddRange(subResult);
+            counter++;
+            if (counter == 2)
+            {
+                break;
+            }
+        }
+        return result;
+    }
+
+    private IEnumerable<YamlDocument> GetYamlDocuments(Stream item)
+    {
+        var reader = new StreamReader(item);
+        var yaml = new YamlStream();
+        yaml.Load(reader);
+        return yaml.Documents.Where(
+            document => document.AllNodes.Contains(_secretYamlKind) || document.AllNodes.Contains(_variableYamlKind)
+            ).ToList();
+    }
+
+    private IEnumerable<string> CollectKeysFromYaml(YamlDocument yaml, string nodeKey)
+    {
+        var data = yaml.AllNodes.FirstOrDefault(node => node.ToString().Contains(nodeKey));
+        var strNode = data?.ToString() ?? string.Empty;
+        var listNode = strNode.Split($" {nodeKey}").ToList();
+        var rawVariables = listNode[1].Split(",");
+        return CollectKeysFromYaml(rawVariables);
+    }
+
+    private IEnumerable<string> CollectKeysFromYaml(string[] rawVariables)
+    {
+        var result = new List<string>();
+        foreach (var rawVariable in rawVariables)
+        {
+            var strBuilder = new StringBuilder();
+            var startCollecting = false;
+            foreach (var character in rawVariable)
+            {
+                if (character == _startingChar)
+                {
+                    startCollecting = true;
+                }
+                if (startCollecting &&
+                    !_notAllowedCharacters.Contains(character)
+                    )
+                {
+                    strBuilder.Append(character);
+                }
+                else if (character == _endingChar)
+                {
+                    startCollecting = false;
+                }
+            }
+            var strResult = strBuilder.ToString();
+            if (!strResult.IsNullOrEmpty())
+            {
+                result.Add(strResult);
+            }
+        }
+        return result;
     }
 }

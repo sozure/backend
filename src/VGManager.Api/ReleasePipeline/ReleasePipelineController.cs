@@ -23,7 +23,7 @@ public class ReleasePipelineController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpPost("GetEnvironments", Name = "GetEnvironments")]
+    [HttpPost("GetEnvironments", Name = "Environments")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -58,7 +58,7 @@ public class ReleasePipelineController : ControllerBase
         }
     }
 
-    [HttpPost("GetVariableGroups", Name = "GetVariableGroups")]
+    [HttpPost("GetVariableGroups", Name = "VariableGroups")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

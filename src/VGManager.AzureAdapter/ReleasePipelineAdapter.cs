@@ -118,11 +118,16 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
             cancellationToken: cancellationToken
             );
 
-        var result = releaseDefinitions.FirstOrDefault(
-            definition => definition.Artifacts.Any(artifact => artifact.Alias.Contains(repositoryName))
-        );
+        var definition = releaseDefinitions.FirstOrDefault(
+            definition => definition.Artifacts.Any(artifact => { 
+                var artifactType = artifact.DefinitionReference.GetValueOrDefault("definition")?.Name;
+                return artifactType?.Contains(repositoryName) ?? false;
+                }
+            )
+            );
+        var detailedDef = await releaseClient.GetReleaseDefinitionAsync(project, definition?.Id ?? 0, cancellationToken: cancellationToken);
 
-        return await releaseClient.GetReleaseDefinitionAsync(project, result?.Id ?? 0, cancellationToken: cancellationToken);
+        return await releaseClient.GetReleaseDefinitionAsync(project, detailedDef?.Id ?? 0, cancellationToken: cancellationToken);
     }
 
     private void Setup(string organization, string pat)

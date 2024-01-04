@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.Services.Common;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
@@ -72,6 +73,15 @@ public class GitRepositoryService : IGitRepositoryService
                 entity,
                 cancellationToken
                 );
+        }
+        catch (VssServiceException ex)
+        {
+            var status = ex.Message.Contains("could not be found in the repository")? AdapterStatus.FileDoesNotExists: AdapterStatus.Unknown;
+            return new()
+            {
+                Status = status,
+                Variables = Enumerable.Empty<string>()
+            };
         }
         catch (Exception ex)
         {

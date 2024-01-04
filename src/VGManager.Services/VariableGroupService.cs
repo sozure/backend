@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
-using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
@@ -32,7 +31,7 @@ public class VariableGroupService: IVariableGroupService
         CancellationToken cancellationToken = default
         )
     {
-        var result = new List<VariableGroup>();
+        _logger.LogInformation("Get variable groups from {project} Azure project.", variableGroupModel.Project);
         var vgEntity = await _variableGroupConnectionRepository.GetAllAsync(cancellationToken);
         var status = vgEntity.Status;
 
@@ -41,38 +40,43 @@ public class VariableGroupService: IVariableGroupService
             var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
                         _variableFilterService.Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
                         _variableFilterService.FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
-            foreach (var variableGroup in filteredVariableGroups)
-            {
-                if (containsKey)
-                {
-                    if (variableGroup.Variables.ContainsKey(variableGroupModel.KeyFilter))
-                    {
-                        result.Add(variableGroup);
-                    }
-                } else
-                {
-                    if (!variableGroup.Variables.ContainsKey(variableGroupModel.KeyFilter))
-                    {
-                        result.Add(variableGroup);
-                    }
-                }
-            }
 
-            return new()
-            {
-                Status = status,
-                VariableGroups = result,
-            };
+            var result = GetVariableGroups(filteredVariableGroups, variableGroupModel.KeyFilter, containsKey);
+            return GetResult(status, result);
         }
         else
         {
-            return new()
-            {
-                Status = status,
-                VariableGroups = Enumerable.Empty<VariableGroup>(),
-            };
+            return GetResult(status, Enumerable.Empty<VariableGroup>());
         }
     }
 
-    
+    private static IEnumerable<VariableGroup> GetVariableGroups(IEnumerable<VariableGroup> filteredVariableGroups, string keyFilter, bool containsKey)
+    {
+        var result = new List<VariableGroup>();
+        foreach (var variableGroup in filteredVariableGroups)
+        {
+            if (containsKey)
+            {
+                if (variableGroup.Variables.ContainsKey(keyFilter))
+                {
+                    result.Add(variableGroup);
+                }
+            }
+            else
+            {
+                if (!variableGroup.Variables.ContainsKey(keyFilter))
+                {
+                    result.Add(variableGroup);
+                }
+            }
+        }
+        return result;
+    }
+
+    private static VariableGroupResults GetResult(AdapterStatus status, IEnumerable<VariableGroup> variableGroups)
+        => new()
+        {
+            Status = status,
+            VariableGroups = variableGroups
+        };
 }

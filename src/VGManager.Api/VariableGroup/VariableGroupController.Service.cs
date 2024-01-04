@@ -89,7 +89,8 @@ public partial class VariableGroupController
             result.Add(new()
             {
                 Project = request.Project,
-                VariableGroupName = variableGroup.Name
+                VariableGroupName = variableGroup.Name,
+                VariableGroupType = variableGroup.Type
             });
         }
 

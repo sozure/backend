@@ -13,7 +13,7 @@ public class GitFileAdapter: IGitFileAdapter
     private VssConnection _connection = null!;
     private readonly ILogger _logger;
 
-    private readonly string[] Extensions = {".yaml", ".json", ".yml"};
+    private readonly string[] Extensions = {"yaml", "json", "yml"};
 
     public GitFileAdapter(ILogger<GitFileAdapter> logger)
     {
@@ -51,7 +51,7 @@ public class GitFileAdapter: IGitFileAdapter
         string organization,
         string pat,
         string repositoryId,
-        string extension,
+        string? extension,
         string branch,
         CancellationToken cancellationToken = default
         )
@@ -148,11 +148,13 @@ public class GitFileAdapter: IGitFileAdapter
             var hasExtensionSpecification = !string.IsNullOrEmpty(extension);
             foreach (var itemBatch in itemsBatch)
             {
-                var elements = hasExtensionSpecification ? itemBatch.Where(item => item.Path.EndsWith(extension)).ToList() : 
-                    itemBatch.Where(item => Extensions.Contains(item.Path.Split('.').LastOrDefault() ?? string.Empty)).ToList();
-                if (elements.Any())
+                var elements = hasExtensionSpecification ? 
+                    itemBatch.Where(item => item.Path.EndsWith(extension)).ToList() : 
+                    GetConfigFiles(itemBatch);
+
+                foreach (var element in elements)
                 {
-                    result.Add(elements.FirstOrDefault()?.Path ?? string.Empty);
+                    result.Add(element.Path);
                 }
             }
             return (AdapterStatus.Success, result);
@@ -162,5 +164,19 @@ public class GitFileAdapter: IGitFileAdapter
             _logger.LogError(ex, "Error getting file path from {project} git project.", repositoryId);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
+    }
+
+    private IEnumerable<GitItem> GetConfigFiles(IEnumerable<GitItem> items)
+    {
+        var result = new List<GitItem>();
+        foreach (var item in items)
+        {
+            var extension = item.Path.Split('.').LastOrDefault();
+            if (Extensions.Contains(extension ?? string.Empty))
+            {
+                result.Add(item);
+            }
+        }
+        return result;
     }
 }

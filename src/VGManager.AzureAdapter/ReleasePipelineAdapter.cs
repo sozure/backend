@@ -143,7 +143,7 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
         var definition = releaseDefinitions.FirstOrDefault(
             definition => definition.Artifacts.Any(artifact => { 
                 var artifactType = artifact.DefinitionReference.GetValueOrDefault("definition")?.Name;
-                return artifactType?.Contains(repositoryName) ?? false;
+                return artifactType?.Equals(repositoryName) ?? false;
                 }
             )
             );

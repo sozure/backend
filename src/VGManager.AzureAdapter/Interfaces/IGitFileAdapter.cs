@@ -17,7 +17,7 @@ public interface IGitFileAdapter
         string organization,
         string pat,
         string repositoryId,
-        string extension,
+        string? extension,
         string branch,
         CancellationToken cancellationToken = default
         );

@@ -13,6 +13,8 @@ public class GitFileAdapter: IGitFileAdapter
     private VssConnection _connection = null!;
     private readonly ILogger _logger;
 
+    private readonly string[] Extensions = {".yaml", ".json", ".yml"};
+
     public GitFileAdapter(ILogger<GitFileAdapter> logger)
     {
         _logger = logger;
@@ -43,6 +45,28 @@ public class GitFileAdapter: IGitFileAdapter
             _logger.LogError(ex, "Error getting file path from {project} git project.", repositoryId);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
+    }
+
+    public async Task<(AdapterStatus, IEnumerable<string>)> GetConfigFilesAsync(
+        string organization,
+        string pat,
+        string repositoryId,
+        string extension,
+        string branch,
+        CancellationToken cancellationToken = default
+        )
+    {
+        try
+        {
+            _logger.LogInformation("Get config files from {project} git project.", repositoryId);
+            Setup(organization, pat);
+            return await GetConfigFilesAsync(branch, repositoryId, extension, cancellationToken);
+        } catch(Exception ex)
+        {
+            _logger.LogError(ex, "Error getting config files from {project} git project.", repositoryId);
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+        
     }
 
     private void Setup(string organization, string pat)
@@ -90,6 +114,50 @@ public class GitFileAdapter: IGitFileAdapter
             }
             return (AdapterStatus.Success, result);
         } catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting file path from {project} git project.", repositoryId);
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+    }
+
+    private async Task<(AdapterStatus, IEnumerable<string>)> GetConfigFilesAsync(
+        string version,
+        string repositoryId,
+        string extension,
+        CancellationToken cancellationToken
+        )
+    {
+        try
+        {
+            var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
+            var request = new GitItemRequestData()
+            {
+                ItemDescriptors = new GitItemDescriptor[]
+                {
+                    new GitItemDescriptor()
+                    {
+                        RecursionLevel = VersionControlRecursionType.Full,
+                        Version = version,
+                        VersionType = GitVersionType.Branch,
+                        Path = "/"
+                    }
+                }
+            };
+            var itemsBatch = await client.GetItemsBatchAsync(request, repositoryId, cancellationToken: cancellationToken);
+            var result = new List<string>();
+            var hasExtensionSpecification = !string.IsNullOrEmpty(extension);
+            foreach (var itemBatch in itemsBatch)
+            {
+                var elements = hasExtensionSpecification ? itemBatch.Where(item => item.Path.EndsWith(extension)).ToList() : 
+                    itemBatch.Where(item => Extensions.Contains(item.Path.Split('.').LastOrDefault() ?? string.Empty)).ToList();
+                if (elements.Any())
+                {
+                    result.Add(elements.FirstOrDefault()?.Path ?? string.Empty);
+                }
+            }
+            return (AdapterStatus.Success, result);
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting file path from {project} git project.", repositoryId);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());

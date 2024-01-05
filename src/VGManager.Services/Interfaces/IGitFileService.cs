@@ -12,4 +12,13 @@ public interface IGitFileService
         string branch,
         CancellationToken cancellationToken = default
         );
+
+    Task<(AdapterStatus, IEnumerable<string>)> GetConfigFilesAsync(
+        string organization,
+        string pat,
+        string repositoryId,
+        string extension,
+        string branch,
+        CancellationToken cancellationToken = default
+        );
 }

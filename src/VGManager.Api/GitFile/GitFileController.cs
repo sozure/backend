@@ -1,6 +1,8 @@
 using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using VGManager.Api.GitRepository.Request;
 using VGManager.Api.GitRepository.Response;
 using VGManager.Services.Interfaces;
@@ -19,12 +21,12 @@ public class GitFileController: ControllerBase
         _gitFileService = gitFileService;
     }
 
-    [HttpPost(Name = "files")]
+    [HttpPost("FilePath", Name = "path")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GitFileResponse>> GetAsync(
-        [FromBody] GitFileRequest request,
+    public async Task<ActionResult<GitFileResponse>> GetFilePathAsync(
+        [FromBody] GitFilePathRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -42,6 +44,33 @@ public class GitFileController: ControllerBase
             Status = status,
             FilePaths = filePaths
         };
+        return Ok(result);
+    }
+
+    [HttpPost("ConfigFiles", Name = "config")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<GitConfigFileResponse>> GetConfigFilesAsync(
+        [FromBody] GitConfigFileRequest request,
+        CancellationToken cancellationToken
+        )
+    {
+        (var status, var configFiles) = await _gitFileService.GetConfigFilesAsync(
+            request.Organization,
+            request.PAT,
+            request.RepositoryId,
+            request.Extension,
+            request.Branch,
+            cancellationToken
+            );
+
+        var result = new GitConfigFileResponse
+        {
+            Status = status,
+            ConfigFiles = configFiles
+        };
+
         return Ok(result);
     }
 }

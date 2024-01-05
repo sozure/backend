@@ -2,6 +2,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using VGManager.Api.ReleasePipeline.Request;
+using VGManager.Api.ReleasePipeline.Response;
 using VGManager.Api.Secret.Request;
 using VGManager.Api.Secret.Response;
 using VGManager.AzureAdapter.Entities;

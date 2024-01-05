@@ -1,14 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace VGManager.Api.ReleasePipeline;
+namespace VGManager.Api.ReleasePipeline.Request;
 
-public class ProjectsWithCorrespondingReleasePipelineRequest
+public class ReleasePipelineRequest
 {
     [Required]
     public string Organization { get; set; } = null!;
 
     [Required]
-    public IEnumerable<string> Projects { get; set; } = null!;
+    public string Project { get; set; } = null!;
 
     [Required]
     public string PAT { get; set; } = null!;

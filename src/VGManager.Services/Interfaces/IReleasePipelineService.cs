@@ -20,7 +20,7 @@ public interface IReleasePipelineService
         CancellationToken cancellationToken = default
         );
 
-    Task<(AdapterStatus, IEnumerable<string>)> GetVariableGroupsAsync(
+    Task<(AdapterStatus, IEnumerable<(string, string)>)> GetVariableGroupsAsync(
         string organization,
         string pat,
         string project,

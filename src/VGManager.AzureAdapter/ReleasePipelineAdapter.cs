@@ -63,7 +63,7 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
         }
     }
 
-    public async Task<(AdapterStatus, IEnumerable<string>)> GetVariableGroupsAsync(
+    public async Task<(AdapterStatus, IEnumerable<(string, string)>)> GetVariableGroupsAsync(
         string organization,
         string pat,
         string project,
@@ -82,17 +82,17 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
 
             if (definition is null)
             {
-                return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+                return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
             }
 
-            var variableGroupNames = await GetVariableGroupNames(project, definition, cancellationToken);
+            var variableGroups = await GetVariableGroupNames(project, definition, cancellationToken);
 
-            return (AdapterStatus.Success, variableGroupNames);
+            return (AdapterStatus.Success, variableGroups);
         }
         catch (ProjectDoesNotExistWithNameException ex)
         {
             _logger.LogError(ex, "{project} azure project is not found.", project);
-            return (AdapterStatus.ProjectDoesNotExist, Enumerable.Empty<string>());
+            return (AdapterStatus.ProjectDoesNotExist, Enumerable.Empty<(string, string)>());
         }
         catch (Exception ex)
         {
@@ -102,21 +102,21 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
                 repositoryName, 
                 project
                 );
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+            return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
         }
     }
 
-    private async Task<List<string>> GetVariableGroupNames(string project, ReleaseDefinition definition, CancellationToken cancellationToken)
+    private async Task<IEnumerable<(string, string)>> GetVariableGroupNames(string project, ReleaseDefinition definition, CancellationToken cancellationToken)
     {
         var taskAgentClient = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
-        var variableGroupNames = new List<string>();
+        var variableGroupNames = new List<(string, string)>();
 
         foreach (var env in definition.Environments)
         {
             foreach (var id in env.VariableGroups)
             {
                 var vg = await taskAgentClient.GetVariableGroupAsync(project, id, cancellationToken: cancellationToken);
-                variableGroupNames.Add(vg.Name);
+                variableGroupNames.Add((vg.Name, vg.Type));
             }
         }
 

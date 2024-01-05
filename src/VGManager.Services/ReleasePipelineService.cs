@@ -69,7 +69,7 @@ public class ReleasePipelineService: IReleasePipelineService
         }
     }
 
-    public async Task<(AdapterStatus, IEnumerable<string>)> GetVariableGroupsAsync(
+    public async Task<(AdapterStatus, IEnumerable<(string, string)>)> GetVariableGroupsAsync(
         string organization,
         string pat,
         string project,
@@ -85,7 +85,7 @@ public class ReleasePipelineService: IReleasePipelineService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting variable groups connected to release pipeline for {repository} repository.", repositoryName);
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+            return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
         }
     }
 }

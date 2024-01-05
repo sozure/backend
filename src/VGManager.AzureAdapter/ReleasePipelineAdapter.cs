@@ -8,6 +8,9 @@ using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
 using Microsoft.VisualStudio.Services.WebApi;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
+using System.Linq;
+using Microsoft.Win32;
+using static System.Net.WebRequestMethods;
 
 namespace VGManager.AzureAdapter;
 
@@ -15,6 +18,10 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
 {
     private VssConnection _connection = null!;
     private readonly ILogger _logger;
+
+    private readonly string[] Replacable = { "Deploy to ", "Transfer to " };
+
+    private readonly string[] ExcludableEnvironments = { "OTP container registry" };
 
     public ReleasePipelineAdapter(ILogger<ReleasePipelineAdapter> logger)
     {
@@ -33,10 +40,16 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
         {
             _logger.LogInformation("Request git branches from {project} azure project.", project);
             var definition = await GetReleaseDefinitionAsync(organization, pat, project, repositoryName, cancellationToken);
-            return (
-                definition is null ? AdapterStatus.Unknown: AdapterStatus.Success, 
-                definition?.Environments.Select(env => env.Name).ToList() ?? Enumerable.Empty<string>()
-                );
+            var rawResult = definition?.Environments.Select(env => env.Name).ToList() ?? Enumerable.Empty<string>();
+            var result = new List<string>();
+
+            foreach(var rawElement in rawResult)
+            {
+                var element = Replacable.Where(rawElement.Contains).Select(replace => rawElement.Replace(replace, string.Empty));
+                result.AddRange(element.Where(element => !ExcludableEnvironments.Contains(element)));
+            }
+
+            return (definition is null ? AdapterStatus.Unknown: AdapterStatus.Success, result);
         }
         catch (ProjectDoesNotExistWithNameException ex)
         {

@@ -60,7 +60,11 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
     {
         try
         {
-            _logger.LogInformation("Request git branches from {project} azure project.", project);
+            _logger.LogInformation(
+                "Request corresponding variable groups for {repository} repository, {project} azure project.", 
+                repositoryName, 
+                project
+                );
             var definition = await GetReleaseDefinitionAsync(organization, pat, project, repositoryName, cancellationToken);
 
             if (definition is null)
@@ -79,7 +83,12 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting git branches from {project} azure project.", project);
+            _logger.LogError(
+                ex, 
+                "Error getting corresponding variable groups for {repository} repository, {project} azure project.", 
+                repositoryName, 
+                project
+                );
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
     }

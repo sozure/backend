@@ -92,4 +92,39 @@ public class ReleasePipelineController : ControllerBase
             });
         }
     }
+
+    [HttpPost("GetProjects", Name = "Projects")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ProjectsWithCorrespondingReleasePipelineResponse>> GetProjectsWithCorrespondingReleasePipelineAsync(
+        [FromBody] ProjectsWithCorrespondingReleasePipelineRequest request,
+        CancellationToken cancellationToken
+        )
+    {
+        try
+        {
+            var (status, projects) = await _releasePipelineService.GetProjectsWhichHaveCorrespondingReleasePipelineAsync(
+                request.Organization,
+                request.PAT,
+                request.Projects,
+                request.RepositoryName,
+                cancellationToken
+                );
+
+            return Ok(new ProjectsWithCorrespondingReleasePipelineResponse()
+            {
+                Status = status,
+                Projects = projects
+            });
+        }
+        catch (Exception)
+        {
+            return Ok(new ProjectsWithCorrespondingReleasePipelineResponse()
+            {
+                Status = AdapterStatus.Unknown,
+                Projects = Enumerable.Empty<string>()
+            });
+        }
+    }
 }

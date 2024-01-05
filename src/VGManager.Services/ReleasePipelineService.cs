@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.Services.Common;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
@@ -17,6 +18,35 @@ public class ReleasePipelineService: IReleasePipelineService
     {
         _releasePipelineAdapter = releasePipelineAdapter;
         _logger = logger;
+    }
+
+    public async Task<(AdapterStatus, IEnumerable<string>)> GetProjectsWhichHaveCorrespondingReleasePipelineAsync(
+        string organization,
+        string pat,
+        IEnumerable<string> projects,
+        string repositoryName,
+        CancellationToken cancellationToken = default
+        )
+    {
+        var (status, result) = (AdapterStatus.Unknown, new List<string>());
+        try
+        {
+            foreach(var project in projects)
+            {
+                var (subStatus, subResult) = await _releasePipelineAdapter.GetVariableGroupsAsync(organization, pat, project, repositoryName, cancellationToken);
+                if(subStatus == AdapterStatus.Success && subResult.Any())
+                {
+                    result.Add(project);
+                    status = AdapterStatus.Success;
+                }
+            }
+            return (status, result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting projects with release pipelines for {repository} repository.", repositoryName);
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
     }
 
     public async Task<(AdapterStatus, IEnumerable<string>)> GetEnvironmentsAsync(

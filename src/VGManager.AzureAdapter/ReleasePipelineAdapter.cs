@@ -111,7 +111,7 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
         var taskAgentClient = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
         var variableGroupNames = new List<(string, string)>();
 
-        foreach (var env in definition.Environments)
+        foreach (var env in definition.Environments.Where(env => !ExcludableEnvironments.Any(env.Name.Contains)))
         {
             foreach (var id in env.VariableGroups)
             {

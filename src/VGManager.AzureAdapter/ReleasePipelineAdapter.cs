@@ -106,7 +106,11 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
         }
     }
 
-    private async Task<IEnumerable<(string, string)>> GetVariableGroupNames(string project, ReleaseDefinition definition, CancellationToken cancellationToken)
+    private async Task<IEnumerable<(string, string)>> GetVariableGroupNames(
+        string project, 
+        ReleaseDefinition definition, 
+        CancellationToken cancellationToken
+        )
     {
         var taskAgentClient = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
         var variableGroupNames = new List<(string, string)>();

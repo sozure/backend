@@ -123,6 +123,22 @@ public partial class VariableGroupController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("AddInline", Name = "AddVariableInline")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AdapterStatus>> AddInlineAsync(
+        [FromBody] VariableAddRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var vgServiceModel = _mapper.Map<VariableGroupAddModel>(request);
+        _variableService.SetupConnectionRepository(vgServiceModel);
+        var status = await _variableService.AddVariablesAsync(vgServiceModel, cancellationToken);
+
+        return Ok(status);
+    }
+
     [HttpPost("Delete", Name = "DeleteVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -123,7 +123,7 @@ public class GitFileAdapter: IGitFileAdapter
     private async Task<(AdapterStatus, IEnumerable<string>)> GetConfigFilesAsync(
         string version,
         string repositoryId,
-        string extension,
+        string? extension,
         CancellationToken cancellationToken
         )
     {
@@ -149,7 +149,7 @@ public class GitFileAdapter: IGitFileAdapter
             foreach (var itemBatch in itemsBatch)
             {
                 var elements = hasExtensionSpecification ? 
-                    itemBatch.Where(item => item.Path.EndsWith(extension)).ToList() : 
+                    itemBatch.Where(item => item.Path.EndsWith(extension ?? string.Empty)).ToList() : 
                     GetConfigFiles(itemBatch);
 
                 foreach (var element in elements)

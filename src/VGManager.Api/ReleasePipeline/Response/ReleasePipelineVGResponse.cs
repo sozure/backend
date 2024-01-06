@@ -7,5 +7,5 @@ public class ReleasePipelineVGResponse
 {
     public AdapterStatus Status { get; set; }
 
-    public IEnumerable<string> VariableGroups { get; set; } = null!;
+    public IEnumerable<Dictionary<string, string>> VariableGroups { get; set; } = null!;
 }

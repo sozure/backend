@@ -79,10 +79,23 @@ public class ReleasePipelineController : ControllerBase
                 cancellationToken
                 );
 
+            var result = new List<Dictionary<string, string>>();
+
+            foreach (var (name, type) in variableGroups)
+            {
+                var dictionary = new Dictionary<string, string>
+                {
+                    { "Name", name },
+                    { "Type", type }
+                };
+                result.Add(dictionary);
+            }
+
+
             return Ok(new ReleasePipelineVGResponse()
             {
                 Status = status,
-                VariableGroups = variableGroups
+                VariableGroups = result
             });
         }
         catch (Exception)
@@ -90,7 +103,7 @@ public class ReleasePipelineController : ControllerBase
             return Ok(new ReleasePipelineVGResponse()
             {
                 Status = AdapterStatus.Unknown,
-                VariableGroups = Enumerable.Empty<string>()
+                VariableGroups = Enumerable.Empty<Dictionary<string, string>>()
             });
         }
     }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using VGManager.Api.Common;
 using VGManager.Models.Models;
 using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
@@ -24,7 +25,7 @@ public class GitBranchController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetAsync(
-        [FromBody] GitBranchRequest request,
+        [FromBody] GitBasicRequest request,
         CancellationToken cancellationToken
     )
     {

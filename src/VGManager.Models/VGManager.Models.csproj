@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-      <ProjectGuid>A22E72EE-1B1D-4630-8994-7D5AA0AD2F1E</ProjectGuid>
+      <ProjectGuid>7068676A-0DED-49A2-8C57-8F75C038EDD5</ProjectGuid>
       <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>

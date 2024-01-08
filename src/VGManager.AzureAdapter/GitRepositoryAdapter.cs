@@ -59,12 +59,12 @@ public class GitRepositoryAdapter : IGitRepositoryAdapter
         )
     {
         var project = gitRepositoryEntity.Project;
-        var gitRepositoryId = gitRepositoryEntity.GitRepositoryId;
+        var repositoryId = gitRepositoryEntity.RepositoryId;
 
         _logger.LogInformation(
-            "Requesting configurations from {project} azure project, {gitRepositoryId} git repository.",
+            "Requesting configurations from {project} azure project, {repositoryId} git repository.",
             project,
-            gitRepositoryId
+            repositoryId
             );
 
         var gitClient = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
@@ -76,7 +76,7 @@ public class GitRepositoryAdapter : IGitRepositoryAdapter
 
         var item = await gitClient.GetItemTextAsync(
             project: project,
-            repositoryId: gitRepositoryId,
+            repositoryId: repositoryId,
             path: gitRepositoryEntity.FilePath,
             versionDescriptor: gitVersionDescriptor,
             cancellationToken: cancellationToken

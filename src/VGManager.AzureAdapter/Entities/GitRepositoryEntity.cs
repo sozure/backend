@@ -8,7 +8,7 @@ public class GitRepositoryEntity
 
     public string PAT { get; set; } = null!;
 
-    public string GitRepositoryId { get; set; } = null!;
+    public string RepositoryId { get; set; } = null!;
 
     public string FilePath { get; set; } = null!;
 

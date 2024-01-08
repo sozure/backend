@@ -2,6 +2,7 @@ using AutoMapper;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.Models;
 using VGManager.Services.Interfaces;
+using VGManager.Services.Models.Common;
 using VGManager.Services.Models.Projects;
 
 namespace VGManager.Services;
@@ -17,7 +18,7 @@ public class ProjectService : IProjectService
         _mapper = mapper;
     }
 
-    public async Task<AdapterResponseModel<IEnumerable<ProjectResult>>> GetProjectsAsync(ProjectModel projectModel, CancellationToken cancellationToken = default)
+    public async Task<AdapterResponseModel<IEnumerable<ProjectResult>>> GetProjectsAsync(BaseModel projectModel, CancellationToken cancellationToken = default)
     {
         var url = $"https://dev.azure.com/{projectModel.Organization}";
         var projectsEntity = await _projectRepository.GetProjectsAsync(url, projectModel.PAT, cancellationToken);

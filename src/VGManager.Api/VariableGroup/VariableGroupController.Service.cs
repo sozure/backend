@@ -4,6 +4,7 @@ using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.Models.Models;
 using VGManager.Models.StatusEnums;
+using VGManager.Services.Models.Common;
 using VGManager.Services.Models.Projects;
 using VGManager.Services.Models.VariableGroups.Requests;
 
@@ -32,7 +33,7 @@ public partial class VariableGroupController
 
     private async Task<AdapterResponseModel<IEnumerable<ProjectResult>>> GetProjectsAsync(VariableRequest request, CancellationToken cancellationToken)
     {
-        var projectModel = new ProjectModel
+        var projectModel = new BaseModel
         {
             Organization = request.Organization,
             PAT = request.PAT

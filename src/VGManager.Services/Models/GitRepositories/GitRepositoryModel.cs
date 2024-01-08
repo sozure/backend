@@ -1,12 +1,10 @@
+using VGManager.Services.Models.Common;
+
 namespace VGManager.Services.Models.GitRepositories;
 
-public class GitRepositoryModel
+public class GitRepositoryModel: BaseModel
 {
-    public string Organization { get; set; } = null!;
-
     public string Project { get; set; } = null!;
-
-    public string PAT { get; set; } = null!;
 
     public string RepositoryId { get; set; } = null!;
 

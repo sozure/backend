@@ -1,14 +1,12 @@
+using VGManager.Services.Models.Common;
+
 namespace VGManager.Services.Models.VariableGroups.Requests;
 
-public class VariableGroupModel
+public class VariableGroupModel: BaseModel
 {
-    public string Organization { get; set; } = null!;
-
     public string UserName { get; set; } = null!;
 
     public string Project { get; set; } = null!;
-
-    public string PAT { get; set; } = null!;
 
     public string VariableGroupFilter { get; set; } = null!;
 

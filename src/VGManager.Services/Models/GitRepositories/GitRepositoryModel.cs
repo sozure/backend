@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace VGManager.Services.Models.GitRepositories;
 
 public class GitRepositoryModel

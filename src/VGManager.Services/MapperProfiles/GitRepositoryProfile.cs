@@ -4,7 +4,7 @@ using VGManager.Services.Models.GitRepositories;
 
 namespace VGManager.Services.MapperProfiles;
 
-public class GitRepositoryProfile: Profile
+public class GitRepositoryProfile : Profile
 {
     public GitRepositoryProfile()
     {

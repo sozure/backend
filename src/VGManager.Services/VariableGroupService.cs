@@ -1,14 +1,14 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
-using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Models;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups.Requests;
 using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Services;
 
-public class VariableGroupService: IVariableGroupService
+public class VariableGroupService : IVariableGroupService
 {
     private readonly IVariableFilterService _variableFilterService;
     private readonly IVariableGroupAdapter _variableGroupConnectionRepository;

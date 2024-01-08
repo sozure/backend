@@ -8,18 +8,18 @@ using VGManager.Models;
 
 namespace VGManager.AzureAdapter;
 
-public class GitFileAdapter: IGitFileAdapter
+public class GitFileAdapter : IGitFileAdapter
 {
     private VssConnection _connection = null!;
     private readonly ILogger _logger;
 
-    private readonly string[] Extensions = {"yaml", "json", "yml"};
+    private readonly string[] Extensions = { "yaml", "json", "yml" };
 
     public GitFileAdapter(ILogger<GitFileAdapter> logger)
     {
         _logger = logger;
     }
-    
+
     public async Task<(AdapterStatus, IEnumerable<string>)> GetFilePathAsync(
         string organization,
         string pat,
@@ -61,12 +61,13 @@ public class GitFileAdapter: IGitFileAdapter
             _logger.LogInformation("Get config files from {project} git project.", repositoryId);
             Setup(organization, pat);
             return await GetConfigFilesAsync(branch, repositoryId, extension, cancellationToken);
-        } catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting config files from {project} git project.", repositoryId);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
-        
+
     }
 
     private void Setup(string organization, string pat)
@@ -80,9 +81,9 @@ public class GitFileAdapter: IGitFileAdapter
     }
 
     private async Task<(AdapterStatus, IEnumerable<string>)> GetFilePathAsync(
-        string version, 
-        string repositoryId, 
-        string fileName, 
+        string version,
+        string repositoryId,
+        string fileName,
         CancellationToken cancellationToken
         )
     {
@@ -113,7 +114,8 @@ public class GitFileAdapter: IGitFileAdapter
                 }
             }
             return (AdapterStatus.Success, result);
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting file path from {project} git project.", repositoryId);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
@@ -148,8 +150,8 @@ public class GitFileAdapter: IGitFileAdapter
             var hasExtensionSpecification = !string.IsNullOrEmpty(extension);
             foreach (var itemBatch in itemsBatch)
             {
-                var elements = hasExtensionSpecification ? 
-                    itemBatch.Where(item => item.Path.EndsWith(extension ?? string.Empty)).ToList() : 
+                var elements = hasExtensionSpecification ?
+                    itemBatch.Where(item => item.Path.EndsWith(extension ?? string.Empty)).ToList() :
                     GetConfigFiles(itemBatch);
 
                 foreach (var element in elements)

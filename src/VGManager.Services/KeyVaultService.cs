@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Entities.SecretEntities;
+using VGManager.Models;
 using VGManager.Repositories.Interfaces.SecretRepositories;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Secrets.Requests;

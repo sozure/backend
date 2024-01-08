@@ -76,7 +76,7 @@ public class GitRepositoryService : IGitRepositoryService
         }
         catch (VssServiceException ex)
         {
-            var status = ex.Message.Contains("could not be found in the repository")? AdapterStatus.FileDoesNotExists: AdapterStatus.Unknown;
+            var status = ex.Message.Contains("could not be found in the repository") ? AdapterStatus.FileDoesNotExists : AdapterStatus.Unknown;
             return new()
             {
                 Status = status,

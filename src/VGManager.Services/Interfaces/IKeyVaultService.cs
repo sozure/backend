@@ -1,4 +1,4 @@
-using VGManager.AzureAdapter.Entities;
+using VGManager.Models;
 using VGManager.Services.Models.Secrets.Requests;
 using VGManager.Services.Models.Secrets.Results;
 

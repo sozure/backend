@@ -7,6 +7,7 @@ using VGManager.Api.Secrets.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
+using VGManager.Models;
 using VariableGroupEnt = Microsoft.TeamFoundation.DistributedTask.WebApi.VariableGroup;
 
 namespace VGManager.Api.Tests;

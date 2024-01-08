@@ -5,7 +5,7 @@ using VGManager.Api.VariableGroup.Request;
 using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
-using VGManager.AzureAdapter.Entities;
+using VGManager.Models;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups.Requests;
 

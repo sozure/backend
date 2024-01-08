@@ -8,7 +8,7 @@ namespace VGManager.Api.Branch;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class GitBranchController: ControllerBase
+public class GitBranchController : ControllerBase
 {
 
     private readonly IGitBranchService _gitBranchService;
@@ -40,7 +40,8 @@ public class GitBranchController: ControllerBase
                 Status = status,
                 Data = branches
             });
-        } catch (Exception)
+        }
+        catch (Exception)
         {
             return Ok(new AdapterResponseModel<IEnumerable<string>>
             {

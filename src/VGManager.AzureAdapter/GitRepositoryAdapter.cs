@@ -11,12 +11,12 @@ using YamlDotNet.RepresentationModel;
 
 namespace VGManager.AzureAdapter;
 
-public class GitRepositoryAdapter: IGitRepositoryAdapter
+public class GitRepositoryAdapter : IGitRepositoryAdapter
 {
     private VssConnection _connection = null!;
     private readonly ILogger _logger;
 
-    private readonly char[] _notAllowedCharacters = {'{', '}', ' ', '(', ')', '$' };
+    private readonly char[] _notAllowedCharacters = { '{', '}', ' ', '(', ')', '$' };
     private readonly char _startingChar = '$';
     private readonly char _endingChar = '}';
     private readonly string _secretYamlKind = "Secret";
@@ -40,9 +40,9 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
     }
 
     public async Task<IEnumerable<GitRepository>> GetAllAsync(
-        string organization, 
-        string project, 
-        string pat, 
+        string organization,
+        string project,
+        string pat,
         CancellationToken cancellationToken = default
         )
     {
@@ -70,7 +70,7 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
         var gitClient = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
         var gitVersionDescriptor = new GitVersionDescriptor
         {
-            VersionType = GitVersionType.Branch, 
+            VersionType = GitVersionType.Branch,
             Version = gitRepositoryEntity.Branch
         };
 
@@ -87,7 +87,8 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
             var json = await GetJsonObjectAsync(item, cancellationToken);
             var result = GetKeysFromJson(json, gitRepositoryEntity.Exceptions ?? Enumerable.Empty<string>(), gitRepositoryEntity.Delimiter);
             return result;
-        } else if(gitRepositoryEntity.FilePath.EndsWith(".yaml"))
+        }
+        else if (gitRepositoryEntity.FilePath.EndsWith(".yaml"))
         {
             return GetKeysFromYaml(item);
         }
@@ -105,10 +106,10 @@ public class GitRepositoryAdapter: IGitRepositoryAdapter
     }
 
     private static void GetKeysFromJsonHelper(
-        JsonElement jsonObject, 
-        string delimiter, 
-        string prefix, 
-        IEnumerable<string> exceptions, 
+        JsonElement jsonObject,
+        string delimiter,
+        string prefix,
+        IEnumerable<string> exceptions,
         List<string> keys
         )
     {

@@ -1,7 +1,5 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.UserProfile;

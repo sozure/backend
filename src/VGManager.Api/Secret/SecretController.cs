@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secret.Request;
 using VGManager.Api.Secret.Response;
 using VGManager.Api.Secrets.Response;
-using VGManager.AzureAdapter.Entities;
+using VGManager.Models;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Secrets.Requests;
 

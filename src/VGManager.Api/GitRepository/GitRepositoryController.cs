@@ -11,7 +11,7 @@ namespace VGManager.Api.GitRepository;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class GitRepositoryController: ControllerBase
+public class GitRepositoryController : ControllerBase
 {
     private readonly IGitRepositoryService _gitRepositoryService;
     private readonly IMapper _mapper;
@@ -32,9 +32,9 @@ public class GitRepositoryController: ControllerBase
     )
     {
         var gitRepositories = await _gitRepositoryService.GetAllAsync(
-            request.Organization, 
-            request.Project, 
-            request.PAT, 
+            request.Organization,
+            request.Project,
+            request.PAT,
             cancellationToken
             );
 

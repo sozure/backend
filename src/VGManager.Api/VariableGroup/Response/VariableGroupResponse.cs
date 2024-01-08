@@ -11,5 +11,5 @@ public class VariableGroupResponse
     public string VariableGroupName { get; set; } = null!;
 
     [Required]
-    public string VariableGroupType{ get; set; } = null!;
+    public string VariableGroupType { get; set; } = null!;
 }

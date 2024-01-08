@@ -8,7 +8,7 @@ using VGManager.Models;
 
 namespace VGManager.AzureAdapter;
 
-public class GitBranchAdapter: IGitBranchAdapter
+public class GitBranchAdapter : IGitBranchAdapter
 {
     private VssConnection _connection = null!;
     private readonly ILogger _logger;
@@ -29,7 +29,7 @@ public class GitBranchAdapter: IGitBranchAdapter
     }
 
     public async Task<(AdapterStatus, IEnumerable<string>)> GetAllAsync(
-        string organization, 
+        string organization,
         string pat,
         string repositoryId,
         CancellationToken cancellationToken = default
@@ -41,13 +41,15 @@ public class GitBranchAdapter: IGitBranchAdapter
             Setup(organization, pat);
             var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
             var branches = await client.GetBranchesAsync(repositoryId, cancellationToken: cancellationToken);
-            
+
             return (AdapterStatus.Success, branches.Select(branch => branch.Name).ToList());
-        } catch (ProjectDoesNotExistWithNameException ex)
+        }
+        catch (ProjectDoesNotExistWithNameException ex)
         {
             _logger.LogError(ex, "{project} git project is not found.", repositoryId);
             return (AdapterStatus.ProjectDoesNotExist, Enumerable.Empty<string>());
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting git branches from {project} git project.", repositoryId);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());

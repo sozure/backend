@@ -5,7 +5,7 @@ using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
-public class VariableFilterService: IVariableFilterService
+public class VariableFilterService : IVariableFilterService
 {
     private readonly ILogger _logger;
 

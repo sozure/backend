@@ -4,7 +4,7 @@ using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
-public class GitFileService: IGitFileService
+public class GitFileService : IGitFileService
 {
     private readonly IGitFileAdapter _gitFileAdapter;
 
@@ -35,5 +35,5 @@ public class GitFileService: IGitFileService
         )
     {
         return await _gitFileAdapter.GetConfigFilesAsync(organization, pat, repositoryId, extension, branch, cancellationToken);
-    } 
+    }
 }

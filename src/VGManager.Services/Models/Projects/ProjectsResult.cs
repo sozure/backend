@@ -1,4 +1,4 @@
-using VGManager.AzureAdapter.Entities;
+using VGManager.Models;
 
 namespace VGManager.Services.Models.Projects;
 public class ProjectsResult

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using VGManager.AzureAdapter.Entities;
 using VGManager.Models;
 
 namespace VGManager.Api.Projects.Responses;

@@ -6,7 +6,6 @@ using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using VGManager.Api.Controllers;
 using VGManager.Api.MapperProfiles;
 using VGManager.Api.VariableGroups.Response;
-using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Entities.VGEntities;
 using VGManager.Repositories.Interfaces.VGRepositories;

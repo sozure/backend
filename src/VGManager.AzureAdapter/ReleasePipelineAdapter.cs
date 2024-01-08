@@ -6,16 +6,12 @@ using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
 using Microsoft.VisualStudio.Services.WebApi;
-using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
-using System.Linq;
-using Microsoft.Win32;
-using static System.Net.WebRequestMethods;
 using VGManager.Models;
 
 namespace VGManager.AzureAdapter;
 
-public class ReleasePipelineAdapter: IReleasePipelineAdapter
+public class ReleasePipelineAdapter : IReleasePipelineAdapter
 {
     private VssConnection _connection = null!;
     private readonly ILogger _logger;
@@ -44,13 +40,13 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
             var rawResult = definition?.Environments.Select(env => env.Name).ToList() ?? Enumerable.Empty<string>();
             var result = new List<string>();
 
-            foreach(var rawElement in rawResult)
+            foreach (var rawElement in rawResult)
             {
                 var element = Replacable.Where(rawElement.Contains).Select(replace => rawElement.Replace(replace, string.Empty));
                 result.AddRange(element.Where(element => !ExcludableEnvironments.Contains(element)));
             }
 
-            return (definition is null ? AdapterStatus.Unknown: AdapterStatus.Success, result);
+            return (definition is null ? AdapterStatus.Unknown : AdapterStatus.Success, result);
         }
         catch (ProjectDoesNotExistWithNameException ex)
         {
@@ -75,8 +71,8 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
         try
         {
             _logger.LogInformation(
-                "Request corresponding variable groups for {repository} repository, {project} azure project.", 
-                repositoryName, 
+                "Request corresponding variable groups for {repository} repository, {project} azure project.",
+                repositoryName,
                 project
                 );
             var definition = await GetReleaseDefinitionAsync(organization, pat, project, repositoryName, cancellationToken);
@@ -98,9 +94,9 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
         catch (Exception ex)
         {
             _logger.LogError(
-                ex, 
-                "Error getting corresponding variable groups for {repository} repository, {project} azure project.", 
-                repositoryName, 
+                ex,
+                "Error getting corresponding variable groups for {repository} repository, {project} azure project.",
+                repositoryName,
                 project
                 );
             return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
@@ -108,8 +104,8 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
     }
 
     private async Task<IEnumerable<(string, string)>> GetVariableGroupNames(
-        string project, 
-        ReleaseDefinition definition, 
+        string project,
+        ReleaseDefinition definition,
         CancellationToken cancellationToken
         )
     {
@@ -129,10 +125,10 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
     }
 
     private async Task<ReleaseDefinition?> GetReleaseDefinitionAsync(
-        string organization, 
-        string pat, 
-        string project, 
-        string repositoryName, 
+        string organization,
+        string pat,
+        string project,
+        string repositoryName,
         CancellationToken cancellationToken
         )
     {
@@ -146,10 +142,11 @@ public class ReleasePipelineAdapter: IReleasePipelineAdapter
             );
 
         var definition = releaseDefinitions.FirstOrDefault(
-            definition => definition.Artifacts.Any(artifact => { 
+            definition => definition.Artifacts.Any(artifact =>
+            {
                 var artifactType = artifact.DefinitionReference.GetValueOrDefault("definition")?.Name;
                 return artifactType?.Equals(repositoryName) ?? false;
-                }
+            }
             )
             );
         var detailedDef = await releaseClient.GetReleaseDefinitionAsync(project, definition?.Id ?? 0, cancellationToken: cancellationToken);

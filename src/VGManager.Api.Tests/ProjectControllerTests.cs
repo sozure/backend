@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Projects;
 using VGManager.Api.Projects.Responses;
-using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services;
 using ApiProjectProfile = VGManager.Api.MapperProfiles.ProjectProfile;

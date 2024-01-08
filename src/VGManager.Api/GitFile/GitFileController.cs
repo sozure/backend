@@ -8,7 +8,7 @@ namespace VGManager.Api.GitFile;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class GitFileController: ControllerBase
+public class GitFileController : ControllerBase
 {
     private readonly IGitFileService _gitFileService;
 

@@ -1,12 +1,11 @@
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.Services.Common;
-using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Models;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
-public class ReleasePipelineService: IReleasePipelineService
+public class ReleasePipelineService : IReleasePipelineService
 {
     private readonly IReleasePipelineAdapter _releasePipelineAdapter;
     private readonly ILogger _logger;
@@ -31,10 +30,10 @@ public class ReleasePipelineService: IReleasePipelineService
         var (status, result) = (AdapterStatus.Unknown, new List<string>());
         try
         {
-            foreach(var project in projects)
+            foreach (var project in projects)
             {
                 var (subStatus, subResult) = await _releasePipelineAdapter.GetVariableGroupsAsync(organization, pat, project, repositoryName, cancellationToken);
-                if(subStatus == AdapterStatus.Success && subResult.Any())
+                if (subStatus == AdapterStatus.Success && subResult.Any())
                 {
                     result.Add(project);
                     status = AdapterStatus.Success;

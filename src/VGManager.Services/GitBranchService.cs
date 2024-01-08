@@ -4,7 +4,7 @@ using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
-public class GitBranchService: IGitBranchService
+public class GitBranchService : IGitBranchService
 {
     private readonly IGitBranchAdapter _gitBranchAdapter;
 

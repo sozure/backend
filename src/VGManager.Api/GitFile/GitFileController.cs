@@ -1,10 +1,6 @@
-using AutoMapper;
-using Azure.Core;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
-using VGManager.Api.GitRepository.Request;
-using VGManager.Api.GitRepository.Response;
+using VGManager.Models;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.GitFile;
@@ -51,7 +47,7 @@ public class GitFileController: ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GitConfigFileResponse>> GetConfigFilesAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetConfigFilesAsync(
         [FromBody] GitConfigFileRequest request,
         CancellationToken cancellationToken
         )
@@ -65,10 +61,10 @@ public class GitFileController: ControllerBase
             cancellationToken
             );
 
-        var result = new GitConfigFileResponse
+        var result = new AdapterResponseModel<IEnumerable<string>>
         {
             Status = status,
-            ConfigFiles = configFiles
+            Data = configFiles
         };
 
         return Ok(result);

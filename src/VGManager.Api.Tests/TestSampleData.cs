@@ -197,7 +197,7 @@ public static class TestSampleData
                 }
         };
 
-    public static VariableResponses GetVariableGroupGetResponses(string projectName, string key, string value)
+    public static AdapterResponseModel<List<VariableResponse>> GetVariableGroupGetResponses(string projectName, string key, string value)
     {
         var list = new List<VariableResponse>()
         {
@@ -224,14 +224,14 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new VariableResponses
+        return new AdapterResponseModel<List<VariableResponse>>
         {
             Status = AdapterStatus.Success,
-            Variables = result
+            Data = result
         };
     }
 
-    public static VariableResponses GetVariableGroupGetResponses(string projectName, string value)
+    public static AdapterResponseModel<List<VariableResponse>> GetVariableGroupGetResponses(string projectName, string value)
     {
         var list = new List<VariableResponse>()
         {
@@ -251,14 +251,14 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new VariableResponses
+        return new AdapterResponseModel<List<VariableResponse>>
         {
             Status = AdapterStatus.Success,
-            Variables = result
+            Data = result
         };
     }
 
-    public static VariableResponses GetVariableGroupGetResponses(string projectName)
+    public static AdapterResponseModel<List<VariableResponse>> GetVariableGroupGetResponses(string projectName)
     {
         var list = new List<VariableResponse>()
         {
@@ -292,18 +292,18 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new VariableResponses
+        return new AdapterResponseModel<List<VariableResponse>>
         {
             Status = AdapterStatus.Success,
-            Variables = result
+            Data = result
         };
     }
 
-    public static VariableResponses GetVariableGroupGetResponsesAfterDelete()
+    public static AdapterResponseModel<List<VariableResponse>> GetVariableGroupGetResponsesAfterDelete()
         => new()
         {
             Status = AdapterStatus.Success,
-            Variables = new List<VariableResponse>()
+            Data = new List<VariableResponse>()
         };
 
     public static SecretRequest GetRequest(string keyVaultName, string secretFilter, string tenantId, string clientId, string clientSecret)
@@ -407,11 +407,11 @@ public static class TestSampleData
 
         };
 
-    public static DeletedSecretResponses GetEmptySecretsGetResponse1()
+    public static AdapterResponseModel<IEnumerable<DeletedSecretResponse>> GetEmptySecretsGetResponse1()
         => new()
         {
             Status = AdapterStatus.Success,
-            DeletedSecrets = Enumerable.Empty<DeletedSecretResponse>()
+            Data = Enumerable.Empty<DeletedSecretResponse>()
         };
 
     public static ProjectsEntity GetProjectEntity(string firstProjectName, string secondProjectName)

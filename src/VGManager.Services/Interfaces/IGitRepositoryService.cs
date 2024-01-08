@@ -1,16 +1,17 @@
+using VGManager.Models;
 using VGManager.Services.Models.GitRepositories;
 
 namespace VGManager.Services.Interfaces;
 
 public interface IGitRepositoryService
 {
-    Task<GitRepositoryResults> GetAllAsync(
+    Task<AdapterResponseModel<IEnumerable<GitRepositoryResult>>> GetAllAsync(
         string organization,
         string project,
         string pat,
         CancellationToken cancellationToken = default);
 
-    Task<GitRepositoryVariablesResult> GetVariablesFromConfigAsync(
+    Task<AdapterResponseModel<IEnumerable<string>>> GetVariablesFromConfigAsync(
         GitRepositoryModel gitRepositoryModel,
         CancellationToken cancellationToken = default
         );

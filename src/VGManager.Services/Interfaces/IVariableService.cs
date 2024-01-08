@@ -14,7 +14,7 @@ public interface IVariableService
         CancellationToken cancellationToken = default
         );
 
-    Task<VariableResults> GetVariablesAsync(
+    Task<AdapterResponseModel<IEnumerable<VariableResult>>> GetVariablesAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         );

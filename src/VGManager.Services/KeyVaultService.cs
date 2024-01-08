@@ -123,7 +123,7 @@ public class KeyVaultService : IKeyVaultService
         }
     }
 
-    public DeletedSecretResults GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default)
+    public AdapterResponseModel<IEnumerable<DeletedSecretResult>> GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default)
     {
         var secretList = new List<DeletedSecretResult>();
         var secretsEntity = _keyVaultConnectionRepository.GetDeletedSecrets(cancellationToken);
@@ -321,21 +321,21 @@ public class KeyVaultService : IKeyVaultService
         }
     }
 
-    private static DeletedSecretResults GetResult(AdapterStatus status)
+    private static AdapterResponseModel<IEnumerable<DeletedSecretResult>> GetResult(AdapterStatus status)
     {
         return new()
         {
             Status = status,
-            DeletedSecrets = Enumerable.Empty<DeletedSecretResult>()
+            Data = Enumerable.Empty<DeletedSecretResult>()
         };
     }
 
-    private static DeletedSecretResults GetResult(AdapterStatus status, IEnumerable<DeletedSecretResult> secretList)
+    private static AdapterResponseModel<IEnumerable<DeletedSecretResult>> GetResult(AdapterStatus status, IEnumerable<DeletedSecretResult> secretList)
     {
         return new()
         {
             Status = status,
-            DeletedSecrets = secretList
+            Data = secretList
         };
     }
 

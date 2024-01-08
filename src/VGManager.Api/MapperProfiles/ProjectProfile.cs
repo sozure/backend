@@ -9,7 +9,6 @@ public class ProjectProfile : Profile
 {
     public ProjectProfile()
     {
-        CreateMap<ProjectsResult, ProjectsResponse>();
         CreateMap<ProjectResult, ProjectResponse>()
             .ForMember(x => x.Name, opt => opt.MapFrom(src => src.Project.Name));
         CreateMap<ProjectRequest, ProjectModel>();

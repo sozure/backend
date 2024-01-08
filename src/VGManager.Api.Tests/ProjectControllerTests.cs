@@ -5,6 +5,7 @@ using VGManager.Api.Projects.Responses;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models;
 using VGManager.Services;
+using VGManager.Services.Models.Projects;
 using ApiProjectProfile = VGManager.Api.MapperProfiles.ProjectProfile;
 using ServiceProjectProfile = VGManager.Services.MapperProfiles.ProjectProfile;
 
@@ -56,10 +57,10 @@ public class ProjectControllerTests
 
         var projectEntity = TestSampleData.GetProjectEntity(firstProjectName, secondProjectName);
 
-        var projectsResponse = new ProjectsResponse
+        var projectsResponse = new AdapterResponseModel<IEnumerable<ProjectResponse>>
         {
             Status = AdapterStatus.Success,
-            Projects = new List<ProjectResponse>()
+            Data = new List<ProjectResponse>()
             {
                 new ProjectResponse()
                 {
@@ -82,7 +83,7 @@ public class ProjectControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((ProjectsResponse)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(projectsResponse);
+        ((AdapterResponseModel<IEnumerable<ProjectResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(projectsResponse);
 
         _adapter.Verify(x => x.GetProjectsAsync(url, pat, default), Times.Once);
     }

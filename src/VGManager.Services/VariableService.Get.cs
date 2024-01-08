@@ -10,7 +10,7 @@ namespace VGManager.Services;
 
 public partial class VariableService
 {
-    public async Task<VariableResults> GetVariablesAsync(
+    public async Task<AdapterResponseModel<IEnumerable<VariableResult>>> GetVariablesAsync(
         VariableGroupModel variableGroupModel,
         CancellationToken cancellationToken = default
         )
@@ -27,12 +27,12 @@ public partial class VariableService
             return new()
             {
                 Status = status,
-                Variables = new List<VariableResult>(),
+                Data = new List<VariableResult>(),
             };
         }
     }
 
-    private VariableResults GetVariablesAsync(
+    private AdapterResponseModel<IEnumerable<VariableResult>> GetVariablesAsync(
         VariableGroupModel variableGroupModel,
         AdapterResponseModel<IEnumerable<VariableGroup>> vgEntity,
         AdapterStatus status
@@ -59,7 +59,7 @@ public partial class VariableService
                 return new()
                 {
                     Status = status,
-                    Variables = matchedVariables,
+                    Data = matchedVariables,
                 };
             }
         }
@@ -77,7 +77,7 @@ public partial class VariableService
                 return new()
                 {
                     Status = status,
-                    Variables = matchedVariables,
+                    Data = matchedVariables,
                 };
             }
 
@@ -101,7 +101,7 @@ public partial class VariableService
         return new()
         {
             Status = status,
-            Variables = matchedVariables,
+            Data = matchedVariables,
         };
     }
 

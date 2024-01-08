@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.GitRepository.Request;
-using VGManager.Api.GitRepository.Response;
+using VGManager.Models;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.GitRepositories;
 
@@ -26,7 +26,7 @@ public class GitRepositoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GitRepositoryResponses>> GetAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<GitRepositoryResult>>>> GetAsync(
         [FromBody] GitRepositoryBaseRequest request,
         CancellationToken cancellationToken
     )
@@ -38,7 +38,12 @@ public class GitRepositoryController : ControllerBase
             cancellationToken
             );
 
-        var result = _mapper.Map<GitRepositoryResponses>(gitRepositories);
+        var result = new AdapterResponseModel<IEnumerable<GitRepositoryResult>>()
+        {
+            Status = gitRepositories.Status,
+            Data = gitRepositories.Data
+        };
+
         return Ok(result);
     }
 
@@ -46,14 +51,18 @@ public class GitRepositoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GitRepositoryResponses>> GetVariablesAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetVariablesAsync(
         [FromBody] GitRepositoryVariablesRequest request,
         CancellationToken cancellationToken
     )
     {
         var model = _mapper.Map<GitRepositoryModel>(request);
         var variablesResult = await _gitRepositoryService.GetVariablesFromConfigAsync(model, cancellationToken);
-        var result = _mapper.Map<GitRepositoryVariablesResponse>(variablesResult);
+        var result = new AdapterResponseModel<IEnumerable<string>>() 
+        { 
+            Status = variablesResult.Status, 
+            Data = variablesResult.Data 
+        };
         return Ok(result);
     }
 }

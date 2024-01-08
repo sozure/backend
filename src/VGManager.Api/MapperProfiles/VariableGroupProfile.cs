@@ -15,6 +15,5 @@ public class VariableGroupProfile : Profile
         CreateMap<VariableRequest, VariableGroupModel>();
 
         CreateMap<VariableResult, VariableResponse>();
-        CreateMap<VariableResults, VariableResponses>();
     }
 }

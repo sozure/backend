@@ -38,7 +38,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableResponses>> GetAsync(
+    public async Task<ActionResult<AdapterResponseModel<List<VariableResponse>>>> GetAsync(
         [FromBody] VariableRequest request,
         CancellationToken cancellationToken
     )
@@ -85,7 +85,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableResponses>> UpdateAsync(
+    public async Task<ActionResult<AdapterResponseModel<List<VariableResponse>>>> UpdateAsync(
         [FromBody] VariableUpdateRequest request,
         CancellationToken cancellationToken
     )
@@ -114,7 +114,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableResponses>> AddAsync(
+    public async Task<ActionResult<AdapterResponseModel<List<VariableResponse>>>> AddAsync(
         [FromBody] VariableAddRequest request,
         CancellationToken cancellationToken
     )
@@ -143,12 +143,12 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableResponses>> DeleteAsync(
+    public async Task<ActionResult<AdapterResponseModel<List<VariableResponse>>>> DeleteAsync(
         [FromBody] VariableRequest request,
         CancellationToken cancellationToken
     )
     {
-        VariableResponses? result;
+        AdapterResponseModel<List<VariableResponse>> result;
         if (request.Project == "All")
         {
             result = GetEmptyVariablesGetResponses();
@@ -158,7 +158,7 @@ public partial class VariableGroupController : ControllerBase
             {
                 request.Project = project.Project.Name;
                 var subResult = await GetResultAfterDeleteAsync(request, cancellationToken);
-                result.Variables.AddRange(subResult.Variables);
+                result.Data.AddRange(subResult.Data);
 
                 if (subResult.Status != AdapterStatus.Success)
                 {

@@ -22,7 +22,7 @@ public class GitRepositoryService : IGitRepositoryService
         _logger = logger;
     }
 
-    public async Task<GitRepositoryResults> GetAllAsync(
+    public async Task<AdapterResponseModel<IEnumerable<GitRepositoryResult>>> GetAllAsync(
         string organization,
         string project,
         string pat,
@@ -44,7 +44,7 @@ public class GitRepositoryService : IGitRepositoryService
 
             return new()
             {
-                Repositories = repositoryNames,
+                Data = repositoryNames,
                 Status = AdapterStatus.Success
             };
         }
@@ -53,13 +53,13 @@ public class GitRepositoryService : IGitRepositoryService
             _logger.LogError(ex, "Error getting git repositories from {project} azure project.", project);
             return new()
             {
-                Repositories = Enumerable.Empty<GitRepositoryResult>(),
+                Data = Enumerable.Empty<GitRepositoryResult>(),
                 Status = AdapterStatus.Unknown
             };
         }
     }
 
-    public async Task<GitRepositoryVariablesResult> GetVariablesFromConfigAsync(
+    public async Task<AdapterResponseModel<IEnumerable<string>>> GetVariablesFromConfigAsync(
         GitRepositoryModel gitRepositoryModel,
         CancellationToken cancellationToken = default
         )
@@ -81,7 +81,7 @@ public class GitRepositoryService : IGitRepositoryService
             return new()
             {
                 Status = status,
-                Variables = Enumerable.Empty<string>()
+                Data = Enumerable.Empty<string>()
             };
         }
         catch (Exception ex)
@@ -90,7 +90,7 @@ public class GitRepositoryService : IGitRepositoryService
             return new()
             {
                 Status = AdapterStatus.Unknown,
-                Variables = Enumerable.Empty<string>()
+                Data = Enumerable.Empty<string>()
             };
         }
 
@@ -98,7 +98,7 @@ public class GitRepositoryService : IGitRepositoryService
         return new()
         {
             Status = AdapterStatus.Success,
-            Variables = variables
+            Data = variables
         };
     }
 }

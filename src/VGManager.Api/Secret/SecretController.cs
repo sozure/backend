@@ -99,7 +99,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<DeletedSecretResponses> GetDeleted(
+    public ActionResult<AdapterResponseModel<IEnumerable<DeletedSecretResponse>>> GetDeleted(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -108,7 +108,13 @@ public class SecretController : ControllerBase
 
         _keyVaultService.SetupConnectionRepository(secretModel);
         var matchedDeletedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
-        var result = _mapper.Map<DeletedSecretResponses>(matchedDeletedSecrets);
+
+        var result = new AdapterResponseModel<IEnumerable<DeletedSecretResponse>>()
+        {
+            Status = matchedDeletedSecrets.Status,
+            Data = _mapper.Map<IEnumerable<DeletedSecretResponse>>(matchedDeletedSecrets.Data)
+        };
+
         return Ok(result);
     }
 
@@ -152,7 +158,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<DeletedSecretResponses>> RecoverAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<DeletedSecretResponse>>>> RecoverAsync(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -163,7 +169,12 @@ public class SecretController : ControllerBase
         await _keyVaultService.RecoverSecretAsync(secretModel.SecretFilter, secretModel.UserName, cancellationToken);
         var matchedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<DeletedSecretResponses>(matchedSecrets);
+        var result = new AdapterResponseModel<IEnumerable<DeletedSecretResponse>>()
+        {
+            Status = matchedSecrets.Status,
+            Data = _mapper.Map<IEnumerable<DeletedSecretResponse>>(matchedSecrets.Data)
+        };
+
         return Ok(result);
     }
 

@@ -159,7 +159,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         }
     }
 
-    public DeletedSecretsEntity GetDeletedSecrets(CancellationToken cancellationToken = default)
+    public AdapterResponseModel<IEnumerable<DeletedSecret>> GetDeletedSecrets(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -189,21 +189,21 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         return results;
     }
 
-    private static DeletedSecretsEntity GetDeletedSecretsResult(AdapterStatus status)
+    private static AdapterResponseModel<IEnumerable<DeletedSecret>> GetDeletedSecretsResult(AdapterStatus status)
     {
         return new()
         {
             Status = status,
-            DeletedSecrets = Enumerable.Empty<DeletedSecret>()
+            Data = Enumerable.Empty<DeletedSecret>()
         };
     }
 
-    private static DeletedSecretsEntity GetDeletedSecretsResult(IEnumerable<DeletedSecret> deletedSecrets)
+    private static AdapterResponseModel<IEnumerable<DeletedSecret>> GetDeletedSecretsResult(IEnumerable<DeletedSecret> deletedSecrets)
     {
         return new()
         {
             Status = AdapterStatus.Success,
-            DeletedSecrets = deletedSecrets
+            Data = deletedSecrets
         };
     }
 

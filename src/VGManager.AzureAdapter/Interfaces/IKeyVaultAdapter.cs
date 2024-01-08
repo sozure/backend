@@ -18,6 +18,6 @@ public interface IKeyVaultAdapter
     Task<AdapterResponseModel<IEnumerable<SecretEntity>>> GetSecretsAsync(CancellationToken cancellationToken = default);
     Task<AdapterStatus> RecoverSecretAsync(string name, CancellationToken cancellationToken = default);
     Task<IEnumerable<KeyVaultSecret>> GetAllAsync(CancellationToken cancellationToken);
-    DeletedSecretsEntity GetDeletedSecrets(CancellationToken cancellationToken = default);
+    AdapterResponseModel<IEnumerable<DeletedSecret>> GetDeletedSecrets(CancellationToken cancellationToken = default);
     public void Setup(string keyVaultName, string tenantId, string clientId, string clientSecret);
 }

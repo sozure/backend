@@ -131,7 +131,7 @@ public class KeyVaultService : IKeyVaultService
 
         if (status == AdapterStatus.Success)
         {
-            var filteredSecrets = Filter(secretsEntity!.DeletedSecrets, secretFilter);
+            var filteredSecrets = Filter(secretsEntity!.Data, secretFilter);
 
             foreach (var filteredSecret in filteredSecrets)
             {
@@ -169,7 +169,7 @@ public class KeyVaultService : IKeyVaultService
 
         if (status == AdapterStatus.Success)
         {
-            var filteredSecrets = Filter(deletedSecretsEntity.DeletedSecrets, secretFilter);
+            var filteredSecrets = Filter(deletedSecretsEntity.Data, secretFilter);
             var recoverCounter = 0;
             foreach (var secret in filteredSecrets)
             {

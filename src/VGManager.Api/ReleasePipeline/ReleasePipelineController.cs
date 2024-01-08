@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.ReleasePipeline.Request;
 using VGManager.Api.ReleasePipeline.Response;
+using VGManager.Models;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.ReleasePipeline;
@@ -25,7 +26,7 @@ public class ReleasePipelineController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ReleasePipelineEnvResponse>> GetEnvironmentsAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetEnvironmentsAsync(
         [FromBody] ReleasePipelineRequest request,
         CancellationToken cancellationToken
         )
@@ -40,18 +41,18 @@ public class ReleasePipelineController : ControllerBase
                 cancellationToken
                 );
 
-            return Ok(new ReleasePipelineEnvResponse()
+            return Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = status,
-                Environments = environments
+                Data = environments
             });
         }
         catch (Exception)
         {
-            return Ok(new ReleasePipelineEnvResponse()
+            return Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = AdapterStatus.Unknown,
-                Environments = Enumerable.Empty<string>()
+                Data = Enumerable.Empty<string>()
             });
         }
     }
@@ -60,7 +61,7 @@ public class ReleasePipelineController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ReleasePipelineEnvResponse>> GetVariableGroupsAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<Dictionary<string, string>>>>> GetVariableGroupsAsync(
         [FromBody] ReleasePipelineRequest request,
         CancellationToken cancellationToken
         )
@@ -88,18 +89,18 @@ public class ReleasePipelineController : ControllerBase
             }
 
 
-            return Ok(new ReleasePipelineVGResponse()
+            return Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
             {
                 Status = status,
-                VariableGroups = result
+                Data = result
             });
         }
         catch (Exception)
         {
-            return Ok(new ReleasePipelineVGResponse()
+            return Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
             {
                 Status = AdapterStatus.Unknown,
-                VariableGroups = Enumerable.Empty<Dictionary<string, string>>()
+                Data = Enumerable.Empty<Dictionary<string, string>>()
             });
         }
     }
@@ -108,7 +109,7 @@ public class ReleasePipelineController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ProjectsWithCorrespondingReleasePipelineResponse>> GetProjectsWithCorrespondingReleasePipelineAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetProjectsWithCorrespondingReleasePipelineAsync(
         [FromBody] ProjectsWithCorrespondingReleasePipelineRequest request,
         CancellationToken cancellationToken
         )
@@ -123,7 +124,7 @@ public class ReleasePipelineController : ControllerBase
                 cancellationToken
                 );
 
-            return Ok(new ProjectsWithCorrespondingReleasePipelineResponse()
+            return Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = status,
                 Projects = projects
@@ -131,7 +132,7 @@ public class ReleasePipelineController : ControllerBase
         }
         catch (Exception)
         {
-            return Ok(new ProjectsWithCorrespondingReleasePipelineResponse()
+            return Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = AdapterStatus.Unknown,
                 Projects = Enumerable.Empty<string>()

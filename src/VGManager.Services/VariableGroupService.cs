@@ -25,7 +25,7 @@ public class VariableGroupService : IVariableGroupService
         _logger = logger;
     }
 
-    public async Task<VariableGroupResults> GetVariableGroupsAsync(
+    public async Task<AdapterResponseModel<IEnumerable<VariableGroup>>> GetVariableGroupsAsync(
         VariableGroupModel variableGroupModel,
         bool containsKey,
         CancellationToken cancellationToken = default
@@ -73,10 +73,10 @@ public class VariableGroupService : IVariableGroupService
         return result;
     }
 
-    private static VariableGroupResults GetResult(AdapterStatus status, IEnumerable<VariableGroup> variableGroups)
+    private static AdapterResponseModel<IEnumerable<VariableGroup>> GetResult(AdapterStatus status, IEnumerable<VariableGroup> variableGroups)
         => new()
         {
             Status = status,
-            VariableGroups = variableGroups
+            Data = variableGroups
         };
 }

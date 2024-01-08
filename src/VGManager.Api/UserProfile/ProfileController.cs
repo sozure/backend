@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Services.Profile;
+using VGManager.Models;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.UserProfile;
@@ -20,7 +22,7 @@ public class ProfileController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ProfileResponse>> GetAsync(
+    public async Task<ActionResult<AdapterResponseModel<Profile>>> GetAsync(
         [FromBody] ProfileRequest request,
         CancellationToken cancellationToken
     )
@@ -30,23 +32,23 @@ public class ProfileController : ControllerBase
             var profile = await _profileService.GetProfileAsync(request.Organization, request.PAT, cancellationToken);
             if (profile is null)
             {
-                return Ok(new ProfileResponse()
+                return Ok(new AdapterResponseModel<Profile>()
                 {
-                    Profile = null!,
+                    Data = null!,
                     Status = AdapterStatus.Unknown
                 });
             }
-            return Ok(new ProfileResponse()
+            return Ok(new AdapterResponseModel<Profile>()
             {
-                Profile = profile,
+                Data = profile,
                 Status = AdapterStatus.Success
             });
         }
         catch (Exception)
         {
-            return Ok(new ProfileResponse()
+            return Ok(new AdapterResponseModel<Profile>()
             {
-                Profile = null!,
+                Data = null!,
                 Status = AdapterStatus.Unknown
             });
         }

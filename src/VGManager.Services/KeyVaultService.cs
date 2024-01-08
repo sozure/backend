@@ -247,9 +247,9 @@ public class KeyVaultService : IKeyVaultService
     }
 
     private async Task<AdapterStatus> DeleteAsync(
-        string secretFilter,
-        string userName,
-        AdapterResponseModel<IEnumerable<SecretEntity>> secretsResultModel,
+        string secretFilter, 
+        string userName, 
+        AdapterResponseModel<IEnumerable<SecretEntity>> secretsResultModel, 
         CancellationToken cancellationToken
         )
     {

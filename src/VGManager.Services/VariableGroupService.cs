@@ -4,6 +4,7 @@ using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups.Requests;
+using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Services;
 

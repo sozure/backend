@@ -1,5 +1,4 @@
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
-using VGManager.AzureAdapter.Entities;
 using VGManager.Models;
 
 namespace VGManager.AzureAdapter.Interfaces;

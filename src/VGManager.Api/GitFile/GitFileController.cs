@@ -21,7 +21,7 @@ public class GitFileController: ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GitFileResponse>> GetFilePathAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetFilePathAsync(
         [FromBody] GitFilePathRequest request,
         CancellationToken cancellationToken
     )
@@ -35,10 +35,10 @@ public class GitFileController: ControllerBase
             cancellationToken
             );
 
-        var result = new GitFileResponse
+        var result = new AdapterResponseModel<IEnumerable<string>>
         {
             Status = status,
-            FilePaths = filePaths
+            Data = filePaths
         };
         return Ok(result);
     }

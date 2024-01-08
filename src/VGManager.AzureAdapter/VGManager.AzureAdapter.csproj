@@ -25,6 +25,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\VGManager.Models\VGManager.Models.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
         <SonarQubeSetting Include="sonar.coverage.exclusions">
             <Value>**/*Adapter.cs</Value>
         </SonarQubeSetting>

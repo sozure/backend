@@ -38,8 +38,8 @@ public class VariableGroupService : IVariableGroupService
         if (status == AdapterStatus.Success)
         {
             var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
-                        _variableFilterService.Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
-                        _variableFilterService.FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
+                        _variableFilterService.Filter(vgEntity.Data, variableGroupModel.VariableGroupFilter) :
+                        _variableFilterService.FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.Data);
 
             var result = GetVariableGroups(filteredVariableGroups, variableGroupModel.KeyFilter, containsKey);
             return GetResult(status, result);

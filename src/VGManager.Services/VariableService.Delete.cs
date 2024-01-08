@@ -19,7 +19,7 @@ public partial class VariableService
         if (status == AdapterStatus.Success)
         {
             var variableGroupFilter = variableGroupModel.VariableGroupFilter;
-            var filteredVariableGroups = _variableFilterService.FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
+            var filteredVariableGroups = _variableFilterService.FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.Data);
             var finalStatus = await DeleteVariablesAsync(variableGroupModel, filteredVariableGroups, cancellationToken);
             if (finalStatus == AdapterStatus.Success)
             {

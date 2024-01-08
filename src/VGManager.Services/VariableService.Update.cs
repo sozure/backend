@@ -21,7 +21,7 @@ public partial class VariableService
         if (status == AdapterStatus.Success)
         {
             var variableGroupFilter = variableGroupUpdateModel.VariableGroupFilter;
-            var filteredVariableGroups = _variableFilterService.FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.VariableGroups);
+            var filteredVariableGroups = _variableFilterService.FilterWithoutSecrets(filterAsRegex, variableGroupFilter, vgEntity.Data);
             var keyFilter = variableGroupUpdateModel.KeyFilter;
             var valueFilter = variableGroupUpdateModel.ValueFilter;
             var newValue = variableGroupUpdateModel.NewValue;

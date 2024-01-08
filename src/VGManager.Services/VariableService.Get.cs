@@ -34,14 +34,14 @@ public partial class VariableService
 
     private VariableResults GetVariablesAsync(
         VariableGroupModel variableGroupModel,
-        VariableGroupEntity vgEntity,
+        AdapterResponseModel<IEnumerable<VariableGroup>> vgEntity,
         AdapterStatus status
         )
     {
         var matchedVariables = new List<VariableResult>();
         var filteredVariableGroups = variableGroupModel.ContainsSecrets ?
-                        _variableFilterService.Filter(vgEntity.VariableGroups, variableGroupModel.VariableGroupFilter) :
-                        _variableFilterService.FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.VariableGroups);
+                        _variableFilterService.Filter(vgEntity.Data, variableGroupModel.VariableGroupFilter) :
+                        _variableFilterService.FilterWithoutSecrets(true, variableGroupModel.VariableGroupFilter, vgEntity.Data);
 
         var valueFilter = variableGroupModel.ValueFilter;
         var keyFilter = variableGroupModel.KeyFilter;

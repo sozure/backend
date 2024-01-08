@@ -78,11 +78,11 @@ public static class TestSampleData
             KeyIsRegex = true,
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity()
+    public static AdapterResponseModel<IEnumerable<VariableGroupEnt>> GetVariableGroupEntity()
         => new()
         {
             Status = AdapterStatus.Success,
-            VariableGroups = new List<VariableGroupEnt>
+            Data = new List<VariableGroupEnt>
                 {
                     new()
                     {
@@ -117,25 +117,25 @@ public static class TestSampleData
                 }
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity(AdapterStatus status)
+    public static AdapterResponseModel<IEnumerable<VariableGroupEnt>> GetVariableGroupEntity(AdapterStatus status)
         => new()
         {
             Status = status,
-            VariableGroups = Enumerable.Empty<VariableGroupEnt>()
+            Data = Enumerable.Empty<VariableGroupEnt>()
         };
 
-    public static VariableGroupEntity GetVariableGroupEntityAfterDelete()
+    public static AdapterResponseModel<IEnumerable<VariableGroupEnt>> GetVariableGroupEntityAfterDelete()
         => new()
         {
             Status = AdapterStatus.Success,
-            VariableGroups = Enumerable.Empty<VariableGroupEnt>()
+            Data = Enumerable.Empty<VariableGroupEnt>()
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity(string value)
+    public static AdapterResponseModel<IEnumerable<VariableGroupEnt>> GetVariableGroupEntity(string value)
         => new()
         {
             Status = AdapterStatus.Success,
-            VariableGroups = new List<VariableGroupEnt>
+            Data = new List<VariableGroupEnt>
                 {
                     new()
                     {
@@ -166,11 +166,11 @@ public static class TestSampleData
                 }
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity(string key, string value)
+    public static AdapterResponseModel<IEnumerable<VariableGroupEnt>> GetVariableGroupEntity(string key, string value)
         => new()
         {
             Status = AdapterStatus.Success,
-            VariableGroups = new List<VariableGroupEnt>
+            Data = new List<VariableGroupEnt>
                 {
                     new()
                     {

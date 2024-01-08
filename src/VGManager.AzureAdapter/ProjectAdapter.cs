@@ -20,7 +20,7 @@ public class ProjectAdapter : IProjectAdapter
         _logger = logger;
     }
 
-    public async Task<ProjectsEntity> GetProjectsAsync(string baseUrl, string pat, CancellationToken cancellationToken = default)
+    public async Task<AdapterResponseModel<IEnumerable<ProjectEntity>>> GetProjectsAsync(string baseUrl, string pat, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -115,21 +115,21 @@ public class ProjectAdapter : IProjectAdapter
         }
     }
 
-    private static ProjectsEntity GetResult(AdapterStatus status, IEnumerable<ProjectEntity> projects)
+    private static AdapterResponseModel<IEnumerable<ProjectEntity>> GetResult(AdapterStatus status, IEnumerable<ProjectEntity> projects)
     {
         return new()
         {
             Status = status,
-            Projects = projects
+            Data = projects
         };
     }
 
-    private static ProjectsEntity GetResult(AdapterStatus status)
+    private static AdapterResponseModel<IEnumerable<ProjectEntity>> GetResult(AdapterStatus status)
     {
         return new()
         {
             Status = status,
-            Projects = Enumerable.Empty<ProjectEntity>()
+            Data = Enumerable.Empty<ProjectEntity>()
         };
     }
 }

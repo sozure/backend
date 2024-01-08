@@ -61,7 +61,7 @@ public partial class VariableGroupController : ControllerBase
             var result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
-            foreach (var project in projectResponse.Projects)
+            foreach (var project in projectResponse.Data)
             {
                 request.Project = project.Project.Name;
                 var subResult = await GetVGResultAsync(request, cancellationToken);
@@ -154,7 +154,7 @@ public partial class VariableGroupController : ControllerBase
             result = GetEmptyVariablesGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
-            foreach (var project in projectResponse.Projects)
+            foreach (var project in projectResponse.Data)
             {
                 request.Project = project.Project.Name;
                 var subResult = await GetResultAfterDeleteAsync(request, cancellationToken);

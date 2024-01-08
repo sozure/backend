@@ -13,7 +13,7 @@ public interface IKeyVaultService
         string clientSecret,
         CancellationToken cancellationToken = default
         );
-    Task<SecretResults> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default);
+    Task<AdapterResponseModel<IEnumerable<SecretResult>>> GetSecretsAsync(string secretFilter, CancellationToken cancellationToken = default);
     AdapterResponseModel<IEnumerable<DeletedSecretResult>> GetDeletedSecrets(string secretFilter, CancellationToken cancellationToken = default);
     Task<AdapterStatus> RecoverSecretAsync(string secretFilter, string userName, CancellationToken cancellationToken = default);
     Task<AdapterStatus> DeleteAsync(string secretFilter, string userName, CancellationToken cancellationToken = default);

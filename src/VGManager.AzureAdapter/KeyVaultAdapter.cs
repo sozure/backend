@@ -50,7 +50,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         return (sub?.Id ?? string.Empty, result);
     }
 
-    public async Task<SecretEntity> GetSecretAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<AdapterResponseModel<KeyVaultSecret?>> GetSecretAsync(string name, CancellationToken cancellationToken = default)
     {
         KeyVaultSecret result;
         try
@@ -88,7 +88,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         }
     }
 
-    public async Task<AdapterResponseModel<IEnumerable<SecretEntity>>> GetSecretsAsync(CancellationToken cancellationToken = default)
+    public async Task<AdapterResponseModel<IEnumerable<AdapterResponseModel<KeyVaultSecret?>>>> GetSecretsAsync(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -207,7 +207,9 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         };
     }
 
-    private static AdapterResponseModel<IEnumerable<SecretEntity>> GetSecretsResult(IEnumerable<SecretEntity> secrets)
+    private static AdapterResponseModel<IEnumerable<AdapterResponseModel<KeyVaultSecret?>>> GetSecretsResult(
+        IEnumerable<AdapterResponseModel<KeyVaultSecret?>> secrets
+        )
     {
         return new()
         {
@@ -216,30 +218,30 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         };
     }
 
-    private static AdapterResponseModel<IEnumerable<SecretEntity>> GetSecretsResult(AdapterStatus status)
+    private static AdapterResponseModel<IEnumerable<AdapterResponseModel<KeyVaultSecret?>>> GetSecretsResult(AdapterStatus status)
     {
         return new()
         {
             Status = status,
-            Data = Enumerable.Empty<SecretEntity>()
+            Data = Enumerable.Empty<AdapterResponseModel<KeyVaultSecret?>>()
         };
     }
 
-    private static SecretEntity GetSecretResult(KeyVaultSecret result)
+    private static AdapterResponseModel<KeyVaultSecret?> GetSecretResult(KeyVaultSecret result)
     {
         return new()
         {
             Status = AdapterStatus.Success,
-            Secret = result
+            Data = result
         };
     }
 
-    private static SecretEntity GetSecretResult(AdapterStatus status)
+    private static AdapterResponseModel<KeyVaultSecret?> GetSecretResult(AdapterStatus status)
     {
         return new()
         {
             Status = status,
-            Secret = null!
+            Data = null!
         };
     }
 }

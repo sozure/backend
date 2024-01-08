@@ -66,7 +66,7 @@ public class SecretControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((SecretResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
+        ((AdapterResponseModel<IEnumerable<SecretResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetSecretsAsync(default), Times.Once);
@@ -131,7 +131,7 @@ public class SecretControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((SecretResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
+        ((AdapterResponseModel<IEnumerable<SecretResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetSecretsAsync(default), Times.Exactly(2));

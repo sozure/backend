@@ -38,7 +38,7 @@ public class ProjectController : ControllerBase
         var result = new AdapterResponseModel<IEnumerable<ProjectResponse>>()
         {
             Status = projects.Status,
-            Data = _mapper.Map<IEnumerable<ProjectResponse>>(projects.Projects)
+            Data = _mapper.Map<IEnumerable<ProjectResponse>>(projects.Data)
         };
 
         return Ok(result);

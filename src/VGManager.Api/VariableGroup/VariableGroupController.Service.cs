@@ -29,7 +29,7 @@ public partial class VariableGroupController
         };
     }
 
-    private async Task<ProjectsResult> GetProjectsAsync(VariableRequest request, CancellationToken cancellationToken)
+    private async Task<AdapterResponseModel<IEnumerable<ProjectResult>>> GetProjectsAsync(VariableRequest request, CancellationToken cancellationToken)
     {
         var projectModel = new ProjectModel
         {
@@ -174,7 +174,7 @@ public partial class VariableGroupController
             result = GetEmptyVariablesGetResponses();
             var projectResponse = await GetProjectsAsync(vgRequest, cancellationToken);
 
-            foreach (var project in projectResponse.Projects)
+            foreach (var project in projectResponse.Data)
             {
                 vgRequest.Project = project.Project.Name;
                 var subResult = await GetResultAsync(request, vgRequest, cancellationToken);

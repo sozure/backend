@@ -14,8 +14,8 @@ public interface IKeyVaultAdapter
         );
     Task<AdapterStatus> AddKeyVaultSecretAsync(Dictionary<string, string> parameters, CancellationToken cancellationToken = default);
     Task<AdapterStatus> DeleteSecretAsync(string name, CancellationToken cancellationToken = default);
-    Task<SecretEntity> GetSecretAsync(string name, CancellationToken cancellationToken = default);
-    Task<AdapterResponseModel<IEnumerable<SecretEntity>>> GetSecretsAsync(CancellationToken cancellationToken = default);
+    Task<AdapterResponseModel<KeyVaultSecret?>> GetSecretAsync(string name, CancellationToken cancellationToken = default);
+    Task<AdapterResponseModel<IEnumerable<AdapterResponseModel<KeyVaultSecret?>>>> GetSecretsAsync(CancellationToken cancellationToken = default);
     Task<AdapterStatus> RecoverSecretAsync(string name, CancellationToken cancellationToken = default);
     Task<IEnumerable<KeyVaultSecret>> GetAllAsync(CancellationToken cancellationToken);
     AdapterResponseModel<IEnumerable<DeletedSecret>> GetDeletedSecrets(CancellationToken cancellationToken = default);

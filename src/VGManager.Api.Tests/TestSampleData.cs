@@ -334,11 +334,11 @@ public static class TestSampleData
             OverrideSecret = overrideSecret
         };
 
-    public static SecretResponses GetSecretsGetResponse()
+    public static AdapterResponseModel<IEnumerable<SecretResponse>> GetSecretsGetResponse()
         => new()
         {
             Status = AdapterStatus.Success,
-            Secrets = new List<SecretResponse>()
+            Data = new List<SecretResponse>()
                 {
                     new()
                     {
@@ -361,26 +361,26 @@ public static class TestSampleData
                 }
         };
 
-    public static AdapterResponseModel<IEnumerable<SecretEntity>> GetSecretsEntity()
+    public static AdapterResponseModel<IEnumerable<AdapterResponseModel<KeyVaultSecret?>>> GetSecretsEntity()
         => new()
         {
             Status = AdapterStatus.Success,
-            Data = new List<SecretEntity>()
+            Data = new List<AdapterResponseModel<KeyVaultSecret?>>()
                 {
                     new()
                     {
                         Status = AdapterStatus.Success,
-                        Secret = new("SecretFilter123", "3Kpu6gF214vAqHlzaX5G")
+                        Data = new("SecretFilter123", "3Kpu6gF214vAqHlzaX5G")
                     },
                     new()
                     {
                         Status = AdapterStatus.Success,
-                        Secret = new("SecretFilter456", "KCRQJ08PdFHU9Ly2pUI2")
+                        Data = new("SecretFilter456", "KCRQJ08PdFHU9Ly2pUI2")
                     },
                     new()
                     {
                         Status = AdapterStatus.Success,
-                        Secret = new("SecretFilter789", "ggl1oBLSiYNBliNQhsGW")
+                        Data = new("SecretFilter789", "ggl1oBLSiYNBliNQhsGW")
                     }
                 }
         };
@@ -392,18 +392,18 @@ public static class TestSampleData
             Data = Enumerable.Empty<DeletedSecret>()
         };
 
-    public static AdapterResponseModel<IEnumerable<SecretEntity>> GetEmptySecretsEntity()
+    public static AdapterResponseModel<IEnumerable<AdapterResponseModel<KeyVaultSecret?>>> GetEmptySecretsEntity()
         => new()
         {
             Status = AdapterStatus.Success,
-            Data = Enumerable.Empty<SecretEntity>()
+            Data = Enumerable.Empty<AdapterResponseModel<KeyVaultSecret?>>()
         };
 
-    public static SecretResponses GetEmptySecretsGetResponse()
+    public static AdapterResponseModel<IEnumerable<SecretResponse>> GetEmptySecretsGetResponse()
         => new()
         {
             Status = AdapterStatus.Success,
-            Secrets = Enumerable.Empty<SecretResponse>()
+            Data = Enumerable.Empty<SecretResponse>()
 
         };
 
@@ -414,11 +414,11 @@ public static class TestSampleData
             Data = Enumerable.Empty<DeletedSecretResponse>()
         };
 
-    public static ProjectsEntity GetProjectEntity(string firstProjectName, string secondProjectName)
+    public static AdapterResponseModel<IEnumerable<ProjectEntity>> GetProjectEntity(string firstProjectName, string secondProjectName)
         => new()
         {
             Status = AdapterStatus.Success,
-            Projects = new List<ProjectEntity>
+            Data = new List<ProjectEntity>
                 {
                     new()
                     {

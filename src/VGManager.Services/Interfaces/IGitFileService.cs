@@ -1,4 +1,4 @@
-using VGManager.Models;
+using VGManager.Models.StatusEnums;
 
 namespace VGManager.Services.Interfaces;
 

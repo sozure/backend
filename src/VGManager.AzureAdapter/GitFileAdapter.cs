@@ -4,7 +4,7 @@ using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using VGManager.AzureAdapter.Interfaces;
-using VGManager.Models;
+using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter;
 

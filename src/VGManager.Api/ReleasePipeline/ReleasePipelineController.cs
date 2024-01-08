@@ -2,7 +2,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.ReleasePipeline.Request;
-using VGManager.Models;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.ReleasePipeline;

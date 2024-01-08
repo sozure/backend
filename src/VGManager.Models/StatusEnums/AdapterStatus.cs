@@ -1,4 +1,4 @@
-namespace VGManager.Models;
+namespace VGManager.Models.StatusEnums;
 
 public enum AdapterStatus
 {

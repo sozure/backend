@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Services.Profile;
-using VGManager.Models;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.UserProfile;

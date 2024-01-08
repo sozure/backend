@@ -1,4 +1,5 @@
-using VGManager.Models;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 using VGManager.Services.Models.Secrets.Requests;
 using VGManager.Services.Models.Secrets.Results;
 

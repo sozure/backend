@@ -1,4 +1,4 @@
-using VGManager.Models;
+using VGManager.Models.Models;
 using VGManager.Services.Models.GitRepositories;
 
 namespace VGManager.Services.Interfaces;

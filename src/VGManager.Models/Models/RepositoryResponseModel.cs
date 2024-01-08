@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using VGManager.Models.StatusEnums;
 
-namespace VGManager.Models;
+namespace VGManager.Models.Models;
 
 public class RepositoryResponseModel<T>
 {

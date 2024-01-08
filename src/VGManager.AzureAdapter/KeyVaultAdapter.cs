@@ -5,7 +5,8 @@ using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Logging;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
-using VGManager.Models;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter;
 

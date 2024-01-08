@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using VGManager.Api.Projects.Responses;
-using VGManager.Models;
+using VGManager.Models.Models;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Projects;
 

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using VGManager.Models;
+using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter.Tests;
 

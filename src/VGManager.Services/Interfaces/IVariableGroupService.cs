@@ -1,5 +1,5 @@
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
-using VGManager.Models;
+using VGManager.Models.Models;
 using VGManager.Services.Models.VariableGroups.Requests;
 using VGManager.Services.Models.VariableGroups.Results;
 

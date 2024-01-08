@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secret.Request;
 using VGManager.Api.Secret.Response;
 using VGManager.Api.Secrets.Response;
-using VGManager.Models;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Secrets.Requests;
 

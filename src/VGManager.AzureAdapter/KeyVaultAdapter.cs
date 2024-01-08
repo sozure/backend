@@ -88,7 +88,7 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         }
     }
 
-    public async Task<SecretsEntity> GetSecretsAsync(CancellationToken cancellationToken = default)
+    public async Task<AdapterResponseModel<IEnumerable<SecretEntity>>> GetSecretsAsync(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -207,21 +207,21 @@ public class KeyVaultAdapter : IKeyVaultAdapter
         };
     }
 
-    private static SecretsEntity GetSecretsResult(IEnumerable<SecretEntity> secrets)
+    private static AdapterResponseModel<IEnumerable<SecretEntity>> GetSecretsResult(IEnumerable<SecretEntity> secrets)
     {
         return new()
         {
             Status = AdapterStatus.Success,
-            Secrets = secrets
+            Data = secrets
         };
     }
 
-    private static SecretsEntity GetSecretsResult(AdapterStatus status)
+    private static AdapterResponseModel<IEnumerable<SecretEntity>> GetSecretsResult(AdapterStatus status)
     {
         return new()
         {
             Status = status,
-            Secrets = Enumerable.Empty<SecretEntity>()
+            Data = Enumerable.Empty<SecretEntity>()
         };
     }
 

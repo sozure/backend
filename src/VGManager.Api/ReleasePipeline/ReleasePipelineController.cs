@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.ReleasePipeline.Request;
-using VGManager.Api.ReleasePipeline.Response;
 using VGManager.Models;
 using VGManager.Services.Interfaces;
 
@@ -127,7 +126,7 @@ public class ReleasePipelineController : ControllerBase
             return Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = status,
-                Projects = projects
+                Data = projects
             });
         }
         catch (Exception)
@@ -135,7 +134,7 @@ public class ReleasePipelineController : ControllerBase
             return Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = AdapterStatus.Unknown,
-                Projects = Enumerable.Empty<string>()
+                Data = Enumerable.Empty<string>()
             });
         }
     }

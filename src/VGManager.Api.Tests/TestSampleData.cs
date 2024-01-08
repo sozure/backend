@@ -361,11 +361,11 @@ public static class TestSampleData
                 }
         };
 
-    public static SecretsEntity GetSecretsEntity()
+    public static AdapterResponseModel<IEnumerable<SecretEntity>> GetSecretsEntity()
         => new()
         {
             Status = AdapterStatus.Success,
-            Secrets = new List<SecretEntity>()
+            Data = new List<SecretEntity>()
                 {
                     new()
                     {
@@ -392,11 +392,11 @@ public static class TestSampleData
             DeletedSecrets = Enumerable.Empty<DeletedSecret>()
         };
 
-    public static SecretsEntity GetEmptySecretsEntity()
+    public static AdapterResponseModel<IEnumerable<SecretEntity>> GetEmptySecretsEntity()
         => new()
         {
             Status = AdapterStatus.Success,
-            Secrets = Enumerable.Empty<SecretEntity>()
+            Data = Enumerable.Empty<SecretEntity>()
         };
 
     public static SecretResponses GetEmptySecretsGetResponse()

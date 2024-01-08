@@ -2,6 +2,7 @@ using VGManager.Api.VariableGroup.Request;
 using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
+using VGManager.Models;
 using VGManager.Services.Models.Projects;
 using VGManager.Services.Models.VariableGroups.Requests;
 
@@ -18,12 +19,12 @@ public partial class VariableGroupController
         };
     }
 
-    private static VariableGroupResponses GetEmptyVariableGroupGetResponses()
+    private static AdapterResponseModel<List<VariableGroupResponse>> GetEmptyVariableGroupGetResponses()
     {
-        return new VariableGroupResponses
+        return new AdapterResponseModel<List<VariableGroupResponse>>
         {
             Status = AdapterStatus.Success,
-            VariableGroups = new List<VariableGroupResponse>()
+            Data = new List<VariableGroupResponse>()
         };
     }
 
@@ -71,7 +72,7 @@ public partial class VariableGroupController
         return result;
     }
 
-    private async Task<VariableGroupResponses> GetVGResultAsync(
+    private async Task<AdapterResponseModel<IEnumerable<VariableGroupResponse>>> GetVGResultAsync(
         VariableGroupRequest request,
         CancellationToken cancellationToken
         )
@@ -83,7 +84,7 @@ public partial class VariableGroupController
 
         var result = new List<VariableGroupResponse>();
 
-        foreach (var variableGroup in variableGroupResultsModel.VariableGroups)
+        foreach (var variableGroup in variableGroupResultsModel.Data)
         {
             result.Add(new()
             {
@@ -93,10 +94,10 @@ public partial class VariableGroupController
             });
         }
 
-        return new VariableGroupResponses
+        return new AdapterResponseModel<IEnumerable<VariableGroupResponse>>
         {
             Status = variableGroupResultsModel.Status,
-            VariableGroups = result
+            Data = result
         };
     }
 
@@ -194,10 +195,10 @@ public partial class VariableGroupController
         }
     }
 
-    private static VariableGroupResponses GetResult(VariableResponses variableResponses)
+    private static AdapterResponseModel<IEnumerable<VariableGroupResponse>> GetResult(VariableResponses variableResponses)
     {
         var listResult = new List<VariableGroupResponse>();
-        var result = new VariableGroupResponses
+        var result = new AdapterResponseModel<IEnumerable<VariableGroupResponse>>
         {
             Status = variableResponses.Status
         };
@@ -216,7 +217,7 @@ public partial class VariableGroupController
             }
         }
 
-        result.VariableGroups = listResult;
+        result.Data = listResult;
         return result;
     }
 }

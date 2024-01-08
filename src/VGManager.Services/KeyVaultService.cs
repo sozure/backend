@@ -246,7 +246,12 @@ public class KeyVaultService : IKeyVaultService
         return parameters;
     }
 
-    private async Task<AdapterStatus> DeleteAsync(string secretFilter, string userName, SecretsEntity? secretsResultModel, CancellationToken cancellationToken)
+    private async Task<AdapterStatus> DeleteAsync(
+        string secretFilter, 
+        string userName, 
+        AdapterResponseModel<IEnumerable<SecretEntity>> secretsResultModel, 
+        CancellationToken cancellationToken
+        )
     {
         var secrets = CollectSecrets(secretsResultModel);
         var filteredSecrets = Filter(secrets, secretFilter);
@@ -287,14 +292,14 @@ public class KeyVaultService : IKeyVaultService
         return AdapterStatus.Unknown;
     }
 
-    private static IEnumerable<SecretEntity> CollectSecrets(SecretsEntity? secretsResultModel)
+    private static IEnumerable<SecretEntity> CollectSecrets(AdapterResponseModel<IEnumerable<SecretEntity>>? secretsResultModel)
     {
         if (secretsResultModel is null)
         {
             return Enumerable.Empty<SecretEntity>();
         }
 
-        return secretsResultModel.Secrets.Where(secret => secret != null);
+        return secretsResultModel.Data.Where(secret => secret != null);
     }
 
     private void CollectSecrets(List<SecretResult> secretList, SecretEntity? filteredSecret)

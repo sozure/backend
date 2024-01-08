@@ -7,6 +7,7 @@ using VGManager.Api.MapperProfiles;
 using VGManager.Api.Secrets.Response;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Entities.SecretEntities;
+using VGManager.Models;
 using VGManager.Repositories.Interfaces.SecretRepositories;
 using VGManager.Services;
 using VGManager.Services.Interfaces;

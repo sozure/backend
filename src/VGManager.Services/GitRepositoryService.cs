@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Services.Common;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Models;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.GitRepositories;
 

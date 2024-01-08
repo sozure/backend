@@ -51,7 +51,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> GetVariableGroupsAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<VariableGroupResponse>>>> GetVariableGroupsAsync(
         [FromBody] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
@@ -65,7 +65,7 @@ public partial class VariableGroupController : ControllerBase
             {
                 request.Project = project.Project.Name;
                 var subResult = await GetVGResultAsync(request, cancellationToken);
-                result.VariableGroups.AddRange(subResult.VariableGroups);
+                result.Data.AddRange(subResult.Data);
 
                 if (subResult.Status != AdapterStatus.Success)
                 {

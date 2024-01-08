@@ -1,15 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using VGManager.Api.Common;
 
 namespace VGManager.Api.GitRepository.Request;
 
-public class GitRepositoryBaseRequest
+public class GitRepositoryBaseRequest : BasicRequest
 {
     [Required]
-    public string Organization { get; set; } = null!;
-
-    [Required]
     public string Project { get; set; } = null!;
-
-    [Required]
-    public string PAT { get; set; } = null!;
 }

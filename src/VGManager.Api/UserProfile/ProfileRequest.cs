@@ -1,11 +1,8 @@
 using System.ComponentModel.DataAnnotations;
+using VGManager.Api.Common;
 
 namespace VGManager.Api.UserProfile;
 
-public class ProfileRequest
+public class ProfileRequest : BasicRequest
 {
-    [Required]
-    public string Organization { get; set; } = null!;
-    [Required]
-    public string PAT { get; set; } = null!;
 }

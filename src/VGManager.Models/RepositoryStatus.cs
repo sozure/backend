@@ -1,4 +1,4 @@
-namespace VGManager.Entities;
+namespace VGManager.Models;
 
 public enum RepositoryStatus
 {

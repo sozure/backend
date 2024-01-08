@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.TeamFoundation.SourceControl.WebApi;
-using VGManager.Api.GitBranch;
-using VGManager.AzureAdapter.Entities;
+using VGManager.Models;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.Branch;
@@ -24,7 +22,7 @@ public class GitBranchController: ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<GitBranchResponse>> GetAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetAsync(
         [FromBody] GitBranchRequest request,
         CancellationToken cancellationToken
     )
@@ -37,17 +35,17 @@ public class GitBranchController: ControllerBase
                 request.RepositoryId,
                 cancellationToken
                 );
-            return Ok(new GitBranchResponse
+            return Ok(new AdapterResponseModel<IEnumerable<string>>
             {
                 Status = status,
-                Branches = branches
+                Data = branches
             });
         } catch (Exception)
         {
-            return Ok(new GitBranchResponse
+            return Ok(new AdapterResponseModel<IEnumerable<string>>
             {
                 Status = AdapterStatus.Unknown,
-                Branches = Enumerable.Empty<string>()
+                Data = Enumerable.Empty<string>()
             });
         }
     }

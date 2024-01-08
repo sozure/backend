@@ -1,6 +1,5 @@
-using Microsoft.TeamFoundation.SourceControl.WebApi;
-using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Models;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;

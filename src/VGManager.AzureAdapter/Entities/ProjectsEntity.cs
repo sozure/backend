@@ -1,3 +1,5 @@
+using VGManager.Models;
+
 namespace VGManager.AzureAdapter.Entities;
 
 public class ProjectsEntity

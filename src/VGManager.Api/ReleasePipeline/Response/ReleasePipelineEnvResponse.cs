@@ -1,5 +1,6 @@
 using VGManager.Api.GitRepository.Response;
 using VGManager.AzureAdapter.Entities;
+using VGManager.Models;
 
 namespace VGManager.Api.ReleasePipeline.Response;
 

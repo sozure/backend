@@ -1,4 +1,5 @@
 using Azure.Security.KeyVault.Secrets;
+using VGManager.Models;
 
 namespace VGManager.AzureAdapter.Entities;
 public class SecretEntity

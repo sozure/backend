@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Models;
 
 namespace VGManager.AzureAdapter;
 public class ProjectAdapter : IProjectAdapter

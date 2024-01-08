@@ -1,4 +1,5 @@
 using VGManager.AzureAdapter.Entities;
+using VGManager.Models;
 
 namespace VGManager.Api.GitFile;
 

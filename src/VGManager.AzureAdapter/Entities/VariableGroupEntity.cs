@@ -1,4 +1,5 @@
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
+using VGManager.Models;
 
 namespace VGManager.AzureAdapter.Entities;
 public class VariableGroupEntity

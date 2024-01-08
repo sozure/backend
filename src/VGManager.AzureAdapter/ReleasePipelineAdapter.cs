@@ -11,6 +11,7 @@ using VGManager.AzureAdapter.Interfaces;
 using System.Linq;
 using Microsoft.Win32;
 using static System.Net.WebRequestMethods;
+using VGManager.Models;
 
 namespace VGManager.AzureAdapter;
 

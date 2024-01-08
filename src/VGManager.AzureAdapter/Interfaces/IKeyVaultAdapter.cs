@@ -1,5 +1,6 @@
 using Azure.Security.KeyVault.Secrets;
 using VGManager.AzureAdapter.Entities;
+using VGManager.Models;
 
 namespace VGManager.AzureAdapter.Interfaces;
 

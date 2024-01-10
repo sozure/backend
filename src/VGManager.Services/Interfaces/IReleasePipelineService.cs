@@ -9,6 +9,7 @@ public interface IReleasePipelineService
         string pat,
         IEnumerable<string> projects,
         string repositoryName,
+        string configFile,
         CancellationToken cancellationToken = default
         );
 
@@ -17,6 +18,7 @@ public interface IReleasePipelineService
         string pat,
         string project,
         string repositoryName,
+        string configFile,
         CancellationToken cancellationToken = default
         );
 
@@ -25,6 +27,7 @@ public interface IReleasePipelineService
         string pat,
         string project,
         string repositoryName,
+        string configFile,
         CancellationToken cancellationToken = default
         );
 }

@@ -30,19 +30,24 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         string pat,
         string project,
         string repositoryName,
+        string configFile,
         CancellationToken cancellationToken = default
         )
     {
         try
         {
-            _logger.LogInformation("Request git branches from {project} azure project.", project);
-            var definition = await GetReleaseDefinitionAsync(organization, pat, project, repositoryName, cancellationToken);
+            _logger.LogInformation("Request environments for {repository} git repository from {project} azure project.", repositoryName, project);
+            var definition = await GetReleaseDefinitionAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
             var rawResult = definition?.Environments.Select(env => env.Name).ToList() ?? Enumerable.Empty<string>();
             var result = new List<string>();
 
             foreach (var rawElement in rawResult)
             {
                 var element = Replacable.Where(rawElement.Contains).Select(replace => rawElement.Replace(replace, string.Empty));
+                if (!element.Any())
+                {
+                    element = new[] { rawElement };
+                }
                 result.AddRange(element.Where(element => !ExcludableEnvironments.Contains(element)));
             }
 
@@ -65,6 +70,7 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         string pat,
         string project,
         string repositoryName,
+        string configFile,
         CancellationToken cancellationToken = default
         )
     {
@@ -75,7 +81,7 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
                 repositoryName,
                 project
                 );
-            var definition = await GetReleaseDefinitionAsync(organization, pat, project, repositoryName, cancellationToken);
+            var definition = await GetReleaseDefinitionAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
 
             if (definition is null)
             {
@@ -129,6 +135,7 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         string pat,
         string project,
         string repositoryName,
+        string configFile,
         CancellationToken cancellationToken
         )
     {
@@ -141,17 +148,35 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
             cancellationToken: cancellationToken
             );
 
-        var definition = releaseDefinitions.FirstOrDefault(
+        var foundDefinitions = releaseDefinitions.Where(
             definition => definition.Artifacts.Any(artifact =>
             {
                 var artifactType = artifact.DefinitionReference.GetValueOrDefault("definition")?.Name;
                 return artifactType?.Equals(repositoryName) ?? false;
-            }
-            )
+            })
             );
-        var detailedDef = await releaseClient.GetReleaseDefinitionAsync(project, definition?.Id ?? 0, cancellationToken: cancellationToken);
 
-        return await releaseClient.GetReleaseDefinitionAsync(project, detailedDef?.Id ?? 0, cancellationToken: cancellationToken);
+        ReleaseDefinition? definition = null!;
+
+        foreach (var def in foundDefinitions)
+        {
+            var subResult = await releaseClient.GetReleaseDefinitionAsync(project, def?.Id ?? 0, cancellationToken: cancellationToken);
+
+            var workFlowTasks = subResult?.Environments.FirstOrDefault()?.DeployPhases.FirstOrDefault()?.WorkflowTasks.ToList() ?? 
+                Enumerable.Empty<WorkflowTask>();
+            foreach(var task in workFlowTasks)
+            {
+                task.Inputs.TryGetValue("configuration", out var configValue);
+                task.Inputs.TryGetValue("command", out var command);
+
+                if ((configValue?.Contains(configFile) ?? false) && command == "apply")
+                {
+                    definition = subResult;
+                }
+            }
+        }
+
+        return definition;
     }
 
     private void Setup(string organization, string pat)

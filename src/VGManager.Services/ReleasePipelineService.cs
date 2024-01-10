@@ -24,6 +24,7 @@ public class ReleasePipelineService : IReleasePipelineService
         string pat,
         IEnumerable<string> projects,
         string repositoryName,
+        string configFile,
         CancellationToken cancellationToken = default
         )
     {
@@ -32,7 +33,7 @@ public class ReleasePipelineService : IReleasePipelineService
         {
             foreach (var project in projects)
             {
-                var (subStatus, subResult) = await _releasePipelineAdapter.GetVariableGroupsAsync(organization, pat, project, repositoryName, cancellationToken);
+                var (subStatus, subResult) = await _releasePipelineAdapter.GetEnvironmentsAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
                 if (subStatus == AdapterStatus.Success && subResult.Any())
                 {
                     result.Add(project);
@@ -53,13 +54,14 @@ public class ReleasePipelineService : IReleasePipelineService
         string pat,
         string project,
         string repositoryName,
+        string configFile,
         CancellationToken cancellationToken = default
         )
     {
         try
         {
             _logger.LogInformation("Request release environments for {repository} repository.", repositoryName);
-            return await _releasePipelineAdapter.GetEnvironmentsAsync(organization, pat, project, repositoryName, cancellationToken);
+            return await _releasePipelineAdapter.GetEnvironmentsAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -73,13 +75,14 @@ public class ReleasePipelineService : IReleasePipelineService
         string pat,
         string project,
         string repositoryName,
+        string configFile,
         CancellationToken cancellationToken = default
         )
     {
         try
         {
             _logger.LogInformation("Request variable groups connected to release pipeline for {repository} repository.", repositoryName);
-            return await _releasePipelineAdapter.GetVariableGroupsAsync(organization, pat, project, repositoryName, cancellationToken);
+            return await _releasePipelineAdapter.GetVariableGroupsAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
         }
         catch (Exception ex)
         {

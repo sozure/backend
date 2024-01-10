@@ -38,6 +38,7 @@ public class ReleasePipelineController : ControllerBase
                 request.PAT,
                 request.Project,
                 request.RepositoryName,
+                request.ConfigFile,
                 cancellationToken
                 );
 
@@ -73,6 +74,7 @@ public class ReleasePipelineController : ControllerBase
                 request.PAT,
                 request.Project,
                 request.RepositoryName,
+                request.ConfigFile,
                 cancellationToken
                 );
 
@@ -121,6 +123,7 @@ public class ReleasePipelineController : ControllerBase
                 request.PAT,
                 request.Projects,
                 request.RepositoryName,
+                request.ConfigFile,
                 cancellationToken
                 );
 

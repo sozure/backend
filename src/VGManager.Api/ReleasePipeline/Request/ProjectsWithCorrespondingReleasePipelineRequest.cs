@@ -10,4 +10,7 @@ public class ProjectsWithCorrespondingReleasePipelineRequest : BasicRequest
 
     [Required]
     public string RepositoryName { get; set; } = null!;
+
+    [Required]
+    public string ConfigFile { get; set; } = null!;
 }

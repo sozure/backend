@@ -9,6 +9,7 @@ public interface IReleasePipelineAdapter
         string pat,
         string project,
         string repositoryName,
+        string configFile,
         CancellationToken cancellationToken = default
         );
 
@@ -17,6 +18,7 @@ public interface IReleasePipelineAdapter
         string pat,
         string project,
         string repositoryName,
+        string configFile,
         CancellationToken cancellationToken = default
         );
 }

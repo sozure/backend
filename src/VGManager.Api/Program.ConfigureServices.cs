@@ -94,13 +94,23 @@ static partial class Program
         services.AddScoped<IKeyVaultCopyColdRepository, KeyVaultCopyColdRepository>();
         services.AddScoped<ISecretChangeColdRepository, SecretChangeColdRepository>();
         services.AddScoped<IVariableService, VariableService>();
+        services.AddScoped<IVariableFilterService, VariableFilterService>();
+        services.AddScoped<IVariableGroupService, VariableGroupService>();
         services.AddScoped<IKeyVaultService, KeyVaultService>();
         services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<IGitRepositoryService, GitRepositoryService>();
+        services.AddScoped<IGitBranchService, GitBranchService>();
+        services.AddScoped<IGitFileService, GitFileService>();
+        services.AddScoped<IReleasePipelineService, ReleasePipelineService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<IChangeService, ChangeService>();
         services.AddScoped<IProfileAdapter, ProfileAdapter>();
         services.AddScoped<IVariableGroupAdapter, VariableGroupAdapter>();
         services.AddScoped<IProjectAdapter, ProjectAdapter>();
         services.AddScoped<IKeyVaultAdapter, KeyVaultAdapter>();
+        services.AddScoped<IGitRepositoryAdapter, GitRepositoryAdapter>();
+        services.AddScoped<IGitBranchAdapter, GitBranchAdapter>();
+        services.AddScoped<IGitFileAdapter, GitFileAdapter>();
+        services.AddScoped<IReleasePipelineAdapter, ReleasePipelineAdapter>();
     }
 }

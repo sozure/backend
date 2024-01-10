@@ -6,9 +6,10 @@ using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using VGManager.Api.Controllers;
 using VGManager.Api.MapperProfiles;
 using VGManager.Api.VariableGroups.Response;
-using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Entities.VGEntities;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 using VGManager.Repositories.Interfaces.VGRepositories;
 using VGManager.Services;
 using VGManager.Services.Settings;
@@ -48,25 +49,36 @@ public class VariableGroupControllerTests
         _deletionColdRepository = new(MockBehavior.Strict);
         _editionColdRepository = new(MockBehavior.Strict);
 
-        var loggerMock = new Mock<ILogger<VariableService>>();
+        var variableServiceLoggerMock = new Mock<ILogger<VariableService>>();
+        var variableGroupServiceLoggerMock = new Mock<ILogger<VariableGroupService>>();
+        var variableFilterLoggerMock = new Mock<ILogger<VariableFilterService>>();
 
         var settings = Options.Create(new OrganizationSettings
         {
             Organizations = new string[] { "Organization1" }
         });
 
-        var vgService = new VariableService(
+        var variableFilterService = new VariableFilterService(variableFilterLoggerMock.Object);
+
+        var variableService = new VariableService(
             _variableGroupAdapter.Object,
             _additionColdRepository.Object,
             _deletionColdRepository.Object,
             _editionColdRepository.Object,
+            variableFilterService,
             settings,
-            loggerMock.Object
+            variableServiceLoggerMock.Object
+            );
+
+        var vgService = new VariableGroupService(
+            variableFilterService,
+            _variableGroupAdapter.Object,
+            variableGroupServiceLoggerMock.Object
             );
 
         var projectService = new ProjectService(_projectAdapter.Object, serviceMapper);
 
-        _controller = new(vgService, projectService, mapper);
+        _controller = new(variableService, vgService, projectService, mapper);
     }
 
     [Test]
@@ -93,7 +105,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((AdapterResponseModel<List<VariableResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once);
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once);
@@ -122,7 +134,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((AdapterResponseModel<List<VariableResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Once);
         _variableGroupAdapter.Verify(x => x.Setup(organization, project, pat), Times.Once);
@@ -146,7 +158,7 @@ public class VariableGroupControllerTests
         var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(firstProjectName);
         var variableGroupResponse2 = TestSampleData.GetVariableGroupGetResponses(secondProjectName);
 
-        variableGroupResponse.Variables.AddRange(variableGroupResponse2.Variables);
+        variableGroupResponse.Data.AddRange(variableGroupResponse2.Data);
 
         _projectAdapter.Setup(x => x.GetProjectsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(projectEntity);
@@ -162,7 +174,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((AdapterResponseModel<List<VariableResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once);
@@ -200,8 +212,8 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Status.Should().Be(AdapterStatus.Unknown);
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Variables.ToList().Count.Should().Be(0);
+        ((AdapterResponseModel<List<VariableResponse>>)((OkObjectResult)result.Result!).Value!).Status.Should().Be(AdapterStatus.Unknown);
+        ((AdapterResponseModel<List<VariableResponse>>)((OkObjectResult)result.Result!).Value!).Data.ToList().Count.Should().Be(0);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.Setup(organization, firstProjectName, pat), Times.Once);
@@ -243,7 +255,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((AdapterResponseModel<List<VariableResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(1));
@@ -274,7 +286,7 @@ public class VariableGroupControllerTests
         var variableGroupResponse = TestSampleData.GetVariableGroupGetResponses(firstProjectName, newValue);
         var variableGroupResponse2 = TestSampleData.GetVariableGroupGetResponses(secondProjectName, newValue);
 
-        variableGroupResponse.Variables.AddRange(variableGroupResponse2.Variables);
+        variableGroupResponse.Data.AddRange(variableGroupResponse2.Data);
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
@@ -298,7 +310,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((AdapterResponseModel<List<VariableResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(4));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
@@ -379,7 +391,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((AdapterResponseModel<List<VariableResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
@@ -411,7 +423,7 @@ public class VariableGroupControllerTests
         var variableGroupResponse1 = TestSampleData.GetVariableGroupGetResponses(firstProjectName, newKey, newValue);
         var variableGroupResponse2 = TestSampleData.GetVariableGroupGetResponses(secondProjectName, newKey, newValue);
 
-        variableGroupResponse1.Variables.AddRange(variableGroupResponse2.Variables);
+        variableGroupResponse1.Data.AddRange(variableGroupResponse2.Data);
 
         _variableGroupAdapter.Setup(x => x.Setup(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
@@ -435,7 +447,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse1);
+        ((AdapterResponseModel<List<VariableResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse1);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(4));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(4));
@@ -479,7 +491,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((AdapterResponseModel<List<VariableResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(2));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(2));
@@ -529,7 +541,7 @@ public class VariableGroupControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((VariableResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
+        ((AdapterResponseModel<List<VariableResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(variableGroupResponse);
 
         _variableGroupAdapter.Verify(x => x.GetAllAsync(default), Times.Exactly(4));
         _variableGroupAdapter.Verify(x => x.UpdateAsync(It.IsAny<VariableGroupParameters>(), It.IsAny<int>(), default), Times.Exactly(4));

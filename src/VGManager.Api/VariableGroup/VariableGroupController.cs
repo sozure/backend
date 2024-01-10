@@ -1,10 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using VGManager.Api.VariableGroup.Request;
 using VGManager.Api.VariableGroup.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
-using VGManager.AzureAdapter.Entities;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups.Requests;
 
@@ -15,16 +17,19 @@ namespace VGManager.Api.Controllers;
 [EnableCors("_allowSpecificOrigins")]
 public partial class VariableGroupController : ControllerBase
 {
-    private readonly IVariableService _vgService;
+    private readonly IVariableService _variableService;
+    private readonly IVariableGroupService _vgService;
     private readonly IProjectService _projectService;
     private readonly IMapper _mapper;
 
     public VariableGroupController(
-        IVariableService vgService,
+        IVariableService variableService,
+        IVariableGroupService vgService,
         IProjectService projectService,
         IMapper mapper
         )
     {
+        _variableService = variableService;
         _vgService = vgService;
         _projectService = projectService;
         _mapper = mapper;
@@ -34,8 +39,8 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableResponses>> GetAsync(
-        [FromBody] VariableGroupRequest request,
+    public async Task<ActionResult<AdapterResponseModel<List<VariableResponse>>>> GetAsync(
+        [FromBody] VariableRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -47,7 +52,7 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableGroupResponses>> GetVariableGroupsAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<VariableGroupResponse>>>> GetVariableGroupsAsync(
         [FromBody] VariableGroupRequest request,
         CancellationToken cancellationToken
     )
@@ -57,11 +62,11 @@ public partial class VariableGroupController : ControllerBase
             var result = GetEmptyVariableGroupGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
-            foreach (var project in projectResponse.Projects)
+            foreach (var project in projectResponse.Data)
             {
                 request.Project = project.Project.Name;
                 var subResult = await GetVGResultAsync(request, cancellationToken);
-                result.VariableGroups.AddRange(subResult.VariableGroups);
+                result.Data.AddRange(subResult.Data);
 
                 if (subResult.Status != AdapterStatus.Success)
                 {
@@ -81,8 +86,8 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableResponses>> UpdateAsync(
-        [FromBody] VariableGroupUpdateRequest request,
+    public async Task<ActionResult<AdapterResponseModel<List<VariableResponse>>>> UpdateAsync(
+        [FromBody] VariableUpdateRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -95,13 +100,13 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AdapterStatus>> UpdateInlineAsync(
-        [FromBody] VariableGroupUpdateRequest request,
+        [FromBody] VariableUpdateRequest request,
         CancellationToken cancellationToken
     )
     {
         var vgServiceModel = _mapper.Map<VariableGroupUpdateModel>(request);
-        _vgService.SetupConnectionRepository(vgServiceModel);
-        var status = await _vgService.UpdateVariableGroupsAsync(vgServiceModel, false, cancellationToken);
+        _variableService.SetupConnectionRepository(vgServiceModel);
+        var status = await _variableService.UpdateVariableGroupsAsync(vgServiceModel, false, cancellationToken);
 
         return Ok(status);
     }
@@ -110,8 +115,8 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableResponses>> AddAsync(
-        [FromBody] VariableGroupAddRequest request,
+    public async Task<ActionResult<AdapterResponseModel<List<VariableResponse>>>> AddAsync(
+        [FromBody] VariableAddRequest request,
         CancellationToken cancellationToken
     )
     {
@@ -119,26 +124,42 @@ public partial class VariableGroupController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("AddInline", Name = "AddVariableInline")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AdapterStatus>> AddInlineAsync(
+        [FromBody] VariableAddRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var vgServiceModel = _mapper.Map<VariableGroupAddModel>(request);
+        _variableService.SetupConnectionRepository(vgServiceModel);
+        var status = await _variableService.AddVariablesAsync(vgServiceModel, cancellationToken);
+
+        return Ok(status);
+    }
+
     [HttpPost("Delete", Name = "DeleteVariables")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VariableResponses>> DeleteAsync(
-        [FromBody] VariableGroupRequest request,
+    public async Task<ActionResult<AdapterResponseModel<List<VariableResponse>>>> DeleteAsync(
+        [FromBody] VariableRequest request,
         CancellationToken cancellationToken
     )
     {
-        VariableResponses? result;
+        AdapterResponseModel<List<VariableResponse>> result;
         if (request.Project == "All")
         {
             result = GetEmptyVariablesGetResponses();
             var projectResponse = await GetProjectsAsync(request, cancellationToken);
 
-            foreach (var project in projectResponse.Projects)
+            foreach (var project in projectResponse.Data)
             {
                 request.Project = project.Project.Name;
                 var subResult = await GetResultAfterDeleteAsync(request, cancellationToken);
-                result.Variables.AddRange(subResult.Variables);
+                result.Data.AddRange(subResult.Data);
 
                 if (subResult.Status != AdapterStatus.Success)
                 {
@@ -158,13 +179,13 @@ public partial class VariableGroupController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AdapterStatus>> DeleteInlineAsync(
-        [FromBody] VariableGroupRequest request,
+        [FromBody] VariableRequest request,
         CancellationToken cancellationToken
     )
     {
         var vgServiceModel = _mapper.Map<VariableGroupModel>(request);
-        _vgService.SetupConnectionRepository(vgServiceModel);
-        var status = await _vgService.DeleteVariablesAsync(vgServiceModel, false, cancellationToken);
+        _variableService.SetupConnectionRepository(vgServiceModel);
+        var status = await _variableService.DeleteVariablesAsync(vgServiceModel, false, cancellationToken);
 
         return Ok(status);
     }

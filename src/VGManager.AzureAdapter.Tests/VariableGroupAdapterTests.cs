@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
-using VGManager.AzureAdapter.Entities;
+using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter.Tests;
 

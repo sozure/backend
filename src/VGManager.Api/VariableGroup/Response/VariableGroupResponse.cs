@@ -9,4 +9,7 @@ public class VariableGroupResponse
 
     [Required]
     public string VariableGroupName { get; set; } = null!;
+
+    [Required]
+    public string VariableGroupType { get; set; } = null!;
 }

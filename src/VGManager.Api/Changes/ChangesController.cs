@@ -2,8 +2,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Changes.Request;
-using VGManager.Api.Changes.Response;
-using VGManager.Entities;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Changes.Requests;
 using VGManager.Services.Models.Changes.Responses;
@@ -29,7 +29,7 @@ public class ChangesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<VGChangesResponse>> GetVariableChangesAsync(
+    public async Task<ActionResult<RepositoryResponseModel<VGOperationModel>>> GetVariableChangesAsync(
         [FromBody] VGChangesRequest request,
         CancellationToken cancellationToken
         )
@@ -37,18 +37,18 @@ public class ChangesController : ControllerBase
         try
         {
             var result = await _changesService.GetAsync(_mapper.Map<VGRequestModel>(request), cancellationToken);
-            return Ok(new VGChangesResponse
+            return Ok(new RepositoryResponseModel<VGOperationModel>
             {
                 Status = RepositoryStatus.Success,
-                Operations = result
+                Data = result
             });
         }
         catch (Exception)
         {
-            return Ok(new VGChangesResponse
+            return Ok(new RepositoryResponseModel<VGOperationModel>
             {
                 Status = RepositoryStatus.Unknown,
-                Operations = Array.Empty<VGOperationModel>()
+                Data = Array.Empty<VGOperationModel>()
             });
         }
     }
@@ -57,7 +57,7 @@ public class ChangesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<SecretChangesResponse>> GetSecretChangesAsync(
+    public async Task<ActionResult<RepositoryResponseModel<SecretOperationModel>>> GetSecretChangesAsync(
         [FromBody] SecretChangesRequest request,
         CancellationToken cancellationToken
         )
@@ -65,18 +65,18 @@ public class ChangesController : ControllerBase
         try
         {
             var result = await _changesService.GetAsync(_mapper.Map<SecretRequestModel>(request), cancellationToken);
-            return Ok(new SecretChangesResponse
+            return Ok(new RepositoryResponseModel<SecretOperationModel>
             {
                 Status = RepositoryStatus.Success,
-                Operations = result
+                Data = result
             });
         }
         catch (Exception)
         {
-            return Ok(new SecretChangesResponse
+            return Ok(new RepositoryResponseModel<SecretOperationModel>
             {
                 Status = RepositoryStatus.Unknown,
-                Operations = Array.Empty<SecretOperationModel>()
+                Data = Array.Empty<SecretOperationModel>()
             });
         }
     }
@@ -85,7 +85,7 @@ public class ChangesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<KVChangesResponse>> GetKVChangesAsync(
+    public async Task<ActionResult<RepositoryResponseModel<KVOperationModel>>> GetKVChangesAsync(
         [FromBody] KVChangesRequest request,
         CancellationToken cancellationToken
         )
@@ -93,18 +93,18 @@ public class ChangesController : ControllerBase
         try
         {
             var result = await _changesService.GetAsync(_mapper.Map<KVRequestModel>(request), cancellationToken);
-            return Ok(new KVChangesResponse
+            return Ok(new RepositoryResponseModel<KVOperationModel>
             {
                 Status = RepositoryStatus.Success,
-                Operations = result
+                Data = result
             });
         }
         catch (Exception)
         {
-            return Ok(new KVChangesResponse
+            return Ok(new RepositoryResponseModel<KVOperationModel>
             {
                 Status = RepositoryStatus.Unknown,
-                Operations = Array.Empty<KVOperationModel>()
+                Data = Array.Empty<KVOperationModel>()
             });
         }
     }

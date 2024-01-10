@@ -5,9 +5,10 @@ using Microsoft.Extensions.Logging;
 using VGManager.Api.Controllers;
 using VGManager.Api.MapperProfiles;
 using VGManager.Api.Secrets.Response;
-using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Entities.SecretEntities;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 using VGManager.Repositories.Interfaces.SecretRepositories;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
@@ -66,7 +67,7 @@ public class SecretControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((SecretResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
+        ((AdapterResponseModel<IEnumerable<SecretResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetSecretsAsync(default), Times.Once);
@@ -95,7 +96,7 @@ public class SecretControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((DeletedSecretResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
+        ((AdapterResponseModel<IEnumerable<DeletedSecretResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetDeletedSecrets(default), Times.Once);
@@ -131,7 +132,7 @@ public class SecretControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Should().BeOfType<OkObjectResult>();
-        ((SecretResponses)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
+        ((AdapterResponseModel<IEnumerable<SecretResponse>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetSecretsAsync(default), Times.Exactly(2));
@@ -202,7 +203,7 @@ public class SecretControllerTests
         // Assert
         result.Should().NotBeNull();
         result.Result.Result.Should().BeOfType<OkObjectResult>();
-        ((DeletedSecretResponses)((OkObjectResult)result.Result!.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
+        ((AdapterResponseModel<IEnumerable<DeletedSecretResponse>>)((OkObjectResult)result.Result!.Result!).Value!).Should().BeEquivalentTo(secretsGetResponse);
 
         _adapter.Verify(x => x.Setup(keyVaultName, tenantId, clientId, clientSecret), Times.Once);
         _adapter.Verify(x => x.GetDeletedSecrets(default), Times.Exactly(2));

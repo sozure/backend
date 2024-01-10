@@ -1,8 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text.RegularExpressions;
-using VGManager.AzureAdapter.Entities;
 using VGManager.Entities.VGEntities;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 using VGManager.Services.Models.VariableGroups.Requests;
 
 namespace VGManager.Services;
@@ -53,7 +54,11 @@ public partial class VariableService
         return status;
     }
 
-    private IEnumerable<VariableGroup> CollectVariableGroups(VariableGroupEntity vgEntity, string? keyFilter, string variableGroupFilter)
+    private IEnumerable<VariableGroup> CollectVariableGroups(
+        AdapterResponseModel<IEnumerable<VariableGroup>> vgEntity, 
+        string? keyFilter, 
+        string variableGroupFilter
+        )
     {
         IEnumerable<VariableGroup> filteredVariableGroups;
         if (keyFilter is not null)
@@ -62,27 +67,32 @@ public partial class VariableService
             {
                 var regex = new Regex(keyFilter.ToLower(), RegexOptions.None, TimeSpan.FromMilliseconds(5));
 
-                filteredVariableGroups = FilterWithoutSecrets(true, variableGroupFilter, vgEntity.VariableGroups)
+                filteredVariableGroups = _variableFilterService.FilterWithoutSecrets(true, variableGroupFilter, vgEntity.Data)
                 .Select(vg => vg)
                 .Where(vg => vg.Variables.Keys.ToList().FindAll(key => regex.IsMatch(key.ToLower())).Count == 0);
             }
             catch (RegexParseException ex)
             {
                 _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", keyFilter);
-                filteredVariableGroups = FilterWithoutSecrets(true, variableGroupFilter, vgEntity.VariableGroups)
+                filteredVariableGroups = _variableFilterService.FilterWithoutSecrets(true, variableGroupFilter, vgEntity.Data)
                 .Select(vg => vg)
                 .Where(vg => vg.Variables.Keys.ToList().FindAll(key => keyFilter.ToLower() == key.ToLower()).Count == 0);
             }
         }
         else
         {
-            filteredVariableGroups = FilterWithoutSecrets(true, variableGroupFilter, vgEntity.VariableGroups);
+            filteredVariableGroups = _variableFilterService.FilterWithoutSecrets(true, variableGroupFilter, vgEntity.Data);
         }
 
         return filteredVariableGroups;
     }
 
-    private async Task<AdapterStatus> AddVariablesAsync(IEnumerable<VariableGroup> filteredVariableGroups, string key, string value, CancellationToken cancellationToken)
+    private async Task<AdapterStatus> AddVariablesAsync(
+        IEnumerable<VariableGroup> filteredVariableGroups, 
+        string key, 
+        string value, 
+        CancellationToken cancellationToken
+        )
     {
         var updateCounter = 0;
         var counter = 0;

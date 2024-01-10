@@ -7,12 +7,14 @@ using VGManager.Api.Secrets.Response;
 using VGManager.Api.VariableGroups.Request;
 using VGManager.Api.VariableGroups.Response;
 using VGManager.AzureAdapter.Entities;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 using VariableGroupEnt = Microsoft.TeamFoundation.DistributedTask.WebApi.VariableGroup;
 
 namespace VGManager.Api.Tests;
 public static class TestSampleData
 {
-    public static VariableGroupAddRequest GetVariableAddRequest(
+    public static VariableAddRequest GetVariableAddRequest(
         string organization,
         string pat,
         string project,
@@ -32,7 +34,7 @@ public static class TestSampleData
             Value = newValue
         };
 
-    public static VariableGroupUpdateRequest GetVariableUpdateRequest(
+    public static VariableUpdateRequest GetVariableUpdateRequest(
         string variableGroupFilter,
         string organization,
         string pat,
@@ -52,7 +54,7 @@ public static class TestSampleData
             NewValue = newValue
         };
 
-    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project, string keyFilter, string valueFilter)
+    public static VariableRequest GetVariableRequest(string organization, string pat, string project, string keyFilter, string valueFilter)
         => new()
         {
             Organization = organization,
@@ -65,7 +67,7 @@ public static class TestSampleData
             ContainsSecrets = false
         };
 
-    public static VariableGroupRequest GetVariableRequest(string organization, string pat, string project)
+    public static VariableRequest GetVariableRequest(string organization, string pat, string project)
         => new()
         {
             Organization = organization,
@@ -77,11 +79,11 @@ public static class TestSampleData
             KeyIsRegex = true,
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity()
+    public static AdapterResponseModel<IEnumerable<VariableGroupEnt>> GetVariableGroupEntity()
         => new()
         {
             Status = AdapterStatus.Success,
-            VariableGroups = new List<VariableGroupEnt>
+            Data = new List<VariableGroupEnt>
                 {
                     new()
                     {
@@ -116,25 +118,25 @@ public static class TestSampleData
                 }
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity(AdapterStatus status)
+    public static AdapterResponseModel<IEnumerable<VariableGroupEnt>> GetVariableGroupEntity(AdapterStatus status)
         => new()
         {
             Status = status,
-            VariableGroups = Enumerable.Empty<VariableGroupEnt>()
+            Data = Enumerable.Empty<VariableGroupEnt>()
         };
 
-    public static VariableGroupEntity GetVariableGroupEntityAfterDelete()
+    public static AdapterResponseModel<IEnumerable<VariableGroupEnt>> GetVariableGroupEntityAfterDelete()
         => new()
         {
             Status = AdapterStatus.Success,
-            VariableGroups = Enumerable.Empty<VariableGroupEnt>()
+            Data = Enumerable.Empty<VariableGroupEnt>()
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity(string value)
+    public static AdapterResponseModel<IEnumerable<VariableGroupEnt>> GetVariableGroupEntity(string value)
         => new()
         {
             Status = AdapterStatus.Success,
-            VariableGroups = new List<VariableGroupEnt>
+            Data = new List<VariableGroupEnt>
                 {
                     new()
                     {
@@ -165,11 +167,11 @@ public static class TestSampleData
                 }
         };
 
-    public static VariableGroupEntity GetVariableGroupEntity(string key, string value)
+    public static AdapterResponseModel<IEnumerable<VariableGroupEnt>> GetVariableGroupEntity(string key, string value)
         => new()
         {
             Status = AdapterStatus.Success,
-            VariableGroups = new List<VariableGroupEnt>
+            Data = new List<VariableGroupEnt>
                 {
                     new()
                     {
@@ -196,7 +198,7 @@ public static class TestSampleData
                 }
         };
 
-    public static VariableResponses GetVariableGroupGetResponses(string projectName, string key, string value)
+    public static AdapterResponseModel<List<VariableResponse>> GetVariableGroupGetResponses(string projectName, string key, string value)
     {
         var list = new List<VariableResponse>()
         {
@@ -223,14 +225,14 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new VariableResponses
+        return new AdapterResponseModel<List<VariableResponse>>
         {
             Status = AdapterStatus.Success,
-            Variables = result
+            Data = result
         };
     }
 
-    public static VariableResponses GetVariableGroupGetResponses(string projectName, string value)
+    public static AdapterResponseModel<List<VariableResponse>> GetVariableGroupGetResponses(string projectName, string value)
     {
         var list = new List<VariableResponse>()
         {
@@ -250,14 +252,14 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new VariableResponses
+        return new AdapterResponseModel<List<VariableResponse>>
         {
             Status = AdapterStatus.Success,
-            Variables = result
+            Data = result
         };
     }
 
-    public static VariableResponses GetVariableGroupGetResponses(string projectName)
+    public static AdapterResponseModel<List<VariableResponse>> GetVariableGroupGetResponses(string projectName)
     {
         var list = new List<VariableResponse>()
         {
@@ -291,18 +293,18 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new VariableResponses
+        return new AdapterResponseModel<List<VariableResponse>>
         {
             Status = AdapterStatus.Success,
-            Variables = result
+            Data = result
         };
     }
 
-    public static VariableResponses GetVariableGroupGetResponsesAfterDelete()
+    public static AdapterResponseModel<List<VariableResponse>> GetVariableGroupGetResponsesAfterDelete()
         => new()
         {
             Status = AdapterStatus.Success,
-            Variables = new List<VariableResponse>()
+            Data = new List<VariableResponse>()
         };
 
     public static SecretRequest GetRequest(string keyVaultName, string secretFilter, string tenantId, string clientId, string clientSecret)
@@ -333,11 +335,11 @@ public static class TestSampleData
             OverrideSecret = overrideSecret
         };
 
-    public static SecretResponses GetSecretsGetResponse()
+    public static AdapterResponseModel<IEnumerable<SecretResponse>> GetSecretsGetResponse()
         => new()
         {
             Status = AdapterStatus.Success,
-            Secrets = new List<SecretResponse>()
+            Data = new List<SecretResponse>()
                 {
                     new()
                     {
@@ -360,64 +362,64 @@ public static class TestSampleData
                 }
         };
 
-    public static SecretsEntity GetSecretsEntity()
+    public static AdapterResponseModel<IEnumerable<AdapterResponseModel<KeyVaultSecret?>>> GetSecretsEntity()
         => new()
         {
             Status = AdapterStatus.Success,
-            Secrets = new List<SecretEntity>()
+            Data = new List<AdapterResponseModel<KeyVaultSecret?>>()
                 {
                     new()
                     {
                         Status = AdapterStatus.Success,
-                        Secret = new("SecretFilter123", "3Kpu6gF214vAqHlzaX5G")
+                        Data = new("SecretFilter123", "3Kpu6gF214vAqHlzaX5G")
                     },
                     new()
                     {
                         Status = AdapterStatus.Success,
-                        Secret = new("SecretFilter456", "KCRQJ08PdFHU9Ly2pUI2")
+                        Data = new("SecretFilter456", "KCRQJ08PdFHU9Ly2pUI2")
                     },
                     new()
                     {
                         Status = AdapterStatus.Success,
-                        Secret = new("SecretFilter789", "ggl1oBLSiYNBliNQhsGW")
+                        Data = new("SecretFilter789", "ggl1oBLSiYNBliNQhsGW")
                     }
                 }
         };
 
-    public static DeletedSecretsEntity GetEmptyDeletedSecretsEntity()
+    public static AdapterResponseModel<IEnumerable<DeletedSecret>> GetEmptyDeletedSecretsEntity()
         => new()
         {
             Status = AdapterStatus.Success,
-            DeletedSecrets = Enumerable.Empty<DeletedSecret>()
+            Data = Enumerable.Empty<DeletedSecret>()
         };
 
-    public static SecretsEntity GetEmptySecretsEntity()
+    public static AdapterResponseModel<IEnumerable<AdapterResponseModel<KeyVaultSecret?>>> GetEmptySecretsEntity()
         => new()
         {
             Status = AdapterStatus.Success,
-            Secrets = Enumerable.Empty<SecretEntity>()
+            Data = Enumerable.Empty<AdapterResponseModel<KeyVaultSecret?>>()
         };
 
-    public static SecretResponses GetEmptySecretsGetResponse()
+    public static AdapterResponseModel<IEnumerable<SecretResponse>> GetEmptySecretsGetResponse()
         => new()
         {
             Status = AdapterStatus.Success,
-            Secrets = Enumerable.Empty<SecretResponse>()
+            Data = Enumerable.Empty<SecretResponse>()
 
         };
 
-    public static DeletedSecretResponses GetEmptySecretsGetResponse1()
+    public static AdapterResponseModel<IEnumerable<DeletedSecretResponse>> GetEmptySecretsGetResponse1()
         => new()
         {
             Status = AdapterStatus.Success,
-            DeletedSecrets = Enumerable.Empty<DeletedSecretResponse>()
+            Data = Enumerable.Empty<DeletedSecretResponse>()
         };
 
-    public static ProjectsEntity GetProjectEntity(string firstProjectName, string secondProjectName)
+    public static AdapterResponseModel<IEnumerable<ProjectEntity>> GetProjectEntity(string firstProjectName, string secondProjectName)
         => new()
         {
             Status = AdapterStatus.Success,
-            Projects = new List<ProjectEntity>
+            Data = new List<ProjectEntity>
                 {
                     new()
                     {

@@ -6,6 +6,8 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter;
 
@@ -32,7 +34,7 @@ public class VariableGroupAdapter : IVariableGroupAdapter
         _connection = new VssConnection(uri, credentials);
     }
 
-    public async Task<VariableGroupEntity> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<AdapterResponseModel<IEnumerable<VariableGroup>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -125,21 +127,21 @@ public class VariableGroupAdapter : IVariableGroupAdapter
         }
     }
 
-    private static VariableGroupEntity GetResult(AdapterStatus status, IEnumerable<VariableGroup> variableGroups)
+    private static AdapterResponseModel<IEnumerable<VariableGroup>> GetResult(AdapterStatus status, IEnumerable<VariableGroup> variableGroups)
     {
         return new()
         {
             Status = status,
-            VariableGroups = variableGroups
+            Data = variableGroups
         };
     }
 
-    private static VariableGroupEntity GetResult(AdapterStatus status)
+    private static AdapterResponseModel<IEnumerable<VariableGroup>> GetResult(AdapterStatus status)
     {
         return new()
         {
             Status = status,
-            VariableGroups = Enumerable.Empty<VariableGroup>()
+            Data = Enumerable.Empty<VariableGroup>()
         };
     }
 }

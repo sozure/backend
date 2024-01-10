@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter.Tests;
 
@@ -26,7 +27,7 @@ public class ProjectAdapterTests
         var result = await _projectAdapter.GetProjectsAsync(baseUrl, pat, default);
 
         // Assert
-        result.Status.Should().Be(Entities.AdapterStatus.Unknown);
+        result.Status.Should().Be(AdapterStatus.Unknown);
     }
 
     [Test]
@@ -40,6 +41,6 @@ public class ProjectAdapterTests
         var result = await _projectAdapter.GetProjectsAsync(baseUrl, pat, default);
 
         // Assert
-        result.Status.Should().Be(Entities.AdapterStatus.Unauthorized);
+        result.Status.Should().Be(AdapterStatus.Unauthorized);
     }
 }

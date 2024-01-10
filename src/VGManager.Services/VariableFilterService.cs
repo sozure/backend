@@ -8,6 +8,7 @@ namespace VGManager.Services;
 public class VariableFilterService : IVariableFilterService
 {
     private readonly ILogger _logger;
+    private readonly string SecretVGType = "AzureKeyVault";
 
     public VariableFilterService(ILogger<VariableFilterService> logger)
     {
@@ -59,10 +60,10 @@ public class VariableFilterService : IVariableFilterService
             catch (RegexParseException ex)
             {
                 _logger.LogError(ex, "Couldn't parse and create regex. Value: {value}.", filter);
-                return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower() && vg.Type != "AzureKeyVault").ToList();
+                return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower() && vg.Type != SecretVGType).ToList();
             }
-            return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower()) && vg.Type != "AzureKeyVault").ToList();
+            return variableGroups.Where(vg => regex.IsMatch(vg.Name.ToLower()) && vg.Type != SecretVGType).ToList();
         }
-        return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower() && vg.Type != "AzureKeyVault").ToList();
+        return variableGroups.Where(vg => filter.ToLower() == vg.Name.ToLower() && vg.Type != SecretVGType).ToList();
     }
 }

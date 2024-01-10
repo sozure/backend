@@ -162,7 +162,7 @@ public partial class VariableService
         )
     {
         var subResult = new List<VariableResult>();
-        if (filteredVariableGroup.Type == "AzureKeyVault")
+        if (filteredVariableGroup.Type == SecretVGType)
         {
             var azProviderData = filteredVariableGroup.ProviderData as AzureKeyVaultVariableGroupProviderData;
             subResult.Add(new VariableResult()

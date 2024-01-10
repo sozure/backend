@@ -20,6 +20,8 @@ public partial class VariableService : IVariableService
     private string _project = null!;
     private readonly ILogger _logger;
 
+    private readonly string SecretVGType = "AzureKeyVault";
+
     public VariableService(
         IVariableGroupAdapter variableGroupConnectionRepository,
         IVGAddColdRepository additionColdRepository,

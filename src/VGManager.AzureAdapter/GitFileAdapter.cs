@@ -13,7 +13,7 @@ public class GitFileAdapter : IGitFileAdapter
     private VssConnection _connection = null!;
     private readonly ILogger _logger;
 
-    private readonly string[] Extensions = { "yaml", "json", "yml" };
+    private readonly string[] Extensions = { "yaml" };
 
     public GitFileAdapter(ILogger<GitFileAdapter> logger)
     {

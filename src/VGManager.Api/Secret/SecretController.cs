@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Secret.Request;
 using VGManager.Api.Secret.Response;
 using VGManager.Api.Secrets.Response;
-using VGManager.AzureAdapter.Entities;
+using VGManager.Models.Models;
+using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.Secrets.Requests;
 
@@ -29,7 +30,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<KeyVaultResponses>> GetKeyVaults(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>, string>>> GetKeyVaults(
         [FromBody] SecretBaseRequest request,
         CancellationToken cancellationToken
         )
@@ -42,11 +43,11 @@ public class SecretController : ControllerBase
                 request.ClientSecret,
                 cancellationToken
             );
-            var result = new KeyVaultResponses
+            var result = new AdapterResponseModel<IEnumerable<string>, string>
             {
                 Status = AdapterStatus.Success,
-                SubscriptionId = subscriptionId?.Replace("/subscriptions/", string.Empty) ?? string.Empty,
-                KeyVaults = keyVaults
+                AdditionalData = subscriptionId?.Replace("/subscriptions/", string.Empty) ?? string.Empty,
+                Data = keyVaults
             };
             return Ok(result);
         }
@@ -54,25 +55,25 @@ public class SecretController : ControllerBase
         {
             if (ex.Message == "No subscriptions found for the given credentials")
             {
-                return Ok(new KeyVaultResponses
+                return Ok(new AdapterResponseModel<IEnumerable<string>, string>
                 {
                     Status = AdapterStatus.NoSubscriptionsFound,
-                    KeyVaults = Enumerable.Empty<string>()
+                    Data = Enumerable.Empty<string>()
                 });
             }
 
-            return Ok(new KeyVaultResponses
+            return Ok(new AdapterResponseModel<IEnumerable<string>, string>
             {
                 Status = AdapterStatus.Unknown,
-                KeyVaults = Enumerable.Empty<string>()
+                Data = Enumerable.Empty<string>()
             });
         }
         catch (Exception)
         {
-            return Ok(new KeyVaultResponses
+            return Ok(new AdapterResponseModel<IEnumerable<string>, string>
             {
                 Status = AdapterStatus.Unknown,
-                KeyVaults = Enumerable.Empty<string>()
+                Data = Enumerable.Empty<string>()
             });
         }
     }
@@ -81,7 +82,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<SecretResponses>> GetAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<SecretResponse>>>> GetAsync(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -91,7 +92,12 @@ public class SecretController : ControllerBase
         _keyVaultService.SetupConnectionRepository(secretModel);
         var matchedSecrets = await _keyVaultService.GetSecretsAsync(secretModel.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<SecretResponses>(matchedSecrets);
+        var result = new AdapterResponseModel<IEnumerable<SecretResponse>>()
+        {
+            Status = matchedSecrets.Status,
+            Data = _mapper.Map<IEnumerable<SecretResponse>>(matchedSecrets.Data)
+        };
+
         return Ok(result);
     }
 
@@ -99,7 +105,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<DeletedSecretResponses> GetDeleted(
+    public ActionResult<AdapterResponseModel<IEnumerable<DeletedSecretResponse>>> GetDeleted(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -108,7 +114,13 @@ public class SecretController : ControllerBase
 
         _keyVaultService.SetupConnectionRepository(secretModel);
         var matchedDeletedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
-        var result = _mapper.Map<DeletedSecretResponses>(matchedDeletedSecrets);
+
+        var result = new AdapterResponseModel<IEnumerable<DeletedSecretResponse>>()
+        {
+            Status = matchedDeletedSecrets.Status,
+            Data = _mapper.Map<IEnumerable<DeletedSecretResponse>>(matchedDeletedSecrets.Data)
+        };
+
         return Ok(result);
     }
 
@@ -116,7 +128,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<SecretResponses>> DeleteAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<SecretResponse>>>> DeleteAsync(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -127,7 +139,12 @@ public class SecretController : ControllerBase
         await _keyVaultService.DeleteAsync(secretModel.SecretFilter, secretModel.UserName, cancellationToken);
         var matchedSecrets = await _keyVaultService.GetSecretsAsync(secretModel.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<SecretResponses>(matchedSecrets);
+        var result = new AdapterResponseModel<IEnumerable<SecretResponse>>()
+        {
+            Status = matchedSecrets.Status,
+            Data = _mapper.Map<IEnumerable<SecretResponse>>(matchedSecrets.Data)
+        };
+
         return Ok(result);
     }
 
@@ -152,7 +169,7 @@ public class SecretController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<DeletedSecretResponses>> RecoverAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<DeletedSecretResponse>>>> RecoverAsync(
         [FromBody] SecretRequest request,
         CancellationToken cancellationToken
         )
@@ -163,7 +180,12 @@ public class SecretController : ControllerBase
         await _keyVaultService.RecoverSecretAsync(secretModel.SecretFilter, secretModel.UserName, cancellationToken);
         var matchedSecrets = _keyVaultService.GetDeletedSecrets(secretModel.SecretFilter, cancellationToken);
 
-        var result = _mapper.Map<DeletedSecretResponses>(matchedSecrets);
+        var result = new AdapterResponseModel<IEnumerable<DeletedSecretResponse>>()
+        {
+            Status = matchedSecrets.Status,
+            Data = _mapper.Map<IEnumerable<DeletedSecretResponse>>(matchedSecrets.Data)
+        };
+
         return Ok(result);
     }
 

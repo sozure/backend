@@ -1,9 +1,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using VGManager.Api.Common;
 using VGManager.Api.Projects.Responses;
+using VGManager.Models.Models;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models.Projects;
+using VGManager.Services.Models.Common;
 
 namespace VGManager.Api.Projects;
 
@@ -25,15 +27,20 @@ public class ProjectController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ProjectsResponse>> GetAsync(
-        [FromBody] ProjectRequest request,
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<ProjectResponse>>>> GetAsync(
+        [FromBody] BasicRequest request,
         CancellationToken cancellationToken
     )
     {
-        var projectModel = _mapper.Map<ProjectModel>(request);
+        var projectModel = _mapper.Map<BaseModel>(request);
         var projects = await _projectService.GetProjectsAsync(projectModel, cancellationToken);
 
-        var result = _mapper.Map<ProjectsResponse>(projects);
+        var result = new AdapterResponseModel<IEnumerable<ProjectResponse>>()
+        {
+            Status = projects.Status,
+            Data = _mapper.Map<IEnumerable<ProjectResponse>>(projects.Data)
+        };
+
         return Ok(result);
     }
 }

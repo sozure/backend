@@ -1,12 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using VGManager.Api.Common;
 
 namespace VGManager.Api.Projects;
 
-public class ProjectRequest
+public class ProjectRequest : BasicRequest
 {
-    [Required]
-    public string Organization { get; set; } = null!;
-
-    [Required]
-    public string PAT { get; set; } = null!;
 }

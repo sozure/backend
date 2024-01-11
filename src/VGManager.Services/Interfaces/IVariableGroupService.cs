@@ -1,7 +1,6 @@
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using VGManager.Models.Models;
 using VGManager.Services.Models.VariableGroups.Requests;
-using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Services.Interfaces;
 

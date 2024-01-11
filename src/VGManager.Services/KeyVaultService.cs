@@ -1,7 +1,6 @@
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
-using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Entities.SecretEntities;
 using VGManager.Models.Models;
@@ -254,9 +253,9 @@ public class KeyVaultService : IKeyVaultService
     }
 
     private async Task<AdapterStatus> DeleteAsync(
-        string secretFilter, 
-        string userName, 
-        AdapterResponseModel<IEnumerable<AdapterResponseModel<KeyVaultSecret?>>> secretsResultModel, 
+        string secretFilter,
+        string userName,
+        AdapterResponseModel<IEnumerable<AdapterResponseModel<KeyVaultSecret?>>> secretsResultModel,
         CancellationToken cancellationToken
         )
     {

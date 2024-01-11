@@ -5,7 +5,6 @@ using VGManager.Models.Models;
 using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.VariableGroups.Requests;
-using VGManager.Services.Models.VariableGroups.Results;
 
 namespace VGManager.Services;
 

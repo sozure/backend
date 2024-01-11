@@ -2,7 +2,7 @@ using VGManager.Services.Models.Common;
 
 namespace VGManager.Services.Models.VariableGroups.Requests;
 
-public class VariableGroupModel: BaseModel
+public class VariableGroupModel : BaseModel
 {
     public string UserName { get; set; } = null!;
 

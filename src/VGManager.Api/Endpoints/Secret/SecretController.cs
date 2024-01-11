@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Endpoints.Secret.Request;
 using VGManager.Api.Endpoints.Secret.Response;
-using VGManager.Api.Secret.Response;
 using VGManager.Models.Models;
 using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;

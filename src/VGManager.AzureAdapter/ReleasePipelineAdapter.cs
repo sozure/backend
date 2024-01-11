@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
-using Microsoft.VisualStudio.Services.WebApi;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.StatusEnums;
 
@@ -162,9 +161,9 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         {
             var subResult = await client.GetReleaseDefinitionAsync(project, def?.Id ?? 0, cancellationToken: cancellationToken);
 
-            var workFlowTasks = subResult?.Environments.FirstOrDefault()?.DeployPhases.FirstOrDefault()?.WorkflowTasks.ToList() ?? 
+            var workFlowTasks = subResult?.Environments.FirstOrDefault()?.DeployPhases.FirstOrDefault()?.WorkflowTasks.ToList() ??
                 Enumerable.Empty<WorkflowTask>();
-            foreach(var task in workFlowTasks)
+            foreach (var task in workFlowTasks)
             {
                 task.Inputs.TryGetValue("configuration", out var configValue);
                 task.Inputs.TryGetValue("command", out var command);

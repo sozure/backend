@@ -225,7 +225,7 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new AdapterResponseModel<List<VariableResponse>>
+        return new()
         {
             Status = AdapterStatus.Success,
             Data = result
@@ -252,7 +252,7 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new AdapterResponseModel<List<VariableResponse>>
+        return new()
         {
             Status = AdapterStatus.Success,
             Data = result
@@ -293,7 +293,7 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new AdapterResponseModel<List<VariableResponse>>
+        return new()
         {
             Status = AdapterStatus.Success,
             Data = result

@@ -54,7 +54,7 @@ public partial class VariableService : IVariableService
 
     private static VariableGroupParameters GetVariableGroupParameters(VariableGroup filteredVariableGroup, string variableGroupName)
     {
-        return new VariableGroupParameters()
+        return new()
         {
             Name = variableGroupName,
             Variables = filteredVariableGroup.Variables,

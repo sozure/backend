@@ -1,8 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
-using Microsoft.VisualStudio.Services.Common;
-using Microsoft.VisualStudio.Services.WebApi;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.StatusEnums;
 
@@ -10,22 +8,13 @@ namespace VGManager.AzureAdapter;
 
 public class GitBranchAdapter : IGitBranchAdapter
 {
-    private VssConnection _connection = null!;
+    private readonly IHttpClientProvider _clientProvider;
     private readonly ILogger _logger;
 
-    public GitBranchAdapter(ILogger<GitBranchAdapter> logger)
+    public GitBranchAdapter(IHttpClientProvider clientProvider, ILogger<GitBranchAdapter> logger)
     {
+        _clientProvider = clientProvider;
         _logger = logger;
-    }
-
-    public void Setup(string organization, string pat)
-    {
-        var uriString = $"https://dev.azure.com/{organization}";
-        Uri uri;
-        Uri.TryCreate(uriString, UriKind.Absolute, out uri!);
-
-        var credentials = new VssBasicCredential(string.Empty, pat);
-        _connection = new VssConnection(uri, credentials);
     }
 
     public async Task<(AdapterStatus, IEnumerable<string>)> GetAllAsync(
@@ -37,9 +26,9 @@ public class GitBranchAdapter : IGitBranchAdapter
     {
         try
         {
+            _clientProvider.Setup(organization, pat);
             _logger.LogInformation("Request git branches from {project} git project.", repositoryId);
-            Setup(organization, pat);
-            using var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
+            using var client = await _clientProvider.GetClientAsync<GitHttpClient>(cancellationToken);
             var branches = await client.GetBranchesAsync(repositoryId, cancellationToken: cancellationToken);
 
             return (AdapterStatus.Success, branches.Select(branch => branch.Name).ToList());

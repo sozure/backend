@@ -66,13 +66,13 @@ public class GitRepositoryService : IGitRepositoryService
         )
     {
         var pat = gitRepositoryModel.PAT;
-        _gitRepositoryAdapter.Setup(gitRepositoryModel.Organization, pat);
         List<string> variables;
         try
         {
             var entity = _mapper.Map<GitRepositoryEntity>(gitRepositoryModel);
             variables = await _gitRepositoryAdapter.GetVariablesFromConfigAsync(
                 entity,
+                pat,
                 cancellationToken
                 );
         }

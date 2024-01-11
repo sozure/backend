@@ -14,7 +14,7 @@ public partial class VariableGroupController
 {
     private static AdapterResponseModel<List<VariableResponse>> GetEmptyVariablesGetResponses()
     {
-        return new AdapterResponseModel<List<VariableResponse>>
+        return new()
         {
             Status = AdapterStatus.Success,
             Data = new List<VariableResponse>()
@@ -24,7 +24,7 @@ public partial class VariableGroupController
 
     private static AdapterResponseModel<List<VariableGroupResponse>> GetEmptyVariableGroupGetResponses()
     {
-        return new AdapterResponseModel<List<VariableGroupResponse>>
+        return new()
         {
             Status = AdapterStatus.Success,
             Data = new List<VariableGroupResponse>()
@@ -106,7 +106,7 @@ public partial class VariableGroupController
             });
         }
 
-        return new AdapterResponseModel<IEnumerable<VariableGroupResponse>>
+        return new()
         {
             Status = variableGroupResultsModel.Status,
             Data = result

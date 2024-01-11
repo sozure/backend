@@ -13,15 +13,15 @@ namespace VGManager.AzureAdapter;
 
 public class ReleasePipelineAdapter : IReleasePipelineAdapter
 {
-    private VssConnection _connection = null!;
+    private readonly IHttpClientProvider _clientProvider;
     private readonly ILogger _logger;
 
     private readonly string[] Replacable = { "Deploy to ", "Transfer to " };
-
     private readonly string[] ExcludableEnvironments = { "OTP container registry" };
 
-    public ReleasePipelineAdapter(ILogger<ReleasePipelineAdapter> logger)
+    public ReleasePipelineAdapter(IHttpClientProvider clientProvider, ILogger<ReleasePipelineAdapter> logger)
     {
+        _clientProvider = clientProvider;
         _logger = logger;
     }
 
@@ -115,7 +115,7 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         CancellationToken cancellationToken
         )
     {
-        using var client = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+        using var client = await _clientProvider.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
         var variableGroupNames = new List<(string, string)>();
 
         foreach (var env in definition.Environments.Where(env => !ExcludableEnvironments.Any(env.Name.Contains)))
@@ -139,8 +139,8 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         CancellationToken cancellationToken
         )
     {
-        Setup(organization, pat);
-        using var client = await _connection.GetClientAsync<ReleaseHttpClient>(cancellationToken);
+        _clientProvider.Setup(organization, pat);
+        using var client = await _clientProvider.GetClientAsync<ReleaseHttpClient>(cancellationToken);
         var expand = ReleaseDefinitionExpands.Artifacts;
         var releaseDefinitions = await client.GetReleaseDefinitionsAsync(
             project,
@@ -177,15 +177,5 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         }
 
         return definition;
-    }
-
-    private void Setup(string organization, string pat)
-    {
-        var uriString = $"https://dev.azure.com/{organization}";
-        Uri uri;
-        Uri.TryCreate(uriString, UriKind.Absolute, out uri!);
-
-        var credentials = new VssBasicCredential(string.Empty, pat);
-        _connection = new VssConnection(uri, credentials);
     }
 }

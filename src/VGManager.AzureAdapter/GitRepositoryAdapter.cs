@@ -48,8 +48,8 @@ public class GitRepositoryAdapter : IGitRepositoryAdapter
     {
         _logger.LogInformation("Request git repositories from {project} azure project.", project);
         Setup(organization, pat);
-        var gitClient = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
-        var repositories = await gitClient.GetRepositoriesAsync(cancellationToken: cancellationToken);
+        using var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
+        var repositories = await client.GetRepositoriesAsync(cancellationToken: cancellationToken);
         return repositories.Where(repo => (!repo.IsDisabled ?? false) && repo.ProjectReference.Name == project).ToList();
     }
 
@@ -67,14 +67,14 @@ public class GitRepositoryAdapter : IGitRepositoryAdapter
             repositoryId
             );
 
-        var gitClient = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
+        using var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
         var gitVersionDescriptor = new GitVersionDescriptor
         {
             VersionType = GitVersionType.Branch,
             Version = gitRepositoryEntity.Branch
         };
 
-        var item = await gitClient.GetItemTextAsync(
+        var item = await client.GetItemTextAsync(
             project: project,
             repositoryId: repositoryId,
             path: gitRepositoryEntity.FilePath,

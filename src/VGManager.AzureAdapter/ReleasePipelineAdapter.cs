@@ -115,14 +115,14 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         CancellationToken cancellationToken
         )
     {
-        var taskAgentClient = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+        using var client = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
         var variableGroupNames = new List<(string, string)>();
 
         foreach (var env in definition.Environments.Where(env => !ExcludableEnvironments.Any(env.Name.Contains)))
         {
             foreach (var id in env.VariableGroups)
             {
-                var vg = await taskAgentClient.GetVariableGroupAsync(project, id, cancellationToken: cancellationToken);
+                var vg = await client.GetVariableGroupAsync(project, id, cancellationToken: cancellationToken);
                 variableGroupNames.Add((vg.Name, vg.Type));
             }
         }
@@ -140,9 +140,9 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         )
     {
         Setup(organization, pat);
-        var releaseClient = await _connection.GetClientAsync<ReleaseHttpClient>(cancellationToken);
+        using var client = await _connection.GetClientAsync<ReleaseHttpClient>(cancellationToken);
         var expand = ReleaseDefinitionExpands.Artifacts;
-        var releaseDefinitions = await releaseClient.GetReleaseDefinitionsAsync(
+        var releaseDefinitions = await client.GetReleaseDefinitionsAsync(
             project,
             expand: expand,
             cancellationToken: cancellationToken
@@ -160,7 +160,7 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
 
         foreach (var def in foundDefinitions)
         {
-            var subResult = await releaseClient.GetReleaseDefinitionAsync(project, def?.Id ?? 0, cancellationToken: cancellationToken);
+            var subResult = await client.GetReleaseDefinitionAsync(project, def?.Id ?? 0, cancellationToken: cancellationToken);
 
             var workFlowTasks = subResult?.Environments.FirstOrDefault()?.DeployPhases.FirstOrDefault()?.WorkflowTasks.ToList() ?? 
                 Enumerable.Empty<WorkflowTask>();

@@ -3,6 +3,7 @@ using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
+using System.Net.Http;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.StatusEnums;
 
@@ -15,8 +16,9 @@ public class GitFileAdapter : IGitFileAdapter
 
     private readonly string[] Extensions = { "yaml" };
 
-    public GitFileAdapter(ILogger<GitFileAdapter> logger)
+    public GitFileAdapter(IHttpClientFactory httpClientFactory, ILogger<GitFileAdapter> logger)
     {
+
         _logger = logger;
     }
 
@@ -89,7 +91,7 @@ public class GitFileAdapter : IGitFileAdapter
     {
         try
         {
-            var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
+            using var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
             var request = new GitItemRequestData()
             {
                 ItemDescriptors = new GitItemDescriptor[]
@@ -131,7 +133,7 @@ public class GitFileAdapter : IGitFileAdapter
     {
         try
         {
-            var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
+            using var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
             var request = new GitItemRequestData()
             {
                 ItemDescriptors = new GitItemDescriptor[]

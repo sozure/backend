@@ -39,7 +39,7 @@ public class GitBranchAdapter : IGitBranchAdapter
         {
             _logger.LogInformation("Request git branches from {project} git project.", repositoryId);
             Setup(organization, pat);
-            var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
+            using var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
             var branches = await client.GetBranchesAsync(repositoryId, cancellationToken: cancellationToken);
 
             return (AdapterStatus.Success, branches.Select(branch => branch.Name).ToList());

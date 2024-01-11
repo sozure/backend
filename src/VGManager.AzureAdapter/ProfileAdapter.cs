@@ -30,7 +30,7 @@ public class ProfileAdapter : IProfileAdapter
     public async Task<Profile?> GetProfileAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Request profile from Azure DevOps.");
-        var client = await _connection.GetClientAsync<ProfileHttpClient>(cancellationToken);
+        using var client = await _connection.GetClientAsync<ProfileHttpClient>(cancellationToken);
         var profileQueryContext = new ProfileQueryContext(AttributesScope.Core);
 
         try

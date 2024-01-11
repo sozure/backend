@@ -39,8 +39,8 @@ public class VariableGroupAdapter : IVariableGroupAdapter
         try
         {
             _logger.LogInformation("Request variable groups from {project} Azure project.", _project);
-            var httpClient = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
-            var variableGroups = await httpClient.GetVariableGroupsAsync(_project, cancellationToken: cancellationToken);
+            using var client = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+            var variableGroups = await client.GetVariableGroupsAsync(_project, cancellationToken: cancellationToken);
             return GetResult(AdapterStatus.Success, variableGroups);
         }
         catch (VssUnauthorizedException ex)
@@ -87,8 +87,8 @@ public class VariableGroupAdapter : IVariableGroupAdapter
         try
         {
             _logger.LogDebug("Update variable group with name: {variableGroupName} in {project} Azure project.", variableGroupName, _project);
-            var httpClient = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
-            await httpClient!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
+            using var client = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+            await client!.UpdateVariableGroupAsync(variableGroupId, variableGroupParameters, cancellationToken: cancellationToken);
             return AdapterStatus.Success;
         }
         catch (VssUnauthorizedException ex)

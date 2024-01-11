@@ -1,5 +1,5 @@
 using AutoMapper;
-using VGManager.Api.GitRepository.Request;
+using VGManager.Api.Endpoints.GitRepository.Request;
 using VGManager.Services.Models.GitRepositories;
 
 namespace VGManager.Api.MapperProfiles;

@@ -1,7 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using VGManager.Api.Endpoints.Project;
+using VGManager.Api.Endpoints.Project.Response;
 using VGManager.Api.Projects;
-using VGManager.Api.Projects.Responses;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.Models;
 using VGManager.Models.StatusEnums;

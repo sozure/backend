@@ -5,6 +5,7 @@ using System.Reflection;
 using VGManager.Api;
 using VGManager.Api.HealthChecks;
 using VGManager.AzureAdapter;
+using VGManager.AzureAdapter.Helper;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
@@ -112,5 +113,6 @@ static partial class Program
         services.AddScoped<IGitBranchAdapter, GitBranchAdapter>();
         services.AddScoped<IGitFileAdapter, GitFileAdapter>();
         services.AddScoped<IReleasePipelineAdapter, ReleasePipelineAdapter>();
+        services.AddScoped<IHttpClientProvider, HttpClientProvider>();
     }
 }

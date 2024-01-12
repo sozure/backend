@@ -103,6 +103,7 @@ static partial class Program
         services.AddScoped<IGitVersionService, GitVersionService>();
         services.AddScoped<IGitFileService, GitFileService>();
         services.AddScoped<IReleasePipelineService, ReleasePipelineService>();
+        services.AddScoped<IBuildPipelineService, BuildPipelineService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<IChangeService, ChangeService>();
         services.AddScoped<IProfileAdapter, ProfileAdapter>();

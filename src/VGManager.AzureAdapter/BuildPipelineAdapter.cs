@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.Build.WebApi;
 using VGManager.AzureAdapter.Interfaces;
+using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter;
 
@@ -38,7 +39,7 @@ public class BuildPipelineAdapter: IBuildPipelineAdapter
     /// <param name="sourceBranch">for example: "refs/tags/2.1.1" or "refs/heads/develop"</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task RunBuildPipelineAsync(
+    public async Task<AdapterStatus> RunBuildPipelineAsync(
         string organization, 
         string pat,
         string project,
@@ -47,17 +48,26 @@ public class BuildPipelineAdapter: IBuildPipelineAdapter
         CancellationToken cancellationToken = default
         )
     {
-        _logger.LogInformation("Request build pipelines from Azure DevOps.");
-        _clientProvider.Setup(organization, pat);
-        using var client = await _clientProvider.GetClientAsync<BuildHttpClient>(cancellationToken);
-        var pipeline = await client.GetDefinitionAsync(project, definitionId, cancellationToken: cancellationToken);
-        var build = new Build
+        try
         {
-            Definition = pipeline,
-            Project = pipeline.Project,
-            SourceBranch = sourceBranch
-        };
-        var finishedBuild = await client
-            .QueueBuildAsync(build, true, definitionId: pipeline.Id, cancellationToken: cancellationToken);
+            _logger.LogInformation("Request build pipelines from Azure DevOps.");
+            _clientProvider.Setup(organization, pat);
+            using var client = await _clientProvider.GetClientAsync<BuildHttpClient>(cancellationToken);
+            var pipeline = await client.GetDefinitionAsync(project, definitionId, cancellationToken: cancellationToken);
+            var build = new Build
+            {
+                Definition = pipeline,
+                Project = pipeline.Project,
+                SourceBranch = sourceBranch
+            };
+            var finishedBuild = await client
+                .QueueBuildAsync(build, true, definitionId: pipeline.Id, cancellationToken: cancellationToken);
+            return finishedBuild is not null ? AdapterStatus.Success : AdapterStatus.Unknown;
+        } catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error running build pipeline {definitionId} for {project} project.", definitionId, project);
+            return AdapterStatus.Unknown;
+        }
+        
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.TeamFoundation.Build.WebApi;
+using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter.Interfaces;
 
@@ -10,7 +11,7 @@ public interface IBuildPipelineAdapter
         string project,
         CancellationToken cancellationToken = default
         );
-    Task RunBuildPipelineAsync(
+    Task<AdapterStatus> RunBuildPipelineAsync(
         string organization,
         string pat,
         string project,

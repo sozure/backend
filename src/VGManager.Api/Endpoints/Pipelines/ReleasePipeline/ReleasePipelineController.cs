@@ -18,7 +18,6 @@ public class ReleasePipelineController : ControllerBase
     public ReleasePipelineController(IReleasePipelineService releasePipelineService, IMapper mapper)
     {
         _releasePipelineService = releasePipelineService;
-        _mapper = mapper;
     }
 
     [HttpPost("GetEnvironments", Name = "Environments")]

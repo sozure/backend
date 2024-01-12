@@ -5,7 +5,6 @@ namespace VGManager.Api.Endpoints.Pipelines.Release.Request;
 
 public class ReleasePipelineRequest : BasicRequest
 {
-
     [Required]
     public string Project { get; set; } = null!;
 

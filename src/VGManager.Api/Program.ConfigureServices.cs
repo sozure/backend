@@ -100,7 +100,7 @@ static partial class Program
         services.AddScoped<IKeyVaultService, KeyVaultService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IGitRepositoryService, GitRepositoryService>();
-        services.AddScoped<IGitBranchService, GitBranchService>();
+        services.AddScoped<IGitVersionService, GitVersionService>();
         services.AddScoped<IGitFileService, GitFileService>();
         services.AddScoped<IReleasePipelineService, ReleasePipelineService>();
         services.AddScoped<IProfileService, ProfileService>();

@@ -4,16 +4,16 @@ using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
-public class GitBranchService : IGitBranchService
+public class GitVersionService : IGitVersionService
 {
     private readonly IGitVersionAdapter _gitBranchAdapter;
 
-    public GitBranchService(IGitVersionAdapter gitBranchAdapter)
+    public GitVersionService(IGitVersionAdapter gitBranchAdapter)
     {
         _gitBranchAdapter = gitBranchAdapter;
     }
 
-    public async Task<(AdapterStatus, IEnumerable<string>)> GetAllAsync(
+    public async Task<(AdapterStatus, IEnumerable<string>)> GetBranchesAsync(
         string organization,
         string pat,
         string repositoryId,

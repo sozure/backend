@@ -10,28 +10,28 @@ namespace VGManager.Api.Endpoints.GitBranch;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class GitBranchController : ControllerBase
+public class GitVersionController : ControllerBase
 {
 
-    private readonly IGitBranchService _gitBranchService;
+    private readonly IGitVersionService _gitBranchService;
 
-    public GitBranchController(IGitBranchService gitBranchService)
+    public GitVersionController(IGitVersionService gitBranchService)
     {
         _gitBranchService = gitBranchService;
     }
 
-    [HttpPost(Name = "branches")]
+    [HttpPost("Branches", Name = "branches")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetAsync(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetBranchesAsync(
         [FromBody] GitBasicRequest request,
         CancellationToken cancellationToken
     )
     {
         try
         {
-            (var status, var branches) = await _gitBranchService.GetAllAsync(
+            (var status, var branches) = await _gitBranchService.GetBranchesAsync(
                 request.Organization,
                 request.PAT,
                 request.RepositoryId,

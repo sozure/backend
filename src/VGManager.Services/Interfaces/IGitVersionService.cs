@@ -2,9 +2,9 @@ using VGManager.Models.StatusEnums;
 
 namespace VGManager.Services.Interfaces;
 
-public interface IGitBranchService
+public interface IGitVersionService
 {
-    Task<(AdapterStatus, IEnumerable<string>)> GetAllAsync(
+    Task<(AdapterStatus, IEnumerable<string>)> GetBranchesAsync(
         string organization,
         string pat,
         string repositoryId,

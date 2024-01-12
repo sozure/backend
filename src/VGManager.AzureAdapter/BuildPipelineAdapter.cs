@@ -6,7 +6,6 @@ namespace VGManager.AzureAdapter;
 
 public class BuildPipelineAdapter: IBuildPipelineAdapter
 {
-
     private readonly IHttpClientProvider _clientProvider;
     private readonly ILogger _logger;
 

@@ -44,4 +44,32 @@ public class GitVersionAdapter : IGitVersionAdapter
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
     }
+
+    public async Task<(AdapterStatus, IEnumerable<string>)> GetTagsAsync(
+        string organization,
+        string pat,
+        Guid repositoryId,
+        CancellationToken cancellationToken = default
+        )
+    {
+        try
+        {
+            _clientProvider.Setup(organization, pat);
+            _logger.LogInformation("Request git tags from {project} git project.", repositoryId);
+            using var client = await _clientProvider.GetClientAsync<GitHttpClient>(cancellationToken);
+            var tags = await client.GetTagRefsAsync(repositoryId);
+
+            return (AdapterStatus.Success, tags.Select(tag => tag.Name).ToList());
+        }
+        catch (ProjectDoesNotExistWithNameException ex)
+        {
+            _logger.LogError(ex, "{project} git project is not found.", repositoryId);
+            return (AdapterStatus.ProjectDoesNotExist, Enumerable.Empty<string>());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting git tags from {project} git project.", repositoryId);
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+    }
 }

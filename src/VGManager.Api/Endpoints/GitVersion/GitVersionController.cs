@@ -52,4 +52,37 @@ public class GitVersionController : ControllerBase
             });
         }
     }
+
+    [HttpPost("Tags", Name = "tags")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetTagsAsync(
+        [FromBody] GitBasicRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            (var status, var tags) = await _gitBranchService.GetTagsAsync(
+                request.Organization,
+                request.PAT,
+                new Guid(request.RepositoryId),
+                cancellationToken
+                );
+            return Ok(new AdapterResponseModel<IEnumerable<string>>
+            {
+                Status = status,
+                Data = tags
+            });
+        }
+        catch (Exception)
+        {
+            return Ok(new AdapterResponseModel<IEnumerable<string>>
+            {
+                Status = AdapterStatus.Unknown,
+                Data = Enumerable.Empty<string>()
+            });
+        }
+    }
 }

@@ -22,4 +22,14 @@ public class GitVersionService : IGitVersionService
     {
         return await _gitBranchAdapter.GetBranchesAsync(organization, pat, repositoryId, cancellationToken);
     }
+
+    public async Task<(AdapterStatus, IEnumerable<string>)> GetTagsAsync(
+        string organization,
+        string pat,
+        Guid repositoryId,
+        CancellationToken cancellationToken = default
+        )
+    {
+        return await _gitBranchAdapter.GetTagsAsync(organization, pat, repositoryId, cancellationToken);
+    }
 }

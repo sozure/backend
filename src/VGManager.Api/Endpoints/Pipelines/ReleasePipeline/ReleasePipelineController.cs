@@ -1,12 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using VGManager.Api.Endpoints.ReleasePipeline.Request;
+using VGManager.Api.Endpoints.Pipelines.Release.Request;
 using VGManager.Models.Models;
 using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
 
-namespace VGManager.Api.Endpoints.ReleasePipeline;
+namespace VGManager.Api.Endpoints.Pipelines.Release;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -14,7 +14,6 @@ namespace VGManager.Api.Endpoints.ReleasePipeline;
 public class ReleasePipelineController : ControllerBase
 {
     private readonly IReleasePipelineService _releasePipelineService;
-    private readonly IMapper _mapper;
 
     public ReleasePipelineController(IReleasePipelineService releasePipelineService, IMapper mapper)
     {

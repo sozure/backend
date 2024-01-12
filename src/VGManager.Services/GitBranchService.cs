@@ -6,9 +6,9 @@ namespace VGManager.Services;
 
 public class GitBranchService : IGitBranchService
 {
-    private readonly IGitBranchAdapter _gitBranchAdapter;
+    private readonly IGitVersionAdapter _gitBranchAdapter;
 
-    public GitBranchService(IGitBranchAdapter gitBranchAdapter)
+    public GitBranchService(IGitVersionAdapter gitBranchAdapter)
     {
         _gitBranchAdapter = gitBranchAdapter;
     }
@@ -20,6 +20,6 @@ public class GitBranchService : IGitBranchService
         CancellationToken cancellationToken = default
         )
     {
-        return await _gitBranchAdapter.GetAllAsync(organization, pat, repositoryId, cancellationToken);
+        return await _gitBranchAdapter.GetBranchesAsync(organization, pat, repositoryId, cancellationToken);
     }
 }

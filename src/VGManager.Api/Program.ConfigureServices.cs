@@ -110,7 +110,7 @@ static partial class Program
         services.AddScoped<IProjectAdapter, ProjectAdapter>();
         services.AddScoped<IKeyVaultAdapter, KeyVaultAdapter>();
         services.AddScoped<IGitRepositoryAdapter, GitRepositoryAdapter>();
-        services.AddScoped<IGitBranchAdapter, GitBranchAdapter>();
+        services.AddScoped<IGitVersionAdapter, GitVersionAdapter>();
         services.AddScoped<IGitFileAdapter, GitFileAdapter>();
         services.AddScoped<IReleasePipelineAdapter, ReleasePipelineAdapter>();
         services.AddScoped<IHttpClientProvider, HttpClientProvider>();

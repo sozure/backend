@@ -6,18 +6,18 @@ using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter;
 
-public class GitBranchAdapter : IGitBranchAdapter
+public class GitVersionAdapter : IGitVersionAdapter
 {
     private readonly IHttpClientProvider _clientProvider;
     private readonly ILogger _logger;
 
-    public GitBranchAdapter(IHttpClientProvider clientProvider, ILogger<GitBranchAdapter> logger)
+    public GitVersionAdapter(IHttpClientProvider clientProvider, ILogger<GitVersionAdapter> logger)
     {
         _clientProvider = clientProvider;
         _logger = logger;
     }
 
-    public async Task<(AdapterStatus, IEnumerable<string>)> GetAllAsync(
+    public async Task<(AdapterStatus, IEnumerable<string>)> GetBranchesAsync(
         string organization,
         string pat,
         string repositoryId,

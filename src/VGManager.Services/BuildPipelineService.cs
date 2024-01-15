@@ -1,3 +1,4 @@
+using Microsoft.TeamFoundation.Build.WebApi;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
@@ -11,6 +12,24 @@ public class BuildPipelineService: IBuildPipelineService
     public BuildPipelineService(IBuildPipelineAdapter buildPipelineAdapter)
     {
         _buildPipelineAdapter = buildPipelineAdapter;
+    }
+
+    public async Task<IEnumerable<(string, string)>> GetBuildPipelinesAsync(
+        string organization,
+        string pat,
+        string project,
+        CancellationToken cancellationToken = default
+        )
+    {
+        var result = new List<(string, string)>();
+        var pipelines = await _buildPipelineAdapter.GetBuildPipelinesAsync(organization, pat, project, cancellationToken);
+        
+        foreach (var pipeline in pipelines)
+        {
+            result.Add((pipeline.Name, pipeline.Id.ToString()));
+        }
+
+        return result;
     }
 
     public async Task<AdapterStatus> RunBuildPipelineAsync(

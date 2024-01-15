@@ -24,7 +24,7 @@ public class BuildPipelineController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<(string, string)>>>> GetAll(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<Dictionary<string, string>>>>> GetAll(
         [FromBody] ExtendedBasicRequest request,
         CancellationToken cancellationToken
         )
@@ -37,7 +37,7 @@ public class BuildPipelineController : ControllerBase
                 request.Project,
                 cancellationToken
                 );
-            return Ok(new AdapterResponseModel<IEnumerable<(string, string)>>()
+            return Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
             {
                 Status = AdapterStatus.Success,
                 Data = pipelines
@@ -45,10 +45,10 @@ public class BuildPipelineController : ControllerBase
         }
         catch (Exception)
         {
-            return Ok(new AdapterResponseModel<IEnumerable<(string, string)>>()
+            return Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
             {
                 Status = AdapterStatus.Unknown,
-                Data = Enumerable.Empty<(string, string)>()
+                Data = Enumerable.Empty<Dictionary<string, string>>()
             });
         }
     }

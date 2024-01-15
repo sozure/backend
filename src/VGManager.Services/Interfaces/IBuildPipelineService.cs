@@ -4,7 +4,7 @@ namespace VGManager.Services.Interfaces;
 
 public interface IBuildPipelineService
 {
-    Task<IEnumerable<(string, string)>> GetBuildPipelinesAsync(
+    Task<IEnumerable<Dictionary<string, string>>> GetBuildPipelinesAsync(
         string organization,
         string pat,
         string project,

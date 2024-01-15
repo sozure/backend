@@ -13,19 +13,20 @@ public class BuildPipelineService : IBuildPipelineService
         _buildPipelineAdapter = buildPipelineAdapter;
     }
 
-    public async Task<IEnumerable<(string, string)>> GetBuildPipelinesAsync(
+    public async Task<IEnumerable<Dictionary<string, string>>> GetBuildPipelinesAsync(
         string organization,
         string pat,
         string project,
         CancellationToken cancellationToken = default
         )
     {
-        var result = new List<(string, string)>();
+        var result = new List<Dictionary<string, string>>();
         var pipelines = await _buildPipelineAdapter.GetBuildPipelinesAsync(organization, pat, project, cancellationToken);
 
         foreach (var pipeline in pipelines)
         {
-            result.Add((pipeline.Name, pipeline.Id.ToString()));
+            result.Add(
+                new() { ["name"] = pipeline.Name, ["id"] = pipeline.Id.ToString() });
         }
 
         return result;

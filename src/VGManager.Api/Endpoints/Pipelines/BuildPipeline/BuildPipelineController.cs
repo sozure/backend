@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using VGManager.Api.Endpoints.Pipelines.BuildPipeline;
 using VGManager.Models.Models;
 using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
-using static Microsoft.Azure.Pipelines.WebApi.PipelinesResources;
 
 namespace VGManager.Api.Endpoints.Pipelines.Build;
 

@@ -5,7 +5,7 @@ using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter;
 
-public class BuildPipelineAdapter: IBuildPipelineAdapter
+public class BuildPipelineAdapter : IBuildPipelineAdapter
 {
     private readonly IHttpClientProvider _clientProvider;
     private readonly ILogger _logger;
@@ -40,7 +40,7 @@ public class BuildPipelineAdapter: IBuildPipelineAdapter
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public async Task<AdapterStatus> RunBuildPipelineAsync(
-        string organization, 
+        string organization,
         string pat,
         string project,
         int definitionId,
@@ -63,11 +63,12 @@ public class BuildPipelineAdapter: IBuildPipelineAdapter
             var finishedBuild = await client
                 .QueueBuildAsync(build, true, definitionId: pipeline.Id, cancellationToken: cancellationToken);
             return finishedBuild is not null ? AdapterStatus.Success : AdapterStatus.Unknown;
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error running build pipeline {definitionId} for {project} project.", definitionId, project);
             return AdapterStatus.Unknown;
         }
-        
+
     }
 }

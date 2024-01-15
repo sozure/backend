@@ -3,11 +3,8 @@ using VGManager.Api.Common;
 
 namespace VGManager.Api.Endpoints.Pipelines.BuildPipeline;
 
-public class BuildPipelineRequest : BasicRequest
+public class BuildPipelineRequest : ExtendedBasicRequest
 {
-    [Required]
-    public string Project { get; set; } = null!;
-
     [Required]
     public int DefinitionId { get; set; }
 

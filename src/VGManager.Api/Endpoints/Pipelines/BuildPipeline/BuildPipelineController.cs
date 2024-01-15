@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using VGManager.Api.Common;
 using VGManager.Api.Endpoints.Pipelines.BuildPipeline;
 using VGManager.Models.Models;
 using VGManager.Models.StatusEnums;
@@ -24,7 +25,7 @@ public class BuildPipelineController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AdapterResponseModel<IEnumerable<(string, string)>>>> GetAll(
-        [FromBody] BuildPipelineRequest request,
+        [FromBody] ExtendedBasicRequest request,
         CancellationToken cancellationToken
         )
     {

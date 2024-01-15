@@ -3,11 +3,8 @@ using VGManager.Api.Common;
 
 namespace VGManager.Api.Endpoints.VariableGroup.Request;
 
-public class VariableRequest : BasicRequest
+public class VariableRequest : ExtendedBasicRequest
 {
-    [Required]
-    public string Project { get; set; } = null!;
-
     [Required]
     public string UserName { get; set; } = null!;
 

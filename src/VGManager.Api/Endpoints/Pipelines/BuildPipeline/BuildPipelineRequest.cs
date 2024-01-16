@@ -7,7 +7,4 @@ public class BuildPipelineRequest : ExtendedBasicRequest
 {
     [Required]
     public int DefinitionId { get; set; }
-
-    [Required]
-    public string SourceBranch { get; set; } = null!;
 }

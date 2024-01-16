@@ -113,4 +113,31 @@ public class BuildPipelineController : ControllerBase
             return Ok(AdapterStatus.Unknown);
         }
     }
+
+    [HttpPost("RunAll", Name = "runall")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AdapterStatus>> RunBuildPipelinesAsync(
+        [FromBody] RunBuildPipelinesRequest request,
+        CancellationToken cancellationToken
+        )
+    {
+        try
+        {
+            var status = await _buildPipelineService.RunBuildPipelinesAsync(
+                request.Organization,
+                request.PAT,
+                request.Project,
+                request.Pipelines,
+                cancellationToken
+                );
+
+            return Ok(status);
+        }
+        catch (Exception)
+        {
+            return Ok(AdapterStatus.Unknown);
+        }
+    }
 }

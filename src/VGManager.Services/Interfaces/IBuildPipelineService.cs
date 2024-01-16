@@ -28,4 +28,12 @@ public interface IBuildPipelineService
         string sourceBranch,
         CancellationToken cancellationToken = default
         );
+
+    Task<AdapterStatus> RunBuildPipelinesAsync(
+        string organization,
+        string pat,
+        string project,
+        IEnumerable<IDictionary<string, string>> pipelines,
+        CancellationToken cancellationToken = default
+        );
 }

@@ -67,4 +67,21 @@ public class BuildPipelineService : IBuildPipelineService
             cancellationToken
             );
     }
+
+    public async Task<AdapterStatus> RunBuildPipelinesAsync(
+        string organization,
+        string pat,
+        string project,
+        IEnumerable<IDictionary<string, string>> pipelines,
+        CancellationToken cancellationToken = default
+        )
+    {
+        return await _buildPipelineAdapter.RunBuildPipelinesAsync(
+            organization,
+            pat,
+            project,
+            pipelines,
+            cancellationToken
+            );
+    }
 }

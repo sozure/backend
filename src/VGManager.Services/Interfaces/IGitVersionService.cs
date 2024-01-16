@@ -1,3 +1,4 @@
+using VGManager.AzureAdapter.Entities;
 using VGManager.Models.StatusEnums;
 
 namespace VGManager.Services.Interfaces;
@@ -15,6 +16,11 @@ public interface IGitVersionService
         string organization,
         string pat,
         Guid repositoryId,
+        CancellationToken cancellationToken = default
+        );
+
+    Task<AdapterStatus> CreateTagAsync(
+        CreateTagEntity tagEntity,
         CancellationToken cancellationToken = default
         );
 }

@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.Build.WebApi;
+using Microsoft.VisualStudio.Services.WebApi;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.StatusEnums;
 
@@ -83,6 +84,47 @@ public class BuildPipelineAdapter : IBuildPipelineAdapter
             _logger.LogError(ex, "Error running build pipeline {definitionId} for {project} project.", definitionId, project);
             return AdapterStatus.Unknown;
         }
+    }
 
+    public async Task<AdapterStatus> RunBuildPipelinesAsync(
+        string organization,
+        string pat,
+        string project,
+        IEnumerable<IDictionary<string, string>> pipelines,
+        CancellationToken cancellationToken = default
+        )
+    {
+        try
+        {
+            _logger.LogInformation("Request build pipelines from Azure DevOps.");
+            _clientProvider.Setup(organization, pat);
+            using var client = await _clientProvider.GetClientAsync<BuildHttpClient>(cancellationToken);
+            var errorCounter = 0;
+            foreach(var pipeline in pipelines)
+            {
+                var definitionId = int.Parse(pipeline["DefinitionId"]);
+                var sourceBranch = pipeline["SourceBranch"];
+                var receivedPipeline = await client.GetDefinitionAsync(project, definitionId, cancellationToken: cancellationToken);
+                var build = new Build
+                {
+                    Definition = receivedPipeline,
+                    Project = receivedPipeline.Project,
+                    SourceBranch = sourceBranch
+                };
+                var finishedBuild = await client
+                    .QueueBuildAsync(build, true, definitionId: receivedPipeline.Id, cancellationToken: cancellationToken);
+                if (finishedBuild is null)
+                {
+                    errorCounter++;
+                }
+            }
+
+            return errorCounter == 0 ? AdapterStatus.Success : AdapterStatus.Unknown;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error running build pipelines for {project} project.", project);
+            return AdapterStatus.Unknown;
+        }
     }
 }

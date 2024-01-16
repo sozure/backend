@@ -20,11 +20,45 @@ public class BuildPipelineController : ControllerBase
         _buildPipelineService = buildPipelineService;
     }
 
+    [HttpPost("GetRepositoryId", Name = "getrepositoryid")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AdapterResponseModel<string>>> GetRepositoryIdAsync(
+        [FromBody] BuildPipelineRequest request,
+        CancellationToken cancellationToken
+        )
+    {
+        try
+        {
+            var id = await _buildPipelineService.GetRepositoryIdByBuildDefinitionAsync(
+                request.Organization,
+                request.PAT,
+                request.Project,
+                request.DefinitionId,
+                cancellationToken
+                );
+            return Ok(new AdapterResponseModel<Guid>()
+            {
+                Status = AdapterStatus.Success,
+                Data = id
+            });
+        }
+        catch (Exception)
+        {
+            return Ok(new AdapterResponseModel<Guid>()
+            {
+                Status = AdapterStatus.Unknown,
+                Data = Guid.Empty
+            });
+        }
+    }
+
     [HttpPost("GetAll", Name = "getall")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<Dictionary<string, string>>>>> GetAll(
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<Dictionary<string, string>>>>> GetAllAsync(
         [FromBody] ExtendedBasicRequest request,
         CancellationToken cancellationToken
         )
@@ -58,7 +92,7 @@ public class BuildPipelineController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AdapterStatus>> RunBuildPipelineAsync(
-        [FromBody] BuildPipelineRequest request,
+        [FromBody] RunBuildPipelineRequest request,
         CancellationToken cancellationToken
         )
     {

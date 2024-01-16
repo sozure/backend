@@ -1,3 +1,4 @@
+using Microsoft.TeamFoundation.Build.WebApi;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
@@ -7,10 +8,26 @@ namespace VGManager.Services;
 public class BuildPipelineService : IBuildPipelineService
 {
     private readonly IBuildPipelineAdapter _buildPipelineAdapter;
+    private readonly IGitRepositoryAdapter _gitRepositoryAdapter;
 
-    public BuildPipelineService(IBuildPipelineAdapter buildPipelineAdapter)
+    public BuildPipelineService(IBuildPipelineAdapter buildPipelineAdapter, IGitRepositoryAdapter gitRepositoryAdapter)
     {
         _buildPipelineAdapter = buildPipelineAdapter;
+        _gitRepositoryAdapter = gitRepositoryAdapter;
+    }
+
+    public async Task<Guid> GetRepositoryIdByBuildDefinitionAsync(
+        string organization,
+        string pat,
+        string project,
+        int id,
+        CancellationToken cancellationToken = default
+        )
+    {
+        var pipeline = await _buildPipelineAdapter.GetBuildPipelineAsync(organization, pat, project, id, cancellationToken);
+        var repositories = await _gitRepositoryAdapter.GetAllAsync(organization, project, pat, cancellationToken);
+        var repo = repositories.FirstOrDefault(r => r.Name == pipeline.Name);
+        return repo?.Id ?? Guid.Empty;
     }
 
     public async Task<IEnumerable<Dictionary<string, string>>> GetBuildPipelinesAsync(

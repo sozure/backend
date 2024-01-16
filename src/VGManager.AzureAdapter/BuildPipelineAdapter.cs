@@ -29,6 +29,20 @@ public class BuildPipelineAdapter : IBuildPipelineAdapter
         return await client.GetDefinitionsAsync(project, cancellationToken: cancellationToken);
     }
 
+    public async Task<BuildDefinitionReference> GetBuildPipelineAsync(
+        string organization,
+        string pat,
+        string project,
+        int id,
+        CancellationToken cancellationToken = default
+        )
+    {
+        _logger.LogInformation("Request build pipelines from Azure DevOps.");
+        _clientProvider.Setup(organization, pat);
+        using var client = await _clientProvider.GetClientAsync<BuildHttpClient>(cancellationToken);
+        return await client.GetDefinitionAsync(project, id, cancellationToken: cancellationToken);
+    }
+
     /// <summary>
     /// Run build pipeline
     /// </summary>

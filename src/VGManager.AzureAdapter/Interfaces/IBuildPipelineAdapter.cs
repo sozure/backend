@@ -5,6 +5,14 @@ namespace VGManager.AzureAdapter.Interfaces;
 
 public interface IBuildPipelineAdapter
 {
+    Task<BuildDefinitionReference> GetBuildPipelineAsync(
+        string organization,
+        string pat,
+        string project,
+        int id,
+        CancellationToken cancellationToken = default
+        );
+
     Task<IEnumerable<BuildDefinitionReference>> GetBuildPipelinesAsync(
         string organization,
         string pat,

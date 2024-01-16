@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Api.Common;
+using VGManager.AzureAdapter.Entities;
 using VGManager.Models.Models;
 using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
@@ -82,6 +83,37 @@ public class GitVersionController : ControllerBase
             {
                 Status = AdapterStatus.Unknown,
                 Data = Enumerable.Empty<string>()
+            });
+        }
+    }
+
+    [HttpPost("Tag/Create", Name = "tagcreation")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> CreateTagAsync(
+        [FromBody] CreateTagEntity request,
+        CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            var status = await _gitBranchService.CreateTagAsync(
+                request,
+                cancellationToken
+                );
+            return Ok(new AdapterResponseModel<string>
+            {
+                Status = status,
+                Data = null!
+            });
+        }
+        catch (Exception)
+        {
+            return Ok(new AdapterResponseModel<string>
+            {
+                Status = AdapterStatus.Unknown,
+                Data = null!
             });
         }
     }

@@ -115,6 +115,7 @@ static partial class Program
         services.AddScoped<IGitFileAdapter, GitFileAdapter>();
         services.AddScoped<IReleasePipelineAdapter, ReleasePipelineAdapter>();
         services.AddScoped<IBuildPipelineAdapter, BuildPipelineAdapter>();
+        services.AddScoped<ISprintAdapter, SprintAdapter>();
         services.AddScoped<IHttpClientProvider, HttpClientProvider>();
     }
 }

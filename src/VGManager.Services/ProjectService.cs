@@ -23,7 +23,7 @@ public class ProjectService : IProjectService
         var url = $"https://dev.azure.com/{projectModel.Organization}";
         var projectsEntity = await _projectRepository.GetProjectsAsync(url, projectModel.PAT, cancellationToken);
 
-        return new AdapterResponseModel<IEnumerable<ProjectResult>>()
+        return new()
         {
             Status = projectsEntity.Status,
             Data = _mapper.Map<IEnumerable<ProjectResult>>(projectsEntity.Data)

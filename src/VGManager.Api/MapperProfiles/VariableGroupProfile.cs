@@ -1,6 +1,6 @@
 using AutoMapper;
-using VGManager.Api.VariableGroups.Request;
-using VGManager.Api.VariableGroups.Response;
+using VGManager.Api.Endpoints.VariableGroup.Request;
+using VGManager.Api.Endpoints.VariableGroup.Response;
 using VGManager.Services.Models.VariableGroups.Requests;
 using VGManager.Services.Models.VariableGroups.Results;
 

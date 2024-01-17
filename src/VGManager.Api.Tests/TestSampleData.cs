@@ -2,10 +2,10 @@
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
-using VGManager.Api.Secret.Request;
-using VGManager.Api.Secrets.Response;
-using VGManager.Api.VariableGroups.Request;
-using VGManager.Api.VariableGroups.Response;
+using VGManager.Api.Endpoints.Secret.Request;
+using VGManager.Api.Endpoints.Secret.Response;
+using VGManager.Api.Endpoints.VariableGroup.Request;
+using VGManager.Api.Endpoints.VariableGroup.Response;
 using VGManager.AzureAdapter.Entities;
 using VGManager.Models.Models;
 using VGManager.Models.StatusEnums;
@@ -225,7 +225,7 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new AdapterResponseModel<List<VariableResponse>>
+        return new()
         {
             Status = AdapterStatus.Success,
             Data = result
@@ -252,7 +252,7 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new AdapterResponseModel<List<VariableResponse>>
+        return new()
         {
             Status = AdapterStatus.Success,
             Data = result
@@ -293,7 +293,7 @@ public static class TestSampleData
             result.Add(item);
         }
 
-        return new AdapterResponseModel<List<VariableResponse>>
+        return new()
         {
             Status = AdapterStatus.Success,
             Data = result

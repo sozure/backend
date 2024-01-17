@@ -5,6 +5,7 @@ using System.Reflection;
 using VGManager.Api;
 using VGManager.Api.HealthChecks;
 using VGManager.AzureAdapter;
+using VGManager.AzureAdapter.Helper;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Repositories.Boilerplate;
 using VGManager.Repositories.DbContexts;
@@ -99,9 +100,10 @@ static partial class Program
         services.AddScoped<IKeyVaultService, KeyVaultService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IGitRepositoryService, GitRepositoryService>();
-        services.AddScoped<IGitBranchService, GitBranchService>();
+        services.AddScoped<IGitVersionService, GitVersionService>();
         services.AddScoped<IGitFileService, GitFileService>();
         services.AddScoped<IReleasePipelineService, ReleasePipelineService>();
+        services.AddScoped<IBuildPipelineService, BuildPipelineService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<IChangeService, ChangeService>();
         services.AddScoped<IProfileAdapter, ProfileAdapter>();
@@ -109,8 +111,11 @@ static partial class Program
         services.AddScoped<IProjectAdapter, ProjectAdapter>();
         services.AddScoped<IKeyVaultAdapter, KeyVaultAdapter>();
         services.AddScoped<IGitRepositoryAdapter, GitRepositoryAdapter>();
-        services.AddScoped<IGitBranchAdapter, GitBranchAdapter>();
+        services.AddScoped<IGitVersionAdapter, GitVersionAdapter>();
         services.AddScoped<IGitFileAdapter, GitFileAdapter>();
         services.AddScoped<IReleasePipelineAdapter, ReleasePipelineAdapter>();
+        services.AddScoped<IBuildPipelineAdapter, BuildPipelineAdapter>();
+        services.AddScoped<ISprintAdapter, SprintAdapter>();
+        services.AddScoped<IHttpClientProvider, HttpClientProvider>();
     }
 }

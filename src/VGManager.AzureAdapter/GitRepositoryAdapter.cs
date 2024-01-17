@@ -1,8 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
-using Microsoft.VisualStudio.Services.Common;
-using Microsoft.VisualStudio.Services.WebApi;
 using System.Text;
 using System.Text.Json;
 using VGManager.AzureAdapter.Entities;
@@ -13,7 +11,7 @@ namespace VGManager.AzureAdapter;
 
 public class GitRepositoryAdapter : IGitRepositoryAdapter
 {
-    private VssConnection _connection = null!;
+    private readonly IHttpClientProvider _clientProvider;
     private readonly ILogger _logger;
 
     private readonly char[] _notAllowedCharacters = { '{', '}', ' ', '(', ')', '$' };
@@ -24,19 +22,10 @@ public class GitRepositoryAdapter : IGitRepositoryAdapter
     private readonly string _variableYamlKind = "ConfigMap";
     private readonly string _variableYamlElement = "data";
 
-    public GitRepositoryAdapter(ILogger<GitRepositoryAdapter> logger)
+    public GitRepositoryAdapter(IHttpClientProvider clientProvider, ILogger<GitRepositoryAdapter> logger)
     {
+        _clientProvider = clientProvider;
         _logger = logger;
-    }
-
-    public void Setup(string organization, string pat)
-    {
-        var uriString = $"https://dev.azure.com/{organization}";
-        Uri uri;
-        Uri.TryCreate(uriString, UriKind.Absolute, out uri!);
-
-        var credentials = new VssBasicCredential(string.Empty, pat);
-        _connection = new VssConnection(uri, credentials);
     }
 
     public async Task<IEnumerable<GitRepository>> GetAllAsync(
@@ -47,14 +36,15 @@ public class GitRepositoryAdapter : IGitRepositoryAdapter
         )
     {
         _logger.LogInformation("Request git repositories from {project} azure project.", project);
-        Setup(organization, pat);
-        var gitClient = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
-        var repositories = await gitClient.GetRepositoriesAsync(cancellationToken: cancellationToken);
+        _clientProvider.Setup(organization, pat);
+        using var client = await _clientProvider.GetClientAsync<GitHttpClient>(cancellationToken);
+        var repositories = await client.GetRepositoriesAsync(cancellationToken: cancellationToken);
         return repositories.Where(repo => (!repo.IsDisabled ?? false) && repo.ProjectReference.Name == project).ToList();
     }
 
     public async Task<List<string>> GetVariablesFromConfigAsync(
         GitRepositoryEntity gitRepositoryEntity,
+        string pat,
         CancellationToken cancellationToken = default
         )
     {
@@ -66,15 +56,15 @@ public class GitRepositoryAdapter : IGitRepositoryAdapter
             project,
             repositoryId
             );
-
-        var gitClient = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
+        _clientProvider.Setup(gitRepositoryEntity.Organization, pat);
+        using var client = await _clientProvider.GetClientAsync<GitHttpClient>(cancellationToken);
         var gitVersionDescriptor = new GitVersionDescriptor
         {
             VersionType = GitVersionType.Branch,
             Version = gitRepositoryEntity.Branch
         };
 
-        var item = await gitClient.GetItemTextAsync(
+        var item = await client.GetItemTextAsync(
             project: project,
             repositoryId: repositoryId,
             path: gitRepositoryEntity.FilePath,

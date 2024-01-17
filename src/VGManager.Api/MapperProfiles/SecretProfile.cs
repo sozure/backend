@@ -1,6 +1,6 @@
 using AutoMapper;
-using VGManager.Api.Secret.Request;
-using VGManager.Api.Secrets.Response;
+using VGManager.Api.Endpoints.Secret.Request;
+using VGManager.Api.Endpoints.Secret.Response;
 using VGManager.Services.Models.Secrets.Requests;
 using VGManager.Services.Models.Secrets.Results;
 

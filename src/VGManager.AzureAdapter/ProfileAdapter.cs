@@ -1,36 +1,26 @@
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.Profile;
 using Microsoft.VisualStudio.Services.Profile.Client;
-using Microsoft.VisualStudio.Services.WebApi;
 using VGManager.AzureAdapter.Interfaces;
 
 namespace VGManager.AzureAdapter;
 
 public class ProfileAdapter : IProfileAdapter
 {
-    private VssConnection _connection = null!;
+    private readonly IHttpClientProvider _clientProvider;
     private readonly ILogger _logger;
 
-    public ProfileAdapter(ILogger<VariableGroupAdapter> logger)
+    public ProfileAdapter(IHttpClientProvider clientProvider, ILogger<VariableGroupAdapter> logger)
     {
+        _clientProvider = clientProvider;
         _logger = logger;
     }
 
-    public void Setup(string organization, string pat)
-    {
-        var uriString = $"https://dev.azure.com/{organization}";
-        Uri uri;
-        Uri.TryCreate(uriString, UriKind.Absolute, out uri!);
-
-        var credentials = new VssBasicCredential(string.Empty, pat);
-        _connection = new VssConnection(uri, credentials);
-    }
-
-    public async Task<Profile?> GetProfileAsync(CancellationToken cancellationToken = default)
+    public async Task<Profile?> GetProfileAsync(string organization, string pat, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Request profile from Azure DevOps.");
-        var client = await _connection.GetClientAsync<ProfileHttpClient>(cancellationToken);
+        _clientProvider.Setup(organization, pat);
+        using var client = await _clientProvider.GetClientAsync<ProfileHttpClient>(cancellationToken);
         var profileQueryContext = new ProfileQueryContext(AttributesScope.Core);
 
         try

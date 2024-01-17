@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
-using Microsoft.VisualStudio.Services.WebApi;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.StatusEnums;
 
@@ -13,15 +12,15 @@ namespace VGManager.AzureAdapter;
 
 public class ReleasePipelineAdapter : IReleasePipelineAdapter
 {
-    private VssConnection _connection = null!;
+    private readonly IHttpClientProvider _clientProvider;
     private readonly ILogger _logger;
 
     private readonly string[] Replacable = { "Deploy to ", "Transfer to " };
-
     private readonly string[] ExcludableEnvironments = { "OTP container registry" };
 
-    public ReleasePipelineAdapter(ILogger<ReleasePipelineAdapter> logger)
+    public ReleasePipelineAdapter(IHttpClientProvider clientProvider, ILogger<ReleasePipelineAdapter> logger)
     {
+        _clientProvider = clientProvider;
         _logger = logger;
     }
 
@@ -115,14 +114,14 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         CancellationToken cancellationToken
         )
     {
-        var taskAgentClient = await _connection.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
+        using var client = await _clientProvider.GetClientAsync<TaskAgentHttpClient>(cancellationToken: cancellationToken);
         var variableGroupNames = new List<(string, string)>();
 
         foreach (var env in definition.Environments.Where(env => !ExcludableEnvironments.Any(env.Name.Contains)))
         {
             foreach (var id in env.VariableGroups)
             {
-                var vg = await taskAgentClient.GetVariableGroupAsync(project, id, cancellationToken: cancellationToken);
+                var vg = await client.GetVariableGroupAsync(project, id, cancellationToken: cancellationToken);
                 variableGroupNames.Add((vg.Name, vg.Type));
             }
         }
@@ -139,10 +138,10 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         CancellationToken cancellationToken
         )
     {
-        Setup(organization, pat);
-        var releaseClient = await _connection.GetClientAsync<ReleaseHttpClient>(cancellationToken);
+        _clientProvider.Setup(organization, pat);
+        using var client = await _clientProvider.GetClientAsync<ReleaseHttpClient>(cancellationToken);
         var expand = ReleaseDefinitionExpands.Artifacts;
-        var releaseDefinitions = await releaseClient.GetReleaseDefinitionsAsync(
+        var releaseDefinitions = await client.GetReleaseDefinitionsAsync(
             project,
             expand: expand,
             cancellationToken: cancellationToken
@@ -160,11 +159,11 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
 
         foreach (var def in foundDefinitions)
         {
-            var subResult = await releaseClient.GetReleaseDefinitionAsync(project, def?.Id ?? 0, cancellationToken: cancellationToken);
+            var subResult = await client.GetReleaseDefinitionAsync(project, def?.Id ?? 0, cancellationToken: cancellationToken);
 
-            var workFlowTasks = subResult?.Environments.FirstOrDefault()?.DeployPhases.FirstOrDefault()?.WorkflowTasks.ToList() ?? 
+            var workFlowTasks = subResult?.Environments.FirstOrDefault()?.DeployPhases.FirstOrDefault()?.WorkflowTasks.ToList() ??
                 Enumerable.Empty<WorkflowTask>();
-            foreach(var task in workFlowTasks)
+            foreach (var task in workFlowTasks)
             {
                 task.Inputs.TryGetValue("configuration", out var configValue);
                 task.Inputs.TryGetValue("command", out var command);
@@ -177,15 +176,5 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         }
 
         return definition;
-    }
-
-    private void Setup(string organization, string pat)
-    {
-        var uriString = $"https://dev.azure.com/{organization}";
-        Uri uri;
-        Uri.TryCreate(uriString, UriKind.Absolute, out uri!);
-
-        var credentials = new VssBasicCredential(string.Empty, pat);
-        _connection = new VssConnection(uri, credentials);
     }
 }

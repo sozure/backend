@@ -1,6 +1,6 @@
 using AutoMapper;
 using VGManager.Api.Common;
-using VGManager.Api.Projects.Responses;
+using VGManager.Api.Endpoints.Project.Response;
 using VGManager.Services.Models.Common;
 using VGManager.Services.Models.Projects;
 

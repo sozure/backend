@@ -5,8 +5,6 @@ namespace VGManager.AzureAdapter.Interfaces;
 
 public interface IGitRepositoryAdapter
 {
-    void Setup(string organization, string pat);
-
     Task<IEnumerable<GitRepository>> GetAllAsync(
         string organization,
         string project,
@@ -16,6 +14,7 @@ public interface IGitRepositoryAdapter
 
     Task<List<string>> GetVariablesFromConfigAsync(
         GitRepositoryEntity gitRepositoryEntity,
+        string pat,
         CancellationToken cancellationToken = default
         );
 }

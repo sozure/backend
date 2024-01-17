@@ -1,8 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
-using Microsoft.VisualStudio.Services.Common;
-using Microsoft.VisualStudio.Services.WebApi;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.StatusEnums;
 
@@ -10,13 +8,14 @@ namespace VGManager.AzureAdapter;
 
 public class GitFileAdapter : IGitFileAdapter
 {
-    private VssConnection _connection = null!;
+    private readonly IHttpClientProvider _clientProvider;
     private readonly ILogger _logger;
 
     private readonly string[] Extensions = { "yaml" };
 
-    public GitFileAdapter(ILogger<GitFileAdapter> logger)
+    public GitFileAdapter(IHttpClientProvider clientProvider, ILogger<GitFileAdapter> logger)
     {
+        _clientProvider = clientProvider;
         _logger = logger;
     }
 
@@ -32,7 +31,7 @@ public class GitFileAdapter : IGitFileAdapter
         try
         {
             _logger.LogInformation("Request file path from {project} git project.", repositoryId);
-            Setup(organization, pat);
+            _clientProvider.Setup(organization, pat);
             return await GetFilePathAsync(branch, repositoryId, fileName, cancellationToken);
         }
         catch (ProjectDoesNotExistWithNameException ex)
@@ -59,7 +58,7 @@ public class GitFileAdapter : IGitFileAdapter
         try
         {
             _logger.LogInformation("Get config files from {project} git project.", repositoryId);
-            Setup(organization, pat);
+            _clientProvider.Setup(organization, pat);
             return await GetConfigFilesAsync(branch, repositoryId, extension, cancellationToken);
         }
         catch (Exception ex)
@@ -67,17 +66,6 @@ public class GitFileAdapter : IGitFileAdapter
             _logger.LogError(ex, "Error getting config files from {project} git project.", repositoryId);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
-
-    }
-
-    private void Setup(string organization, string pat)
-    {
-        var uriString = $"https://dev.azure.com/{organization}";
-        Uri uri;
-        Uri.TryCreate(uriString, UriKind.Absolute, out uri!);
-
-        var credentials = new VssBasicCredential(string.Empty, pat);
-        _connection = new VssConnection(uri, credentials);
     }
 
     private async Task<(AdapterStatus, IEnumerable<string>)> GetFilePathAsync(
@@ -89,12 +77,12 @@ public class GitFileAdapter : IGitFileAdapter
     {
         try
         {
-            var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
+            using var client = await _clientProvider.GetClientAsync<GitHttpClient>(cancellationToken);
             var request = new GitItemRequestData()
             {
                 ItemDescriptors = new GitItemDescriptor[]
                 {
-                    new GitItemDescriptor()
+                    new()
                     {
                         RecursionLevel = VersionControlRecursionType.Full,
                         Version = version,
@@ -131,12 +119,12 @@ public class GitFileAdapter : IGitFileAdapter
     {
         try
         {
-            var client = await _connection.GetClientAsync<GitHttpClient>(cancellationToken);
+            using var client = await _clientProvider.GetClientAsync<GitHttpClient>(cancellationToken);
             var request = new GitItemRequestData()
             {
                 ItemDescriptors = new GitItemDescriptor[]
                 {
-                    new GitItemDescriptor()
+                    new()
                     {
                         RecursionLevel = VersionControlRecursionType.Full,
                         Version = version,

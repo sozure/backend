@@ -17,7 +17,7 @@ public interface IGitVersionAdapter
         Guid repositoryId,
         CancellationToken cancellationToken = default
         );
-    Task<AdapterStatus> CreateTagAsync(
+    Task<(AdapterStatus, string)> CreateTagAsync(
         CreateTagEntity tagEntity,
         string defaultBranch,
         string sprint,

@@ -36,7 +36,7 @@ public class GitVersionService : IGitVersionService
         return await _gitBranchAdapter.GetTagsAsync(organization, pat, repositoryId, cancellationToken);
     }
 
-    public async Task<AdapterStatus> CreateTagAsync(
+    public async Task<(AdapterStatus, string)> CreateTagAsync(
         CreateTagEntity tagEntity,
         CancellationToken cancellationToken = default
         )
@@ -61,10 +61,11 @@ public class GitVersionService : IGitVersionService
         {
             return await CreateTagAsync(tagEntity, tags, branches, sprint, cancellationToken);
         }
-        return tagStatus;
+
+        return (tagStatus, string.Empty);
     }
 
-    private async Task<AdapterStatus> CreateTagAsync(
+    private async Task<(AdapterStatus, string)> CreateTagAsync(
         CreateTagEntity tagEntity, 
         IEnumerable<string> tags, 
         IEnumerable<string> branches, 
@@ -82,13 +83,13 @@ public class GitVersionService : IGitVersionService
 
             if (string.IsNullOrEmpty(newTag))
             {
-                return AdapterStatus.Unknown;
+                return (AdapterStatus.Unknown, string.Empty);
             }
 
             tagEntity.TagName = newTag;
             return await _gitBranchAdapter.CreateTagAsync(tagEntity, defaultBranch, sprint, cancellationToken);
         }
-        return AdapterStatus.Unknown;
+        return (AdapterStatus.Unknown, string.Empty);
     }
 
     private static string GetNewVersion(string tagName, string[] tagElements)

@@ -98,14 +98,15 @@ public class GitVersionController : ControllerBase
     {
         try
         {
-            var status = await _gitBranchService.CreateTagAsync(
+            (var status, var tag) = await _gitBranchService.CreateTagAsync(
                 request,
                 cancellationToken
                 );
+
             return Ok(new AdapterResponseModel<string>
             {
                 Status = status,
-                Data = null!
+                Data = tag
             });
         }
         catch (Exception)
@@ -113,7 +114,7 @@ public class GitVersionController : ControllerBase
             return Ok(new AdapterResponseModel<string>
             {
                 Status = AdapterStatus.Unknown,
-                Data = null!
+                Data = string.Empty
             });
         }
     }

@@ -73,7 +73,7 @@ public class GitVersionAdapter : IGitVersionAdapter
         }
     }
 
-    public async Task<AdapterStatus> CreateTagAsync(
+    public async Task<(AdapterStatus, string)> CreateTagAsync(
         CreateTagEntity tagEntity,
         string defaultBranch,
         string sprint,
@@ -84,6 +84,7 @@ public class GitVersionAdapter : IGitVersionAdapter
         var project = tagEntity.Project;
         try
         {
+            var tag = tagEntity.TagName;
             _clientProvider.Setup(tagEntity.Organization, tagEntity.PAT);
             _logger.LogInformation("Request git tags from {project} git project.", repositoryId);
             using var client = await _clientProvider.GetClientAsync<GitHttpClient>(cancellationToken);
@@ -95,9 +96,9 @@ public class GitVersionAdapter : IGitVersionAdapter
                 cancellationToken: cancellationToken
                 );
 
-            var tag = new GitAnnotatedTag
+            var gitAnnotatedTag = new GitAnnotatedTag
             {
-                Name = tagEntity.TagName,
+                Name = tag,
                 Message = $"Release {sprint}",
                 TaggedBy = new GitUserDate
                 {
@@ -107,18 +108,18 @@ public class GitVersionAdapter : IGitVersionAdapter
                 TaggedObject = new GitObject { ObjectId = branch.Commit.CommitId }
             };
 
-            var createdTag = await client.CreateAnnotatedTagAsync(tag, project, repositoryId, cancellationToken: cancellationToken);
-            return createdTag is not null ? AdapterStatus.Success : AdapterStatus.Unknown;
+            var createdTag = await client.CreateAnnotatedTagAsync(gitAnnotatedTag, project, repositoryId, cancellationToken: cancellationToken);
+            return createdTag is not null ? (AdapterStatus.Success, $"refs/tags/{tag}"): (AdapterStatus.Unknown, string.Empty);
         }
         catch (ProjectDoesNotExistWithNameException ex)
         {
             _logger.LogError(ex, "{project} git project is not found.", repositoryId);
-            return AdapterStatus.Unknown;
+            return (AdapterStatus.Unknown, string.Empty);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting git tags from {project} git project.", repositoryId);
-            return AdapterStatus.Unknown;
+            return (AdapterStatus.Unknown, string.Empty);
         }
     }
 }

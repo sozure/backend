@@ -19,7 +19,7 @@ public interface IGitVersionService
         CancellationToken cancellationToken = default
         );
 
-    Task<AdapterStatus> CreateTagAsync(
+    Task<(AdapterStatus, string)> CreateTagAsync(
         CreateTagEntity tagEntity,
         CancellationToken cancellationToken = default
         );

@@ -4,5 +4,17 @@
         <name>VGManager.AzureAdapter</name>
     </assembly>
     <members>
+        <member name="M:VGManager.AzureAdapter.BuildPipelineAdapter.RunBuildPipelineAsync(System.String,System.String,System.String,System.Int32,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Run build pipeline
+            </summary>
+            <param name="organization"></param>
+            <param name="pat"></param>
+            <param name="project"></param>
+            <param name="definitionId"></param>
+            <param name="sourceBranch">for example: "refs/tags/2.1.1" or "refs/heads/develop"</param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

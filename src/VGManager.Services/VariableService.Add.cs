@@ -55,8 +55,8 @@ public partial class VariableService
     }
 
     private IEnumerable<VariableGroup> CollectVariableGroups(
-        AdapterResponseModel<IEnumerable<VariableGroup>> vgEntity, 
-        string? keyFilter, 
+        AdapterResponseModel<IEnumerable<VariableGroup>> vgEntity,
+        string? keyFilter,
         string variableGroupFilter
         )
     {
@@ -88,9 +88,9 @@ public partial class VariableService
     }
 
     private async Task<AdapterStatus> AddVariablesAsync(
-        IEnumerable<VariableGroup> filteredVariableGroups, 
-        string key, 
-        string value, 
+        IEnumerable<VariableGroup> filteredVariableGroups,
+        string key,
+        string value,
         CancellationToken cancellationToken
         )
     {

@@ -4,7 +4,7 @@ using VGManager.AzureAdapter.Interfaces;
 
 namespace VGManager.AzureAdapter.Helper;
 
-public class HttpClientProvider: IHttpClientProvider
+public class HttpClientProvider : IHttpClientProvider
 {
     private VssConnection _connection = null!;
 
@@ -18,7 +18,7 @@ public class HttpClientProvider: IHttpClientProvider
         _connection = new VssConnection(uri, credentials);
     }
 
-    public async Task<T> GetClientAsync<T>(CancellationToken cancellationToken = default) where T: VssHttpClientBase
+    public async Task<T> GetClientAsync<T>(CancellationToken cancellationToken = default) where T : VssHttpClientBase
     {
         return await _connection.GetClientAsync<T>(cancellationToken);
     }

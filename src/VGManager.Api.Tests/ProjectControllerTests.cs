@@ -1,12 +1,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using VGManager.Api.Projects;
-using VGManager.Api.Projects.Responses;
+using VGManager.Api.Endpoints.Project;
+using VGManager.Api.Endpoints.Project.Response;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.Models;
 using VGManager.Models.StatusEnums;
 using VGManager.Services;
-using VGManager.Services.Models.Projects;
 using ApiProjectProfile = VGManager.Api.MapperProfiles.ProjectProfile;
 using ServiceProjectProfile = VGManager.Services.MapperProfiles.ProjectProfile;
 

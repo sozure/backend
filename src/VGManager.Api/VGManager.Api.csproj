@@ -12,7 +12,6 @@
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\VGManager.Migrations.PostgreSql\VGManager.Migrations.PostgreSql.csproj" />
         <ProjectReference Include="..\VGManager.Services\VGManager.Services.csproj" />
     </ItemGroup>
 

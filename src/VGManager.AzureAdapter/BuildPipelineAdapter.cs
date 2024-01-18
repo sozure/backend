@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.Build.WebApi;
-using Microsoft.VisualStudio.Services.WebApi;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.StatusEnums;
 
@@ -100,7 +99,7 @@ public class BuildPipelineAdapter : IBuildPipelineAdapter
             _clientProvider.Setup(organization, pat);
             using var client = await _clientProvider.GetClientAsync<BuildHttpClient>(cancellationToken);
             var errorCounter = 0;
-            foreach(var pipeline in pipelines)
+            foreach (var pipeline in pipelines)
             {
                 var definitionId = int.Parse(pipeline["DefinitionId"]);
                 var sourceBranch = pipeline["SourceBranch"];

@@ -88,11 +88,11 @@ public class GitVersionAdapter : IGitVersionAdapter
             _clientProvider.Setup(tagEntity.Organization, tagEntity.PAT);
             _logger.LogInformation("Request git tags from {project} git project.", repositoryId);
             using var client = await _clientProvider.GetClientAsync<GitHttpClient>(cancellationToken);
-            
+
             var branch = await client.GetBranchAsync(
-                project, 
+                project,
                 repositoryId,
-                defaultBranch, 
+                defaultBranch,
                 cancellationToken: cancellationToken
                 );
 
@@ -109,7 +109,7 @@ public class GitVersionAdapter : IGitVersionAdapter
             };
 
             var createdTag = await client.CreateAnnotatedTagAsync(gitAnnotatedTag, project, repositoryId, cancellationToken: cancellationToken);
-            return createdTag is not null ? (AdapterStatus.Success, $"refs/tags/{tag}"): (AdapterStatus.Unknown, string.Empty);
+            return createdTag is not null ? (AdapterStatus.Success, $"refs/tags/{tag}") : (AdapterStatus.Unknown, string.Empty);
         }
         catch (ProjectDoesNotExistWithNameException ex)
         {

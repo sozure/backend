@@ -1,9 +1,7 @@
 
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.EntityFrameworkCore;
 using VGManager.Api;
 using VGManager.Api.HealthChecks;
-using VGManager.Repositories.DbContexts;
 
 static partial class Program
 {
@@ -31,7 +29,6 @@ static partial class Program
             Predicate = healthCheck => healthCheck.Tags.Contains("readiness")
         });
 
-        await ApplyDbMigrationsAsync(app);
         RegisterStartupReadiness(app);
 
         app.UseSwagger();
@@ -42,13 +39,6 @@ static partial class Program
         app.MapControllers();
 
         return app;
-    }
-
-    private static async Task ApplyDbMigrationsAsync(IApplicationBuilder app)
-    {
-        using var scope = app.ApplicationServices.CreateScope();
-        var operationDbContext = scope.ServiceProvider.GetRequiredService<OperationsDbContext>();
-        await operationDbContext.Database.MigrateAsync();
     }
 
     private static void RegisterStartupReadiness(IApplicationBuilder app)

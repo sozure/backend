@@ -49,10 +49,6 @@ static partial class Program
             typeof(ServiceProfiles.GitRepositoryProfile)
         );
 
-        services.AddOptions<OrganizationSettings>()
-            .Bind(configuration.GetSection(Constants.SettingKeys.OrganizationSettings))
-            .ValidateDataAnnotations();
-
         RegisterServices(services);
 
         return self;

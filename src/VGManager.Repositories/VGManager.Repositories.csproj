@@ -7,9 +7,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\VGManager.Entities\VGManager.Entities.csproj" />
-    <ProjectReference Include="..\VGManager.Repositories.Interfaces\VGManager.Repositories.Interfaces.csproj" />
-  </ItemGroup>
-
 </Project>

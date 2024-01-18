@@ -42,9 +42,9 @@ public class GitVersionService : IGitVersionService
         )
     {
         (var tagStatus, var tags) = await _gitBranchAdapter.GetTagsAsync(
-            tagEntity.Organization, 
-            tagEntity.PAT, 
-            tagEntity.RepositoryId, 
+            tagEntity.Organization,
+            tagEntity.PAT,
+            tagEntity.RepositoryId,
             cancellationToken
             );
 
@@ -66,10 +66,10 @@ public class GitVersionService : IGitVersionService
     }
 
     private async Task<(AdapterStatus, string)> CreateTagAsync(
-        CreateTagEntity tagEntity, 
-        IEnumerable<string> tags, 
-        IEnumerable<string> branches, 
-        string sprint, 
+        CreateTagEntity tagEntity,
+        IEnumerable<string> tags,
+        IEnumerable<string> branches,
+        string sprint,
         CancellationToken cancellationToken
         )
     {

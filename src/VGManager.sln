@@ -27,15 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.AzureAdapter.Tests", "VGManager.AzureAdapter.Tests\VGManager.AzureAdapter.Tests.csproj", "{C6F947FD-23CF-42A2-80CA-29A390DC1A7C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Repositories", "VGManager.Repositories\VGManager.Repositories.csproj", "{3AAEF334-F6EF-4630-89A2-57ECEE52997F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Repositories.Interfaces", "VGManager.Repositories.Interfaces\VGManager.Repositories.Interfaces.csproj", "{3110A898-E935-4DF9-96C7-7733E399BCFC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Entities", "VGManager.Entities\VGManager.Entities.csproj", "{86882663-30D4-44AE-B764-7AE5773D2E43}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Migrations.PostgreSql", "VGManager.Migrations.PostgreSql\VGManager.Migrations.PostgreSql.csproj", "{A22E72EE-1B1D-4630-8994-7D5AA0AD2F1E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VGManager.Models", "VGManager.Models\VGManager.Models.csproj", "{7068676A-0DED-49A2-8C57-8F75C038EDD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VGManager.Models", "VGManager.Models\VGManager.Models.csproj", "{7068676A-0DED-49A2-8C57-8F75C038EDD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,22 +55,6 @@ Global
 		{C6F947FD-23CF-42A2-80CA-29A390DC1A7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6F947FD-23CF-42A2-80CA-29A390DC1A7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6F947FD-23CF-42A2-80CA-29A390DC1A7C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3AAEF334-F6EF-4630-89A2-57ECEE52997F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3AAEF334-F6EF-4630-89A2-57ECEE52997F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3AAEF334-F6EF-4630-89A2-57ECEE52997F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3AAEF334-F6EF-4630-89A2-57ECEE52997F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3110A898-E935-4DF9-96C7-7733E399BCFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3110A898-E935-4DF9-96C7-7733E399BCFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3110A898-E935-4DF9-96C7-7733E399BCFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3110A898-E935-4DF9-96C7-7733E399BCFC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86882663-30D4-44AE-B764-7AE5773D2E43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86882663-30D4-44AE-B764-7AE5773D2E43}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86882663-30D4-44AE-B764-7AE5773D2E43}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86882663-30D4-44AE-B764-7AE5773D2E43}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A22E72EE-1B1D-4630-8994-7D5AA0AD2F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A22E72EE-1B1D-4630-8994-7D5AA0AD2F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A22E72EE-1B1D-4630-8994-7D5AA0AD2F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A22E72EE-1B1D-4630-8994-7D5AA0AD2F1E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7068676A-0DED-49A2-8C57-8F75C038EDD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7068676A-0DED-49A2-8C57-8F75C038EDD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7068676A-0DED-49A2-8C57-8F75C038EDD5}.Release|Any CPU.ActiveCfg = Release|Any CPU

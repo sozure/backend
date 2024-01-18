@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <ProjectGuid>23165288-3DF8-4AA3-98BB-0DDCE0044650</ProjectGuid>
@@ -9,7 +9,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\VGManager.AzureAdapter\VGManager.AzureAdapter.csproj" />
-      <ProjectReference Include="..\VGManager.Repositories\VGManager.Repositories.csproj" />
     </ItemGroup>
 
     <ItemGroup>

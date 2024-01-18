@@ -6,7 +6,7 @@ using VGManager.AzureAdapter.Interfaces;
 using VGManager.Models.StatusEnums;
 namespace VGManager.AzureAdapter;
 
-public class SprintAdapter: ISprintAdapter
+public class SprintAdapter : ISprintAdapter
 {
     private readonly Regex _regex = new(@".*\b(\d+)\b.*", RegexOptions.Compiled);
     private readonly IHttpClientProvider _clientProvider;
@@ -52,7 +52,8 @@ public class SprintAdapter: ISprintAdapter
             }
 
             return (AdapterStatus.Success, number.ToString());
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting current sprint from {project} project.", project);
             return (AdapterStatus.Unknown, string.Empty);

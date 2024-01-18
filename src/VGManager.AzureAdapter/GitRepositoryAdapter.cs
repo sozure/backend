@@ -199,7 +199,7 @@ public class GitRepositoryAdapter : IGitRepositoryAdapter
                 }
             }
             var strResult = strBuilder.ToString();
-            if (!strResult.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(strResult))
             {
                 result.Add(strResult);
             }

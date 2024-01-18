@@ -10,7 +10,7 @@ public class ProfileAdapter : IProfileAdapter
     private readonly IHttpClientProvider _clientProvider;
     private readonly ILogger _logger;
 
-    public ProfileAdapter(IHttpClientProvider clientProvider, ILogger<VariableGroupAdapter> logger)
+    public ProfileAdapter(IHttpClientProvider clientProvider, ILogger<ProfileAdapter> logger)
     {
         _clientProvider = clientProvider;
         _logger = logger;

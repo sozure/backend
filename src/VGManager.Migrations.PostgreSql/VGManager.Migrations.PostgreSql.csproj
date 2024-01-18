@@ -9,8 +9,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\VGManager.Repositories\VGManager.Repositories.csproj" />
-  </ItemGroup>
-
 </Project>

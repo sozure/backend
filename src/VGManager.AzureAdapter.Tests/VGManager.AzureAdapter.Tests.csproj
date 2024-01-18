@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
       <ProjectGuid>C6F947FD-23CF-42A2-80CA-29A390DC1A7C</ProjectGuid>
       <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>

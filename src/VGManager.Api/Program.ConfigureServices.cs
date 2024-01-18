@@ -1,13 +1,11 @@
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using VGManager.Api;
 using VGManager.Api.HealthChecks;
 using VGManager.AzureAdapter;
 using VGManager.AzureAdapter.Helper;
 using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Settings;
 using ServiceProfiles = VGManager.Services.MapperProfiles;
 
 static partial class Program

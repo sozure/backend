@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System.Text;
 using System.Text.Json;

@@ -5,8 +5,8 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
+using VGManager.Adapter.Models.StatusEnums;
 using VGManager.AzureAdapter.Interfaces;
-using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter;
 

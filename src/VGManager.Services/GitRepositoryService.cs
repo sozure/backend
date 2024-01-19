@@ -1,10 +1,10 @@
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Services.Common;
+using VGManager.Adapter.Models.Models;
+using VGManager.Adapter.Models.StatusEnums;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
-using VGManager.Models.Models;
-using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.GitRepositories;
 

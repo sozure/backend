@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using VGManager.Models.Models;
+using VGManager.Adapter.Models.Models;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.Endpoints.GitFile;

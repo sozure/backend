@@ -2,8 +2,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.Work.WebApi;
 using System.Text.RegularExpressions;
+using VGManager.Adapter.Models.StatusEnums;
 using VGManager.AzureAdapter.Interfaces;
-using VGManager.Models.StatusEnums;
 namespace VGManager.AzureAdapter;
 
 public class SprintAdapter : ISprintAdapter

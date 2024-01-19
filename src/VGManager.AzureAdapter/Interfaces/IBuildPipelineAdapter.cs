@@ -1,5 +1,5 @@
 using Microsoft.TeamFoundation.Build.WebApi;
-using VGManager.Models.StatusEnums;
+using VGManager.Adapter.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter.Interfaces;
 

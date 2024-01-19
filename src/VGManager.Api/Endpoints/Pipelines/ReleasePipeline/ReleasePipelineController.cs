@@ -1,9 +1,9 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using VGManager.Adapter.Models.Models;
+using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Api.Endpoints.Pipelines.Release.Request;
-using VGManager.Models.Models;
-using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.Endpoints.Pipelines.Release;

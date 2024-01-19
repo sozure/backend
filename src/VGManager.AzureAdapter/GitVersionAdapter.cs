@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
+using VGManager.Adapter.Models.StatusEnums;
 using VGManager.AzureAdapter.Entities;
 using VGManager.AzureAdapter.Interfaces;
-using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter;
 

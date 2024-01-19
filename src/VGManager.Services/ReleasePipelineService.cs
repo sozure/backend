@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
+using VGManager.Adapter.Models.StatusEnums;
 using VGManager.AzureAdapter.Interfaces;
-using VGManager.Models.StatusEnums;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;

@@ -1,5 +1,5 @@
+using VGManager.Adapter.Models.StatusEnums;
 using VGManager.AzureAdapter.Entities;
-using VGManager.Models.StatusEnums;
 
 namespace VGManager.AzureAdapter.Interfaces;
 

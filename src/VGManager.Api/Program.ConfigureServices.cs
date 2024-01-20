@@ -2,9 +2,7 @@ using CorrelationId.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using VGManager.Adapter.Client.Extensions;
-using VGManager.Adapter.Kafka;
 using VGManager.Adapter.Kafka.Extensions;
-using VGManager.Adapter.Kafka.Interfaces;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Api;
 using VGManager.Api.HealthChecks;
@@ -69,6 +67,9 @@ static partial class Program
         services.AddSingleton<StartupHealthCheck>();
         services.SetupVGManagerAdapterClient(configuration);
 
+        services.SetupKafkaConsumer<VGManagerAdapterCommand>(configuration, Constants.SettingKeys.VGManagerAdapterClientConsumer, false);
+        services.SetupKafkaProducer<VGManagerAdapterCommandResponse>(configuration, Constants.SettingKeys.VGManagerAdapterClientProducer);
+
         services.AddScoped<IGitRepositoryService, GitRepositoryService>();
         services.AddScoped<IGitVersionService, GitVersionService>();
         services.AddScoped<IGitFileService, GitFileService>();
@@ -83,8 +84,5 @@ static partial class Program
         services.AddScoped<IBuildPipelineAdapter, BuildPipelineAdapter>();
         services.AddScoped<ISprintAdapter, SprintAdapter>();
         services.AddScoped<IHttpClientProvider, HttpClientProvider>();
-
-        services.SetupKafkaConsumer<VGManagerAdapterCommand>(configuration, Constants.SettingKeys.VGManagerAdapterClientConsumer, false);
-        services.SetupKafkaProducer<VGManagerAdapterCommandResponse>(configuration, Constants.SettingKeys.VGManagerAdapterClientProducer);
     }
 }

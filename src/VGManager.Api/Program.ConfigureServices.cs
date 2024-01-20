@@ -1,5 +1,12 @@
+using CorrelationId.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using VGManager.Adapter.Client.Extensions;
+using VGManager.Adapter.Kafka;
+using VGManager.Adapter.Kafka.Extensions;
+using VGManager.Adapter.Kafka.Interfaces;
+using VGManager.Adapter.Models.Kafka;
+using VGManager.Api;
 using VGManager.Api.HealthChecks;
 using VGManager.AzureAdapter;
 using VGManager.AzureAdapter.Helper;
@@ -14,6 +21,11 @@ static partial class Program
     {
         var configuration = self.Configuration;
         var services = self.Services;
+
+        services.AddDefaultCorrelationId(options =>
+        {
+            options.AddToLoggingScope = true;
+        });
 
         services.AddCors(options =>
         {
@@ -47,14 +59,15 @@ static partial class Program
             typeof(ServiceProfiles.GitRepositoryProfile)
         );
 
-        RegisterServices(services);
+        RegisterServices(services, configuration);
 
         return self;
     }
 
-    private static void RegisterServices(IServiceCollection services)
+    private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<StartupHealthCheck>();
+        services.SetupVGManagerAdapterClient(configuration);
 
         services.AddScoped<IGitRepositoryService, GitRepositoryService>();
         services.AddScoped<IGitVersionService, GitVersionService>();
@@ -70,5 +83,8 @@ static partial class Program
         services.AddScoped<IBuildPipelineAdapter, BuildPipelineAdapter>();
         services.AddScoped<ISprintAdapter, SprintAdapter>();
         services.AddScoped<IHttpClientProvider, HttpClientProvider>();
+
+        services.SetupKafkaConsumer<VGManagerAdapterCommand>(configuration, Constants.SettingKeys.VGManagerAdapterClientConsumer, false);
+        services.SetupKafkaProducer<VGManagerAdapterCommandResponse>(configuration, Constants.SettingKeys.VGManagerAdapterClientProducer);
     }
 }

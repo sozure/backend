@@ -1,18 +1,25 @@
+using Microsoft.TeamFoundation.Build.WebApi;
+using Microsoft.TeamFoundation.SourceControl.WebApi;
+using System.Text.Json;
+using VGManager.Adapter.Azure.Services.Requests;
+using VGManager.Adapter.Client.Interfaces;
+using VGManager.Adapter.Models.Kafka;
+using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
-using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
 public class BuildPipelineService : IBuildPipelineService
 {
-    private readonly IBuildPipelineAdapter _buildPipelineAdapter;
-    private readonly IGitRepositoryAdapter _gitRepositoryAdapter;
+    private readonly IVGManagerAdapterClientService _clientService;
 
-    public BuildPipelineService(IBuildPipelineAdapter buildPipelineAdapter, IGitRepositoryAdapter gitRepositoryAdapter)
+    public BuildPipelineService(
+        IVGManagerAdapterClientService clientService
+
+        )
     {
-        _buildPipelineAdapter = buildPipelineAdapter;
-        _gitRepositoryAdapter = gitRepositoryAdapter;
+        _clientService = clientService;
     }
 
     public async Task<Guid> GetRepositoryIdByBuildDefinitionAsync(
@@ -23,8 +30,55 @@ public class BuildPipelineService : IBuildPipelineService
         CancellationToken cancellationToken = default
         )
     {
-        var pipeline = await _buildPipelineAdapter.GetBuildPipelineAsync(organization, pat, project, id, cancellationToken);
-        var repositories = await _gitRepositoryAdapter.GetAllAsync(organization, project, pat, cancellationToken);
+        var request = new GetBuildPipelineRequest()
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project,
+            Id = id
+        };
+
+        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+            CommandTypes.GetBuildPipelineRequest,
+            JsonSerializer.Serialize(request),
+            cancellationToken);
+
+        if (!isSuccess)
+        {
+            return Guid.Empty;
+        }
+
+        var pipeline = JsonSerializer.Deserialize<BaseResponse<BuildDefinitionReference>>(response)?.Data;
+
+        if (pipeline is null)
+        {
+            return Guid.Empty;
+        }
+
+        var repoRequest = new ExtendedBaseRequest()
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project
+        };
+
+        (isSuccess, response) = await _clientService.SendAndReceiveMessageAsync(
+            CommandTypes.GetAllRepositoriesRequest,
+            JsonSerializer.Serialize(repoRequest),
+            cancellationToken);
+
+        if (!isSuccess)
+        {
+            return Guid.Empty;
+        }
+
+        var repositories = JsonSerializer.Deserialize<BaseResponse<IEnumerable<GitRepository>>>(response)?.Data;
+
+        if(repositories is null)
+        {
+            return Guid.Empty;
+        }
+
         var repo = repositories.FirstOrDefault(r => r.Name == pipeline.Name);
         return repo?.Id ?? Guid.Empty;
     }
@@ -37,7 +91,29 @@ public class BuildPipelineService : IBuildPipelineService
         )
     {
         var result = new List<Dictionary<string, string>>();
-        var pipelines = await _buildPipelineAdapter.GetBuildPipelinesAsync(organization, pat, project, cancellationToken);
+        var request = new ExtendedBaseRequest()
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project
+        };
+
+        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+            CommandTypes.GetBuildPipelinesRequest,
+            JsonSerializer.Serialize(request),
+            cancellationToken);
+
+        if (!isSuccess)
+        {
+            return Enumerable.Empty<Dictionary<string, string>>();
+        }
+
+        var pipelines = JsonSerializer.Deserialize<BaseResponse<IEnumerable<BuildDefinitionReference>>>(response)?.Data;
+
+        if (pipelines is null)
+        {
+            return Enumerable.Empty<Dictionary<string, string>>();
+        }
 
         foreach (var pipeline in pipelines)
         {
@@ -57,14 +133,28 @@ public class BuildPipelineService : IBuildPipelineService
         CancellationToken cancellationToken = default
         )
     {
-        return await _buildPipelineAdapter.RunBuildPipelineAsync(
-            organization,
-            pat,
-            project,
-            definitionId,
-            sourceBranch,
-            cancellationToken
-            );
+        var request = new RunBuildPipelineRequest()
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project,
+            Id = definitionId,
+            SourceBranch = sourceBranch
+        };
+
+        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+            CommandTypes.RunBuildPipelineRequest,
+            JsonSerializer.Serialize(request),
+            cancellationToken);
+
+        if (!isSuccess)
+        {
+            return AdapterStatus.Unknown;
+        }
+
+        var status = JsonSerializer.Deserialize<BaseResponse<AdapterStatus>>(response)?.Data;
+
+        return status ?? AdapterStatus.Unknown;
     }
 
     public async Task<AdapterStatus> RunBuildPipelinesAsync(
@@ -75,12 +165,26 @@ public class BuildPipelineService : IBuildPipelineService
         CancellationToken cancellationToken = default
         )
     {
-        return await _buildPipelineAdapter.RunBuildPipelinesAsync(
-            organization,
-            pat,
-            project,
-            pipelines,
-            cancellationToken
-            );
+        var request = new RunBuildPipelinesRequest()
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project,
+            Pipelines = pipelines
+        };
+
+        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+            CommandTypes.RunBuildPipelinesRequest,
+            JsonSerializer.Serialize(request),
+            cancellationToken);
+
+        if (!isSuccess)
+        {
+            return AdapterStatus.Unknown;
+        }
+
+        var status = JsonSerializer.Deserialize<BaseResponse<AdapterStatus>>(response)?.Data;
+
+        return status ?? AdapterStatus.Unknown;
     }
 }

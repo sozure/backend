@@ -21,7 +21,7 @@
         <PackageReference Include="Microsoft.VisualStudio.Services.Release.Client" Version="19.228.0-preview" />
         <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
         <PackageReference Include="System.Runtime" Version="4.3.1" />
-        <PackageReference Include="VGManager.Adapter.Models" Version="1.0.0" />
+        <PackageReference Include="VGManager.Adapter.Models" Version="1.1.0" />
         <PackageReference Include="YamlDotNet" Version="13.7.1" />
     </ItemGroup>
 

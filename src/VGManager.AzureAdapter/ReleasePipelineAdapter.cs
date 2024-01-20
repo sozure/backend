@@ -35,6 +35,7 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
     {
         try
         {
+            //await CreateReleaseAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
             _logger.LogInformation("Request environments for {repository} git repository from {project} azure project.", repositoryName, project);
             var definition = await GetReleaseDefinitionAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
             var rawResult = definition?.Environments.Select(env => env.Name).ToList() ?? Enumerable.Empty<string>();
@@ -61,6 +62,31 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         {
             _logger.LogError(ex, "Error getting git branches from {project} azure project.", project);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+    }
+
+    public async Task CreateReleaseAsync(
+        string organization,
+        string pat,
+        string project,
+        string repositoryName,
+        string configFile,
+        CancellationToken cancellationToken = default
+        )
+    {
+        _logger.LogInformation("Request environments for {repository} git repository from {project} azure project.", repositoryName, project);
+        var definition = await GetReleaseDefinitionAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
+        using var client = await _clientProvider.GetClientAsync<ReleaseHttpClient>(cancellationToken);
+        if(definition is not null)
+        {
+            var release = await client.CreateReleaseAsync(new()
+            {
+                DefinitionId = definition.Id,
+                EnvironmentsMetadata = new List<ReleaseStartEnvironmentMetadata>() { new()
+                {
+                    DefinitionEnvironmentId = definition.Environments.FirstOrDefault(env => env.Name.Contains("DEV"))?.Id ?? 0
+                } }
+            }, project, cancellationToken: cancellationToken);
         }
     }
 

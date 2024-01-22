@@ -1,5 +1,5 @@
 using AutoMapper;
-using VGManager.AzureAdapter.Entities;
+using VGManager.Services.Models;
 using VGManager.Services.Models.GitRepositories;
 
 namespace VGManager.Services.MapperProfiles;

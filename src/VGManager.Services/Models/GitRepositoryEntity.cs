@@ -1,4 +1,4 @@
-namespace VGManager.AzureAdapter.Entities;
+namespace VGManager.Services.Models;
 
 public class GitRepositoryEntity
 {

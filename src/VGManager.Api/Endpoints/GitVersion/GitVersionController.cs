@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Api.Common;
-using VGManager.AzureAdapter.Entities;
 using VGManager.Services.Interfaces;
+using VGManager.Services.Models;
 
 namespace VGManager.Api.Endpoints.GitBranch;
 

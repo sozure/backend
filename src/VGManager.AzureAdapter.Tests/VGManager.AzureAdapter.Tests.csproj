@@ -8,8 +8,4 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\VGManager.AzureAdapter\VGManager.AzureAdapter.csproj" />
-  </ItemGroup>
-
 </Project>

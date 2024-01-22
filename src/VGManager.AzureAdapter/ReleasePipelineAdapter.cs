@@ -77,7 +77,7 @@ public class ReleasePipelineAdapter : IReleasePipelineAdapter
         _logger.LogInformation("Request environments for {repository} git repository from {project} azure project.", repositoryName, project);
         var definition = await GetReleaseDefinitionAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
         using var client = await _clientProvider.GetClientAsync<ReleaseHttpClient>(cancellationToken);
-        if(definition is not null)
+        if (definition is not null)
         {
             var release = await client.CreateReleaseAsync(new()
             {

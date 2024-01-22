@@ -74,7 +74,7 @@ public class BuildPipelineService : IBuildPipelineService
 
         var repositories = JsonSerializer.Deserialize<BaseResponse<IEnumerable<GitRepository>>>(response)?.Data;
 
-        if(repositories is null)
+        if (repositories is null)
         {
             return Guid.Empty;
         }

@@ -1,20 +1,43 @@
 using Microsoft.VisualStudio.Services.Profile;
-using VGManager.AzureAdapter.Interfaces;
+using System.Text.Json;
+using VGManager.Adapter.Azure.Services.Requests;
+using VGManager.Adapter.Client.Interfaces;
+using VGManager.Adapter.Models.Kafka;
+using VGManager.Adapter.Models.Response;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
 public class ProfileService : IProfileService
 {
-    private readonly IProfileAdapter _profileAdapter;
+    private readonly IVGManagerAdapterClientService _clientService;
 
-    public ProfileService(IProfileAdapter profileAdapter)
+    public ProfileService(
+        IVGManagerAdapterClientService clientService
+        )
     {
-        _profileAdapter = profileAdapter;
+        _clientService = clientService;
     }
 
     public async Task<Profile?> GetProfileAsync(string organization, string pat, CancellationToken cancellationToken = default)
     {
-        return await _profileAdapter.GetProfileAsync(organization, pat, cancellationToken);
+        var request = new BaseRequest()
+        {
+            Organization = organization,
+            PAT = pat
+        };
+
+        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+            CommandTypes.GetProfileRequest,
+            JsonSerializer.Serialize(request),
+            cancellationToken);
+
+        if (!isSuccess)
+        {
+            return null!;
+        }
+
+        var result = JsonSerializer.Deserialize<BaseResponse<Profile?>>(response)?.Data;
+        return result;
     }
 }

@@ -67,9 +67,6 @@ static partial class Program
         services.AddSingleton<StartupHealthCheck>();
         services.SetupVGManagerAdapterClient(configuration);
 
-        services.SetupKafkaConsumer<VGManagerAdapterCommand>(configuration, Constants.SettingKeys.VGManagerAdapterClientConsumer, false);
-        services.SetupKafkaProducer<VGManagerAdapterCommandResponse>(configuration, Constants.SettingKeys.VGManagerAdapterClientProducer);
-
         services.AddScoped<IGitRepositoryService, GitRepositoryService>();
         services.AddScoped<IGitVersionService, GitVersionService>();
         services.AddScoped<IGitFileService, GitFileService>();

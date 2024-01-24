@@ -11,14 +11,4 @@ public static class Constants
     {
         public static string AllowSpecificOrigins { get; set; } = "_allowSpecificOrigins";
     }
-
-    public static class ConnectionStringKeys
-    {
-        public const string PostgreSql = "VGManager_API";
-    }
-
-    public static class MigrationAssemblyNames
-    {
-        public const string PostgreSql = "VGManager.Migrations.PostgreSql";
-    }
 }

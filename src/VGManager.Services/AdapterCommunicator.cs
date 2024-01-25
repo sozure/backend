@@ -9,8 +9,8 @@ public class AdapterCommunicator(IVGManagerAdapterClientService clientService) :
     private readonly IVGManagerAdapterClientService _clientService = clientService;
 
     public async Task<(bool, string)> CommunicateWithAdapterAsync<T>(
-        T request, 
-        string commandTypes, 
+        T request,
+        string commandTypes,
         CancellationToken cancellationToken = default
         )
     {

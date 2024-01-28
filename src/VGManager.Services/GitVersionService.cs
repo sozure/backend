@@ -166,7 +166,10 @@ public class GitVersionService : IGitVersionService
                 return (AdapterStatus.Unknown, string.Empty);
             }
 
-            return ((AdapterStatus)result["Status"], (string)result["Data"]);
+            int.TryParse(result["Status"].ToString(), out var i);
+            var status = (AdapterStatus)i;
+            var res = result["Data"].ToString() ?? string.Empty;
+            return (status, res);
 
         }
         return (AdapterStatus.Unknown, string.Empty);

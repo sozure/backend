@@ -1,10 +1,11 @@
-using AutoMapper;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.Services.Common;
+using Microsoft.TeamFoundation.SourceControl.WebApi;
+using System.Text.Json;
+using VGManager.Adapter.Azure.Services.Requests;
+using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Models;
+using VGManager.Adapter.Models.Requests;
+using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
-using VGManager.AzureAdapter.Entities;
-using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.GitRepositories;
 
@@ -12,15 +13,13 @@ namespace VGManager.Services;
 
 public class GitRepositoryService : IGitRepositoryService
 {
-    private readonly IGitRepositoryAdapter _gitRepositoryAdapter;
-    private readonly IMapper _mapper;
-    private readonly ILogger _logger;
+    private readonly IAdapterCommunicator _adapterCommunicator;
 
-    public GitRepositoryService(IGitRepositoryAdapter gitRepositoryAdapter, IMapper mapper, ILogger<GitRepositoryService> logger)
+    public GitRepositoryService(
+        IAdapterCommunicator adapterCommunicator
+        )
     {
-        _gitRepositoryAdapter = gitRepositoryAdapter;
-        _mapper = mapper;
-        _logger = logger;
+        _adapterCommunicator = adapterCommunicator;
     }
 
     public async Task<AdapterResponseModel<IEnumerable<GitRepositoryResult>>> GetAllAsync(
@@ -29,35 +28,53 @@ public class GitRepositoryService : IGitRepositoryService
         string pat,
         CancellationToken cancellationToken = default)
     {
-        try
+        var request = new ExtendedBaseRequest
         {
-            var repositoryNames = new List<GitRepositoryResult>();
-            var repositories = await _gitRepositoryAdapter.GetAllAsync(organization, project, pat, cancellationToken);
+            Organization = organization,
+            PAT = pat,
+            Project = project
+        };
 
-            foreach (var repository in repositories)
-            {
-                repositoryNames.Add(new()
-                {
-                    RepositoryId = repository.Id.ToString(),
-                    RepositoryName = repository.Name
-                });
-            }
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            CommandTypes.GetAllRepositoriesRequest,
+            cancellationToken
+            );
 
-            return new()
+        if (!isSuccess)
+        {
+            return new AdapterResponseModel<IEnumerable<GitRepositoryResult>>
             {
-                Data = repositoryNames,
-                Status = AdapterStatus.Success
+                Data = Enumerable.Empty<GitRepositoryResult>()
             };
         }
-        catch (Exception ex)
+
+        var rawResult = JsonSerializer.Deserialize<BaseResponse<IEnumerable<GitRepository>>>(response)?.Data;
+
+        if (rawResult is null)
         {
-            _logger.LogError(ex, "Error getting git repositories from {project} azure project.", project);
-            return new()
+            return new AdapterResponseModel<IEnumerable<GitRepositoryResult>>
             {
-                Data = Enumerable.Empty<GitRepositoryResult>(),
-                Status = AdapterStatus.Unknown
+                Data = Enumerable.Empty<GitRepositoryResult>()
             };
         }
+
+        var result = new List<GitRepositoryResult>();
+
+        foreach (var res in rawResult)
+        {
+            result.Add(new()
+            {
+                RepositoryId = res.Id.ToString(),
+                RepositoryName = res.Name
+            });
+        }
+
+        return new AdapterResponseModel<IEnumerable<GitRepositoryResult>>
+        {
+            Status = AdapterStatus.Success,
+            Data = result
+        };
     }
 
     public async Task<AdapterResponseModel<IEnumerable<string>>> GetVariablesFromConfigAsync(
@@ -65,41 +82,48 @@ public class GitRepositoryService : IGitRepositoryService
         CancellationToken cancellationToken = default
         )
     {
-        var pat = gitRepositoryModel.PAT;
-        List<string> variables;
-        try
+        var request = new GitRepositoryRequest<string>
         {
-            var entity = _mapper.Map<GitRepositoryEntity>(gitRepositoryModel);
-            variables = await _gitRepositoryAdapter.GetVariablesFromConfigAsync(
-                entity,
-                pat,
-                cancellationToken
-                );
-        }
-        catch (VssServiceException ex)
+            Organization = gitRepositoryModel.Organization,
+            PAT = gitRepositoryModel.PAT,
+            Project = gitRepositoryModel.Project,
+            Branch = gitRepositoryModel.Branch,
+            Delimiter = gitRepositoryModel.Delimiter,
+            Exceptions = gitRepositoryModel.Exceptions,
+            FilePath = gitRepositoryModel.FilePath,
+            RepositoryId = gitRepositoryModel.RepositoryId
+        };
+
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            CommandTypes.GetVariablesFromConfigRequest,
+            cancellationToken
+            );
+
+        if (!isSuccess)
         {
-            var status = ex.Message.Contains("could not be found in the repository") ? AdapterStatus.FileDoesNotExists : AdapterStatus.Unknown;
-            return new()
-            {
-                Status = status,
-                Data = Enumerable.Empty<string>()
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error getting variables from {project} azure project.", gitRepositoryModel.Project);
-            return new()
+            return new AdapterResponseModel<IEnumerable<string>>
             {
                 Status = AdapterStatus.Unknown,
                 Data = Enumerable.Empty<string>()
             };
         }
 
+        var result = JsonSerializer.Deserialize<BaseResponse<List<string>>>(response)?.Data;
 
-        return new()
+        if (result is null)
+        {
+            return new AdapterResponseModel<IEnumerable<string>>
+            {
+                Status = AdapterStatus.Unknown,
+                Data = Enumerable.Empty<string>()
+            };
+        }
+
+        return new AdapterResponseModel<IEnumerable<string>>
         {
             Status = AdapterStatus.Success,
-            Data = variables
+            Data = result
         };
     }
 }

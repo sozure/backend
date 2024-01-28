@@ -19,7 +19,7 @@ public class ProfileController : ControllerBase
         _profileService = profileService;
     }
 
-    [HttpPost("Get", Name = "getprofile")]
+    [HttpPost(Name = "getprofile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

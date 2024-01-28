@@ -1,19 +1,23 @@
+using System.Text.Json;
+using VGManager.Adapter.Azure.Services.Requests;
+using VGManager.Adapter.Models.Kafka;
+using VGManager.Adapter.Models.Requests;
+using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
-using VGManager.AzureAdapter.Entities;
-using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
+using VGManager.Services.Models;
 
 namespace VGManager.Services;
 
 public class GitVersionService : IGitVersionService
 {
-    private readonly IGitVersionAdapter _gitBranchAdapter;
-    private readonly ISprintAdapter _sprintAdapter;
+    private readonly IAdapterCommunicator _adapterCommunicator;
 
-    public GitVersionService(IGitVersionAdapter gitBranchAdapter, ISprintAdapter sprintAdapter)
+    public GitVersionService(
+        IAdapterCommunicator adapterCommunicator
+        )
     {
-        _gitBranchAdapter = gitBranchAdapter;
-        _sprintAdapter = sprintAdapter;
+        _adapterCommunicator = adapterCommunicator;
     }
 
     public async Task<(AdapterStatus, IEnumerable<string>)> GetBranchesAsync(
@@ -23,7 +27,35 @@ public class GitVersionService : IGitVersionService
         CancellationToken cancellationToken = default
         )
     {
-        return await _gitBranchAdapter.GetBranchesAsync(organization, pat, repositoryId, cancellationToken);
+        var request = new GitFileBaseRequest<string>()
+        {
+            Organization = organization,
+            PAT = pat,
+            RepositoryId = repositoryId,
+        };
+
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            CommandTypes.GetBranchesRequest,
+            cancellationToken
+            );
+
+        if (!isSuccess)
+        {
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+
+        var result = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
+
+        if (result is null)
+        {
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+
+        int.TryParse(result["Status"].ToString(), out var i);
+        var status = (AdapterStatus)i;
+        var res = JsonSerializer.Deserialize<List<string>>(result["Data"].ToString() ?? "[]") ?? [];
+        return (status, res);
     }
 
     public async Task<(AdapterStatus, IEnumerable<string>)> GetTagsAsync(
@@ -33,7 +65,35 @@ public class GitVersionService : IGitVersionService
         CancellationToken cancellationToken = default
         )
     {
-        return await _gitBranchAdapter.GetTagsAsync(organization, pat, repositoryId, cancellationToken);
+        var request = new GitFileBaseRequest<Guid>()
+        {
+            Organization = organization,
+            PAT = pat,
+            RepositoryId = repositoryId,
+        };
+
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            CommandTypes.GetTagsRequest,
+            cancellationToken
+            );
+
+        if (!isSuccess)
+        {
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+
+        var result = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
+
+        if (result is null)
+        {
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+
+        int.TryParse(result["Status"].ToString(), out var i);
+        var status = (AdapterStatus)i;
+        var res = JsonSerializer.Deserialize<List<string>>(result["Data"].ToString() ?? "[]") ?? [];
+        return (status, res);
     }
 
     public async Task<(AdapterStatus, string)> CreateTagAsync(
@@ -41,35 +101,24 @@ public class GitVersionService : IGitVersionService
         CancellationToken cancellationToken = default
         )
     {
-        (var tagStatus, var tags) = await _gitBranchAdapter.GetTagsAsync(
-            tagEntity.Organization,
-            tagEntity.PAT,
-            tagEntity.RepositoryId,
-            cancellationToken
-            );
+        var repositoryId = tagEntity.RepositoryId;
+        var organization = tagEntity.Organization;
+        var pat = tagEntity.PAT;
+        (var branchesStatus, var branches) = await GetBranchesAsync(organization, pat, repositoryId.ToString(), cancellationToken);
+        (var tagsStatus, var tags) = await GetTagsAsync(organization, pat, repositoryId, cancellationToken);
 
-        (var branchStatus, var branches) = await _gitBranchAdapter.GetBranchesAsync(
-            tagEntity.Organization,
-            tagEntity.PAT,
-            tagEntity.RepositoryId.ToString(),
-            cancellationToken
-            );
-
-        (var sprintStatus, var sprint) = await _sprintAdapter.GetCurrentSprintAsync(tagEntity.Project, cancellationToken);
-
-        if (tagStatus == AdapterStatus.Success && branchStatus == AdapterStatus.Success && sprintStatus == AdapterStatus.Success)
+        if (branchesStatus == AdapterStatus.Success && tagsStatus == AdapterStatus.Success)
         {
-            return await CreateTagAsync(tagEntity, tags, branches, sprint, cancellationToken);
+            return await CreateTagAsync(tagEntity, tags, branches, cancellationToken);
         }
 
-        return (tagStatus, string.Empty);
+        return (AdapterStatus.Unknown, string.Empty);
     }
 
     private async Task<(AdapterStatus, string)> CreateTagAsync(
         CreateTagEntity tagEntity,
         IEnumerable<string> tags,
         IEnumerable<string> branches,
-        string sprint,
         CancellationToken cancellationToken
         )
     {
@@ -87,7 +136,41 @@ public class GitVersionService : IGitVersionService
             }
 
             tagEntity.TagName = newTag;
-            return await _gitBranchAdapter.CreateTagAsync(tagEntity, defaultBranch, sprint, cancellationToken);
+
+            var request = new CreateTagRequest()
+            {
+                Organization = tagEntity.Organization,
+                PAT = tagEntity.PAT,
+                RepositoryId = tagEntity.RepositoryId,
+                DefaultBranch = defaultBranch,
+                Project = tagEntity.Project,
+                TagName = newTag,
+                UserName = tagEntity.UserName
+            };
+
+            (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+                request,
+                CommandTypes.CreateTagRequest,
+                cancellationToken
+                );
+
+            if (!isSuccess)
+            {
+                return (AdapterStatus.Unknown, string.Empty);
+            }
+
+            var result = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
+
+            if (result is null)
+            {
+                return (AdapterStatus.Unknown, string.Empty);
+            }
+
+            int.TryParse(result["Status"].ToString(), out var i);
+            var status = (AdapterStatus)i;
+            var res = result["Data"].ToString() ?? string.Empty;
+            return (status, res);
+
         }
         return (AdapterStatus.Unknown, string.Empty);
     }

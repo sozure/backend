@@ -1,7 +1,9 @@
 
+using CorrelationId;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using VGManager.Api;
 using VGManager.Api.HealthChecks;
+using VGManager.Communication.Kafka.Extensions;
 
 static partial class Program
 {
@@ -28,6 +30,9 @@ static partial class Program
         {
             Predicate = healthCheck => healthCheck.Tags.Contains("readiness")
         });
+
+        app.UseCorrelationIdValidation();
+        app.UseCorrelationId();
 
         RegisterStartupReadiness(app);
 

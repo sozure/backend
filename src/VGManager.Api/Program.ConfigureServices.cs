@@ -1,9 +1,8 @@
+using CorrelationId.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using VGManager.Adapter.Client.Extensions;
 using VGManager.Api.HealthChecks;
-using VGManager.AzureAdapter;
-using VGManager.AzureAdapter.Helper;
-using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
 using ServiceProfiles = VGManager.Services.MapperProfiles;
@@ -14,6 +13,11 @@ static partial class Program
     {
         var configuration = self.Configuration;
         var services = self.Services;
+
+        services.AddDefaultCorrelationId(options =>
+        {
+            options.AddToLoggingScope = true;
+        });
 
         services.AddCors(options =>
         {
@@ -47,14 +51,15 @@ static partial class Program
             typeof(ServiceProfiles.GitRepositoryProfile)
         );
 
-        RegisterServices(services);
+        RegisterServices(services, configuration);
 
         return self;
     }
 
-    private static void RegisterServices(IServiceCollection services)
+    private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<StartupHealthCheck>();
+        services.SetupVGManagerAdapterClient(configuration);
 
         services.AddScoped<IGitRepositoryService, GitRepositoryService>();
         services.AddScoped<IGitVersionService, GitVersionService>();
@@ -62,13 +67,6 @@ static partial class Program
         services.AddScoped<IReleasePipelineService, ReleasePipelineService>();
         services.AddScoped<IBuildPipelineService, BuildPipelineService>();
         services.AddScoped<IProfileService, ProfileService>();
-        services.AddScoped<IProfileAdapter, ProfileAdapter>();
-        services.AddScoped<IGitRepositoryAdapter, GitRepositoryAdapter>();
-        services.AddScoped<IGitVersionAdapter, GitVersionAdapter>();
-        services.AddScoped<IGitFileAdapter, GitFileAdapter>();
-        services.AddScoped<IReleasePipelineAdapter, ReleasePipelineAdapter>();
-        services.AddScoped<IBuildPipelineAdapter, BuildPipelineAdapter>();
-        services.AddScoped<ISprintAdapter, SprintAdapter>();
-        services.AddScoped<IHttpClientProvider, HttpClientProvider>();
+        services.AddScoped<IAdapterCommunicator, AdapterCommunicator>();
     }
 }

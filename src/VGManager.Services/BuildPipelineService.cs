@@ -1,18 +1,23 @@
+using Microsoft.TeamFoundation.Build.WebApi;
+using Microsoft.TeamFoundation.SourceControl.WebApi;
+using System.Text.Json;
+using VGManager.Adapter.Azure.Services.Requests;
+using VGManager.Adapter.Models.Kafka;
+using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
-using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
 public class BuildPipelineService : IBuildPipelineService
 {
-    private readonly IBuildPipelineAdapter _buildPipelineAdapter;
-    private readonly IGitRepositoryAdapter _gitRepositoryAdapter;
+    private readonly IAdapterCommunicator _adapterCommunicator;
 
-    public BuildPipelineService(IBuildPipelineAdapter buildPipelineAdapter, IGitRepositoryAdapter gitRepositoryAdapter)
+    public BuildPipelineService(
+        IAdapterCommunicator adapterCommunicator
+        )
     {
-        _buildPipelineAdapter = buildPipelineAdapter;
-        _gitRepositoryAdapter = gitRepositoryAdapter;
+        _adapterCommunicator = adapterCommunicator;
     }
 
     public async Task<Guid> GetRepositoryIdByBuildDefinitionAsync(
@@ -23,8 +28,57 @@ public class BuildPipelineService : IBuildPipelineService
         CancellationToken cancellationToken = default
         )
     {
-        var pipeline = await _buildPipelineAdapter.GetBuildPipelineAsync(organization, pat, project, id, cancellationToken);
-        var repositories = await _gitRepositoryAdapter.GetAllAsync(organization, project, pat, cancellationToken);
+        var request = new GetBuildPipelineRequest()
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project,
+            Id = id
+        };
+
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            CommandTypes.GetBuildPipelineRequest,
+            cancellationToken
+            );
+
+        if (!isSuccess)
+        {
+            return Guid.Empty;
+        }
+
+        var pipeline = JsonSerializer.Deserialize<BaseResponse<BuildDefinitionReference>>(response)?.Data;
+
+        if (pipeline is null)
+        {
+            return Guid.Empty;
+        }
+
+        var repoRequest = new ExtendedBaseRequest()
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project
+        };
+
+        (isSuccess, response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            CommandTypes.GetAllRepositoriesRequest,
+            cancellationToken
+            );
+
+        if (!isSuccess)
+        {
+            return Guid.Empty;
+        }
+
+        var repositories = JsonSerializer.Deserialize<BaseResponse<IEnumerable<GitRepository>>>(response)?.Data;
+
+        if (repositories is null)
+        {
+            return Guid.Empty;
+        }
+
         var repo = repositories.FirstOrDefault(r => r.Name == pipeline.Name);
         return repo?.Id ?? Guid.Empty;
     }
@@ -37,7 +91,30 @@ public class BuildPipelineService : IBuildPipelineService
         )
     {
         var result = new List<Dictionary<string, string>>();
-        var pipelines = await _buildPipelineAdapter.GetBuildPipelinesAsync(organization, pat, project, cancellationToken);
+        var request = new ExtendedBaseRequest()
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project
+        };
+
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            CommandTypes.GetBuildPipelinesRequest,
+            cancellationToken
+            );
+
+        if (!isSuccess)
+        {
+            return Enumerable.Empty<Dictionary<string, string>>();
+        }
+
+        var pipelines = JsonSerializer.Deserialize<BaseResponse<IEnumerable<BuildDefinitionReference>>>(response)?.Data;
+
+        if (pipelines is null)
+        {
+            return Enumerable.Empty<Dictionary<string, string>>();
+        }
 
         foreach (var pipeline in pipelines)
         {
@@ -57,14 +134,28 @@ public class BuildPipelineService : IBuildPipelineService
         CancellationToken cancellationToken = default
         )
     {
-        return await _buildPipelineAdapter.RunBuildPipelineAsync(
-            organization,
-            pat,
-            project,
-            definitionId,
-            sourceBranch,
+        var request = new RunBuildPipelineRequest()
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project,
+            Id = definitionId,
+            SourceBranch = sourceBranch
+        };
+
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            CommandTypes.RunBuildPipelineRequest,
             cancellationToken
             );
+
+        if (!isSuccess)
+        {
+            return AdapterStatus.Unknown;
+        }
+
+        var status = JsonSerializer.Deserialize<BaseResponse<AdapterStatus>>(response)?.Data;
+        return status ?? AdapterStatus.Unknown;
     }
 
     public async Task<AdapterStatus> RunBuildPipelinesAsync(
@@ -75,12 +166,27 @@ public class BuildPipelineService : IBuildPipelineService
         CancellationToken cancellationToken = default
         )
     {
-        return await _buildPipelineAdapter.RunBuildPipelinesAsync(
-            organization,
-            pat,
-            project,
-            pipelines,
+        var request = new RunBuildPipelinesRequest()
+        {
+            Organization = organization,
+            PAT = pat,
+            Project = project,
+            Pipelines = pipelines
+        };
+
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            CommandTypes.RunBuildPipelinesRequest,
             cancellationToken
             );
+
+        if (!isSuccess)
+        {
+            return AdapterStatus.Unknown;
+        }
+
+        var status = JsonSerializer.Deserialize<BaseResponse<AdapterStatus>>(response)?.Data;
+
+        return status ?? AdapterStatus.Unknown;
     }
 }

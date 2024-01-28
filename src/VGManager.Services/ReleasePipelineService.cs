@@ -1,21 +1,24 @@
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
+using VGManager.Adapter.Azure.Services.Requests;
+using VGManager.Adapter.Models.Kafka;
+using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
-using VGManager.AzureAdapter.Interfaces;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
 public class ReleasePipelineService : IReleasePipelineService
 {
-    private readonly IReleasePipelineAdapter _releasePipelineAdapter;
+    private readonly IAdapterCommunicator _adapterCommunicator;
     private readonly ILogger _logger;
 
     public ReleasePipelineService(
-        IReleasePipelineAdapter releasePipelineAdapter,
+        IAdapterCommunicator adapterCommunicator,
         ILogger<ReleasePipelineService> logger
         )
     {
-        _releasePipelineAdapter = releasePipelineAdapter;
+        _adapterCommunicator = adapterCommunicator;
         _logger = logger;
     }
 
@@ -33,7 +36,10 @@ public class ReleasePipelineService : IReleasePipelineService
         {
             foreach (var project in projects)
             {
-                var (subStatus, subResult) = await _releasePipelineAdapter.GetEnvironmentsAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
+                var adapterResult = await GetEnvironmentsAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
+                var subStatus = adapterResult.Item1;
+                var subResult = adapterResult.Item2;
+
                 if (subStatus == AdapterStatus.Success && subResult.Any())
                 {
                     result.Add(project);
@@ -61,7 +67,37 @@ public class ReleasePipelineService : IReleasePipelineService
         try
         {
             _logger.LogInformation("Request release environments for {repository} repository.", repositoryName);
-            return await _releasePipelineAdapter.GetEnvironmentsAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
+            var request = new ReleasePipelineRequest()
+            {
+                Organization = organization,
+                PAT = pat,
+                ConfigFile = configFile,
+                Project = project,
+                RepositoryName = repositoryName
+            };
+
+            (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+                request,
+                CommandTypes.GetEnvironmentsRequest,
+                cancellationToken
+                );
+
+            if (!isSuccess)
+            {
+                return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+            }
+
+            var adapterResult = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
+
+            if (adapterResult is null)
+            {
+                return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+            }
+
+            int.TryParse(adapterResult["Status"].ToString(), out var i);
+            var status = (AdapterStatus)i;
+            var res = JsonSerializer.Deserialize<List<string>>(adapterResult["Data"].ToString() ?? "[]") ?? [];
+            return (status, res);
         }
         catch (Exception ex)
         {
@@ -82,7 +118,42 @@ public class ReleasePipelineService : IReleasePipelineService
         try
         {
             _logger.LogInformation("Request variable groups connected to release pipeline for {repository} repository.", repositoryName);
-            return await _releasePipelineAdapter.GetVariableGroupsAsync(organization, pat, project, repositoryName, configFile, cancellationToken);
+            var request = new ReleasePipelineRequest()
+            {
+                Organization = organization,
+                PAT = pat,
+                ConfigFile = configFile,
+                Project = project,
+                RepositoryName = repositoryName
+            };
+
+            (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+                request,
+                CommandTypes.GetVariableGroupsRequest,
+                cancellationToken
+                );
+
+            if (!isSuccess)
+            {
+                return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
+            }
+
+            var adapterResult = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
+
+            if (adapterResult is null)
+            {
+                return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
+            }
+
+            int.TryParse(adapterResult["Status"].ToString(), out var i);
+            var status = (AdapterStatus)i;
+            var res = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(adapterResult["Data"].ToString() ?? "[]") ?? [];
+            var res2 = new List<(string, string)>();
+            foreach (var element in res)
+            {
+                res2.Add((element["Name"], element["Type"]));
+            }
+            return (status, res2);
         }
         catch (Exception ex)
         {

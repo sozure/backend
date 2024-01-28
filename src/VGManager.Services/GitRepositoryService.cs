@@ -1,7 +1,6 @@
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System.Text.Json;
 using VGManager.Adapter.Azure.Services.Requests;
-using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.Requests;
@@ -14,13 +13,13 @@ namespace VGManager.Services;
 
 public class GitRepositoryService : IGitRepositoryService
 {
-    private readonly IVGManagerAdapterClientService _clientService;
+    private readonly IAdapterCommunicator _adapterCommunicator;
 
     public GitRepositoryService(
-        IVGManagerAdapterClientService clientService
+        IAdapterCommunicator adapterCommunicator
         )
     {
-        _clientService = clientService;
+        _adapterCommunicator = adapterCommunicator;
     }
 
     public async Task<AdapterResponseModel<IEnumerable<GitRepositoryResult>>> GetAllAsync(
@@ -36,10 +35,11 @@ public class GitRepositoryService : IGitRepositoryService
             Project = project
         };
 
-        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.GetAllRepositoriesRequest,
-            JsonSerializer.Serialize(request),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {
@@ -94,10 +94,11 @@ public class GitRepositoryService : IGitRepositoryService
             RepositoryId = gitRepositoryModel.RepositoryId
         };
 
-        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.GetVariablesFromConfigRequest,
-            JsonSerializer.Serialize(request),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {

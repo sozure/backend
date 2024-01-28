@@ -1,7 +1,6 @@
 using Microsoft.VisualStudio.Services.Profile;
 using System.Text.Json;
 using VGManager.Adapter.Azure.Services.Requests;
-using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Response;
 using VGManager.Services.Interfaces;
@@ -10,13 +9,13 @@ namespace VGManager.Services;
 
 public class ProfileService : IProfileService
 {
-    private readonly IVGManagerAdapterClientService _clientService;
+    private readonly IAdapterCommunicator _adapterCommunicator;
 
     public ProfileService(
-        IVGManagerAdapterClientService clientService
+        IAdapterCommunicator adapterCommunicator
         )
     {
-        _clientService = clientService;
+        _adapterCommunicator = adapterCommunicator;
     }
 
     public async Task<Profile?> GetProfileAsync(string organization, string pat, CancellationToken cancellationToken = default)
@@ -27,10 +26,11 @@ public class ProfileService : IProfileService
             PAT = pat
         };
 
-        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.GetProfileRequest,
-            JsonSerializer.Serialize(request),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {

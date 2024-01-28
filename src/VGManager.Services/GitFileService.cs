@@ -1,6 +1,5 @@
 using System.Text.Json;
 using VGManager.Adapter.Azure.Services.Requests;
-using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
@@ -10,14 +9,13 @@ namespace VGManager.Services;
 
 public class GitFileService : IGitFileService
 {
-    private readonly IVGManagerAdapterClientService _clientService;
-
+    private readonly IAdapterCommunicator _adapterCommunicator;
 
     public GitFileService(
-        IVGManagerAdapterClientService clientService
+        IAdapterCommunicator adapterCommunicator
         )
     {
-        _clientService = clientService;
+        _adapterCommunicator = adapterCommunicator;
     }
 
     public async Task<(AdapterStatus, IEnumerable<string>)> GetFilePathAsync(
@@ -38,10 +36,11 @@ public class GitFileService : IGitFileService
             AdditionalInformation = fileName,
         };
 
-        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.GetFilePathRequest,
-            JsonSerializer.Serialize(request),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {
@@ -79,10 +78,11 @@ public class GitFileService : IGitFileService
             AdditionalInformation = extension,
         };
 
-        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.GetConfigFilesRequest,
-            JsonSerializer.Serialize(request),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {

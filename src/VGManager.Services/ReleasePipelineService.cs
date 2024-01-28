@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using VGManager.Adapter.Azure.Services.Requests;
-using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
@@ -11,16 +10,15 @@ namespace VGManager.Services;
 
 public class ReleasePipelineService : IReleasePipelineService
 {
-    private readonly IVGManagerAdapterClientService _clientService;
-
+    private readonly IAdapterCommunicator _adapterCommunicator;
     private readonly ILogger _logger;
 
     public ReleasePipelineService(
-        IVGManagerAdapterClientService clientService,
+        IAdapterCommunicator adapterCommunicator,
         ILogger<ReleasePipelineService> logger
         )
     {
-        _clientService = clientService;
+        _adapterCommunicator = adapterCommunicator;
         _logger = logger;
     }
 
@@ -78,10 +76,11 @@ public class ReleasePipelineService : IReleasePipelineService
                 RepositoryName = repositoryName
             };
 
-            (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+            (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+                request,
                 CommandTypes.GetEnvironmentsRequest,
-                JsonSerializer.Serialize(request),
-                cancellationToken);
+                cancellationToken
+                );
 
             if (!isSuccess)
             {
@@ -128,10 +127,11 @@ public class ReleasePipelineService : IReleasePipelineService
                 RepositoryName = repositoryName
             };
 
-            (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+            (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+                request,
                 CommandTypes.GetVariableGroupsRequest,
-                JsonSerializer.Serialize(request),
-                cancellationToken);
+                cancellationToken
+                );
 
             if (!isSuccess)
             {

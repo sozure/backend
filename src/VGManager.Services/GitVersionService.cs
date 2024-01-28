@@ -1,6 +1,5 @@
 using System.Text.Json;
 using VGManager.Adapter.Azure.Services.Requests;
-using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Requests;
 using VGManager.Adapter.Models.Response;
@@ -12,13 +11,13 @@ namespace VGManager.Services;
 
 public class GitVersionService : IGitVersionService
 {
-    private readonly IVGManagerAdapterClientService _clientService;
+    private readonly IAdapterCommunicator _adapterCommunicator;
 
     public GitVersionService(
-        IVGManagerAdapterClientService clientService
+        IAdapterCommunicator adapterCommunicator
         )
     {
-        _clientService = clientService;
+        _adapterCommunicator = adapterCommunicator;
     }
 
     public async Task<(AdapterStatus, IEnumerable<string>)> GetBranchesAsync(
@@ -35,10 +34,11 @@ public class GitVersionService : IGitVersionService
             RepositoryId = repositoryId,
         };
 
-        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.GetBranchesRequest,
-            JsonSerializer.Serialize(request),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {
@@ -72,10 +72,11 @@ public class GitVersionService : IGitVersionService
             RepositoryId = repositoryId,
         };
 
-        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.GetTagsRequest,
-            JsonSerializer.Serialize(request),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {
@@ -147,10 +148,11 @@ public class GitVersionService : IGitVersionService
                 UserName = tagEntity.UserName
             };
 
-            (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+            (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+                request,
                 CommandTypes.CreateTagRequest,
-                JsonSerializer.Serialize(request),
-                cancellationToken);
+                cancellationToken
+                );
 
             if (!isSuccess)
             {
@@ -164,7 +166,10 @@ public class GitVersionService : IGitVersionService
                 return (AdapterStatus.Unknown, string.Empty);
             }
 
-            return ((AdapterStatus)result["Status"], (string)result["Data"]);
+            int.TryParse(result["Status"].ToString(), out var i);
+            var status = (AdapterStatus)i;
+            var res = result["Data"].ToString() ?? string.Empty;
+            return (status, res);
 
         }
         return (AdapterStatus.Unknown, string.Empty);

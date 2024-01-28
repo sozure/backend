@@ -2,7 +2,6 @@ using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System.Text.Json;
 using VGManager.Adapter.Azure.Services.Requests;
-using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
@@ -12,14 +11,13 @@ namespace VGManager.Services;
 
 public class BuildPipelineService : IBuildPipelineService
 {
-    private readonly IVGManagerAdapterClientService _clientService;
+    private readonly IAdapterCommunicator _adapterCommunicator;
 
     public BuildPipelineService(
-        IVGManagerAdapterClientService clientService
-
+        IAdapterCommunicator adapterCommunicator
         )
     {
-        _clientService = clientService;
+        _adapterCommunicator = adapterCommunicator;
     }
 
     public async Task<Guid> GetRepositoryIdByBuildDefinitionAsync(
@@ -38,10 +36,11 @@ public class BuildPipelineService : IBuildPipelineService
             Id = id
         };
 
-        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.GetBuildPipelineRequest,
-            JsonSerializer.Serialize(request),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {
@@ -62,10 +61,11 @@ public class BuildPipelineService : IBuildPipelineService
             Project = project
         };
 
-        (isSuccess, response) = await _clientService.SendAndReceiveMessageAsync(
+        (isSuccess, response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.GetAllRepositoriesRequest,
-            JsonSerializer.Serialize(repoRequest),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {
@@ -98,10 +98,11 @@ public class BuildPipelineService : IBuildPipelineService
             Project = project
         };
 
-        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.GetBuildPipelinesRequest,
-            JsonSerializer.Serialize(request),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {
@@ -142,10 +143,11 @@ public class BuildPipelineService : IBuildPipelineService
             SourceBranch = sourceBranch
         };
 
-        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.RunBuildPipelineRequest,
-            JsonSerializer.Serialize(request),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {
@@ -153,7 +155,6 @@ public class BuildPipelineService : IBuildPipelineService
         }
 
         var status = JsonSerializer.Deserialize<BaseResponse<AdapterStatus>>(response)?.Data;
-
         return status ?? AdapterStatus.Unknown;
     }
 
@@ -173,10 +174,11 @@ public class BuildPipelineService : IBuildPipelineService
             Pipelines = pipelines
         };
 
-        (bool isSuccess, string response) = await _clientService.SendAndReceiveMessageAsync(
+        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
             CommandTypes.RunBuildPipelinesRequest,
-            JsonSerializer.Serialize(request),
-            cancellationToken);
+            cancellationToken
+            );
 
         if (!isSuccess)
         {

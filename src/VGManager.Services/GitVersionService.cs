@@ -122,9 +122,9 @@ public class GitVersionService : IGitVersionService
         CancellationToken cancellationToken
         )
     {
-        var lastTag = tags.LastOrDefault();
+        var lastTag = tags.LastOrDefault() ?? "refs/tags/0.0.0";
         var defaultBranch = branches.FirstOrDefault(branch => branch.Equals("main") || branch.Equals("master"));
-        if (lastTag is not null && !string.IsNullOrEmpty(defaultBranch))
+        if (!string.IsNullOrEmpty(defaultBranch))
         {
             var lastTagVersion = lastTag.Replace("refs/tags/", string.Empty);
             var tagElements = lastTagVersion.Split('.');

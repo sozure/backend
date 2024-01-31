@@ -1,6 +1,5 @@
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System.Text.Json;
-using VGManager.Adapter.Azure.Services.Requests;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.Requests;

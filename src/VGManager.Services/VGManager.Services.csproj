@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="VGManager.Adapter.Client" Version="1.1.0" />
-        <PackageReference Include="VGManager.Adapter.Models" Version="1.2.0" />
+        <PackageReference Include="VGManager.Adapter.Models" Version="1.9.2" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,5 +1,4 @@
 using System.Text.Json;
-using VGManager.Adapter.Azure.Services.Requests;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Requests;
 using VGManager.Adapter.Models.Response;
@@ -145,7 +144,8 @@ public class GitVersionService : IGitVersionService
                 DefaultBranch = defaultBranch,
                 Project = tagEntity.Project,
                 TagName = newTag,
-                UserName = tagEntity.UserName
+                UserName = tagEntity.UserName,
+                Description = tagEntity.Description
             };
 
             (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(

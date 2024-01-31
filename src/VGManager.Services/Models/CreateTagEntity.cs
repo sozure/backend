@@ -8,4 +8,5 @@ public class CreateTagEntity
     public Guid RepositoryId { get; set; }
     public string TagName { get; set; } = null!;
     public string UserName { get; set; } = null!;
+    public string? Description { get; set; } = null!;
 }

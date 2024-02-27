@@ -1,4 +1,4 @@
-# VGManager Backend: A Backend API for Library and KeyVault Interaction
+# VGManager Backend: A backend API for Azure git, profile and pipeline interactions
 
 This .NET API project is designed to provide a seamless interface for interacting with Azure DevOps and Azure KeyVault. It is stateless and allows users to perform various operations related to these services through a set of well-defined endpoints. This README will guide you through the setup, endpoints, and usage of this API.
 
@@ -6,20 +6,21 @@ This .NET API project is designed to provide a seamless interface for interactin
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Endpoints](#endpoints)
-  - [GET Projects](#get-projects)
-  - [GET Secrets from KeyVault](#get-secrets)
-  - [GET Deleted Secrets from KeyVault](#get-deleted-secrets-from-keyvault)
-  - [Delete Secrets](#delete-secrets)
-  - [Delete Secret Inline](#delete-secret-inline)
-  - [Recover Secrets](#recover-secrets)
-  - [Recover Secret Inline](#recover-secret-inline)
-  - [Copy-Paste Entire KeyVaults](#copy-paste-entire-keyvaults)
-  - [Get Variables from Variable Groups](#get-variables-from-variable-groups)
-  - [Update variables of Variable Groups](#update-variables-of-variable-groups)
-  - [Update variable of Variable Group Inline](#update-variable-of-variable-group-inline)
-  - [Add variables of Variable Groups](#add-variables-of-variable-groups)
-  - [Delete variables of Variable Groups](#delete-variables-of-variable-groups)
-  - [Delete variable of Variable Group Inline](#delete-variable-of-variable-group-inline)
+  - [GET Build pipeline](#get-build-pipeline)
+  - [GET All build pipelines](#get-all-build-pipelines)
+  - [Run build pipeline](#run-build-pipeline)
+  - [Run build pipelines](#run-build-pipelines)
+  - [Get file paths](#get-file-paths)
+  - [Get config files](#get-config-files)
+  - [Get git repositories](#get-git-repositories)
+  - [Get variables from git repository](#get-variables-from-git-repository)
+  - [Get git branches](#get-git-branches)
+  - [Get git tags](#get-git-tags)
+  - [Create git tag](#create-git-tag)
+  - [Get profile](#get-profile)
+  - [Get environments](#get-environments)
+  - [Get connected variable groups](#get-connected-variable-groups)
+  - [Get connected azure projects](#get-connected-azure-projects)
 
 - [Usage](#usage)
 
@@ -39,76 +40,71 @@ Before you can use this API, make sure you have the following prerequisites inst
 4. Build and run the project.
 
 ## Endpoints
+### Build Pipeline
+#### - GET Build pipeline
+**Endpoint:** `/api/BuildPipeline/GetRepositoryId`
+**Description:** Retrieve a build pipeline from your Azure DevOps organization.
 
-### GET Projects
+#### - GET All build pipelines
+**Endpoint:** `/api/BuildPipeline/GetAll`
+**Description:** Retrieve a list of build pipelines from Azure DevOps organization.
 
-**Endpoint:** `/api/Project/Get`
-**Description:** Retrieve a list of projects from your Azure DevOps organization.
+#### - Run build pipeline
+**Endpoint:** `/api/BuildPipeline/Run`
+**Description:** Run a build pipeline from your Azure DevOps organization.
 
-### GET Secrets
+#### - Run build pipelines
+**Endpoint:** `/api/BuildPipeline/RunAll`
+**Description:** Run a list of build pipelines from your Azure DevOps organization.
 
-**Endpoint:** `/api/Secret/Get`
-**Description:** Retrieve secrets from Azure KeyVault.
+### Git file
+#### - Get file paths
+**Endpoint:** `/api/GitFile/FilePath`
+**Description:** Get file path by file name from Azure DevOps Git.
 
-### GET Deleted Secrets from KeyVault
+#### - Get config files
+**Endpoint:** `/api/GitFile/ConfigFiles`
+**Description:** Get config files by extension name from Azure DevOps Git.
 
-**Endpoint:** `/api/Secret/GetDeleted`
-**Description:** Retrieve deleted secrets from Azure KeyVault.
+### Git repository
+#### - Get git repositories
+**Endpoint:** `/api/GitRepository`
+**Description:** Get git repositories from Azure DevOps Git.
 
-### Delete Secrets
+#### - Get variables from git repository
+**Endpoint:** `/api/GitRepository/Variables`
+**Description:** Get environment variables from Azure DevOps Git repository.
 
-**Endpoint:** `/api/Secret/Delete`
-**Description:** Delete secrets from Azure KeyVault.
+### Git version
+#### - Get git branches
+**Endpoint:** `/api/GitVersion/Branches`
+**Description:** Get git branches by git repository from Azure DevOps Git.
 
-### Delete Secret Inline
+#### - Get git tags
+**Endpoint:** `/api/GitVersion/Tags`
+**Description:** Get git tags by git repository from Azure DevOps Git.
 
-**Endpoint:** `/api/Secret/DeleteInline`
-**Description:** Delete secret from Azure KeyVault.
+#### - Create git tag
+**Endpoint:** `/api/GitVersion/Tag/Create`
+**Description:** Create git tag from Azure DevOps Git.
 
-### Recover Secrets
+### Profile
+#### - Get profile
+**Endpoint:** `/api/Profile`
+**Description:** Get profile from Azure DevOps.
 
-**Endpoint:** `/api/Secret/Recover`
-**Description:** Recover deleted secrets in Azure KeyVault.
+### Release pipeline
+#### - Get environments
+**Endpoint:** `/api/ReleasePipeline/GetEnvironments`
+**Description:** Get environments by release pipeline from Azure DevOps.
 
-### Recover Secret Inline
+#### - Get connected variable groups
+**Endpoint:** `/api/ReleasePipeline/GetVariableGroups`
+**Description:** Get connected variable groups by release pipeline from Azure DevOps.
 
-**Endpoint:** `/api/Secret/RecoverInline`
-**Description:** Recover deleted secret in Azure KeyVault.
-
-### Copy-Paste Entire KeyVaults
-
-**Endpoint:** `/api/Secret/Copy`
-**Description:** Copy and paste entire KeyVaults, including secrets, from one location to another.
-
-### Get variables from Variable Groups
-
-**Endpoint:** `/api/VariableGroup/Get`
-**Description:** Retrieve variables from variable groups inside Azure DevOps Libraries.
-
-### Update variables of Variable Groups
-
-**Endpoint:** `/api/VariableGroup/Update`
-**Description:** Perform update operation on variables within variable groups inside Azure DevOps Libraries.
-
-### Update variable of Variable Group Inline
-
-**Endpoint:** `/api/VariableGroup/UpdateInline`
-**Description:** Perform update operation on variable within variable group inside Azure DevOps Libraries.
-
-### Add variables of Variable Groups
-
-**Endpoint:** `/api/VariableGroup/Add`
-**Description:** Perform add operation on variables within variable groups inside Azure DevOps Libraries.
-
-### Delete variables of Variable Groups
-
-**Endpoint:** `/api/VariableGroup/Delete`
-**Description:** Perform delete operation on variables within variable groups inside Azure DevOps Libraries.
-
-### Delete variable of Variable Group Inline
-
-**Endpoint:** `/api/VariableGroup/DeleteInline`
-**Description:** Perform delete operation on variable within variable group inside Azure DevOps Libraries.
+#### - Get connected azure projects
+**Endpoint:** `/api/ReleasePipeline/GetProjects`
+**Description:** Get connected azure projects by release pipeline from Azure DevOps.
 
 ## Usage
 Once the API is up and running, you can interact with it using your preferred API client or by making HTTP requests directly. Make sure to provide the required parameters and authentication tokens as needed for each endpoint.

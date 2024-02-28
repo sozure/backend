@@ -8,17 +8,10 @@ using VGManager.Services.Models;
 
 namespace VGManager.Services;
 
-public class GitVersionService : IGitVersionService
+public class GitVersionService(
+    IAdapterCommunicator adapterCommunicator
+        ) : IGitVersionService
 {
-    private readonly IAdapterCommunicator _adapterCommunicator;
-
-    public GitVersionService(
-        IAdapterCommunicator adapterCommunicator
-        )
-    {
-        _adapterCommunicator = adapterCommunicator;
-    }
-
     public async Task<(AdapterStatus, IEnumerable<string>)> GetBranchesAsync(
         string organization,
         string pat,
@@ -33,7 +26,7 @@ public class GitVersionService : IGitVersionService
             RepositoryId = repositoryId,
         };
 
-        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.GetBranchesRequest,
             cancellationToken
@@ -71,7 +64,7 @@ public class GitVersionService : IGitVersionService
             RepositoryId = repositoryId,
         };
 
-        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.GetTagsRequest,
             cancellationToken
@@ -148,7 +141,7 @@ public class GitVersionService : IGitVersionService
                 Description = tagEntity.Description
             };
 
-            (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
                 request,
                 CommandTypes.CreateTagRequest,
                 cancellationToken

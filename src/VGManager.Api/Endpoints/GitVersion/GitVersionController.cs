@@ -11,16 +11,8 @@ namespace VGManager.Api.Endpoints.GitBranch;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class GitVersionController : ControllerBase
+public class GitVersionController(IGitVersionService gitBranchService) : ControllerBase
 {
-
-    private readonly IGitVersionService _gitBranchService;
-
-    public GitVersionController(IGitVersionService gitBranchService)
-    {
-        _gitBranchService = gitBranchService;
-    }
-
     [HttpPost("Branches", Name = "branches")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -32,7 +24,7 @@ public class GitVersionController : ControllerBase
     {
         try
         {
-            (var status, var branches) = await _gitBranchService.GetBranchesAsync(
+            (var status, var branches) = await gitBranchService.GetBranchesAsync(
                 request.Organization,
                 request.PAT,
                 request.RepositoryId,
@@ -65,7 +57,7 @@ public class GitVersionController : ControllerBase
     {
         try
         {
-            (var status, var tags) = await _gitBranchService.GetTagsAsync(
+            (var status, var tags) = await gitBranchService.GetTagsAsync(
                 request.Organization,
                 request.PAT,
                 new Guid(request.RepositoryId),
@@ -98,7 +90,7 @@ public class GitVersionController : ControllerBase
     {
         try
         {
-            (var status, var tag) = await _gitBranchService.CreateTagAsync(
+            (var status, var tag) = await gitBranchService.CreateTagAsync(
                 request,
                 cancellationToken
                 );

@@ -11,17 +11,8 @@ namespace VGManager.Api.Endpoints.GitRepository;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class GitRepositoryController : ControllerBase
+public class GitRepositoryController(IGitRepositoryService gitRepositoryService, IMapper mapper) : ControllerBase
 {
-    private readonly IGitRepositoryService _gitRepositoryService;
-    private readonly IMapper _mapper;
-
-    public GitRepositoryController(IGitRepositoryService gitRepositoryService, IMapper mapper)
-    {
-        _gitRepositoryService = gitRepositoryService;
-        _mapper = mapper;
-    }
-
     [HttpPost(Name = "repositories")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -31,7 +22,7 @@ public class GitRepositoryController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var gitRepositories = await _gitRepositoryService.GetAllAsync(
+        var gitRepositories = await gitRepositoryService.GetAllAsync(
             request.Organization,
             request.Project,
             request.PAT,
@@ -56,8 +47,8 @@ public class GitRepositoryController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var model = _mapper.Map<GitRepositoryModel>(request);
-        var variablesResult = await _gitRepositoryService.GetVariablesFromConfigAsync(model, cancellationToken);
+        var model = mapper.Map<GitRepositoryModel>(request);
+        var variablesResult = await gitRepositoryService.GetVariablesFromConfigAsync(model, cancellationToken);
         var result = new AdapterResponseModel<IEnumerable<string>>()
         {
             Status = variablesResult.Status,

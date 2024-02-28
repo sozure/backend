@@ -11,15 +11,8 @@ namespace VGManager.Api.Endpoints.Pipelines.Build;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class BuildPipelineController : ControllerBase
+public class BuildPipelineController(IBuildPipelineService buildPipelineService) : ControllerBase
 {
-    private readonly IBuildPipelineService _buildPipelineService;
-
-    public BuildPipelineController(IBuildPipelineService buildPipelineService)
-    {
-        _buildPipelineService = buildPipelineService;
-    }
-
     [HttpPost("GetRepositoryId", Name = "getrepositoryid")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -31,7 +24,7 @@ public class BuildPipelineController : ControllerBase
     {
         try
         {
-            var id = await _buildPipelineService.GetRepositoryIdByBuildDefinitionAsync(
+            var id = await buildPipelineService.GetRepositoryIdByBuildDefinitionAsync(
                 request.Organization,
                 request.PAT,
                 request.Project,
@@ -65,7 +58,7 @@ public class BuildPipelineController : ControllerBase
     {
         try
         {
-            var pipelines = await _buildPipelineService.GetBuildPipelinesAsync(
+            var pipelines = await buildPipelineService.GetBuildPipelinesAsync(
                 request.Organization,
                 request.PAT,
                 request.Project,
@@ -98,7 +91,7 @@ public class BuildPipelineController : ControllerBase
     {
         try
         {
-            var status = await _buildPipelineService.RunBuildPipelineAsync(
+            var status = await buildPipelineService.RunBuildPipelineAsync(
                 request.Organization,
                 request.PAT,
                 request.Project,
@@ -125,7 +118,7 @@ public class BuildPipelineController : ControllerBase
     {
         try
         {
-            var status = await _buildPipelineService.RunBuildPipelinesAsync(
+            var status = await buildPipelineService.RunBuildPipelinesAsync(
                 request.Organization,
                 request.PAT,
                 request.Project,

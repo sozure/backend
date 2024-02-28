@@ -9,17 +9,10 @@ using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
-public class BuildPipelineService : IBuildPipelineService
+public class BuildPipelineService(
+    IAdapterCommunicator adapterCommunicator
+        ) : IBuildPipelineService
 {
-    private readonly IAdapterCommunicator _adapterCommunicator;
-
-    public BuildPipelineService(
-        IAdapterCommunicator adapterCommunicator
-        )
-    {
-        _adapterCommunicator = adapterCommunicator;
-    }
-
     public async Task<Guid> GetRepositoryIdByBuildDefinitionAsync(
         string organization,
         string pat,
@@ -36,7 +29,7 @@ public class BuildPipelineService : IBuildPipelineService
             Id = id
         };
 
-        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.GetBuildPipelineRequest,
             cancellationToken
@@ -61,7 +54,7 @@ public class BuildPipelineService : IBuildPipelineService
             Project = project
         };
 
-        (isSuccess, response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (isSuccess, response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.GetAllRepositoriesRequest,
             cancellationToken
@@ -98,7 +91,7 @@ public class BuildPipelineService : IBuildPipelineService
             Project = project
         };
 
-        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.GetBuildPipelinesRequest,
             cancellationToken
@@ -143,7 +136,7 @@ public class BuildPipelineService : IBuildPipelineService
             SourceBranch = sourceBranch
         };
 
-        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.RunBuildPipelineRequest,
             cancellationToken
@@ -174,7 +167,7 @@ public class BuildPipelineService : IBuildPipelineService
             Pipelines = pipelines
         };
 
-        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.RunBuildPipelinesRequest,
             cancellationToken

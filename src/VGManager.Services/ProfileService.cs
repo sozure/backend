@@ -7,17 +7,10 @@ using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
-public class ProfileService : IProfileService
+public class ProfileService(
+    IAdapterCommunicator adapterCommunicator
+        ) : IProfileService
 {
-    private readonly IAdapterCommunicator _adapterCommunicator;
-
-    public ProfileService(
-        IAdapterCommunicator adapterCommunicator
-        )
-    {
-        _adapterCommunicator = adapterCommunicator;
-    }
-
     public async Task<Profile?> GetProfileAsync(string organization, string pat, CancellationToken cancellationToken = default)
     {
         var request = new BaseRequest()
@@ -26,7 +19,7 @@ public class ProfileService : IProfileService
             PAT = pat
         };
 
-        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.GetProfileRequest,
             cancellationToken

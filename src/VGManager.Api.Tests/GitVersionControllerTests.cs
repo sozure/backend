@@ -72,6 +72,40 @@ public class GitVersionControllerTests
     }
 
     [Test]
+    public async Task GetBranchesAsync_Throws_exception()
+    {
+        // Arrange
+        var request = new GitBasicRequest
+        {
+            Organization = "MyOrganization",
+            PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",
+            RepositoryId = "1234567"
+        };
+
+        var response = new AdapterResponseModel<IEnumerable<string>>
+        {
+            Data = Enumerable.Empty<string>(),
+            Status = AdapterStatus.Unknown
+        };
+
+        _clientService.Setup(x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException());
+
+        // Act
+        var result = await _gitVersionController.GetBranchesAsync(request, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
+
+        _clientService.Verify(
+            x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Once
+            );
+    }
+
+    [Test]
     public async Task GetTagsAsync_Works_well()
     {
         // Arrange
@@ -101,6 +135,40 @@ public class GitVersionControllerTests
 
         _clientService.Setup(x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((true, JsonSerializer.Serialize(adapterResponse)));
+
+        // Act
+        var result = await _gitVersionController.GetTagsAsync(request, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
+
+        _clientService.Verify(
+            x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Once
+            );
+    }
+
+    [Test]
+    public async Task GetTagsAsync_Throws_exception()
+    {
+        // Arrange
+        var request = new GitBasicRequest
+        {
+            Organization = "MyOrganization",
+            PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",
+            RepositoryId = "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        };
+
+        var response = new AdapterResponseModel<IEnumerable<string>>
+        {
+            Data = Enumerable.Empty<string>(),
+            Status = AdapterStatus.Unknown
+        };
+
+        _clientService.Setup(x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException());
 
         // Act
         var result = await _gitVersionController.GetTagsAsync(request, default);
@@ -198,6 +266,54 @@ public class GitVersionControllerTests
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync("CreateTagRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Once
+            );
+    }
+
+    [Test]
+    public async Task CreateTagAsync_Throws_exception()
+    {
+        // Arrange
+        var request = new CreateTagEntity
+        {
+            Organization = "MyOrganization",
+            PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",
+            RepositoryId = new Guid("f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+            TagName = "major",
+            Description = "This is a new tag",
+            Project = "VGManager.Library",
+            UserName = "JohnDoe",
+        };
+
+        var response = new AdapterResponseModel<string>
+        {
+            Data = string.Empty,
+            Status = AdapterStatus.Unknown
+        };
+
+        _clientService.Setup(x => x.SendAndReceiveMessageAsync("GetBranchesRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException());
+
+        // Act
+        var result = await _gitVersionController.CreateTagAsync(request, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((AdapterResponseModel<string>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
+
+        _clientService.Verify(
+            x => x.SendAndReceiveMessageAsync("GetTagsRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Never
+            );
+
+        _clientService.Verify(
+            x => x.SendAndReceiveMessageAsync("GetBranchesRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Once
+            );
+
+        _clientService.Verify(
+            x => x.SendAndReceiveMessageAsync("CreateTagRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Never
             );
     }
 }

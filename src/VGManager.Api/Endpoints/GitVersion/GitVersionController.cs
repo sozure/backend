@@ -83,7 +83,7 @@ public class GitVersionController(IGitVersionService gitBranchService) : Control
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> CreateTagAsync(
+    public async Task<ActionResult<AdapterResponseModel<string>>> CreateTagAsync(
         [FromBody] CreateTagEntity request,
         CancellationToken cancellationToken
     )

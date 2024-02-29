@@ -1,10 +1,12 @@
 
 using CorrelationId;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Diagnostics.CodeAnalysis;
 using VGManager.Api;
 using VGManager.Api.HealthChecks;
 using VGManager.Communication.Kafka.Extensions;
 
+[ExcludeFromCodeCoverage]
 static partial class Program
 {
     internal static async Task<WebApplication> ConfigureAsync(WebApplication app, string specificOrigins)

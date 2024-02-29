@@ -5,7 +5,6 @@ using VGManager.Adapter.Client.Extensions;
 using VGManager.Api.HealthChecks;
 using VGManager.Services;
 using VGManager.Services.Interfaces;
-using ServiceProfiles = VGManager.Services.MapperProfiles;
 
 static partial class Program
 {
@@ -47,8 +46,7 @@ static partial class Program
             .AddCheck<StartupHealthCheck>(nameof(StartupHealthCheck), tags: new[] { "startup" });
 
         services.AddAutoMapper(
-            typeof(Program),
-            typeof(ServiceProfiles.GitRepositoryProfile)
+            typeof(Program)
         );
 
         RegisterServices(services, configuration);

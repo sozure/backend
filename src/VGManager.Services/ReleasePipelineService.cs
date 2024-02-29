@@ -92,7 +92,7 @@ public class ReleasePipelineService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting release environments for {repository} repository.", repositoryName);
+            logger.LogError(ex, "Error getting release environments for {repository} repository.", repositoryName);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
     }
@@ -148,7 +148,7 @@ public class ReleasePipelineService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting variable groups connected to release pipeline for {repository} repository.", repositoryName);
+            logger.LogError(ex, "Error getting variable groups connected to release pipeline for {repository} repository.", repositoryName);
             return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
         }
     }

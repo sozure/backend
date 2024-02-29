@@ -85,7 +85,13 @@ public class ReleasePipelineService(
                 return (AdapterStatus.Unknown, Enumerable.Empty<string>());
             }
 
-            int.TryParse(adapterResult["Status"].ToString(), out var i);
+            var isParseCompleted = int.TryParse(adapterResult["Status"].ToString(), out var i);
+
+            if (!isParseCompleted)
+            {
+                return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+            }
+
             var status = (AdapterStatus)i;
             var res = JsonSerializer.Deserialize<List<string>>(adapterResult["Data"].ToString() ?? "[]") ?? [];
             return (status, res);
@@ -136,7 +142,13 @@ public class ReleasePipelineService(
                 return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
             }
 
-            int.TryParse(adapterResult["Status"].ToString(), out var i);
+            var isParseCompleted = int.TryParse(adapterResult["Status"].ToString(), out var i);
+
+            if (!isParseCompleted)
+            {
+                return (AdapterStatus.Unknown, new List<(string, string)>());
+            }
+
             var status = (AdapterStatus)i;
             var res = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(adapterResult["Data"].ToString() ?? "[]") ?? [];
             var res2 = new List<(string, string)>();

@@ -5,6 +5,7 @@ using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
+using VGManager.Api.Common;
 using VGManager.Api.Endpoints.UserProfile;
 using VGManager.Services;
 
@@ -30,7 +31,7 @@ public class ProfileControllerTests
     public async Task GetAsync_Works_well()
     {
         // Arrange
-        var request = new ProfileRequest
+        var request = new BasicRequest
         {
             Organization = "MyOrganization",
             PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",
@@ -62,7 +63,7 @@ public class ProfileControllerTests
     public async Task GetAsync_Returns_null()
     {
         // Arrange
-        var request = new ProfileRequest
+        var request = new BasicRequest
         {
             Organization = "MyOrganization",
             PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",
@@ -97,7 +98,7 @@ public class ProfileControllerTests
     public async Task GetAsync_Throws_error()
     {
         // Arrange
-        var request = new ProfileRequest
+        var request = new BasicRequest
         {
             Organization = "MyOrganization",
             PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",

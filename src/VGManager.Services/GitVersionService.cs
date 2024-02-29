@@ -44,7 +44,13 @@ public class GitVersionService(
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
 
-        int.TryParse(result["Status"].ToString(), out var i);
+        var isParseCompleted = int.TryParse(result["Status"].ToString(), out var i);
+
+        if (!isParseCompleted)
+        {
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+
         var status = (AdapterStatus)i;
         var res = JsonSerializer.Deserialize<List<string>>(result["Data"].ToString() ?? "[]") ?? [];
         return (status, res);
@@ -82,7 +88,13 @@ public class GitVersionService(
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
 
-        int.TryParse(result["Status"].ToString(), out var i);
+        var isParseCompleted = int.TryParse(result["Status"].ToString(), out var i);
+
+        if (!isParseCompleted)
+        {
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+
         var status = (AdapterStatus)i;
         var res = JsonSerializer.Deserialize<List<string>>(result["Data"].ToString() ?? "[]") ?? [];
         return (status, res);
@@ -159,7 +171,13 @@ public class GitVersionService(
                 return (AdapterStatus.Unknown, string.Empty);
             }
 
-            int.TryParse(result["Status"].ToString(), out var i);
+            var isParseCompleted = int.TryParse(result["Status"].ToString(), out var i);
+
+            if (!isParseCompleted)
+            {
+                return (AdapterStatus.Unknown, string.Empty);
+            }
+
             var status = (AdapterStatus)i;
             var res = result["Data"].ToString() ?? string.Empty;
             return (status, res);

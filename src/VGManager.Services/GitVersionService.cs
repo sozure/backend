@@ -9,6 +9,7 @@ using VGManager.Services.Models;
 namespace VGManager.Services;
 
 public class GitVersionService(
+    IGitAdapterCommunicatorService gitAdapterCommunicatorService,
     IAdapterCommunicator adapterCommunicator
         ) : IGitVersionService
 {
@@ -151,36 +152,9 @@ public class GitVersionService(
         {
             Organization = organization,
             PAT = pat,
-            RepositoryId = repositoryId,
+            RepositoryId = repositoryId
         };
 
-        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
-            request,
-            commandType,
-            cancellationToken
-            );
-
-        if (!isSuccess)
-        {
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
-        }
-
-        var result = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
-
-        if (result is null)
-        {
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
-        }
-
-        var isParseCompleted = int.TryParse(result["Status"].ToString(), out var i);
-
-        if (!isParseCompleted)
-        {
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
-        }
-
-        var status = (AdapterStatus)i;
-        var res = JsonSerializer.Deserialize<List<string>>(result["Data"].ToString() ?? "[]") ?? [];
-        return (status, res);
+        return await gitAdapterCommunicatorService.GetInformationAsync(commandType, request, cancellationToken);
     }
 }

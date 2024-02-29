@@ -4,6 +4,7 @@ using System.Reflection;
 using VGManager.Adapter.Client.Extensions;
 using VGManager.Api.HealthChecks;
 using VGManager.Services;
+using VGManager.Services.Helper;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api;
@@ -63,6 +64,7 @@ static partial class Program
         services.AddSingleton<StartupHealthCheck>();
         services.SetupVGManagerAdapterClient(configuration);
 
+        services.AddScoped<IGitAdapterCommunicatorService, GitAdapterCommunicatorService>();
         services.AddScoped<IGitRepositoryService, GitRepositoryService>();
         services.AddScoped<IGitVersionService, GitVersionService>();
         services.AddScoped<IGitFileService, GitFileService>();

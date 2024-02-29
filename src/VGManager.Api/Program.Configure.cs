@@ -6,10 +6,12 @@ using VGManager.Api;
 using VGManager.Api.HealthChecks;
 using VGManager.Communication.Kafka.Extensions;
 
+namespace VGManager.Api;
+
 [ExcludeFromCodeCoverage]
 static partial class Program
 {
-    internal static async Task<WebApplication> ConfigureAsync(WebApplication app, string specificOrigins)
+    internal static WebApplication Configure(WebApplication app, string specificOrigins)
     {
         var configuration = app.Configuration;
 

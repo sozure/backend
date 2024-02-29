@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Services.Profile;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.StatusEnums;
+using VGManager.Api.Common;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.Endpoints.UserProfile;
@@ -17,7 +18,7 @@ public class ProfileController(IProfileService profileService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AdapterResponseModel<Profile>>> GetAsync(
-        [FromBody] ProfileRequest request,
+        [FromBody] BasicRequest request,
         CancellationToken cancellationToken
     )
     {

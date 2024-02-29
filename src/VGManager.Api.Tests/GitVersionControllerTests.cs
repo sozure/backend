@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Models;
-using VGManager.Adapter.Models.Requests;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Api.Common;

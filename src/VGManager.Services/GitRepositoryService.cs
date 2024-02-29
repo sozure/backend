@@ -37,7 +37,8 @@ public class GitRepositoryService(
         {
             return new AdapterResponseModel<IEnumerable<GitRepositoryResult>>
             {
-                Data = Enumerable.Empty<GitRepositoryResult>()
+                Data = Enumerable.Empty<GitRepositoryResult>(),
+                Status = AdapterStatus.Unknown
             };
         }
 
@@ -47,7 +48,8 @@ public class GitRepositoryService(
         {
             return new AdapterResponseModel<IEnumerable<GitRepositoryResult>>
             {
-                Data = Enumerable.Empty<GitRepositoryResult>()
+                Data = Enumerable.Empty<GitRepositoryResult>(),
+                Status = AdapterStatus.Unknown
             };
         }
 

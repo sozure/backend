@@ -10,17 +10,10 @@ using VGManager.Services.Models.GitRepositories;
 
 namespace VGManager.Services;
 
-public class GitRepositoryService : IGitRepositoryService
+public class GitRepositoryService(
+    IAdapterCommunicator adapterCommunicator
+        ) : IGitRepositoryService
 {
-    private readonly IAdapterCommunicator _adapterCommunicator;
-
-    public GitRepositoryService(
-        IAdapterCommunicator adapterCommunicator
-        )
-    {
-        _adapterCommunicator = adapterCommunicator;
-    }
-
     public async Task<AdapterResponseModel<IEnumerable<GitRepositoryResult>>> GetAllAsync(
         string organization,
         string project,
@@ -34,7 +27,7 @@ public class GitRepositoryService : IGitRepositoryService
             Project = project
         };
 
-        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.GetAllRepositoriesRequest,
             cancellationToken
@@ -93,7 +86,7 @@ public class GitRepositoryService : IGitRepositoryService
             RepositoryId = gitRepositoryModel.RepositoryId
         };
 
-        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.GetVariablesFromConfigRequest,
             cancellationToken

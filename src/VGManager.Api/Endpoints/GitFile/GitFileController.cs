@@ -8,15 +8,8 @@ namespace VGManager.Api.Endpoints.GitFile;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class GitFileController : ControllerBase
+public class GitFileController(IGitFileService gitFileService) : ControllerBase
 {
-    private readonly IGitFileService _gitFileService;
-
-    public GitFileController(IGitFileService gitFileService)
-    {
-        _gitFileService = gitFileService;
-    }
-
     [HttpPost("FilePath", Name = "path")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -26,7 +19,7 @@ public class GitFileController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        (var status, var filePaths) = await _gitFileService.GetFilePathAsync(
+        (var status, var filePaths) = await gitFileService.GetFilePathAsync(
             request.Organization,
             request.PAT,
             request.RepositoryId,
@@ -52,7 +45,7 @@ public class GitFileController : ControllerBase
         CancellationToken cancellationToken
         )
     {
-        (var status, var configFiles) = await _gitFileService.GetConfigFilesAsync(
+        (var status, var configFiles) = await gitFileService.GetConfigFilesAsync(
             request.Organization,
             request.PAT,
             request.RepositoryId,

@@ -11,15 +11,8 @@ namespace VGManager.Api.Endpoints.Pipelines.Release;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class ReleasePipelineController : ControllerBase
+public class ReleasePipelineController(IReleasePipelineService releasePipelineService, IMapper mapper) : ControllerBase
 {
-    private readonly IReleasePipelineService _releasePipelineService;
-
-    public ReleasePipelineController(IReleasePipelineService releasePipelineService, IMapper mapper)
-    {
-        _releasePipelineService = releasePipelineService;
-    }
-
     [HttpPost("GetEnvironments", Name = "Environments")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -31,7 +24,7 @@ public class ReleasePipelineController : ControllerBase
     {
         try
         {
-            var (status, environments) = await _releasePipelineService.GetEnvironmentsAsync(
+            var (status, environments) = await releasePipelineService.GetEnvironmentsAsync(
                 request.Organization,
                 request.PAT,
                 request.Project,
@@ -67,7 +60,7 @@ public class ReleasePipelineController : ControllerBase
     {
         try
         {
-            var (status, variableGroups) = await _releasePipelineService.GetVariableGroupsAsync(
+            var (status, variableGroups) = await releasePipelineService.GetVariableGroupsAsync(
                 request.Organization,
                 request.PAT,
                 request.Project,
@@ -116,7 +109,7 @@ public class ReleasePipelineController : ControllerBase
     {
         try
         {
-            var (status, projects) = await _releasePipelineService.GetProjectsWhichHaveCorrespondingReleasePipelineAsync(
+            var (status, projects) = await releasePipelineService.GetProjectsWhichHaveCorrespondingReleasePipelineAsync(
                 request.Organization,
                 request.PAT,
                 request.Projects,

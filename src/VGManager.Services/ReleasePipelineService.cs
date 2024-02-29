@@ -8,20 +8,11 @@ using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
-public class ReleasePipelineService : IReleasePipelineService
+public class ReleasePipelineService(
+    IAdapterCommunicator adapterCommunicator,
+    ILogger<ReleasePipelineService> logger
+        ) : IReleasePipelineService
 {
-    private readonly IAdapterCommunicator _adapterCommunicator;
-    private readonly ILogger _logger;
-
-    public ReleasePipelineService(
-        IAdapterCommunicator adapterCommunicator,
-        ILogger<ReleasePipelineService> logger
-        )
-    {
-        _adapterCommunicator = adapterCommunicator;
-        _logger = logger;
-    }
-
     public async Task<(AdapterStatus, IEnumerable<string>)> GetProjectsWhichHaveCorrespondingReleasePipelineAsync(
         string organization,
         string pat,
@@ -50,7 +41,7 @@ public class ReleasePipelineService : IReleasePipelineService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting projects with release pipelines for {repository} repository.", repositoryName);
+            logger.LogError(ex, "Error getting projects with release pipelines for {repository} repository.", repositoryName);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
     }
@@ -66,7 +57,7 @@ public class ReleasePipelineService : IReleasePipelineService
     {
         try
         {
-            _logger.LogInformation("Request release environments for {repository} repository.", repositoryName);
+            logger.LogInformation("Request release environments for {repository} repository.", repositoryName);
             var request = new ReleasePipelineRequest()
             {
                 Organization = organization,
@@ -76,7 +67,7 @@ public class ReleasePipelineService : IReleasePipelineService
                 RepositoryName = repositoryName
             };
 
-            (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
                 request,
                 CommandTypes.GetEnvironmentsRequest,
                 cancellationToken
@@ -101,7 +92,7 @@ public class ReleasePipelineService : IReleasePipelineService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting release environments for {repository} repository.", repositoryName);
+            logger.LogError(ex, "Error getting release environments for {repository} repository.", repositoryName);
             return (AdapterStatus.Unknown, Enumerable.Empty<string>());
         }
     }
@@ -117,7 +108,7 @@ public class ReleasePipelineService : IReleasePipelineService
     {
         try
         {
-            _logger.LogInformation("Request variable groups connected to release pipeline for {repository} repository.", repositoryName);
+            logger.LogInformation("Request variable groups connected to release pipeline for {repository} repository.", repositoryName);
             var request = new ReleasePipelineRequest()
             {
                 Organization = organization,
@@ -127,7 +118,7 @@ public class ReleasePipelineService : IReleasePipelineService
                 RepositoryName = repositoryName
             };
 
-            (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+            (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
                 request,
                 CommandTypes.GetVariableGroupsRequest,
                 cancellationToken
@@ -157,7 +148,7 @@ public class ReleasePipelineService : IReleasePipelineService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting variable groups connected to release pipeline for {repository} repository.", repositoryName);
+            logger.LogError(ex, "Error getting variable groups connected to release pipeline for {repository} repository.", repositoryName);
             return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
         }
     }

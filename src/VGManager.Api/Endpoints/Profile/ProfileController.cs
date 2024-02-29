@@ -10,15 +10,8 @@ namespace VGManager.Api.Endpoints.UserProfile;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class ProfileController : ControllerBase
+public class ProfileController(IProfileService profileService) : ControllerBase
 {
-    private readonly IProfileService _profileService;
-
-    public ProfileController(IProfileService profileService)
-    {
-        _profileService = profileService;
-    }
-
     [HttpPost(Name = "getprofile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -30,7 +23,7 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            var profile = await _profileService.GetProfileAsync(request.Organization, request.PAT, cancellationToken);
+            var profile = await profileService.GetProfileAsync(request.Organization, request.PAT, cancellationToken);
             if (profile is null)
             {
                 return Ok(new AdapterResponseModel<Profile>()

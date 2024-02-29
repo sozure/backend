@@ -7,17 +7,10 @@ using VGManager.Services.Interfaces;
 
 namespace VGManager.Services;
 
-public class GitFileService : IGitFileService
+public class GitFileService(
+    IAdapterCommunicator adapterCommunicator
+        ) : IGitFileService
 {
-    private readonly IAdapterCommunicator _adapterCommunicator;
-
-    public GitFileService(
-        IAdapterCommunicator adapterCommunicator
-        )
-    {
-        _adapterCommunicator = adapterCommunicator;
-    }
-
     public async Task<(AdapterStatus, IEnumerable<string>)> GetFilePathAsync(
         string organization,
         string pat,
@@ -36,7 +29,7 @@ public class GitFileService : IGitFileService
             AdditionalInformation = fileName,
         };
 
-        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.GetFilePathRequest,
             cancellationToken
@@ -78,7 +71,7 @@ public class GitFileService : IGitFileService
             AdditionalInformation = extension,
         };
 
-        (var isSuccess, var response) = await _adapterCommunicator.CommunicateWithAdapterAsync(
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.GetConfigFilesRequest,
             cancellationToken

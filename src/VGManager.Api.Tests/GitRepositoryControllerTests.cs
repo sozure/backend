@@ -95,6 +95,74 @@ public class GitRepositoryControllerTests
     }
 
     [Test]
+    public async Task GetAsync_Adapter_returns_success_false()
+    {
+        // Arrange
+        var request = new GitRepositoryBaseRequest
+        {
+            Organization = "MyOrganization",
+            PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",
+            Project = "beviktor95",
+        };
+
+        var response = new AdapterResponseModel<IEnumerable<GitRepositoryResult>>
+        {
+            Data = Enumerable.Empty<GitRepositoryResult>(),
+            Status = AdapterStatus.Unknown
+        };
+
+        _clientService.Setup(x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((false, JsonSerializer.Serialize((BaseResponse<IEnumerable<GitRepository>>)null!)));
+
+        // Act
+        var result = await _gitRepositoryController.GetAsync(request, new CancellationToken());
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((AdapterResponseModel<IEnumerable<GitRepositoryResult>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
+
+        _clientService.Verify(
+            x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Once
+            );
+    }
+
+    [Test]
+    public async Task GetAsync_Adapter_returns_null()
+    {
+        // Arrange
+        var request = new GitRepositoryBaseRequest
+        {
+            Organization = "MyOrganization",
+            PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",
+            Project = "beviktor95",
+        };
+
+        var response = new AdapterResponseModel<IEnumerable<GitRepositoryResult>>
+        {
+            Data = Enumerable.Empty<GitRepositoryResult>(),
+            Status = AdapterStatus.Unknown
+        };
+
+        _clientService.Setup(x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((true, JsonSerializer.Serialize((BaseResponse<IEnumerable<GitRepository>>)null!)));
+
+        // Act
+        var result = await _gitRepositoryController.GetAsync(request, new CancellationToken());
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((AdapterResponseModel<IEnumerable<GitRepositoryResult>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
+
+        _clientService.Verify(
+            x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Once
+            );
+    }
+
+    [Test]
     public async Task GetVariablesAsync_Works_well()
     {
         // Arrange
@@ -129,6 +197,84 @@ public class GitRepositoryControllerTests
 
         _clientService.Setup(x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((true, JsonSerializer.Serialize(adapterResponse)));
+
+        // Act
+        var result = await _gitRepositoryController.GetVariablesAsync(request, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
+
+        _clientService.Verify(
+            x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Once
+            );
+    }
+
+    [Test]
+    public async Task GetVariablesAsync_Adapter_returns_success_false()
+    {
+        // Arrange
+        var request = new GitRepositoryVariablesRequest
+        {
+            Organization = "MyOrganization",
+            PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",
+            RepositoryId = "VGManager.Library",
+            Branch = "main",
+            Delimiter = "__",
+            Exceptions = Enumerable.Empty<string>(),
+            FilePath = ".src/VGManager.Library.Api/appsettings.Development.json",
+            Project = "beviktor95"
+        };
+
+        var response = new AdapterResponseModel<IEnumerable<string>>
+        {
+            Data = Enumerable.Empty<string>(),
+            Status = AdapterStatus.Unknown
+        };
+
+        _clientService.Setup(x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((false, JsonSerializer.Serialize((BaseResponse<List<string>>)null!)));
+
+        // Act
+        var result = await _gitRepositoryController.GetVariablesAsync(request, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Result.Should().BeOfType<OkObjectResult>();
+        ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
+
+        _clientService.Verify(
+            x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Once
+            );
+    }
+
+    [Test]
+    public async Task GetVariablesAsync_Adapter_returns_null()
+    {
+        // Arrange
+        var request = new GitRepositoryVariablesRequest
+        {
+            Organization = "MyOrganization",
+            PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",
+            RepositoryId = "VGManager.Library",
+            Branch = "main",
+            Delimiter = "__",
+            Exceptions = Enumerable.Empty<string>(),
+            FilePath = ".src/VGManager.Library.Api/appsettings.Development.json",
+            Project = "beviktor95"
+        };
+
+        var response = new AdapterResponseModel<IEnumerable<string>>
+        {
+            Data = Enumerable.Empty<string>(),
+            Status = AdapterStatus.Unknown
+        };
+
+        _clientService.Setup(x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((true, JsonSerializer.Serialize((BaseResponse<List<string>>)null!)));
 
         // Act
         var result = await _gitRepositoryController.GetVariablesAsync(request, default);

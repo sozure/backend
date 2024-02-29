@@ -19,41 +19,8 @@ public class GitVersionService(
         CancellationToken cancellationToken = default
         )
     {
-        var request = new GitFileBaseRequest<string>()
-        {
-            Organization = organization,
-            PAT = pat,
-            RepositoryId = repositoryId,
-        };
-
-        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
-            request,
-            CommandTypes.GetBranchesRequest,
-            cancellationToken
-            );
-
-        if (!isSuccess)
-        {
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
-        }
-
-        var result = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
-
-        if (result is null)
-        {
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
-        }
-
-        var isParseCompleted = int.TryParse(result["Status"].ToString(), out var i);
-
-        if (!isParseCompleted)
-        {
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
-        }
-
-        var status = (AdapterStatus)i;
-        var res = JsonSerializer.Deserialize<List<string>>(result["Data"].ToString() ?? "[]") ?? [];
-        return (status, res);
+        var commandType = CommandTypes.GetBranchesRequest;
+        return await GetInformationAsync(commandType, organization, pat, repositoryId, cancellationToken);
     }
 
     public async Task<(AdapterStatus, IEnumerable<string>)> GetTagsAsync(
@@ -63,41 +30,8 @@ public class GitVersionService(
         CancellationToken cancellationToken = default
         )
     {
-        var request = new GitFileBaseRequest<Guid>()
-        {
-            Organization = organization,
-            PAT = pat,
-            RepositoryId = repositoryId,
-        };
-
-        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
-            request,
-            CommandTypes.GetTagsRequest,
-            cancellationToken
-            );
-
-        if (!isSuccess)
-        {
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
-        }
-
-        var result = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
-
-        if (result is null)
-        {
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
-        }
-
-        var isParseCompleted = int.TryParse(result["Status"].ToString(), out var i);
-
-        if (!isParseCompleted)
-        {
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
-        }
-
-        var status = (AdapterStatus)i;
-        var res = JsonSerializer.Deserialize<List<string>>(result["Data"].ToString() ?? "[]") ?? [];
-        return (status, res);
+        var commandType = CommandTypes.GetTagsRequest;
+        return await GetInformationAsync(commandType, organization, pat, repositoryId, cancellationToken);
     }
 
     public async Task<(AdapterStatus, string)> CreateTagAsync(
@@ -203,5 +137,50 @@ public class GitVersionService(
             default:
                 return string.Empty;
         }
+    }
+
+    private async Task<(AdapterStatus, IEnumerable<string>)> GetInformationAsync<T>(
+        string commandType,
+        string organization,
+        string pat,
+        T repositoryId,
+        CancellationToken cancellationToken
+        )
+    {
+        var request = new GitFileBaseRequest<T>()
+        {
+            Organization = organization,
+            PAT = pat,
+            RepositoryId = repositoryId,
+        };
+
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            commandType,
+            cancellationToken
+            );
+
+        if (!isSuccess)
+        {
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+
+        var result = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
+
+        if (result is null)
+        {
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+
+        var isParseCompleted = int.TryParse(result["Status"].ToString(), out var i);
+
+        if (!isParseCompleted)
+        {
+            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+        }
+
+        var status = (AdapterStatus)i;
+        var res = JsonSerializer.Deserialize<List<string>>(result["Data"].ToString() ?? "[]") ?? [];
+        return (status, res);
     }
 }

@@ -47,13 +47,6 @@ public class BuildPipelineService(
             return Guid.Empty;
         }
 
-        var repoRequest = new ExtendedBaseRequest()
-        {
-            Organization = organization,
-            PAT = pat,
-            Project = project
-        };
-
         (isSuccess, response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
             CommandTypes.GetAllRepositoriesRequest,

@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Adapter.Models.Models;
@@ -11,7 +10,7 @@ namespace VGManager.Api.Endpoints.Pipelines.Release;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class ReleasePipelineController(IReleasePipelineService releasePipelineService, IMapper mapper) : ControllerBase
+public class ReleasePipelineController(IReleasePipelineService releasePipelineService) : ControllerBase
 {
     [HttpPost("GetEnvironments", Name = "Environments")]
     [ProducesResponseType(StatusCodes.Status200OK)]

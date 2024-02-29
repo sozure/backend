@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Text.Json;
 using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Models;
@@ -102,7 +100,7 @@ public class ReleasePipelineControllerTests
         var response = new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>
         {
             Data = new List<Dictionary<string, string>>
-            { 
+            {
                 GetSampleDictionary()
             },
             Status = AdapterStatus.Success

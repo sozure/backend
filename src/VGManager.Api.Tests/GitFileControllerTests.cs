@@ -37,7 +37,7 @@ public class GitFileControllerTests
             Branch = "main",
         };
 
-        var path = new List<string> 
+        var path = new List<string>
         {
             ".src/VGManager.Library.Api/appsettings.Development.json"
         };
@@ -69,7 +69,7 @@ public class GitFileControllerTests
         ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
-            x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), 
+            x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Once
             );
     }

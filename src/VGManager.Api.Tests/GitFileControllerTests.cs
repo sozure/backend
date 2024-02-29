@@ -6,6 +6,7 @@ using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Api.Endpoints.GitFile;
 using VGManager.Services;
+using VGManager.Services.Helper;
 
 namespace VGManager.Api.Tests;
 
@@ -19,8 +20,9 @@ public class GitFileControllerTests
     public void Setup()
     {
         _clientService = new(MockBehavior.Strict);
-        var adapterCommunicationService = new AdapterCommunicator(_clientService.Object);
-        var gitFileService = new GitFileService(adapterCommunicationService);
+        var adapterCommunicatorService = new AdapterCommunicator(_clientService.Object);
+        var gitAdapterCommunicatorService = new GitAdapterCommunicatorService(adapterCommunicatorService);
+        var gitFileService = new GitFileService(gitAdapterCommunicatorService);
         _gitFileController = new GitFileController(gitFileService);
     }
 

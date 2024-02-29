@@ -7,6 +7,7 @@ using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Api.Common;
 using VGManager.Api.Endpoints.GitBranch;
 using VGManager.Services;
+using VGManager.Services.Helper;
 using VGManager.Services.Models;
 
 namespace VGManager.Api.Tests;
@@ -22,7 +23,8 @@ public class GitVersionControllerTests
     {
         _clientService = new(MockBehavior.Strict);
         var adapterCommunicator = new AdapterCommunicator(_clientService.Object);
-        var gitVersionService = new GitVersionService(adapterCommunicator);
+        var gitAdapterCommunicatorService = new GitAdapterCommunicatorService(adapterCommunicator);
+        var gitVersionService = new GitVersionService(gitAdapterCommunicatorService, adapterCommunicator);
         _gitVersionController = new GitVersionController(gitVersionService);
     }
 

@@ -128,7 +128,7 @@ public class ReleasePipelineControllerTests
     {
         // Arrange
         var projects = new List<string> { "beviktor95" };
-        var request = new ProjectsWithCorrespondingReleasePipelineRequest
+        var request = new ProjectsWithReleasePipelineRequest
         {
             Organization = "MyOrganization",
             PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",
@@ -158,7 +158,7 @@ public class ReleasePipelineControllerTests
             .ReturnsAsync((true, JsonSerializer.Serialize(adapterResponse)));
 
         // Act
-        var result = await _controller.GetProjectsWithCorrespondingReleasePipelineAsync(request, default);
+        var result = await _controller.GetProjectsWithReleasePipelineAsync(request, default);
 
         // Assert
         result.Should().NotBeNull();

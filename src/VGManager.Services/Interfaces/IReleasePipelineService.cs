@@ -4,7 +4,7 @@ namespace VGManager.Services.Interfaces;
 
 public interface IReleasePipelineService
 {
-    Task<(AdapterStatus, IEnumerable<string>)> GetProjectsWhichHaveCorrespondingReleasePipelineAsync(
+    Task<(AdapterStatus, IEnumerable<string>)> GetProjectsWithReleasePipelineAsync(
         string organization,
         string pat,
         IEnumerable<string> projects,

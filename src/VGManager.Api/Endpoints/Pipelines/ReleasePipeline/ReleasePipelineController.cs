@@ -101,14 +101,14 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetProjectsWithCorrespondingReleasePipelineAsync(
-        [FromBody] ProjectsWithCorrespondingReleasePipelineRequest request,
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetProjectsWithReleasePipelineAsync(
+        [FromBody] ProjectsWithReleasePipelineRequest request,
         CancellationToken cancellationToken
         )
     {
         try
         {
-            var (status, projects) = await releasePipelineService.GetProjectsWhichHaveCorrespondingReleasePipelineAsync(
+            var (status, projects) = await releasePipelineService.GetProjectsWithReleasePipelineAsync(
                 request.Organization,
                 request.PAT,
                 request.Projects,

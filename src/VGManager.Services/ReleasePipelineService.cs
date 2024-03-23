@@ -13,7 +13,7 @@ public class ReleasePipelineService(
     ILogger<ReleasePipelineService> logger
         ) : IReleasePipelineService
 {
-    public async Task<(AdapterStatus, IEnumerable<string>)> GetProjectsWhichHaveCorrespondingReleasePipelineAsync(
+    public async Task<(AdapterStatus, IEnumerable<string>)> GetProjectsWithReleasePipelineAsync(
         string organization,
         string pat,
         IEnumerable<string> projects,

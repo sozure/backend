@@ -1,4 +1,3 @@
-using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System.Text.Json;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.Response;
@@ -13,7 +12,7 @@ public class GitPullRequestService(
     IAdapterCommunicator adapterCommunicator
     ) : IGitPullRequestService
 {
-    public async Task<AdapterResponseModel<List<GitPRResponse>>> GetPRsAsync(PRRequest model, CancellationToken cancellationToken)
+    public async Task<AdapterResponseModel<List<GitPRResponse>>> GetPRsAsync(GitPRRequest model, CancellationToken cancellationToken)
     {
         (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             model,
@@ -41,6 +40,74 @@ public class GitPullRequestService(
             };
         }
 
+        return rawResult;
+    }
+
+    public async Task<AdapterResponseModel<bool>> CreatePullRequestAsync(
+        CreatePRRequest model, 
+        CancellationToken cancellationToken
+        )
+    {
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
+            model,
+            "CreatePullRequestRequest",
+            cancellationToken
+            );
+
+        if (!isSuccess)
+        {
+            return new AdapterResponseModel<bool>
+            {
+                Data = false,
+                Status = AdapterStatus.Unknown
+            };
+        }
+
+        var rawResult = JsonSerializer.Deserialize<BaseResponse<AdapterResponseModel<bool>>>(response)?.Data;
+
+        if (rawResult is null)
+        {
+            return new AdapterResponseModel<bool>
+            {
+                Data = false,
+                Status = AdapterStatus.Unknown
+            };
+        }
+
+        return rawResult;
+    }
+
+    public async Task<AdapterResponseModel<bool>> CreatePullRequestsAsync(
+        CreatePRsRequest model,
+        CancellationToken cancellationToken
+        )
+    {
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
+            model,
+            "CreatePullRequestsRequest",
+            cancellationToken
+            );
+
+        if (!isSuccess)
+        {
+            return new AdapterResponseModel<bool>
+            {
+                Data = false,
+                Status = AdapterStatus.Unknown
+            };
+        }
+
+        var rawResult = JsonSerializer.Deserialize<BaseResponse<AdapterResponseModel<bool>>>(response)?.Data;
+        
+        if (rawResult is null)
+        {
+            return new AdapterResponseModel<bool>
+            {
+                Data = false,
+                Status = AdapterStatus.Unknown
+            };
+        }
+               
         return rawResult;
     }
 }

@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.TeamFoundation.SourceControl.WebApi;
 using VGManager.Adapter.Models.Models;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models;
@@ -14,23 +13,42 @@ namespace VGManager.Api.Endpoints.GitPR;
 public class GitPullRequestController(IGitPullRequestService gitPullRequestService, IMapper mapper) : ControllerBase
 {
 
-    [HttpPost("PRs", Name = "pullrequests")]
+    [HttpPost("Get", Name = "getprs")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<GitPRResponse>>>> GetPRsAsync(
-        [FromBody] PRRequest request,
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<GitPRResponse>>>> GetAsync(
+        [FromBody] GitPRRequest request,
         CancellationToken cancellationToken
     )
     {
         var gitPullRequests = await gitPullRequestService.GetPRsAsync(request, cancellationToken);
+        return Ok(gitPullRequests);
+    }
 
-        var result = new AdapterResponseModel<IEnumerable<GitPRResponse>>()
-        {
-            Status = gitPullRequests.Status,
-            Data = gitPullRequests.Data
-        };
+    [HttpPost("Create", Name = "createpr")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AdapterResponseModel<bool>>> CreatePullRequestAsync(
+        [FromBody] CreatePRRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await gitPullRequestService.CreatePullRequestAsync(request, cancellationToken);
+        return Ok(result);
+    }
 
+    [HttpPost("CreateMultiple", Name = "createprs")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<GitPRResponse>>>> CreatePullRequestsAsync(
+        [FromBody] CreatePRsRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await gitPullRequestService.CreatePullRequestsAsync(request, cancellationToken);
         return Ok(result);
     }
 }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System.Text.Json;
 using VGManager.Adapter.Client.Interfaces;
@@ -53,7 +54,11 @@ public class GitRepositoryControllerTests
             new()
                 {
                     Id = Guid.NewGuid(),
-                    Name = "VGManager.Library"
+                    Name = "VGManager.Library",
+                    ProjectReference = new TeamProjectReference
+                    {
+                        Name = request.Project
+                    }
                 }
         };
 
@@ -62,7 +67,8 @@ public class GitRepositoryControllerTests
             new()
                 {
                     RepositoryId = repositories.FirstOrDefault()?.Id.ToString() ?? string.Empty,
-                    RepositoryName = repositories.FirstOrDefault()?.Name ?? string.Empty
+                    RepositoryName = repositories.FirstOrDefault()?.Name ?? string.Empty,
+                    ProjectName = repositories.FirstOrDefault()?.ProjectReference.Name ?? string.Empty
                 }
         };
 

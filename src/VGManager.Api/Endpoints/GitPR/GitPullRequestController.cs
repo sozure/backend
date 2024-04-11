@@ -51,4 +51,17 @@ public class GitPullRequestController(IGitPullRequestService gitPullRequestServi
         var result = await gitPullRequestService.CreatePullRequestsAsync(request, cancellationToken);
         return Ok(result);
     }
+
+    [HttpPost("Approve", Name = "approve")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AdapterResponseModel<IEnumerable<GitPRResponse>>>> ApprovePullRequestsAsync(
+        [FromBody] ApprovePRsRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await gitPullRequestService.ApprovePullRequestsAsync(request, cancellationToken);
+        return Ok(result);
+    }
 }

@@ -18,4 +18,9 @@ public interface IGitPullRequestService
         CreatePRsRequest model,
         CancellationToken cancellationToken
         );
+
+    Task<AdapterResponseModel<bool>> ApprovePullRequestsAsync(
+        ApprovePRsRequest request,
+        CancellationToken cancellationToken
+        );
 }

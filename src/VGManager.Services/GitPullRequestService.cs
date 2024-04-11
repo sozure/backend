@@ -1,4 +1,6 @@
+using System.Reflection;
 using System.Text.Json;
+using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
@@ -108,6 +110,40 @@ public class GitPullRequestService(
             };
         }
                
+        return rawResult;
+    }
+
+    public async Task<AdapterResponseModel<bool>> ApprovePullRequestsAsync(
+        ApprovePRsRequest request,
+        CancellationToken cancellationToken
+        )
+    {
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            "ApprovePullRequestsRequest",
+            cancellationToken
+            );
+
+        if (!isSuccess)
+        {
+            return new AdapterResponseModel<bool>
+            {
+                Data = false,
+                Status = AdapterStatus.Unknown
+            };
+        }
+
+        var rawResult = JsonSerializer.Deserialize<BaseResponse<AdapterResponseModel<bool>>>(response)?.Data;
+
+        if (rawResult is null)
+        {
+            return new AdapterResponseModel<bool>
+            {
+                Data = false,
+                Status = AdapterStatus.Unknown
+            };
+        }
+
         return rawResult;
     }
 }

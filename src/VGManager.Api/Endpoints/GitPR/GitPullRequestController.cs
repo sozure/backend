@@ -2,8 +2,9 @@ using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Adapter.Models.Models;
+using VGManager.Adapter.Models.Requests;
+using VGManager.Adapter.Models.Response;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models;
 
 namespace VGManager.Api.Endpoints.GitPR;
 

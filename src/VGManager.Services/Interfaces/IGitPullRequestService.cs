@@ -1,5 +1,6 @@
 using VGManager.Adapter.Models.Models;
-using VGManager.Services.Models;
+using VGManager.Adapter.Models.Requests;
+using VGManager.Adapter.Models.Response;
 
 namespace VGManager.Services.Interfaces;
 public interface IGitPullRequestService

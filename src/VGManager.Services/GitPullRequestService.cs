@@ -1,11 +1,10 @@
-using System.Reflection;
 using System.Text.Json;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Models;
+using VGManager.Adapter.Models.Requests;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Services.Interfaces;
-using VGManager.Services.Models;
 
 namespace VGManager.Services;
 
@@ -18,7 +17,7 @@ public class GitPullRequestService(
     {
         (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             model,
-            "GetPullRequestsRequest",
+            CommandTypes.GetPullRequestsRequest,
             cancellationToken
             );
 
@@ -46,13 +45,13 @@ public class GitPullRequestService(
     }
 
     public async Task<AdapterResponseModel<bool>> CreatePullRequestAsync(
-        CreatePRRequest model, 
+        CreatePRRequest model,
         CancellationToken cancellationToken
         )
     {
         (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             model,
-            "CreatePullRequestRequest",
+            CommandTypes.CreatePullRequestRequest,
             cancellationToken
             );
 
@@ -86,7 +85,7 @@ public class GitPullRequestService(
     {
         (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             model,
-            "CreatePullRequestsRequest",
+            CommandTypes.CreatePullRequestsRequest,
             cancellationToken
             );
 
@@ -100,7 +99,7 @@ public class GitPullRequestService(
         }
 
         var rawResult = JsonSerializer.Deserialize<BaseResponse<AdapterResponseModel<bool>>>(response)?.Data;
-        
+
         if (rawResult is null)
         {
             return new AdapterResponseModel<bool>
@@ -109,7 +108,7 @@ public class GitPullRequestService(
                 Status = AdapterStatus.Unknown
             };
         }
-               
+
         return rawResult;
     }
 
@@ -120,7 +119,7 @@ public class GitPullRequestService(
     {
         (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
-            "ApprovePullRequestsRequest",
+            CommandTypes.ApprovePullRequestsRequest,
             cancellationToken
             );
 

@@ -60,7 +60,8 @@ public class GitRepositoryService(
             result.Add(new()
             {
                 RepositoryId = res.Id.ToString(),
-                RepositoryName = res.Name
+                RepositoryName = res.Name,
+                ProjectName = res.ProjectReference.Name
             });
         }
 

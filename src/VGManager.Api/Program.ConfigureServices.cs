@@ -72,5 +72,6 @@ static partial class Program
         services.AddScoped<IBuildPipelineService, BuildPipelineService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<IAdapterCommunicator, AdapterCommunicator>();
+        services.AddScoped<IGitPullRequestService, GitPullRequestService>();
     }
 }

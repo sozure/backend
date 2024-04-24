@@ -42,13 +42,9 @@ public class BuildPipelineControllerTests
 
         var guid = Guid.NewGuid();
 
-        var pipelineAdapterResponse = new BaseResponse<BuildDefinitionReference>
+        var pipelineAdapterResponse = new BaseResponse<string>
         {
-            Data = new BuildDefinitionReference
-            {
-                Id = 1,
-                Name = "VGManager.Library"
-            }
+            Data = guid.ToString()
         };
 
         var repoAdapterResponse = new BaseResponse<IEnumerable<GitRepository>>
@@ -58,7 +54,7 @@ public class BuildPipelineControllerTests
                 new()
                 {
                     Id = guid,
-                    Name = "VGManager.Library"
+                    Name = "VGManager.Library",
                 }
             }
         };
@@ -69,7 +65,7 @@ public class BuildPipelineControllerTests
             Status = AdapterStatus.Success
         };
 
-        _clientService.Setup(x => x.SendAndReceiveMessageAsync("GetBuildPipelineRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        _clientService.Setup(x => x.SendAndReceiveMessageAsync("GetRepositoryIdByBuildPipelineRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((true, JsonSerializer.Serialize(pipelineAdapterResponse)));
 
         _clientService.Setup(x => x.SendAndReceiveMessageAsync("GetAllRepositoriesRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -84,7 +80,7 @@ public class BuildPipelineControllerTests
         ((AdapterResponseModel<Guid>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
-            x => x.SendAndReceiveMessageAsync("GetBuildPipelineRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            x => x.SendAndReceiveMessageAsync("GetRepositoryIdByBuildPipelineRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Once
             );
 
@@ -153,7 +149,7 @@ public class BuildPipelineControllerTests
     public async Task RunPipelineAsync_Works_well()
     {
         // Arrange
-        var request = new RunBuildPipelineRequest
+        var request = new RunBuildRequest
         {
             Organization = "MyOrganization",
             PAT = "q7Rt9p2X5yFvLmJhNzDcBwEaGtHxKvRq",

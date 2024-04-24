@@ -1,3 +1,4 @@
+using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Services.Models;
 
@@ -16,6 +17,11 @@ public interface IGitVersionService
         string organization,
         string pat,
         Guid repositoryId,
+        CancellationToken cancellationToken = default
+        );
+
+    Task<AdapterResponseModel<Dictionary<string, string>>> GetLatestTagsAsync(
+        GitLatestTagsEntity model,
         CancellationToken cancellationToken = default
         );
 

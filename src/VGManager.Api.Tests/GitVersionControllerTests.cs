@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using VGManager.Adapter.Client.Interfaces;
@@ -6,6 +7,7 @@ using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Api.Common;
 using VGManager.Api.Endpoints.GitBranch;
+using VGManager.Api.MapperProfiles;
 using VGManager.Services;
 using VGManager.Services.Helper;
 using VGManager.Services.Models;
@@ -22,10 +24,18 @@ public class GitVersionControllerTests
     public void Setup()
     {
         _clientService = new(MockBehavior.Strict);
+
+        var mapperConfiguration = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile(typeof(GitVersionProfile));
+        });
+
+        IMapper mapper = mapperConfiguration.CreateMapper();
+
         var adapterCommunicator = new AdapterCommunicator(_clientService.Object);
         var gitAdapterCommunicatorService = new GitAdapterCommunicatorService(adapterCommunicator);
         var gitVersionService = new GitVersionService(gitAdapterCommunicatorService, adapterCommunicator);
-        _gitVersionController = new GitVersionController(gitVersionService);
+        _gitVersionController = new GitVersionController(gitVersionService, mapper);
     }
 
     [Test]

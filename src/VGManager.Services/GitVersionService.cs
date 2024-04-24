@@ -1,5 +1,6 @@
 using System.Text.Json;
 using VGManager.Adapter.Models.Kafka;
+using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.Requests;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
@@ -33,6 +34,64 @@ public class GitVersionService(
     {
         var commandType = CommandTypes.GetTagsRequest;
         return await GetInformationAsync(commandType, organization, pat, repositoryId, cancellationToken);
+    }
+
+    public async Task<AdapterResponseModel<Dictionary<string, string>>> GetLatestTagsAsync(
+        GitLatestTagsEntity model,
+        CancellationToken cancellationToken = default
+        )
+    {
+        var request = new GitLatestTagsRequest()
+        {
+            Organization = model.Organization,
+            PAT = model.PAT,
+            RepositoryIds = model.RepositoryIds
+        };
+
+        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
+            request,
+            CommandTypes.GetLatestTagsRequest,
+            cancellationToken
+            );
+
+        if (!isSuccess)
+        {
+            return new AdapterResponseModel<Dictionary<string, string>>
+            {
+                Data = [],
+                Status = AdapterStatus.Unknown
+            };
+        }
+
+        var result = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
+
+        if (result is null)
+        {
+            return new AdapterResponseModel<Dictionary<string, string>>
+            {
+                Data = [],
+                Status = AdapterStatus.Unknown
+            };
+        }
+
+        var isParseCompleted = int.TryParse(result["Status"].ToString(), out var i);
+
+        if (!isParseCompleted)
+        {
+            return new AdapterResponseModel<Dictionary<string, string>>
+            {
+                Data = [],
+                Status = AdapterStatus.Unknown
+            };
+        }
+
+        var status = (AdapterStatus)i;
+        var res = JsonSerializer.Deserialize<Dictionary<string, string>>(result["Data"].ToString() ?? "[]") ?? [];
+        return new AdapterResponseModel<Dictionary<string, string>>
+        {
+            Status = status,
+            Data = res
+        };
     }
 
     public async Task<(AdapterStatus, string)> CreateTagAsync(

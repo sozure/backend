@@ -31,7 +31,7 @@ public class BuildPipelineService(
 
         (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             request,
-            CommandTypes.GetBuildPipelineRequest,
+            CommandTypes.GetRepositoryIdByBuildPipelineRequest,
             cancellationToken
             );
 
@@ -40,9 +40,9 @@ public class BuildPipelineService(
             return Guid.Empty;
         }
 
-        var pipeline = JsonSerializer.Deserialize<BaseResponse<BuildDefinitionReference>>(response)?.Data;
+        var repositoryId = JsonSerializer.Deserialize<BaseResponse<string>>(response)?.Data;
 
-        if (pipeline is null)
+        if (repositoryId is null)
         {
             return Guid.Empty;
         }
@@ -65,7 +65,7 @@ public class BuildPipelineService(
             return Guid.Empty;
         }
 
-        var repo = repositories.FirstOrDefault(r => r.Name == pipeline.Name);
+        var repo = repositories.FirstOrDefault(r => r.Id.ToString() == repositoryId);
         return repo?.Id ?? Guid.Empty;
     }
 

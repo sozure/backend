@@ -85,7 +85,7 @@ public class BuildPipelineController(IBuildPipelineService buildPipelineService)
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<AdapterStatus>> RunBuildPipelineAsync(
-        [FromBody] RunBuildPipelineRequest request,
+        [FromBody] RunBuildRequest request,
         CancellationToken cancellationToken
         )
     {

@@ -1,8 +1,10 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Api.Common;
+using VGManager.Api.Endpoints.GitVersion;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models;
 
@@ -11,7 +13,7 @@ namespace VGManager.Api.Endpoints.GitBranch;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class GitVersionController(IGitVersionService gitBranchService) : ControllerBase
+public class GitVersionController(IGitVersionService gitBranchService, IMapper mapper) : ControllerBase
 {
     [HttpPost("Branches", Name = "branches")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -75,6 +77,31 @@ public class GitVersionController(IGitVersionService gitBranchService) : Control
             {
                 Status = AdapterStatus.Unknown,
                 Data = Enumerable.Empty<string>()
+            });
+        }
+    }
+
+    [HttpPost("LatestTags", Name = "latesttags")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AdapterResponseModel<Dictionary<string, string>>>> GetLatestTagsAsync(
+        [FromBody] GitLatestTagsRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            var model = mapper.Map<GitLatestTagsEntity>(request);
+            var result = await gitBranchService.GetLatestTagsAsync(model, cancellationToken);
+            return Ok(result);
+        }
+        catch (Exception)
+        {
+            return Ok(new AdapterResponseModel<Dictionary<string, string>>
+            {
+                Status = AdapterStatus.Unknown,
+                Data = []
             });
         }
     }

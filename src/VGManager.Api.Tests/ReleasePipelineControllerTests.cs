@@ -150,7 +150,7 @@ public class ReleasePipelineControllerTests
 
         var response = new AdapterResponseModel<IEnumerable<string>>
         {
-            Data = projects,
+            Data = environments,
             Status = AdapterStatus.Success
         };
 

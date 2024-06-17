@@ -43,7 +43,7 @@ public class GitVersionController(IGitVersionService gitBranchService, IMapper m
             return Ok(new AdapterResponseModel<IEnumerable<string>>
             {
                 Status = AdapterStatus.Unknown,
-                Data = Enumerable.Empty<string>()
+                Data = []
             });
         }
     }
@@ -76,7 +76,7 @@ public class GitVersionController(IGitVersionService gitBranchService, IMapper m
             return Ok(new AdapterResponseModel<IEnumerable<string>>
             {
                 Status = AdapterStatus.Unknown,
-                Data = Enumerable.Empty<string>()
+                Data = []
             });
         }
     }

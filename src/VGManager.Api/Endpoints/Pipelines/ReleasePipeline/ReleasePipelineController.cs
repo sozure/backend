@@ -43,7 +43,7 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
             return Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = AdapterStatus.Unknown,
-                Data = Enumerable.Empty<string>()
+                Data = []
             });
         }
     }
@@ -92,7 +92,7 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
             return Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
             {
                 Status = AdapterStatus.Unknown,
-                Data = Enumerable.Empty<Dictionary<string, string>>()
+                Data = []
             });
         }
     }
@@ -128,7 +128,7 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
             return Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = AdapterStatus.Unknown,
-                Data = Enumerable.Empty<string>()
+                Data = []
             });
         }
     }

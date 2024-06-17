@@ -75,7 +75,7 @@ public class BuildPipelineController(IBuildPipelineService buildPipelineService)
             return Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
             {
                 Status = AdapterStatus.Unknown,
-                Data = Enumerable.Empty<Dictionary<string, string>>()
+                Data = []
             });
         }
     }

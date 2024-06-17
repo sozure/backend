@@ -92,14 +92,14 @@ public class BuildPipelineService(
 
         if (!isSuccess)
         {
-            return Enumerable.Empty<Dictionary<string, string>>();
+            return [];
         }
 
         var pipelines = JsonSerializer.Deserialize<BaseResponse<IEnumerable<BuildDefinitionReference>>>(response)?.Data;
 
         if (pipelines is null)
         {
-            return Enumerable.Empty<Dictionary<string, string>>();
+            return [];
         }
 
         foreach (var pipeline in pipelines)

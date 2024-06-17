@@ -96,7 +96,7 @@ public class GitVersionControllerTests
 
         var response = new AdapterResponseModel<IEnumerable<string>>
         {
-            Data = Enumerable.Empty<string>(),
+            Data = [],
             Status = AdapterStatus.Unknown
         };
 
@@ -175,7 +175,7 @@ public class GitVersionControllerTests
 
         var response = new AdapterResponseModel<IEnumerable<string>>
         {
-            Data = Enumerable.Empty<string>(),
+            Data = [],
             Status = AdapterStatus.Unknown
         };
 

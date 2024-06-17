@@ -113,7 +113,7 @@ public class GitRepositoryControllerTests
 
         var response = new AdapterResponseModel<IEnumerable<GitRepositoryResult>>
         {
-            Data = Enumerable.Empty<GitRepositoryResult>(),
+            Data = [],
             Status = AdapterStatus.Unknown
         };
 
@@ -147,7 +147,7 @@ public class GitRepositoryControllerTests
 
         var response = new AdapterResponseModel<IEnumerable<GitRepositoryResult>>
         {
-            Data = Enumerable.Empty<GitRepositoryResult>(),
+            Data = [],
             Status = AdapterStatus.Unknown
         };
 
@@ -179,7 +179,7 @@ public class GitRepositoryControllerTests
             RepositoryId = "VGManager.Library",
             Branch = "main",
             Delimiter = "__",
-            Exceptions = Enumerable.Empty<string>(),
+            Exceptions = [],
             FilePath = ".src/VGManager.Library.Api/appsettings.Development.json",
             Project = "beviktor95"
         };
@@ -229,14 +229,14 @@ public class GitRepositoryControllerTests
             RepositoryId = "VGManager.Library",
             Branch = "main",
             Delimiter = "__",
-            Exceptions = Enumerable.Empty<string>(),
+            Exceptions = [],
             FilePath = ".src/VGManager.Library.Api/appsettings.Development.json",
             Project = "beviktor95"
         };
 
         var response = new AdapterResponseModel<IEnumerable<string>>
         {
-            Data = Enumerable.Empty<string>(),
+            Data = [],
             Status = AdapterStatus.Unknown
         };
 
@@ -268,14 +268,14 @@ public class GitRepositoryControllerTests
             RepositoryId = "VGManager.Library",
             Branch = "main",
             Delimiter = "__",
-            Exceptions = Enumerable.Empty<string>(),
+            Exceptions = [],
             FilePath = ".src/VGManager.Library.Api/appsettings.Development.json",
             Project = "beviktor95"
         };
 
         var response = new AdapterResponseModel<IEnumerable<string>>
         {
-            Data = Enumerable.Empty<string>(),
+            Data = [],
             Status = AdapterStatus.Unknown
         };
 

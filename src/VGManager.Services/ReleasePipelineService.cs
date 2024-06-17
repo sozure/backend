@@ -39,7 +39,7 @@ public class ReleasePipelineService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error getting projects with release pipelines for {repository} repository.", repositoryName);
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+            return (AdapterStatus.Unknown, []);
         }
     }
 
@@ -72,21 +72,21 @@ public class ReleasePipelineService(
 
             if (!isSuccess)
             {
-                return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+                return (AdapterStatus.Unknown, []);
             }
 
             var adapterResult = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
 
             if (adapterResult is null)
             {
-                return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+                return (AdapterStatus.Unknown, []);
             }
 
             var isParseCompleted = int.TryParse(adapterResult["Status"].ToString(), out var i);
 
             if (!isParseCompleted)
             {
-                return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+                return (AdapterStatus.Unknown, []);
             }
 
             var status = (AdapterStatus)i;
@@ -96,7 +96,7 @@ public class ReleasePipelineService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error getting release environments for {repository} repository.", repositoryName);
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+            return (AdapterStatus.Unknown, []);
         }
     }
 
@@ -129,21 +129,21 @@ public class ReleasePipelineService(
 
             if (!isSuccess)
             {
-                return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
+                return (AdapterStatus.Unknown, []);
             }
 
             var adapterResult = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
 
             if (adapterResult is null)
             {
-                return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
+                return (AdapterStatus.Unknown, []);
             }
 
             var isParseCompleted = int.TryParse(adapterResult["Status"].ToString(), out var i);
 
             if (!isParseCompleted)
             {
-                return (AdapterStatus.Unknown, new List<(string, string)>());
+                return (AdapterStatus.Unknown, []);
             }
 
             var status = (AdapterStatus)i;
@@ -158,7 +158,7 @@ public class ReleasePipelineService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error getting variable groups connected to release pipeline for {repository} repository.", repositoryName);
-            return (AdapterStatus.Unknown, Enumerable.Empty<(string, string)>());
+            return (AdapterStatus.Unknown, []);
         }
     }
 
@@ -191,21 +191,21 @@ public class ReleasePipelineService(
 
             if (!isSuccess)
             {
-                return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+                return (AdapterStatus.Unknown, []);
             }
 
             var adapterResult = JsonSerializer.Deserialize<BaseResponse<Dictionary<string, object>>>(response)?.Data;
 
             if (adapterResult is null)
             {
-                return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+                return (AdapterStatus.Unknown, []);
             }
 
             var isParseCompleted = int.TryParse(adapterResult["Status"].ToString(), out var i);
 
             if (!isParseCompleted)
             {
-                return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+                return (AdapterStatus.Unknown, []);
             }
 
             var status = (AdapterStatus)i;
@@ -215,7 +215,7 @@ public class ReleasePipelineService(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error getting release environments for {repository} repository.", repositoryName);
-            return (AdapterStatus.Unknown, Enumerable.Empty<string>());
+            return (AdapterStatus.Unknown, []);
         }
     }
 }

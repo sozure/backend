@@ -3,7 +3,7 @@ using VGManager.Api.Common;
 
 namespace VGManager.Api.Endpoints.Pipelines.Release.Request;
 
-public class ProjectsWithReleasePipelineRequest : BasicRequest
+public record ProjectsWithReleasePipelineRequest : BasicRequest
 {
     [Required]
     public IEnumerable<string> Projects { get; set; } = null!;

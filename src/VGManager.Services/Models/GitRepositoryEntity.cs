@@ -1,6 +1,6 @@
 namespace VGManager.Services.Models;
 
-public class GitRepositoryEntity
+public record GitRepositoryEntity
 {
     public string Organization { get; set; } = null!;
 

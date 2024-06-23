@@ -1,6 +1,6 @@
 namespace VGManager.Services.Models;
 
-public class CreateTagEntity
+public record CreateTagEntity
 {
     public string Organization { get; set; } = null!;
     public string PAT { get; set; } = null!;

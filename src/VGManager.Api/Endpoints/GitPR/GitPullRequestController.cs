@@ -11,7 +11,7 @@ namespace VGManager.Api.Endpoints.GitPR;
 [Route("api/[controller]")]
 [ApiController]
 [EnableCors("_allowSpecificOrigins")]
-public class GitPullRequestController(IGitPullRequestService gitPullRequestService, IMapper mapper) : ControllerBase
+public class GitPullRequestController(IPullRequestService gitPullRequestService) : ControllerBase
 {
 
     [HttpPost("Get", Name = "getprs")]
@@ -23,7 +23,7 @@ public class GitPullRequestController(IGitPullRequestService gitPullRequestServi
         CancellationToken cancellationToken
     )
     {
-        var gitPullRequests = await gitPullRequestService.GetPRsAsync(request, cancellationToken);
+        var gitPullRequests = await gitPullRequestService.GetPullRequestsAsync(request, cancellationToken);
         return Ok(gitPullRequests);
     }
 
@@ -50,19 +50,6 @@ public class GitPullRequestController(IGitPullRequestService gitPullRequestServi
     )
     {
         var result = await gitPullRequestService.CreatePullRequestsAsync(request, cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpPost("Approve", Name = "approve")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<GitPRResponse>>>> ApprovePullRequestsAsync(
-        [FromBody] ApprovePRsRequest request,
-        CancellationToken cancellationToken
-    )
-    {
-        var result = await gitPullRequestService.ApprovePullRequestsAsync(request, cancellationToken);
         return Ok(result);
     }
 }

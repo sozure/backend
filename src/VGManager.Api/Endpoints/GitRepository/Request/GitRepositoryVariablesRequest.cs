@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VGManager.Api.Endpoints.GitRepository.Request;
 
-public class GitRepositoryVariablesRequest : GitRepositoryBaseRequest
+public record GitRepositoryVariablesRequest : GitRepositoryBaseRequest
 {
     [Required]
     public string RepositoryId { get; set; } = null!;

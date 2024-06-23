@@ -2,7 +2,7 @@ using VGManager.Services.Models.Common;
 
 namespace VGManager.Services.Models.GitRepositories;
 
-public class GitRepositoryModel : BaseModel
+public record GitRepositoryModel : BaseModel
 {
     public string Project { get; set; } = null!;
 

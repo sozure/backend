@@ -3,7 +3,7 @@ using VGManager.Api.Common;
 
 namespace VGManager.Api.Endpoints.GitFile;
 
-public abstract class GitFileBaseRequest : GitBasicRequest
+public abstract record GitFileBaseRequest : GitBasicRequest
 {
     [Required]
     public string Branch { get; set; } = null!;

@@ -1,6 +1,6 @@
 namespace VGManager.Services.Models;
 
-public class GitLatestTagsEntity
+public record GitLatestTagsEntity
 {
     public string Organization { get; set; } = null!;
     public string PAT { get; set; } = null!;

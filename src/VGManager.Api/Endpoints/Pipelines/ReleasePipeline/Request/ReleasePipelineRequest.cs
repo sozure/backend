@@ -3,7 +3,7 @@ using VGManager.Api.Common;
 
 namespace VGManager.Api.Endpoints.Pipelines.Release.Request;
 
-public class ReleasePipelineRequest : ExtendedBasicRequest
+public record ReleasePipelineRequest : ExtendedBasicRequest
 {
     [Required]
     public string RepositoryName { get; set; } = null!;

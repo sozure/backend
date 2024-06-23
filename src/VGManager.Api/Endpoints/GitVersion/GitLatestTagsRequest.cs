@@ -1,6 +1,6 @@
 namespace VGManager.Api.Endpoints.GitVersion;
 
-public class GitLatestTagsRequest
+public record GitLatestTagsRequest
 {
     public string Organization { get; set; } = null!;
     public string PAT { get; set; } = null!;

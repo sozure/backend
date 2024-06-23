@@ -9,11 +9,11 @@ using VGManager.Services.Interfaces;
 namespace VGManager.Services;
 
 
-public class GitPullRequestService(
+public class PullRequestService(
     IAdapterCommunicator adapterCommunicator
-    ) : IGitPullRequestService
+    ) : IPullRequestService
 {
-    public async Task<AdapterResponseModel<List<GitPRResponse>>> GetPRsAsync(GitPRRequest model, CancellationToken cancellationToken)
+    public async Task<AdapterResponseModel<List<GitPRResponse>>> GetPullRequestsAsync(GitPRRequest model, CancellationToken cancellationToken)
     {
         (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             model,
@@ -86,40 +86,6 @@ public class GitPullRequestService(
         (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
             model,
             CommandTypes.CreatePullRequestsRequest,
-            cancellationToken
-            );
-
-        if (!isSuccess)
-        {
-            return new AdapterResponseModel<bool>
-            {
-                Data = false,
-                Status = AdapterStatus.Unknown
-            };
-        }
-
-        var rawResult = JsonSerializer.Deserialize<BaseResponse<AdapterResponseModel<bool>>>(response)?.Data;
-
-        if (rawResult is null)
-        {
-            return new AdapterResponseModel<bool>
-            {
-                Data = false,
-                Status = AdapterStatus.Unknown
-            };
-        }
-
-        return rawResult;
-    }
-
-    public async Task<AdapterResponseModel<bool>> ApprovePullRequestsAsync(
-        ApprovePRsRequest request,
-        CancellationToken cancellationToken
-        )
-    {
-        (var isSuccess, var response) = await adapterCommunicator.CommunicateWithAdapterAsync(
-            request,
-            CommandTypes.ApprovePullRequestsRequest,
             cancellationToken
             );
 

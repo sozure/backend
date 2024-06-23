@@ -3,9 +3,9 @@ using VGManager.Adapter.Models.Requests;
 using VGManager.Adapter.Models.Response;
 
 namespace VGManager.Services.Interfaces;
-public interface IGitPullRequestService
+public interface IPullRequestService
 {
-    Task<AdapterResponseModel<List<GitPRResponse>>> GetPRsAsync(
+    Task<AdapterResponseModel<List<GitPRResponse>>> GetPullRequestsAsync(
         GitPRRequest model,
         CancellationToken cancellationToken
         );
@@ -17,11 +17,6 @@ public interface IGitPullRequestService
 
     Task<AdapterResponseModel<bool>> CreatePullRequestsAsync(
         CreatePRsRequest model,
-        CancellationToken cancellationToken
-        );
-
-    Task<AdapterResponseModel<bool>> ApprovePullRequestsAsync(
-        ApprovePRsRequest request,
         CancellationToken cancellationToken
         );
 }

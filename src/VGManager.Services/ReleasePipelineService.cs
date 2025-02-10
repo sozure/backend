@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Requests;
 using VGManager.Adapter.Models.Response;
@@ -25,11 +25,11 @@ public class ReleasePipelineService(
         try
         {
             var adapterResult = await GetEnvironmentsFromMultipleProjectsAsync(
-                organization, 
-                pat, 
-                projects, 
-                repositoryName, 
-                configFile, 
+                organization,
+                pat,
+                projects,
+                repositoryName,
+                configFile,
                 cancellationToken
                 );
             var status = adapterResult.Item1;

@@ -1,24 +1,33 @@
+using System.Diagnostics.CodeAnalysis;
 using AutoMapper;
-using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Adapter.Models.Models;
-using VGManager.Api.Endpoints.GitRepository.Request;
+using VGManager.Api.Handlers.GitRepository.Request;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.GitRepositories;
 
-namespace VGManager.Api.Endpoints.GitRepository;
+namespace VGManager.Api.Handlers.GitRepository;
 
-[Route("api/[controller]")]
-[ApiController]
-[EnableCors("_allowSpecificOrigins")]
-public class GitRepositoryController(IGitRepositoryService gitRepositoryService, IMapper mapper) : ControllerBase
+public static class GitRepositoryHandler
 {
-    [HttpPost(Name = "repositories")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<GitRepositoryResult>>>> GetAsync(
+    [ExcludeFromCodeCoverage]
+    public static RouteGroupBuilder MapGitRepositoryHandler(this RouteGroupBuilder builder)
+    {
+        var group = builder.MapGroup("/gitrepository");
+
+        group.MapPost("/", GetAsync)
+            .WithName("GetRepositories");
+
+        group.MapPost("/variables", GetVariablesAsync)
+            .WithName("GetVariables");
+
+        return builder;
+    }
+
+    public static async Task<Ok<AdapterResponseModel<IEnumerable<GitRepositoryResult>>>> GetAsync(
         [FromBody] GitRepositoryBaseRequest request,
+        [FromServices] IGitRepositoryService gitRepositoryService,
         CancellationToken cancellationToken
     )
     {
@@ -35,15 +44,13 @@ public class GitRepositoryController(IGitRepositoryService gitRepositoryService,
             Data = gitRepositories.Data
         };
 
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
 
-    [HttpPost("Variables", Name = "Variables")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetVariablesAsync(
+    public static async Task<Ok<AdapterResponseModel<IEnumerable<string>>>> GetVariablesAsync(
         [FromBody] GitRepositoryVariablesRequest request,
+        [FromServices] IGitRepositoryService gitRepositoryService,
+        IMapper mapper,
         CancellationToken cancellationToken
     )
     {
@@ -54,6 +61,6 @@ public class GitRepositoryController(IGitRepositoryService gitRepositoryService,
             Status = variablesResult.Status,
             Data = variablesResult.Data
         };
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
 }

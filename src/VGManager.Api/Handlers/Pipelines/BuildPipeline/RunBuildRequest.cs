@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace VGManager.Api.Endpoints.Pipelines.BuildPipeline;
+namespace VGManager.Api.Handlers.Pipelines.BuildPipeline;
 
 public record RunBuildRequest : BuildPipelineRequest
 {

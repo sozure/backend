@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace VGManager.Api.Endpoints.GitFile;
+namespace VGManager.Api.Handlers.GitFile;
 
 public record GitFilePathRequest : GitFileBaseRequest
 {

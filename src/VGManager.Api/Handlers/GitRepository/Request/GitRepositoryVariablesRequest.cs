@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace VGManager.Api.Endpoints.GitRepository.Request;
+namespace VGManager.Api.Handlers.GitRepository.Request;
 
 public record GitRepositoryVariablesRequest : GitRepositoryBaseRequest
 {

@@ -1,4 +1,4 @@
-namespace VGManager.Api.Endpoints.GitFile;
+namespace VGManager.Api.Handlers.GitFile;
 
 public record GitConfigFileRequest : GitFileBaseRequest
 {

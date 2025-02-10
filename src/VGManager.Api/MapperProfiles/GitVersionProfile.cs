@@ -1,5 +1,5 @@
 using AutoMapper;
-using VGManager.Api.Endpoints.GitVersion;
+using VGManager.Api.Handlers.GitVersion;
 using VGManager.Services.Models;
 
 namespace VGManager.Api.MapperProfiles;

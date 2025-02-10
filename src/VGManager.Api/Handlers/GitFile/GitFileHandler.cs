@@ -1,21 +1,30 @@
-using Microsoft.AspNetCore.Cors;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Adapter.Models.Models;
 using VGManager.Services.Interfaces;
 
-namespace VGManager.Api.Endpoints.GitFile;
+namespace VGManager.Api.Handlers.GitFile;
 
-[Route("api/[controller]")]
-[ApiController]
-[EnableCors("_allowSpecificOrigins")]
-public class GitFileController(IGitFileService gitFileService) : ControllerBase
+public static class GitFileHandler
 {
-    [HttpPost("FilePath", Name = "path")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetFilePathAsync(
+    [ExcludeFromCodeCoverage]
+    public static RouteGroupBuilder MapGitFileHandler(this RouteGroupBuilder builder)
+    {
+        var group = builder.MapGroup("/gitfile");
+
+        group.MapPost("/path", GetFilePathAsync)
+            .WithName("GetFilePath");
+
+        group.MapPost("/config", GetConfigFilesAsync)
+            .WithName("GetConfigFiles");
+
+        return builder;
+    }
+
+    public static async Task<Ok<AdapterResponseModel<IEnumerable<string>>>> GetFilePathAsync(
         [FromBody] GitFilePathRequest request,
+        [FromServices] IGitFileService gitFileService,
         CancellationToken cancellationToken
     )
     {
@@ -26,24 +35,21 @@ public class GitFileController(IGitFileService gitFileService) : ControllerBase
             request.FileName,
             request.Branch,
             cancellationToken
-            );
+        );
 
         var result = new AdapterResponseModel<IEnumerable<string>>
         {
             Status = status,
             Data = filePaths
         };
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
 
-    [HttpPost("ConfigFiles", Name = "config")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetConfigFilesAsync(
+    public static async Task<Ok<AdapterResponseModel<IEnumerable<string>>>> GetConfigFilesAsync(
         [FromBody] GitConfigFileRequest request,
+        [FromServices] IGitFileService gitFileService,
         CancellationToken cancellationToken
-        )
+    )
     {
         (var status, var configFiles) = await gitFileService.GetConfigFilesAsync(
             request.Organization,
@@ -52,7 +58,7 @@ public class GitFileController(IGitFileService gitFileService) : ControllerBase
             request.Extension,
             request.Branch,
             cancellationToken
-            );
+        );
 
         var result = new AdapterResponseModel<IEnumerable<string>>
         {
@@ -60,6 +66,6 @@ public class GitFileController(IGitFileService gitFileService) : ControllerBase
             Data = configFiles
         };
 
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
 }

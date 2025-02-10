@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using VGManager.Api.Common;
 
-namespace VGManager.Api.Endpoints.GitFile;
+namespace VGManager.Api.Handlers.GitFile;
 
 public abstract record GitFileBaseRequest : GitBasicRequest
 {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using VGManager.Api.Common;
 
-namespace VGManager.Api.Endpoints.Pipelines.BuildPipeline;
+namespace VGManager.Api.Handlers.Pipelines.BuildPipeline;
 
 public record BuildPipelineRequest : ExtendedBasicRequest
 {

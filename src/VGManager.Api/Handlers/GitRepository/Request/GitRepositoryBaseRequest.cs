@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using VGManager.Api.Common;
 
-namespace VGManager.Api.Endpoints.GitRepository.Request;
+namespace VGManager.Api.Handlers.GitRepository.Request;
 
 public record GitRepositoryBaseRequest : BasicRequest
 {

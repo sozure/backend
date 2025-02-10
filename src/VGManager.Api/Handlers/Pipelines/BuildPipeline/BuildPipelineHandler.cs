@@ -1,26 +1,40 @@
-using Microsoft.AspNetCore.Cors;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Api.Common;
-using VGManager.Api.Endpoints.Pipelines.BuildPipeline;
 using VGManager.Services.Interfaces;
 
-namespace VGManager.Api.Endpoints.Pipelines.Build;
+namespace VGManager.Api.Handlers.Pipelines.BuildPipeline;
 
-[Route("api/[controller]")]
-[ApiController]
-[EnableCors("_allowSpecificOrigins")]
-public class BuildPipelineController(IBuildPipelineService buildPipelineService) : ControllerBase
+public static class BuildPipelineHandler
 {
-    [HttpPost("GetRepositoryId", Name = "getrepositoryid")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<string>>> GetRepositoryIdAsync(
+    [ExcludeFromCodeCoverage]
+    public static RouteGroupBuilder MapBuildPipelineHandler(this RouteGroupBuilder builder)
+    {
+        var group = builder.MapGroup("/buildpipeline");
+
+        group.MapPost("/getrepositoryid", GetRepositoryIdAsync)
+            .WithName("GetRepositoryId");
+
+        group.MapPost("/getall", GetAllAsync)
+           .WithName("GetAll");
+
+        group.MapPost("/run", RunBuildPipelineAsync)
+           .WithName("RunBuildPipeline");
+
+        group.MapPost("/runall", RunBuildPipelinesAsync)
+           .WithName("RunBuildPipelines");
+
+        return builder;
+    }
+
+    public static async Task<Ok<AdapterResponseModel<Guid>>> GetRepositoryIdAsync(
         [FromBody] BuildPipelineRequest request,
+        [FromServices] IBuildPipelineService buildPipelineService,
         CancellationToken cancellationToken
-        )
+    )
     {
         try
         {
@@ -31,7 +45,7 @@ public class BuildPipelineController(IBuildPipelineService buildPipelineService)
                 request.DefinitionId,
                 cancellationToken
                 );
-            return Ok(new AdapterResponseModel<Guid>()
+            return TypedResults.Ok(new AdapterResponseModel<Guid>()
             {
                 Status = AdapterStatus.Success,
                 Data = id
@@ -39,7 +53,7 @@ public class BuildPipelineController(IBuildPipelineService buildPipelineService)
         }
         catch (Exception)
         {
-            return Ok(new AdapterResponseModel<Guid>()
+            return TypedResults.Ok(new AdapterResponseModel<Guid>()
             {
                 Status = AdapterStatus.Unknown,
                 Data = Guid.Empty
@@ -47,12 +61,9 @@ public class BuildPipelineController(IBuildPipelineService buildPipelineService)
         }
     }
 
-    [HttpPost("GetAll", Name = "getall")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<Dictionary<string, string>>>>> GetAllAsync(
+    public static async Task<Ok<AdapterResponseModel<IEnumerable<Dictionary<string, string>>>>> GetAllAsync(
         [FromBody] ExtendedBasicRequest request,
+        [FromServices] IBuildPipelineService buildPipelineService,
         CancellationToken cancellationToken
         )
     {
@@ -64,7 +75,7 @@ public class BuildPipelineController(IBuildPipelineService buildPipelineService)
                 request.Project,
                 cancellationToken
                 );
-            return Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
+            return TypedResults.Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
             {
                 Status = AdapterStatus.Success,
                 Data = pipelines
@@ -72,7 +83,7 @@ public class BuildPipelineController(IBuildPipelineService buildPipelineService)
         }
         catch (Exception)
         {
-            return Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
+            return TypedResults.Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
             {
                 Status = AdapterStatus.Unknown,
                 Data = []
@@ -80,12 +91,9 @@ public class BuildPipelineController(IBuildPipelineService buildPipelineService)
         }
     }
 
-    [HttpPost("Run", Name = "run")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterStatus>> RunBuildPipelineAsync(
+    public static async Task<Ok<AdapterStatus>> RunBuildPipelineAsync(
         [FromBody] RunBuildRequest request,
+        [FromServices] IBuildPipelineService buildPipelineService,
         CancellationToken cancellationToken
         )
     {
@@ -99,26 +107,23 @@ public class BuildPipelineController(IBuildPipelineService buildPipelineService)
                 request.SourceBranch,
                 cancellationToken
                 );
-            return Ok(status);
+            return TypedResults.Ok(status);
         }
         catch (Exception)
         {
-            return Ok(AdapterStatus.Unknown);
+            return TypedResults.Ok(AdapterStatus.Unknown);
         }
     }
 
-    [HttpPost("RunAll", Name = "runall")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterStatus>> RunBuildPipelinesAsync(
+    public static async Task<Ok<AdapterStatus>> RunBuildPipelinesAsync(
         [FromBody] RunBuildPipelinesRequest request,
+        [FromServices] IBuildPipelineService pipelineService,
         CancellationToken cancellationToken
         )
     {
         try
         {
-            var status = await buildPipelineService.RunBuildPipelinesAsync(
+            var status = await pipelineService.RunBuildPipelinesAsync(
                 request.Organization,
                 request.PAT,
                 request.Project,
@@ -126,11 +131,11 @@ public class BuildPipelineController(IBuildPipelineService buildPipelineService)
                 cancellationToken
                 );
 
-            return Ok(status);
+            return TypedResults.Ok(status);
         }
         catch (Exception)
         {
-            return Ok(AdapterStatus.Unknown);
+            return TypedResults.Ok(AdapterStatus.Unknown);
         }
     }
 }

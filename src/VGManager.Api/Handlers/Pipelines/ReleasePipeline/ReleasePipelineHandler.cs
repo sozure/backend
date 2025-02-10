@@ -1,23 +1,36 @@
-using Microsoft.AspNetCore.Cors;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.StatusEnums;
-using VGManager.Api.Endpoints.Pipelines.Release.Request;
+using VGManager.Api.Handlers.Pipelines.Release.Request;
+using VGManager.Services;
 using VGManager.Services.Interfaces;
 
-namespace VGManager.Api.Endpoints.Pipelines.Release;
+namespace VGManager.Api.Handlers.Pipelines.ReleasePipeline;
 
-[Route("api/[controller]")]
-[ApiController]
-[EnableCors("_allowSpecificOrigins")]
-public class ReleasePipelineController(IReleasePipelineService releasePipelineService) : ControllerBase
+public static class ReleasePipelineHandler
 {
-    [HttpPost("GetEnvironments", Name = "Environments")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetEnvironmentsAsync(
+    [ExcludeFromCodeCoverage]
+    public static RouteGroupBuilder MapReleasePipelineHandler(this RouteGroupBuilder builder)
+    {
+        var group = builder.MapGroup("/releasepipeline");
+
+        group.MapPost("/environments", GetEnvironmentsAsync)
+            .WithName("GetEnvironments");
+
+        group.MapPost("/variableGroups", GetVariableGroupsAsync)
+            .WithName("GetVariableGroups");
+
+        group.MapPost("/projects", GetProjectsWithReleasePipelineAsync)
+            .WithName("GetProjects");
+
+        return builder;
+    }
+
+    public static async Task<Ok<AdapterResponseModel<IEnumerable<string>>>> GetEnvironmentsAsync(
         [FromBody] ReleasePipelineRequest request,
+        [FromServices] IReleasePipelineService releasePipelineService,
         CancellationToken cancellationToken
         )
     {
@@ -32,7 +45,7 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
                 cancellationToken
                 );
 
-            return Ok(new AdapterResponseModel<IEnumerable<string>>()
+            return TypedResults.Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = status,
                 Data = environments
@@ -40,7 +53,7 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
         }
         catch (Exception)
         {
-            return Ok(new AdapterResponseModel<IEnumerable<string>>()
+            return TypedResults.Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = AdapterStatus.Unknown,
                 Data = []
@@ -48,12 +61,9 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
         }
     }
 
-    [HttpPost("GetVariableGroups", Name = "VariableGroups")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<Dictionary<string, string>>>>> GetVariableGroupsAsync(
+    public static async Task<Ok<AdapterResponseModel<IEnumerable<Dictionary<string, string>>>>> GetVariableGroupsAsync(
         [FromBody] ReleasePipelineRequest request,
+        [FromServices] IReleasePipelineService releasePipelineService,
         CancellationToken cancellationToken
         )
     {
@@ -80,8 +90,7 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
                 result.Add(dictionary);
             }
 
-
-            return Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
+            return TypedResults.Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
             {
                 Status = status,
                 Data = result
@@ -89,7 +98,7 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
         }
         catch (Exception)
         {
-            return Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
+            return TypedResults.Ok(new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>()
             {
                 Status = AdapterStatus.Unknown,
                 Data = []
@@ -97,12 +106,9 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
         }
     }
 
-    [HttpPost("GetProjects", Name = "Projects")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AdapterResponseModel<IEnumerable<string>>>> GetProjectsWithReleasePipelineAsync(
+    public static async Task<Ok<AdapterResponseModel<IEnumerable<string>>>> GetProjectsWithReleasePipelineAsync(
         [FromBody] ProjectsWithReleasePipelineRequest request,
+        [FromServices] IReleasePipelineService releasePipelineService,
         CancellationToken cancellationToken
         )
     {
@@ -117,7 +123,7 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
                 cancellationToken
                 );
 
-            return Ok(new AdapterResponseModel<IEnumerable<string>>()
+            return TypedResults.Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = status,
                 Data = projects
@@ -125,7 +131,7 @@ public class ReleasePipelineController(IReleasePipelineService releasePipelineSe
         }
         catch (Exception)
         {
-            return Ok(new AdapterResponseModel<IEnumerable<string>>()
+            return TypedResults.Ok(new AdapterResponseModel<IEnumerable<string>>()
             {
                 Status = AdapterStatus.Unknown,
                 Data = []

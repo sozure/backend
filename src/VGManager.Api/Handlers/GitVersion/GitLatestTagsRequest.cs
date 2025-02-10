@@ -1,4 +1,4 @@
-namespace VGManager.Api.Endpoints.GitVersion;
+namespace VGManager.Api.Handlers.GitVersion;
 
 public record GitLatestTagsRequest
 {

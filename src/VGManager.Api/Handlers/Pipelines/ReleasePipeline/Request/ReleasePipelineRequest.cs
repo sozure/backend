@@ -1,13 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using VGManager.Api.Common;
 
-namespace VGManager.Api.Endpoints.Pipelines.Release.Request;
+namespace VGManager.Api.Handlers.Pipelines.Release.Request;
 
-public record ProjectsWithReleasePipelineRequest : BasicRequest
+public record ReleasePipelineRequest : ExtendedBasicRequest
 {
-    [Required]
-    public IEnumerable<string> Projects { get; set; } = null!;
-
     [Required]
     public string RepositoryName { get; set; } = null!;
 

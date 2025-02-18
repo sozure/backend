@@ -1,7 +1,14 @@
 
+using System.Diagnostics.CodeAnalysis;
 using CorrelationId;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using System.Diagnostics.CodeAnalysis;
+using VGManager.Api.Handlers.GitFile;
+using VGManager.Api.Handlers.GitPR;
+using VGManager.Api.Handlers.GitRepository;
+using VGManager.Api.Handlers.GitVersion;
+using VGManager.Api.Handlers.Pipelines.BuildPipeline;
+using VGManager.Api.Handlers.Pipelines.ReleasePipeline;
+using VGManager.Api.Handlers.Profile;
 using VGManager.Api.HealthChecks;
 using VGManager.Communication.Kafka.Extensions;
 
@@ -44,7 +51,16 @@ static partial class Program
         app.UseHttpsRedirection();
         app.UseCors(specificOrigins);
         app.UseAuthorization();
-        app.MapControllers();
+
+        app.MapGroup("api/azureservice")
+            .RequireCors(specificOrigins)
+            .MapGitRepositoryHandler()
+            .MapGitPullRequestHandler()
+            .MapGitVersionHandler()
+            .MapGitFileHandler()
+            .MapReleasePipelineHandler()
+            .MapBuildPipelineHandler()
+            .MapProfileHandler();
 
         return app;
     }

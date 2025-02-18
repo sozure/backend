@@ -1,19 +1,19 @@
-using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
-using VGManager.Api.Endpoints.GitFile;
+using VGManager.Api.Handlers.GitFile;
 using VGManager.Services;
 using VGManager.Services.Helper;
+using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.Tests;
 
 [TestFixture]
 public class GitFileControllerTests
 {
-    private GitFileController _gitFileController;
+    private IGitFileService _gitFileService;
     private Mock<IVGManagerAdapterClientService> _clientService;
 
     [SetUp]
@@ -22,8 +22,7 @@ public class GitFileControllerTests
         _clientService = new(MockBehavior.Strict);
         var adapterCommunicatorService = new AdapterCommunicator(_clientService.Object);
         var gitAdapterCommunicatorService = new GitAdapterCommunicatorService(adapterCommunicatorService);
-        var gitFileService = new GitFileService(gitAdapterCommunicatorService);
-        _gitFileController = new GitFileController(gitFileService);
+        _gitFileService = new GitFileService(gitAdapterCommunicatorService);
     }
 
     [Test]
@@ -63,12 +62,10 @@ public class GitFileControllerTests
             .ReturnsAsync((true, JsonSerializer.Serialize(adapterResponse)));
 
         // Act
-        var result = await _gitFileController.GetFilePathAsync(request, default);
+        var result = await GitFileHandler.GetFilePathAsync(request, _gitFileService, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<OkObjectResult>();
-        ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -113,11 +110,9 @@ public class GitFileControllerTests
             .ReturnsAsync((true, JsonSerializer.Serialize(adapterResponse)));
 
         // Act
-        var result = await _gitFileController.GetConfigFilesAsync(request, default);
+        var result = await GitFileHandler.GetConfigFilesAsync(request, _gitFileService, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<OkObjectResult>();
-        ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
     }
 }

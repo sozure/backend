@@ -1,5 +1,5 @@
-using Microsoft.VisualStudio.Services.Profile;
 using System.Text.Json;
+using Microsoft.VisualStudio.Services.Profile;
 using VGManager.Adapter.Models.Kafka;
 using VGManager.Adapter.Models.Requests;
 using VGManager.Adapter.Models.Response;

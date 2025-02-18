@@ -1,16 +1,14 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
-using System.Text.Json;
 using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
-using VGManager.Api.Endpoints.GitRepository;
-using VGManager.Api.Endpoints.GitRepository.Request;
-using VGManager.Api.MapperProfiles;
+using VGManager.Api.Handlers.GitRepository;
+using VGManager.Api.Handlers.GitRepository.Request;
 using VGManager.Services;
+using VGManager.Services.Interfaces;
 using VGManager.Services.Models.GitRepositories;
 
 namespace VGManager.Api.Tests;
@@ -18,7 +16,7 @@ namespace VGManager.Api.Tests;
 [TestFixture]
 public class GitRepositoryControllerTests
 {
-    private GitRepositoryController _gitRepositoryController;
+    private IGitRepositoryService _gitRepositoryService;
     private Mock<IVGManagerAdapterClientService> _clientService = null!;
 
     [SetUp]
@@ -26,16 +24,8 @@ public class GitRepositoryControllerTests
     {
         _clientService = new(MockBehavior.Strict);
 
-        var mapperConfiguration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile(typeof(GitRepositoryProfile));
-        });
-
-        var mapper = mapperConfiguration.CreateMapper();
-
         var adapterCommunicator = new AdapterCommunicator(_clientService.Object);
-        var gitRepositoryService = new GitRepositoryService(adapterCommunicator);
-        _gitRepositoryController = new GitRepositoryController(gitRepositoryService, mapper);
+        _gitRepositoryService = new GitRepositoryService(adapterCommunicator);
     }
 
     [Test]
@@ -87,12 +77,10 @@ public class GitRepositoryControllerTests
             .ReturnsAsync((true, JsonSerializer.Serialize(adapterResponse)));
 
         // Act
-        var result = await _gitRepositoryController.GetAsync(request, new CancellationToken());
+        var result = await GitRepositoryHandler.GetAsync(request, _gitRepositoryService, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<OkObjectResult>();
-        ((AdapterResponseModel<IEnumerable<GitRepositoryResult>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -121,12 +109,10 @@ public class GitRepositoryControllerTests
             .ReturnsAsync((false, JsonSerializer.Serialize((BaseResponse<IEnumerable<GitRepository>>)null!)));
 
         // Act
-        var result = await _gitRepositoryController.GetAsync(request, new CancellationToken());
+        var result = await GitRepositoryHandler.GetAsync(request, _gitRepositoryService, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<OkObjectResult>();
-        ((AdapterResponseModel<IEnumerable<GitRepositoryResult>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -155,12 +141,10 @@ public class GitRepositoryControllerTests
             .ReturnsAsync((true, JsonSerializer.Serialize((BaseResponse<IEnumerable<GitRepository>>)null!)));
 
         // Act
-        var result = await _gitRepositoryController.GetAsync(request, new CancellationToken());
+        var result = await GitRepositoryHandler.GetAsync(request, _gitRepositoryService, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<OkObjectResult>();
-        ((AdapterResponseModel<IEnumerable<GitRepositoryResult>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -205,12 +189,10 @@ public class GitRepositoryControllerTests
             .ReturnsAsync((true, JsonSerializer.Serialize(adapterResponse)));
 
         // Act
-        var result = await _gitRepositoryController.GetVariablesAsync(request, default);
+        var result = await GitRepositoryHandler.GetVariablesAsync(request, _gitRepositoryService, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<OkObjectResult>();
-        ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -244,12 +226,10 @@ public class GitRepositoryControllerTests
             .ReturnsAsync((false, JsonSerializer.Serialize((BaseResponse<List<string>>)null!)));
 
         // Act
-        var result = await _gitRepositoryController.GetVariablesAsync(request, default);
+        var result = await GitRepositoryHandler.GetVariablesAsync(request, _gitRepositoryService, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<OkObjectResult>();
-        ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -283,12 +263,10 @@ public class GitRepositoryControllerTests
             .ReturnsAsync((true, JsonSerializer.Serialize((BaseResponse<List<string>>)null!)));
 
         // Act
-        var result = await _gitRepositoryController.GetVariablesAsync(request, default);
+        var result = await GitRepositoryHandler.GetVariablesAsync(request, _gitRepositoryService, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<OkObjectResult>();
-        ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),

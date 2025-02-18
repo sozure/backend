@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Api.Handlers.Pipelines.Release.Request;
-using VGManager.Services;
 using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.Handlers.Pipelines.ReleasePipeline;

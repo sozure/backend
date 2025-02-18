@@ -1,8 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
-using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Adapter.Models.Models;
+using VGManager.Api.Handlers.GitRepository.Extensions;
 using VGManager.Api.Handlers.GitRepository.Request;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models.GitRepositories;
@@ -50,11 +50,10 @@ public static class GitRepositoryHandler
     public static async Task<Ok<AdapterResponseModel<IEnumerable<string>>>> GetVariablesAsync(
         [FromBody] GitRepositoryVariablesRequest request,
         [FromServices] IGitRepositoryService gitRepositoryService,
-        IMapper mapper,
         CancellationToken cancellationToken
     )
     {
-        var model = mapper.Map<GitRepositoryModel>(request);
+        var model = request.ToModel();
         var variablesResult = await gitRepositoryService.GetVariablesFromConfigAsync(model, cancellationToken);
         var result = new AdapterResponseModel<IEnumerable<string>>()
         {

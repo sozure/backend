@@ -51,8 +51,6 @@ public class ProfileControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<Profile>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(adapterResponse);
 
         _clientService.Verify(x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -86,8 +84,6 @@ public class ProfileControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<Profile>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -116,8 +112,6 @@ public class ProfileControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<Profile>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
     }

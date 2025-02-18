@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using VGManager.Adapter.Client.Interfaces;
@@ -75,8 +74,6 @@ public class BuildPipelineControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Value.Should().BeOfType<OkObjectResult>();
-        //result.Value!.Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync("GetRepositoryIdByBuildPipelineRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -135,8 +132,6 @@ public class BuildPipelineControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Value.Should().BeOfType<OkObjectResult>();
-        //result.Value!.Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync("GetBuildPipelinesRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -170,8 +165,6 @@ public class BuildPipelineControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterStatus)((OkObjectResult)result.Result!).Value!).Should().Be(AdapterStatus.Success);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync("RunBuildPipelineRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -212,7 +205,5 @@ public class BuildPipelineControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterStatus)((OkObjectResult)result.Result!).Value!).Should().Be(AdapterStatus.Success);
     }
 }

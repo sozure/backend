@@ -1,12 +1,10 @@
 using System.Text.Json;
-using AutoMapper;
 using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Api.Common;
 using VGManager.Api.Handlers.GitVersion;
-using VGManager.Api.MapperProfiles;
 using VGManager.Services;
 using VGManager.Services.Helper;
 using VGManager.Services.Interfaces;
@@ -18,20 +16,12 @@ namespace VGManager.Api.Tests;
 public class GitVersionControllerTests
 {
     private IGitVersionService _gitVersionService;
-    private IMapper _mapper;
     private Mock<IVGManagerAdapterClientService> _clientService = null!;
 
     [SetUp]
     public void Setup()
     {
         _clientService = new(MockBehavior.Strict);
-
-        var mapperConfiguration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile(typeof(GitVersionProfile));
-        });
-
-        _mapper = mapperConfiguration.CreateMapper();
 
         var adapterCommunicator = new AdapterCommunicator(_clientService.Object);
         var gitAdapterCommunicatorService = new GitAdapterCommunicatorService(adapterCommunicator);
@@ -74,8 +64,6 @@ public class GitVersionControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -108,8 +96,6 @@ public class GitVersionControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -153,8 +139,6 @@ public class GitVersionControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -187,8 +171,6 @@ public class GitVersionControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -262,8 +244,6 @@ public class GitVersionControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<string>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync("GetTagsRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -310,8 +290,6 @@ public class GitVersionControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<string>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync("GetTagsRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),

@@ -66,8 +66,6 @@ public class GitFileControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -116,7 +114,5 @@ public class GitFileControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
     }
 }

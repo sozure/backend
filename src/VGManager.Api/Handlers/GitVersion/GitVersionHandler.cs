@@ -1,10 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
-using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.StatusEnums;
 using VGManager.Api.Common;
+using VGManager.Api.Handlers.GitVersion.Extensions;
 using VGManager.Services.Interfaces;
 using VGManager.Services.Models;
 
@@ -96,13 +96,12 @@ public static class GitVersionHandler
     public static async Task<Ok<AdapterResponseModel<Dictionary<string, string>>>> GetLatestTagsAsync(
         [FromBody] GitLatestTagsRequest request,
         [FromServices] IGitVersionService gitVersionService,
-        IMapper mapper,
         CancellationToken cancellationToken
     )
     {
         try
         {
-            var model = mapper.Map<GitLatestTagsEntity>(request);
+            var model = request.ToEntity();
             var result = await gitVersionService.GetLatestTagsAsync(model, cancellationToken);
             return TypedResults.Ok(result);
         }

@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Models;
@@ -66,8 +65,6 @@ public class ReleasePipelineControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync("GetEnvironmentsRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -114,8 +111,6 @@ public class ReleasePipelineControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<IEnumerable<Dictionary<string, string>>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -162,8 +157,6 @@ public class ReleasePipelineControllerTests
 
         // Assert
         result.Should().NotBeNull();
-        //result.Result.Should().BeOfType<OkObjectResult>();
-        //((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),

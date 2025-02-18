@@ -51,13 +51,8 @@ static partial class Program
         });
 
         services.AddAuthorization();
-        services.AddControllers();
         services.AddHealthChecks()
             .AddCheck<StartupHealthCheck>(nameof(StartupHealthCheck), tags: Tags);
-
-        services.AddAutoMapper(
-            typeof(Program)
-        );
 
         RegisterServices(services, configuration);
 

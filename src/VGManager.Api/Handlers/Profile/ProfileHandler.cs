@@ -24,7 +24,7 @@ public static class ProfileHandler
 
     public static async Task<Ok<AdapterResponseModel<AzureProfile>>> GetProfileAsync(
         [FromBody] BasicRequest request,
-        [FromServices] IProfileService profileService,
+        IProfileService profileService,
         CancellationToken cancellationToken
         )
     {

@@ -1,6 +1,6 @@
+using System.Reflection;
 using CorrelationId.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 using VGManager.Adapter.Client.Extensions;
 using VGManager.Api.HealthChecks;
 using VGManager.Services;
@@ -51,13 +51,8 @@ static partial class Program
         });
 
         services.AddAuthorization();
-        services.AddControllers();
         services.AddHealthChecks()
             .AddCheck<StartupHealthCheck>(nameof(StartupHealthCheck), tags: Tags);
-
-        services.AddAutoMapper(
-            typeof(Program)
-        );
 
         RegisterServices(services, configuration);
 

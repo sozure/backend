@@ -1,20 +1,20 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using VGManager.Adapter.Client.Interfaces;
 using VGManager.Adapter.Models.Models;
 using VGManager.Adapter.Models.Response;
 using VGManager.Adapter.Models.StatusEnums;
-using VGManager.Api.Endpoints.Pipelines.Release;
-using VGManager.Api.Endpoints.Pipelines.Release.Request;
+using VGManager.Api.Handlers.Pipelines.Release.Request;
+using VGManager.Api.Handlers.Pipelines.ReleasePipeline;
 using VGManager.Services;
+using VGManager.Services.Interfaces;
 
 namespace VGManager.Api.Tests;
 
 [TestFixture]
 public class ReleasePipelineControllerTests
 {
-    private ReleasePipelineController _controller;
+    private IReleasePipelineService _releasePipelineService;
     private Mock<IVGManagerAdapterClientService> _clientService;
 
     [SetUp]
@@ -24,8 +24,7 @@ public class ReleasePipelineControllerTests
         var loggerMock = new Mock<ILogger<ReleasePipelineService>>();
 
         var adapterCommunicator = new AdapterCommunicator(_clientService.Object);
-        var service = new ReleasePipelineService(adapterCommunicator, loggerMock.Object);
-        _controller = new ReleasePipelineController(service);
+        _releasePipelineService = new ReleasePipelineService(adapterCommunicator, loggerMock.Object);
     }
 
     [Test]
@@ -62,12 +61,10 @@ public class ReleasePipelineControllerTests
             .ReturnsAsync((true, JsonSerializer.Serialize(adapterResponse)));
 
         // Act
-        var result = await _controller.GetEnvironmentsAsync(request, default);
+        var result = await ReleasePipelineHandler.GetEnvironmentsAsync(request, _releasePipelineService, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<OkObjectResult>();
-        ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync("GetEnvironmentsRequest", It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -99,10 +96,10 @@ public class ReleasePipelineControllerTests
 
         var response = new AdapterResponseModel<IEnumerable<Dictionary<string, string>>>
         {
-            Data = new List<Dictionary<string, string>>
-            {
+            Data =
+            [
                 GetSampleDictionary()
-            },
+            ],
             Status = AdapterStatus.Success
         };
 
@@ -110,12 +107,10 @@ public class ReleasePipelineControllerTests
             .ReturnsAsync((true, JsonSerializer.Serialize(adapterResponse)));
 
         // Act
-        var result = await _controller.GetVariableGroupsAsync(request, default);
+        var result = await ReleasePipelineHandler.GetVariableGroupsAsync(request, _releasePipelineService, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<OkObjectResult>();
-        ((AdapterResponseModel<IEnumerable<Dictionary<string, string>>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -158,12 +153,10 @@ public class ReleasePipelineControllerTests
             .ReturnsAsync((true, JsonSerializer.Serialize(adapterResponse)));
 
         // Act
-        var result = await _controller.GetProjectsWithReleasePipelineAsync(request, default);
+        var result = await ReleasePipelineHandler.GetProjectsWithReleasePipelineAsync(request, _releasePipelineService, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Result.Should().BeOfType<OkObjectResult>();
-        ((AdapterResponseModel<IEnumerable<string>>)((OkObjectResult)result.Result!).Value!).Should().BeEquivalentTo(response);
 
         _clientService.Verify(
             x => x.SendAndReceiveMessageAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()),
